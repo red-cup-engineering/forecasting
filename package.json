@@ -19,14 +19,15 @@
   },
   "dependencies": {
     "@lenticule-science/derive-set-of-nws-temperature-forecasts-service": "0.1.0",
-    "@lenticule-science/metrologic": "0.1.1",
+    "@lenticule-science/metrologic": "file:../../../../../../../../../../computer-math-system-services-section/apps/metrologic",
+    "@red-cup-engineering/computer-data-engine": "0.11.2",
+    "@red-cup-engineering/eavt": "0.10.4",
     "@red-cup-engineering/javascript-file-main-guard-service": "0.1.3",
     "@red-cup-engineering/javascript-node-services-section": "0.2.0",
     "@red-cup-engineering/observe-set-of-kalshi-weather-markets-service": "0.2.0",
     "@red-cup-engineering/openai-compatible-chat-completion-service": "0.3.0",
     "@red-cup-engineering/position-sizing-service": "0.2.0",
-    "@red-cup-engineering/resolve-filepath-service": "0.1.1",
-    "@red-cup-engineering/semantic-record-journal-service": "0.4.0"
+    "@red-cup-engineering/resolve-filepath-service": "0.1.1"
   },
   "engines": {
     "node": ">=22"

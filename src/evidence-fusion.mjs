@@ -1,3 +1,4 @@
+import { Mark } from "@red-cup-engineering/computer-data-engine/utterance";
 /**
  * Fuses several forecasting evidence estimates using the real
  * @lenticule-science/metrologic/bilattice `aggregate` (joinKnowledge)
@@ -7,7 +8,7 @@
  * separate rather than one dressed up as the other.
  */
 
-import { aggregate, isTop } from "@lenticule-science/metrologic/bilattice";
+import { aggregate, isTop, charge, chargeValue } from "@red-cup-engineering/computer-data-engine/bilattice-charge";
 
 /** @typedef {{probability: number, confidence: number, source: string}} EvidenceEstimate One source's stated probability estimate (in [0,1]) and its self-reported confidence (in [0,1]). */
 
@@ -48,7 +49,7 @@ export function chargeFromEvidenceEstimate(estimate) {
   const witness = Object.freeze({ source, probability, confidence });
   const supports = probability > SUPPORT_THRESHOLD;
   const refutes = probability < REFUTATION_THRESHOLD;
-  return { value: [supports, refutes], evidence: [supports ? [witness] : [], refutes ? [witness] : []] };
+  return charge(chargeValue(supports ? "potential" : refutes ? "active" : "absurd"), [supports ? [new Mark(witness)] : [], refutes ? [new Mark(witness)] : []]);
 }
 
 /**

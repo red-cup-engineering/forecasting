@@ -1,26 +1,26 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { isTop } from "@lenticule-science/metrologic/bilattice";
+import { isTop, chargeValue } from "@red-cup-engineering/computer-data-engine/bilattice-charge";
 import { chargeFromEvidenceEstimate, fuseEvidenceToForecast } from "../src/evidence-fusion.mjs";
 
 test("chargeFromEvidenceEstimate reads a supportive estimate as the positive-only FOUR value", () => {
   const charge = chargeFromEvidenceEstimate({ probability: 0.8, confidence: 0.5, source: "groq" });
-  assert.deepEqual(charge.value, [true, false]);
+  assert.deepEqual(charge.value, chargeValue("potential").coordinates);
   assert.equal(charge.evidence[0].length, 1);
   assert.equal(charge.evidence[1].length, 0);
-  assert.equal(charge.evidence[0][0].source, "groq");
+  assert.equal(charge.evidence[0][0].value.source, "groq");
 });
 
 test("chargeFromEvidenceEstimate reads a refuting estimate as the negative-only FOUR value", () => {
   const charge = chargeFromEvidenceEstimate({ probability: 0.2, confidence: 0.5, source: "gemini-direct" });
-  assert.deepEqual(charge.value, [false, true]);
+  assert.deepEqual(charge.value, chargeValue("active").coordinates);
   assert.equal(charge.evidence[0].length, 0);
   assert.equal(charge.evidence[1].length, 1);
 });
 
 test("chargeFromEvidenceEstimate reads an exactly-0.5 estimate as absurd (no assertion either side)", () => {
   const charge = chargeFromEvidenceEstimate({ probability: 0.5, confidence: 0.9, source: "ollama-local" });
-  assert.deepEqual(charge.value, [false, false]);
+  assert.deepEqual(charge.value, chargeValue("absurd").coordinates);
 });
 
 test("chargeFromEvidenceEstimate rejects an out-of-range probability", () => {
@@ -39,7 +39,7 @@ test("fuseEvidenceToForecast on two agreeing sources: confidence-weighted mean a
   const fusion = fuseEvidenceToForecast(estimates);
   const expectedMean = (0.7 * 0.8 + 0.9 * 0.4) / (0.8 + 0.4);
   assert.ok(Math.abs(fusion.probability - expectedMean) < 1e-12);
-  assert.deepEqual(fusion.charge.value, [true, false]);
+  assert.deepEqual(fusion.charge.value, chargeValue("potential").coordinates);
   assert.equal(fusion.conflicted, false);
   assert.equal(isTop(fusion.charge), false);
   assert.equal(fusion.charge.evidence[0].length, 2);
@@ -53,7 +53,7 @@ test("fuseEvidenceToForecast on disagreeing sources: charge settles at top (told
   ];
   const fusion = fuseEvidenceToForecast(estimates);
   assert.equal(fusion.probability, 0.5);
-  assert.deepEqual(fusion.charge.value, [true, true]);
+  assert.deepEqual(fusion.charge.value, chargeValue("stable").coordinates);
   assert.equal(fusion.conflicted, true);
   assert.equal(isTop(fusion.charge), true);
   assert.equal(fusion.charge.evidence[0].length, 1);
