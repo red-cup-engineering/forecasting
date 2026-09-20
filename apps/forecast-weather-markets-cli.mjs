@@ -7,7 +7,7 @@ import { readFileSync } from "node:fs";
 import { observeSetOfKalshiWeatherMarkets } from "@red-cup-engineering/observe-set-of-kalshi-weather-markets-service";
 import { deriveSetOfNwsTemperatureForecasts } from "@lenticule-science/derive-set-of-nws-temperature-forecasts-service";
 import { sizePosition } from "@red-cup-engineering/position-sizing-service/size-position";
-import { createSemanticRecordJournal } from "@red-cup-engineering/semantic-record-journal-service";
+import { createSemanticRecordJournal } from "@red-cup-engineering/eavt/semantic-record";
 import { runMain } from "@red-cup-engineering/javascript-file-main-guard-service";
 import { resolveFilepath } from "@red-cup-engineering/resolve-filepath-service";
 import { normalizeQuestion, createForecast, brierScore, logScore, questionIdFromTicker, referenceClassFromSeries, DATA_ROOT_ENV_VAR } from "../src/forecasting.mjs";

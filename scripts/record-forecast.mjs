@@ -2,7 +2,7 @@
 import { readFileSync } from "node:fs";
 import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createSemanticRecordJournal } from "@red-cup-engineering/semantic-record-journal-service";
+import { createSemanticRecordJournal } from "@red-cup-engineering/eavt/semantic-record";
 import { resolveFilepath } from "@red-cup-engineering/resolve-filepath-service";
 
 /** This package's own root, the default semantic-record-journal custody root (writes land at data/logs/, per house data-custody law). */

@@ -6,7 +6,7 @@
 // see the exported function's JSDoc for the full contract.
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { createSemanticRecordJournal } from "@red-cup-engineering/semantic-record-journal-service";
+import { createSemanticRecordJournal } from "@red-cup-engineering/eavt/semantic-record";
 import { resolveFilepath } from "@red-cup-engineering/resolve-filepath-service";
 import { runMain } from "@red-cup-engineering/javascript-file-main-guard-service";
 import { resolveSetOfForecastQuestions } from "../scripts/resolve-set-of-forecast-questions.mjs";
@@ -15,7 +15,7 @@ import { deriveCalibrationRecord } from "../scripts/derive-calibration-record.mj
 import { FORECAST_CATEGORY, FORECAST_OBJECT_KIND, NODE_ROOT } from "../scripts/record-forecast.mjs";
 import { brierScore, DATA_ROOT_ENV_VAR } from "../src/forecasting.mjs";
 
-const QUESTIONS_DIR = new URL("../content/questions/", import.meta.url);
+const QUESTIONS_DIR = new URL("../content/questions", import.meta.url);
 
 /** Kalshi weather series this cycle knows how to route (matches the brief's cohort; KXDENHIGH in content/config/weather-markets.json is not yet part of it). */
 export const KNOWN_KALSHI_SERIES = ["KXHIGHCHI", "KXHIGHNY", "KXHIGHTHOU"];

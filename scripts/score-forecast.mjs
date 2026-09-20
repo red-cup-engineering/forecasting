@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { createSemanticRecordJournal } from "@red-cup-engineering/semantic-record-journal-service";
+import { createSemanticRecordJournal } from "@red-cup-engineering/eavt/semantic-record";
 import { brierScore, logScore } from "../src/forecasting.mjs";
 import { FORECAST_CATEGORY, FORECAST_OBJECT_KIND, NODE_ROOT } from "./record-forecast.mjs";
 import { resolveFilepath } from "@red-cup-engineering/resolve-filepath-service";

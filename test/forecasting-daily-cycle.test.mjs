@@ -3,7 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { createSemanticRecordJournal } from "@red-cup-engineering/semantic-record-journal-service";
+import { createSemanticRecordJournal } from "@red-cup-engineering/eavt/semantic-record";
 import { runForecastingDailyCycle, discoverKalshiQuestions, readStaticQuestions } from "../apps/forecasting-daily-cycle.mjs";
 import { recordForecast, FORECAST_OBJECT_KIND, FORECAST_CATEGORY } from "../scripts/record-forecast.mjs";
 
