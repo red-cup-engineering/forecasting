@@ -2,7 +2,7 @@
 import { readFileSync } from "node:fs";
 import { fuseEvidenceToForecast } from "../src/evidence-fusion.mjs";
 import { createForecast } from "../src/forecasting.mjs";
-import { resolveFilepath } from "@red-cup-engineering/resolve-filepath-service";
+import { resolve } from "node:path";
 
 function defaultRationale(evidenceEstimates, fusion) {
   const sources = evidenceEstimates.map((estimate) => estimate.source).join(", ");
@@ -41,7 +41,7 @@ if (import.meta.main) {
     process.stderr.write("usage: fuse-forecast.mjs <gathered-evidence.json>\n");
     process.exitCode = 2;
   } else {
-    const input = JSON.parse(readFileSync(resolveFilepath([path]), "utf8"));
+    const input = JSON.parse(readFileSync(resolve(path), "utf8"));
     process.stdout.write(`${JSON.stringify(fuseForecast(input), null, 2)}\n`);
   }
 }

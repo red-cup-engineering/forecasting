@@ -7,9 +7,9 @@ import { readFileSync } from "node:fs";
 import { observeSetOfKalshiWeatherMarkets } from "@red-cup-engineering/observe-set-of-kalshi-weather-markets-service";
 import { deriveSetOfNwsTemperatureForecasts } from "@lenticule-science/derive-set-of-nws-temperature-forecasts-service";
 import { sizePosition } from "@red-cup-engineering/position-sizing-service/size-position";
-import { createSemanticRecordJournal } from "@red-cup-engineering/eavt/semantic-record";
+import { createSemanticRecordJournal } from "../../../../../../../../../../../../../computer-data-engineering-services-section/services/serialized-computer-data-engineering-services-section/services/json-services-section/services/jsonl-services-section/services/eavt-services-section/services/seavt-services-section/src/semantic-record.mjs";
 import { runMain } from "@red-cup-engineering/javascript-file-main-guard-service";
-import { resolveFilepath } from "@red-cup-engineering/resolve-filepath-service";
+import { resolve } from "node:path";
 import { normalizeQuestion, createForecast, brierScore, logScore, questionIdFromTicker, referenceClassFromSeries, DATA_ROOT_ENV_VAR } from "../src/forecasting.mjs";
 import { recordForecast, FORECAST_CATEGORY, FORECAST_OBJECT_KIND, NODE_ROOT } from "../scripts/record-forecast.mjs";
 
@@ -46,7 +46,7 @@ function impliedProbabilityFromMid(observation) {
 }
 
 function journalWithObjectKind(dataRoot, objectKind) {
-  return createSemanticRecordJournal({ root: resolveFilepath([dataRoot ?? NODE_ROOT]), objectKind });
+  return createSemanticRecordJournal({ root: resolve(dataRoot ?? NODE_ROOT), objectKind });
 }
 
 function journalFor(dataRoot) {
@@ -63,7 +63,7 @@ function calibrationJournalFor(dataRoot) {
  * @returns {object}
  */
 export function readWeatherMarketsConfig(path) {
-  return JSON.parse(readFileSync(resolveFilepath([path]), "utf8"));
+  return JSON.parse(readFileSync(resolve(path), "utf8"));
 }
 
 /**
@@ -261,7 +261,7 @@ async function main(argv) {
   const [command, ...rest] = argv;
   const configFlagAt = rest.indexOf("--config");
   const configPath = configFlagAt === -1
-    ? resolveFilepath([new URL("../content/config/weather-markets.json", import.meta.url).pathname])
+    ? resolve(new URL("../content/config/weather-markets.json", import.meta.url).pathname)
     : rest[configFlagAt + 1];
   const dataRoot = resolveCliDataRoot(rest);
   if (command === "run") return runObserveAndForecast({ configPath, dataRoot });

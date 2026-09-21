@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import { createSemanticRecordJournal } from "@red-cup-engineering/eavt/semantic-record";
+import { createSemanticRecordJournal } from "../../../../../../../../../../../../../computer-data-engineering-services-section/services/serialized-computer-data-engineering-services-section/services/json-services-section/services/jsonl-services-section/services/eavt-services-section/services/seavt-services-section/src/semantic-record.mjs";
 import { brierScore, logScore } from "../src/forecasting.mjs";
 import { FORECAST_CATEGORY, FORECAST_OBJECT_KIND, NODE_ROOT } from "./record-forecast.mjs";
-import { resolveFilepath } from "@red-cup-engineering/resolve-filepath-service";
+import { resolve } from "node:path";
 
 /** The objectKind this section's semantic record journal uses for calibration-tracking records. */
 export const CALIBRATION_OBJECT_KIND = "forecasting.calibration-record";
@@ -18,7 +18,7 @@ export const CALIBRATION_CATEGORY = "forecasting.calibration";
  * @throws {Error} when no recorded forecast matches forecastId.
  */
 export function findRecordedForecast(forecastId, options = {}) {
-  const dataRoot = resolveFilepath([options.dataRoot ?? NODE_ROOT]);
+  const dataRoot = resolve(options.dataRoot ?? NODE_ROOT);
   const journal = createSemanticRecordJournal({ root: dataRoot, objectKind: FORECAST_OBJECT_KIND });
   const match = journal.query({ category: FORECAST_CATEGORY }).find((row) => row.id === forecastId);
   if (!match) throw new Error(`score-forecast: no recorded forecast found for id ${forecastId}`);
@@ -67,7 +67,7 @@ export function scoreForecast({ forecastId, outcome, kind, referenceClass }, opt
     logScoreUndefinedReason,
     scoredAt,
   };
-  const dataRoot = resolveFilepath([options.dataRoot ?? NODE_ROOT]);
+  const dataRoot = resolve(options.dataRoot ?? NODE_ROOT);
   const journal = createSemanticRecordJournal({ root: dataRoot, objectKind: CALIBRATION_OBJECT_KIND });
   return journal.record({ category: CALIBRATION_CATEGORY, recordedAt: scoredAt, record, charge: { support: true, refutation: false } });
 }

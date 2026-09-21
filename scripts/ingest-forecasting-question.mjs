@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { readFileSync } from "node:fs";
 import { normalizeQuestion } from "../src/forecasting.mjs";
-import { resolveFilepath } from "@red-cup-engineering/resolve-filepath-service";
+import { resolve } from "node:path";
 
 /**
  * Reads and validates a forecasting question definition from a JSON file.
@@ -11,7 +11,7 @@ import { resolveFilepath } from "@red-cup-engineering/resolve-filepath-service";
  * @throws {TypeError} when the parsed question fails normalizeQuestion validation.
  */
 export function ingestForecastingQuestionFromFile(path) {
-  const resolvedPath = resolveFilepath([path]);
+  const resolvedPath = resolve(path);
   let raw;
   try {
     raw = readFileSync(resolvedPath, "utf8");

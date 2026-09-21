@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 import { readFileSync } from "node:fs";
-import { dirname } from "node:path";
+import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createSemanticRecordJournal } from "@red-cup-engineering/eavt/semantic-record";
-import { resolveFilepath } from "@red-cup-engineering/resolve-filepath-service";
+import { createSemanticRecordJournal } from "../../../../../../../../../../../../../computer-data-engineering-services-section/services/serialized-computer-data-engineering-services-section/services/json-services-section/services/jsonl-services-section/services/eavt-services-section/services/seavt-services-section/src/semantic-record.mjs";
 
 /** This package's own root, the default semantic-record-journal custody root (writes land at data/logs/, per house data-custody law). */
-export const NODE_ROOT = resolveFilepath([dirname(fileURLToPath(import.meta.url)), ".."]);
+export const NODE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 
 /** The objectKind this section's semantic record journal uses for forecast records. */
 export const FORECAST_OBJECT_KIND = "forecasting.forecast-record";
@@ -26,7 +25,7 @@ export function recordForecast(forecast, options = {}) {
   if (!forecast || typeof forecast.questionId !== "string" || forecast.questionId.length === 0) {
     throw new TypeError("record-forecast: forecast requires a non-empty questionId");
   }
-  const dataRoot = resolveFilepath([options.dataRoot ?? NODE_ROOT]);
+  const dataRoot = resolve(options.dataRoot ?? NODE_ROOT);
   const journal = createSemanticRecordJournal({ root: dataRoot, objectKind: FORECAST_OBJECT_KIND });
   return journal.record({
     category: FORECAST_CATEGORY,
@@ -42,7 +41,7 @@ if (import.meta.main) {
     process.stderr.write("usage: record-forecast.mjs <forecast.json>\n");
     process.exitCode = 2;
   } else {
-    const forecast = JSON.parse(readFileSync(resolveFilepath([path]), "utf8"));
+    const forecast = JSON.parse(readFileSync(resolve(path), "utf8"));
     process.stdout.write(`${JSON.stringify(recordForecast(forecast), null, 2)}\n`);
   }
 }

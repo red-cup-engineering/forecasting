@@ -8,7 +8,7 @@ import {
   isRateLimitRefusal,
 } from "@red-cup-engineering/openai-compatible-chat-completion-service";
 import { runMain } from "@red-cup-engineering/javascript-file-main-guard-service";
-import { resolveFilepath } from "@red-cup-engineering/resolve-filepath-service";
+import { resolve } from "node:path";
 
 /**
  * Default location of the house-verified free-inference provider catalog
@@ -78,7 +78,7 @@ export function parseConfidenceFromCompletion(text) {
 export async function gatherQuestionEvidence(questionPrompt, options = {}) {
   const catalogPath = options.catalogPath ?? DEFAULT_CATALOG_PATH;
   const request = options.request ?? fetch;
-  const catalog = JSON.parse(readFileSync(resolveFilepath([catalogPath]), "utf8"));
+  const catalog = JSON.parse(readFileSync(resolve(catalogPath), "utf8"));
   const packet = buildEvidencePacket(questionPrompt);
   const errors = validateChatCompletionPacket(packet);
   if (errors.length) throw new Error(`gather-question-evidence: built an invalid packet:\n  - ${errors.join("\n  - ")}`);

@@ -26,8 +26,7 @@
     "@red-cup-engineering/javascript-node-services-section": "0.2.0",
     "@red-cup-engineering/observe-set-of-kalshi-weather-markets-service": "0.2.0",
     "@red-cup-engineering/openai-compatible-chat-completion-service": "0.3.0",
-    "@red-cup-engineering/position-sizing-service": "0.2.0",
-    "@red-cup-engineering/resolve-filepath-service": "0.1.1"
+    "@red-cup-engineering/position-sizing-service": "0.2.0"
   },
   "engines": {
     "node": ">=22"

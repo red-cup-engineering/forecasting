@@ -6,8 +6,8 @@
 // see the exported function's JSDoc for the full contract.
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { createSemanticRecordJournal } from "@red-cup-engineering/eavt/semantic-record";
-import { resolveFilepath } from "@red-cup-engineering/resolve-filepath-service";
+import { createSemanticRecordJournal } from "../../../../../../../../../../../../../computer-data-engineering-services-section/services/serialized-computer-data-engineering-services-section/services/json-services-section/services/jsonl-services-section/services/eavt-services-section/services/seavt-services-section/src/semantic-record.mjs";
+import { resolve } from "node:path";
 import { runMain } from "@red-cup-engineering/javascript-file-main-guard-service";
 import { resolveSetOfForecastQuestions } from "../scripts/resolve-set-of-forecast-questions.mjs";
 import { scoreForecast, CALIBRATION_CATEGORY, CALIBRATION_OBJECT_KIND } from "../scripts/score-forecast.mjs";
@@ -27,7 +27,7 @@ export const CYCLE_CATEGORY = "forecasting.daily-cycle";
 export const MARKET_EVIDENCE_SOURCE = "kalshi-market-implied";
 
 function journalFor(dataRoot, objectKind) {
-  return createSemanticRecordJournal({ root: resolveFilepath([dataRoot ?? NODE_ROOT]), objectKind });
+  return createSemanticRecordJournal({ root: resolve(dataRoot ?? NODE_ROOT), objectKind });
 }
 
 /**
