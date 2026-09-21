@@ -4,7 +4,7 @@ import { gatherQuestionEvidence } from "../scripts/gather-question-evidence.mjs"
 import { fuseForecast } from "../scripts/fuse-forecast.mjs";
 import { recordForecast } from "../scripts/record-forecast.mjs";
 import { scoreForecast } from "../scripts/score-forecast.mjs";
-import { runMain } from "@red-cup-engineering/javascript-file-services-section/index";
+import { runMain } from "@red-cup-engineering/javascript-file-services-section/javascript-file-main-guard";
 
 /**
  * Composes the full forecasting pipeline: ingest a question, gather one

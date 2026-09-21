@@ -4,11 +4,11 @@
 // against settlement, and gates any paper sizing step behind the reference
 // class's own calibration record -- never a live order.
 import { readFileSync } from "node:fs";
-import { observeSetOfKalshiWeatherMarkets } from "@red-cup-engineering/observe-set-of-kalshi-weather-markets-service";
+import { observeSetOfKalshiWeatherMarkets } from "@red-cup-engineering/kalshi-services-section/observe-set-of-kalshi-weather-markets";
 import { deriveSetOfNwsTemperatureForecasts } from "@lenticule-science/derive-set-of-nws-temperature-forecasts-service";
 import { sizePosition } from "@red-cup-engineering/position-sizing-service/size-position";
 import { createSemanticRecordJournal } from "../../../../../../../../../../../../../computer-data-engineering-services-section/services/serialized-computer-data-engineering-services-section/services/json-services-section/services/jsonl-services-section/services/eavt-services-section/services/seavt-services-section/src/semantic-record.mjs";
-import { runMain } from "@red-cup-engineering/javascript-file-main-guard-service";
+import { runMain } from "@red-cup-engineering/javascript-file-services-section/javascript-file-main-guard";
 import { resolve } from "node:path";
 import { normalizeQuestion, createForecast, brierScore, logScore, questionIdFromTicker, referenceClassFromSeries, DATA_ROOT_ENV_VAR } from "../src/forecasting.mjs";
 import { recordForecast, FORECAST_CATEGORY, FORECAST_OBJECT_KIND, NODE_ROOT } from "../scripts/record-forecast.mjs";
