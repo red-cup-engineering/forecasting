@@ -3,7 +3,7 @@
 // (Kalshi settled markets, api.weather.gov observations, a configured
 // goods-prices JSON series), or reports Open with a reason -- never an
 // estimate. See the exported function's JSDoc for the full contract.
-import { observeSetOfKalshiWeatherMarkets } from "@red-cup-engineering/observe-set-of-kalshi-weather-markets-service";
+import { observeSetOfKalshiWeatherMarkets } from "@red-cup-engineering/kalshi-services-section/observe-set-of-kalshi-weather-markets";
 import { questionIdFromTicker } from "../src/forecasting.mjs";
 import { runJavascriptNodeOperation } from "../../../../../../../../../../../../../computer-code-engineering-services-section/services/javascript-engineering-services-section/services/javascript-node-services-section/src/operation.mjs";
 

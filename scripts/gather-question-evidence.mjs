@@ -7,7 +7,7 @@ import {
   resolveFreeFirstAttemptPacket,
   isRateLimitRefusal,
 } from "@red-cup-engineering/openai-compatible-chat-completion-service";
-import { runMain } from "@red-cup-engineering/javascript-file-main-guard-service";
+import { runMain } from "@red-cup-engineering/javascript-file-services-section/index";
 import { resolve } from "node:path";
 
 /**
