@@ -1,4 +1,4 @@
-import { Mark } from "@lenticule-science/metrologic/articulation/predicating/positing/utterance";
+import { Mark } from "@red-cup-engineering/sign-cell/utterance";
 /**
  * Fuses several forecasting evidence estimates using the real
  * @lenticule-science/metrologic/bilattice `aggregate` (joinKnowledge)
