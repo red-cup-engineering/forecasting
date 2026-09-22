@@ -5,7 +5,7 @@
 // estimate. See the exported function's JSDoc for the full contract.
 import { observeSetOfKalshiWeatherMarkets } from "@red-cup-engineering/kalshi-services-section/observe-set-of-kalshi-weather-markets";
 import { questionIdFromTicker } from "../src/forecasting.mjs";
-import { runJavascriptNodeOperation } from "../../../../../../../../../../../../../computer-code-engineering-services-section/services/javascript-engineering-services-section/services/javascript-node-services-section/src/operation.mjs";
+import { runJavascriptNodeOperation } from "@red-cup-engineering/javascript-node-services-section/operation";
 
 const KALSHI_STATUS_SETTLED = "settled";
 const KALSHI_WEATHER_PREFIX = "kalshi.weather.";

@@ -8,7 +8,7 @@
 // see data/records/ for the work order and receipt); this sibling import
 // replaces the scratch copy's published-package import.
 import { calibrationBuckets } from "../src/forecasting.mjs";
-import { runJavascriptNodeOperation } from "../../../../../../../../../../../../../computer-code-engineering-services-section/services/javascript-engineering-services-section/services/javascript-node-services-section/src/operation.mjs";
+import { runJavascriptNodeOperation } from "@red-cup-engineering/javascript-node-services-section/operation";
 
 const DEFAULT_MIN_RESOLVED_FORECASTS = 30;
 const DEFAULT_BUCKET_COUNT = 10;
