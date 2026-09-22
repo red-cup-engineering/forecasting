@@ -5,7 +5,7 @@
 // class's own calibration record -- never a live order.
 import { readFileSync } from "node:fs";
 import { observeSetOfKalshiWeatherMarkets } from "@red-cup-engineering/kalshi-services-section/observe-set-of-kalshi-weather-markets";
-import { deriveSetOfNwsTemperatureForecasts } from "@lenticule-science/derive-set-of-nws-temperature-forecasts-service";
+import { deriveSetOfNwsTemperatureForecasts } from "@red-cup-engineering/kalshi-services-section/derive-set-of-nws-temperature-forecasts";
 import { sizePosition } from "@red-cup-engineering/position-sizing-service/size-position";
 import { createSemanticRecordJournal } from "../../../../../../../../../../../../../computer-data-engineering-services-section/services/serialized-computer-data-engineering-services-section/services/json-services-section/services/jsonl-services-section/services/eavt-services-section/services/seavt-services-section/src/semantic-record.mjs";
 import { runMain } from "@red-cup-engineering/javascript-file-services-section/javascript-file-main-guard";

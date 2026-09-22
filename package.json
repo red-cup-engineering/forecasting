@@ -18,7 +18,6 @@
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
-    "@lenticule-science/derive-set-of-nws-temperature-forecasts-service": "0.1.0",
     "@lenticule-science/metrologic": "file:../../../../../../../../../../computer-math-system-services-section/apps/metrologic",
     "@red-cup-engineering/computer-data-engine": "0.11.2",
     "@red-cup-engineering/eavt": "0.10.4",
