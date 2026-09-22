@@ -1,4 +1,4 @@
-import { Mark } from "@red-cup-engineering/computer-data-engine/utterance";
+import { Mark } from "@lenticule-science/metrologic/articulation/predicating/positing/utterance";
 /**
  * Fuses several forecasting evidence estimates using the real
  * @lenticule-science/metrologic/bilattice `aggregate` (joinKnowledge)
@@ -8,7 +8,7 @@ import { Mark } from "@red-cup-engineering/computer-data-engine/utterance";
  * separate rather than one dressed up as the other.
  */
 
-import { aggregate, isTop, charge, chargeValue } from "@red-cup-engineering/computer-data-engine/bilattice-charge";
+import { aggregate, isTop, charge, chargeValue } from "@lenticule-science/metrologic/articulation/predicating/positing/bilattice-charge";
 
 /** @typedef {{probability: number, confidence: number, source: string}} EvidenceEstimate One source's stated probability estimate (in [0,1]) and its self-reported confidence (in [0,1]). */
 
