@@ -25,7 +25,8 @@
     "@red-cup-engineering/openai-compatible-chat-completion-service": "0.3.0",
     "@red-cup-engineering/position-sizing-service": "0.2.0",
     "@red-cup-engineering/javascript-file-services-section": "0.1.0",
-    "@red-cup-engineering/kalshi-services-section": "0.1.0"
+    "@red-cup-engineering/kalshi-services-section": "0.1.0",
+    "@red-cup-engineering/typed-computer-content-engineering-services-section": "0.2.0"
   },
   "engines": {
     "node": ">=22"

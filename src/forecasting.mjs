@@ -7,6 +7,8 @@
  * enterprise: judgment earns a fee, no capital is ever at risk.
  */
 
+import { slugify } from "@red-cup-engineering/typed-computer-content-engineering-services-section/slugify-text";
+
 const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 
 /** @typedef {{id: string, title: string, resolutionCriteria: string, openAt: string, closeAt: string, resolveAt: string, sourcePlatform: string}} ForecastingQuestion A canonical forecasting question: `id` is lowercase-hyphen; `openAt`/`closeAt`/`resolveAt` are ISO 8601; `sourcePlatform` names the venue (e.g. "metaculus-aib-minibench"). */
@@ -29,7 +31,7 @@ export function questionIdFromTicker(ticker) {
   // A bracket ticker like "KXHIGHNY-26SEP05-B85.5" carries a decimal strike;
   // this id must be lowercase-hyphen only, so any run of non [a-z0-9]
   // characters (the "." here) becomes one hyphen.
-  return ticker.toLowerCase().replace(/[^a-z0-9]+/gu, "-").replace(/^-+|-+$/gu, "");
+  return slugify(ticker);
 }
 
 /**
