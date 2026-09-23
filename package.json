@@ -20,10 +20,11 @@
   "dependencies": {
     "@lenticule-science/metrologic": "0.3.0",
     "@red-cup-engineering/computer-data-engineering-services-section": "0.1.0",
+    "@red-cup-engineering/computer-inference-engine": "0.1.0",
+    "@red-cup-engineering/computer-inference-engine/openai": "0.3.0",
     "@red-cup-engineering/javascript-file-services-section": "0.1.0",
     "@red-cup-engineering/javascript-node-services-section": "0.3.0",
     "@red-cup-engineering/kalshi-services-section": "0.1.0",
-    "@red-cup-engineering/openai-compatible-chat-completion-service": "0.3.0",
     "@red-cup-engineering/position-sizing-service": "0.2.0",
     "@red-cup-engineering/typed-computer-content-engineering-services-section": "0.2.0"
   },
