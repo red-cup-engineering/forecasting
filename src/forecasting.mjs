@@ -7,7 +7,7 @@
  * enterprise: judgment earns a fee, no capital is ever at risk.
  */
 
-import { slugify } from "@red-cup-engineering/typed-computer-content-engineering-services-section/slugify-text";
+import { slugify } from "@red-cup-engineering/computer-text-content-engineering-services-section/slugify-text";
 
 const ID = /^[a-z0-9]+(?:-[a-z0-9]+)*$/u;
 
