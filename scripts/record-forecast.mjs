@@ -2,7 +2,7 @@
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { createSemanticRecordJournal } from "../../../../../../../../../../../../../computer-data-engineering-services-section/services/serialized-computer-data-engineering-services-section/services/json-services-section/services/jsonl-services-section/services/eavt-services-section/services/seavt-services-section/src/semantic-record.mjs";
+import { createSemanticRecordJournal } from "@red-cup-engineering/computer-code-engineering-services-section/semiotic-eavt/record-semantic-record";
 
 /** This package's own root, the default semantic-record-journal custody root (writes land at data/logs/, per house data-custody law). */
 export const NODE_ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");

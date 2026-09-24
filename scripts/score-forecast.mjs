@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-import { createSemanticRecordJournal } from "../../../../../../../../../../../../../computer-data-engineering-services-section/services/serialized-computer-data-engineering-services-section/services/json-services-section/services/jsonl-services-section/services/eavt-services-section/services/seavt-services-section/src/semantic-record.mjs";
+import { createSemanticRecordJournal } from "@red-cup-engineering/computer-code-engineering-services-section/semiotic-eavt/record-semantic-record";
 import { brierScore, logScore } from "../src/forecasting.mjs";
 import { FORECAST_CATEGORY, FORECAST_OBJECT_KIND, NODE_ROOT } from "./record-forecast.mjs";
 import { resolve } from "node:path";

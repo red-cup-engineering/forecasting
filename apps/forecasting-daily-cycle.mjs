@@ -6,7 +6,7 @@
 // see the exported function's JSDoc for the full contract.
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { createSemanticRecordJournal } from "../../../../../../../../../../../../../computer-data-engineering-services-section/services/serialized-computer-data-engineering-services-section/services/json-services-section/services/jsonl-services-section/services/eavt-services-section/services/seavt-services-section/src/semantic-record.mjs";
+import { createSemanticRecordJournal } from "@red-cup-engineering/computer-code-engineering-services-section/semiotic-eavt/record-semantic-record";
 import { resolve } from "node:path";
 import { runMain } from "@red-cup-engineering/javascript-file-services-section/javascript-file-main-guard";
 import { resolveSetOfForecastQuestions } from "../scripts/resolve-set-of-forecast-questions.mjs";
