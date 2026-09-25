@@ -201,7 +201,7 @@ export async function runScoreClosedMarkets({ configPath, dataRoot, now, request
         category: CALIBRATION_CATEGORY,
         recordedAt: observedAt,
         record: { referenceClass, forecastId: row.id, questionId, kind, probability, outcome, brierScore: brier, logScore: log, logScoreUndefinedReason, scoredAt: observedAt },
-        charge: { support: true, refutation: false },
+        told: { for: true, against: false },
       });
       calibrationRowsWritten += 1;
     }

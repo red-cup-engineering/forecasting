@@ -126,7 +126,7 @@ export async function runForecastingDailyCycle(options = {}) {
     category: CYCLE_CATEGORY,
     recordedAt: runAt,
     record: { runAt, questionCount: questions.length, resolutions, newlyScoredCount, calibrationRecords },
-    charge: { support: true, refutation: false },
+    told: { for: true, against: false },
   });
 
   return { runAt, questionCount: questions.length, resolutions, newlyScoredCount, calibrationRecords, cycleReceipt };

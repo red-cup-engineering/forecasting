@@ -22,14 +22,14 @@ test("record-forecast then score-forecast round-trips through a real tmp data ro
 
   const recordReceipt = recordForecast(forecast, { dataRoot });
   assert.match(recordReceipt.id, /^ni:\/\/\/sha-256;/u);
-  assert.equal(recordReceipt.charge.support, true);
+  assert.equal(recordReceipt.told.for, true);
 
   const found = findRecordedForecast(recordReceipt.id, { dataRoot });
   assert.equal(found.questionId, "will-x-happen");
   assert.equal(found.probability, 0.75);
 
   const scoreReceipt = scoreForecast({ forecastId: recordReceipt.id, outcome: 1 }, { dataRoot });
-  assert.equal(scoreReceipt.charge.support, true);
+  assert.equal(scoreReceipt.told.for, true);
   assert.match(scoreReceipt.id, /^ni:\/\/\/sha-256;/u);
 });
 

@@ -18,7 +18,7 @@ export const FORECAST_CATEGORY = "forecasting.forecast";
  * section's semantic record journal.
  * @param {import("../src/forecasting.mjs").ForecastRecord} forecast
  * @param {{dataRoot?: string, recordedAt?: string}} [options]
- * @returns {{id: string, objectKind: string, appended: number, appended: number, charge: {support: boolean, refutation: boolean}}} the journal's record receipt.
+ * @returns {{id: string, objectKind: string, appended: number, appended: number, told: { for: boolean, against: boolean }}} the journal's record receipt.
  * @throws {TypeError} when forecast lacks a questionId.
  */
 export function recordForecast(forecast, options = {}) {
@@ -31,7 +31,7 @@ export function recordForecast(forecast, options = {}) {
     category: FORECAST_CATEGORY,
     recordedAt: options.recordedAt ?? forecast.timestamp ?? new Date().toISOString(),
     record: forecast,
-    charge: { support: true, refutation: false },
+    told: { for: true, against: false },
   });
 }
 
