@@ -7,7 +7,7 @@ import { resolve } from "node:path";
 function defaultRationale(evidenceEstimates, fusion) {
   const sources = evidenceEstimates.map((estimate) => estimate.source).join(", ");
   const conflictNote = fusion.conflicted
-    ? " Evidence sources disagreed in direction (bilattice charge settled at top, told-both); the fused probability is a confidence-weighted mean over that conflict, not a resolution of it."
+    ? " Evidence sources disagreed in direction (the fused evidence is told both ways); the fused probability is a confidence-weighted mean over that conflict, not a resolution of it."
     : " Evidence sources agreed in direction.";
   return `Fused from ${evidenceEstimates.length} evidence estimate(s) (${sources}) via confidence-weighted mean probability and metrologic bilattice support/refutation aggregation.${conflictNote}`;
 }
@@ -17,7 +17,7 @@ function defaultRationale(evidenceEstimates, fusion) {
  * forecast record.
  * @param {{questionId: string, evidenceEstimates: import("../src/evidence-fusion.mjs").EvidenceEstimate[], rationale?: string}} input
  * @param {{at?: string}} [options] - `at` overrides the forecast timestamp (defaults to now).
- * @returns {{forecast: Readonly<import("../src/forecasting.mjs").ForecastRecord>, fusion: {probability: number, charge: object, conflicted: boolean}}}
+ * @returns {{forecast: Readonly<import("../src/forecasting.mjs").ForecastRecord>, fusion: {probability: number, evidence: object, conflicted: boolean}}}
  */
 export function fuseForecast({ questionId, evidenceEstimates, rationale }, options = {}) {
   const fusion = fuseEvidenceToForecast(evidenceEstimates);

@@ -1,14 +1,14 @@
-import { Mark } from "@red-cup-engineering/computer-data-engineering-services-section/signcell/utterance";
 /**
  * Fuses several forecasting evidence estimates using the real
- * @lenticule-science/metrologic/bilattice `aggregate` (joinKnowledge)
- * operation for the qualitative support/refutation charge, and an
+ * SignChain `knowledgeJoin`
+ * operation for the qualitative support/refutation evidence, and an
  * ordinary confidence-weighted mean for the probability point-estimate --
  * see fuseEvidenceToForecast for why those two steps are kept honestly
  * separate rather than one dressed up as the other.
  */
 
-import { aggregate, isTop, charge, chargeValue } from "@lenticule-science/metrologic/articulation/predicating/positing/bilattice-charge";
+import { evidence, told } from "@red-cup-engineering/computer-data-engineering-services-section/signcell/cell";
+import { knowledgeJoin } from "@red-cup-engineering/computer-code-engineering-services-section/signchain/bilattice";
 
 /** @typedef {{probability: number, confidence: number, source: string}} EvidenceEstimate One source's stated probability estimate (in [0,1]) and its self-reported confidence (in [0,1]). */
 
@@ -33,44 +33,44 @@ function validateEstimate(estimate, index = 0) {
 }
 
 /**
- * Encodes one evidence estimate as a metrologic bilattice Charge. THIS IS
+ * Encodes one evidence estimate as a SignCell evidence pair. THIS IS
  * OUR ENCODING CHOICE, not metrologic's: a probability strictly above 0.5
  * asserts the positive (support) side; strictly below 0.5 asserts the
  * negative (refutation) side; exactly 0.5 asserts neither (the FOUR value
  * "absurd" -- no witness on either side). The estimate itself becomes a
  * witness object placed in the evidence array on whichever side(s) it
- * asserts, so nothing is lost when charges are later joined.
+ * asserts, so nothing is lost when tellings are later joined.
  * @param {EvidenceEstimate} estimate
- * @returns {{value: [boolean, boolean], evidence: [unknown[], unknown[]]}} a metrologic bilattice Charge.
+ * @returns {{for: unknown[], against: unknown[]}} a SignCell evidence pair.
  */
-export function chargeFromEvidenceEstimate(estimate) {
+export function evidenceOfEstimate(estimate) {
   validateEstimate(estimate);
   const { probability, confidence, source } = estimate;
   const witness = Object.freeze({ source, probability, confidence });
   const supports = probability > SUPPORT_THRESHOLD;
   const refutes = probability < REFUTATION_THRESHOLD;
-  return charge(chargeValue(supports ? "potential" : refutes ? "active" : "absurd"), [supports ? [new Mark(witness)] : [], refutes ? [new Mark(witness)] : []]);
+  return evidence({ for: supports ? [witness] : [], against: refutes ? [witness] : [] });
 }
 
 /**
  * Fuses several evidence estimates for one forecasting question into a
  * single probability point-estimate and one bilattice-typed support/
- * refutation charge. Two genuinely different operations happen here, kept
+ * refutation evidence. Two genuinely different operations happen here, kept
  * separate rather than one pretending to be the other: (1) the
  * probability POINT-ESTIMATE is a confidence-weighted mean of the
  * individual probabilities -- ordinary numeric aggregation, not
- * metrologic's job; (2) the qualitative CHARGE is the real metrologic
- * bilattice fusion (`aggregate`, i.e. joinKnowledge from
- * @lenticule-science/metrologic/bilattice): each estimate's charge (see
- * {@link chargeFromEvidenceEstimate}) is joined pairwise, so the fused
- * charge's value bits are TRUE on a side iff at least one source asserted
- * that side, and its evidence arrays lose no witness. A fused charge
- * valued top (`isTop`, i.e. "told both" in the knowledge order) means the
+ * metrologic's job; (2) the qualitative EVIDENCE is SignChain's
+ * bilattice fusion (`knowledgeJoin`, the knowledge-order join from
+ * SignChain): each estimate's evidence (see
+ * {@link evidenceOfEstimate}) is joined pairwise, so the fused
+ * evidence is told on a side iff at least one source asserted
+ * that side, and its evidence arrays lose no witness. A fused evidence
+ * told both ways ( i.e. "told both" in the knowledge order) means the
  * evidence base is in genuine CONFLICT -- some sources support, some
  * refute -- and the probability mean should be read with that in mind
  * rather than as a settled consensus.
  * @param {EvidenceEstimate[]} evidenceEstimates
- * @returns {{probability: number, charge: {value: [boolean, boolean], evidence: [unknown[], unknown[]]}, conflicted: boolean}}
+ * @returns {{probability: number, evidence: {for: unknown[], against: unknown[]}, conflicted: boolean}}
  * @throws {TypeError} when evidenceEstimates is not a non-empty array of valid estimates.
  */
 export function fuseEvidenceToForecast(evidenceEstimates) {
@@ -78,11 +78,11 @@ export function fuseEvidenceToForecast(evidenceEstimates) {
     throw new TypeError("evidence-fusion: fuseEvidenceToForecast requires a non-empty array of evidence estimates");
   }
   evidenceEstimates.forEach(validateEstimate);
-  const charges = evidenceEstimates.map(chargeFromEvidenceEstimate);
-  const fusedCharge = charges.reduce((left, right) => aggregate({ left, right }));
+  const tellings = evidenceEstimates.map(evidenceOfEstimate);
+  const fused = tellings.reduce((left, right) => knowledgeJoin(left, right));
   const totalConfidence = evidenceEstimates.reduce((sum, estimate) => sum + estimate.confidence, 0);
   const probability = totalConfidence > 0
     ? evidenceEstimates.reduce((sum, estimate) => sum + estimate.probability * estimate.confidence, 0) / totalConfidence
     : evidenceEstimates.reduce((sum, estimate) => sum + estimate.probability, 0) / evidenceEstimates.length;
-  return { probability, charge: fusedCharge, conflicted: isTop(fusedCharge) };
+  return { probability, evidence: fused, conflicted: told(fused)[0] && told(fused)[1] };
 }
