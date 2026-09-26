@@ -18,7 +18,7 @@
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
-    "@lenticule-science/metrologic": "0.3.0",
+    "@red-cup-engineering/metrologic": "0.3.0",
     "@red-cup-engineering/computer-code-engineering-services-section": "0.1.0",
     "@red-cup-engineering/computer-data-engineering-services-section": "0.1.0",
     "@red-cup-engineering/computer-inference-engine": "0.1.0",

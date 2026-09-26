@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { isTop, chargeValue } from "@lenticule-science/metrologic/articulation/predicating/positing/bilattice-charge";
+import { isTop, chargeValue } from "@red-cup-engineering/metrologic/articulation/predicating/positing/bilattice-charge";
 import { chargeFromEvidenceEstimate, fuseEvidenceToForecast } from "../src/evidence-fusion.mjs";
 
 test("chargeFromEvidenceEstimate reads a supportive estimate as the positive-only FOUR value", () => {
