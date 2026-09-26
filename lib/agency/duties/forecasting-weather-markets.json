@@ -1,0 +1,15 @@
+{
+  "id": "forecasting-weather-markets",
+  "name": "forecast and score Kalshi weather markets",
+  "authority": "emsenn",
+  "work": "forecasting-weather-markets",
+  "claim": "founder",
+  "delegation": true,
+  "skills": [
+    "forecasting-weather-markets"
+  ],
+  "x-provenance": {
+    "recorded-by": "claude-opus-5-5",
+    "recorded-on": "2026-09-26"
+  }
+}
