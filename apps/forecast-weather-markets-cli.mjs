@@ -181,6 +181,8 @@ export async function runScoreClosedMarkets({ configPath, dataRoot, now, request
   const settled = await observeSetOfKalshiWeatherMarkets({ seriesTickers, observedAt, status: "settled" }, { fetchImpl: request });
   const forecastJournal = journalFor(dataRoot);
   const calibrationJournal = calibrationJournalFor(dataRoot);
+  // Each forecast is scored once: daily runs see every settled market again.
+  const scored = new Set(calibrationJournal.query({ category: CALIBRATION_CATEGORY }).map((row) => row.record.forecastId));
 
   let calibrationRowsWritten = 0;
   for (const observation of settled) {
@@ -190,6 +192,7 @@ export async function runScoreClosedMarkets({ configPath, dataRoot, now, request
     const referenceClass = referenceClassFromSeries(observation.seriesTicker);
     const forecastRows = forecastJournal.query({ category: FORECAST_CATEGORY }).filter((row) => row.record.questionId === questionId);
     for (const row of forecastRows) {
+      if (scored.has(row.id)) continue;
       const source = row.record.evidenceCitations?.[0]?.source;
       const kind = source === MARKET_EVIDENCE_SOURCE ? "market" : source === HOUSE_EVIDENCE_SOURCE ? "house" : null;
       if (!kind) continue;
@@ -203,6 +206,7 @@ export async function runScoreClosedMarkets({ configPath, dataRoot, now, request
         record: { referenceClass, forecastId: row.id, questionId, kind, probability, outcome, brierScore: brier, logScore: log, logScoreUndefinedReason, scoredAt: observedAt },
         told: { for: true, against: false },
       });
+      scored.add(row.id);
       calibrationRowsWritten += 1;
     }
   }
