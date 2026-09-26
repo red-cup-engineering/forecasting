@@ -1,11 +1,13 @@
 # Forecasting Services Section
 
-`@red-cup-engineering/forecasting` — forecasting as skill-for-fee: calibrated-
-judgment forecasting sold as a service, the explicit inversion of
-capital-at-risk trading. Question ingestion, metrologic bilattice evidence
-fusion, proper scoring rules, and calibration tracking — no capital is ever
-placed at risk. Entry cost is compute/time paid through the house's own
-free-inference rails, never a market position.
+`@red-cup-engineering/forecasting` — forecasting as skill-for-fee and as the edge
+behind the Kalshi stake path: calibrated-judgment forecasting sold as a
+service, and staked on the venue wherever the calibration record shows the
+house beating the market after fees. Question ingestion, metrologic
+bilattice evidence fusion, proper scoring rules, and calibration tracking.
+Forecasting itself costs compute and time on the house's free-inference
+rails; stakes go through `kalshi-stake-path-service` inside its capped
+envelope.
 
 ## Pipeline
 
