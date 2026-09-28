@@ -1,30 +1,30 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { isTop, chargeValue } from "@red-cup-engineering/metrologic/articulation/predicating/positing/bilattice-charge";
-import { chargeFromEvidenceEstimate, fuseEvidenceToForecast } from "../src/evidence-fusion.mjs";
+import { knowledgeReading } from "@red-cup-engineering/computer-data-engineering-services-section/signcell/cell";
+import { evidenceOfEstimate, fuseEvidenceToForecast } from "../src/evidence-fusion.mjs";
 
-test("chargeFromEvidenceEstimate reads a supportive estimate as the positive-only FOUR value", () => {
-  const charge = chargeFromEvidenceEstimate({ probability: 0.8, confidence: 0.5, source: "groq" });
-  assert.deepEqual(charge.value, chargeValue("potential").coordinates);
-  assert.equal(charge.evidence[0].length, 1);
-  assert.equal(charge.evidence[1].length, 0);
-  assert.equal(charge.evidence[0][0].value.source, "groq");
+test("evidenceOfEstimate reads a supportive estimate as the positive-only FOUR value", () => {
+  const evidence = evidenceOfEstimate({ probability: 0.8, confidence: 0.5, source: "groq" });
+  assert.equal(knowledgeReading(evidence), "potential");
+  assert.equal(evidence.for.length, 1);
+  assert.equal(evidence.against.length, 0);
+  assert.equal(evidence.for[0].source, "groq");
 });
 
-test("chargeFromEvidenceEstimate reads a refuting estimate as the negative-only FOUR value", () => {
-  const charge = chargeFromEvidenceEstimate({ probability: 0.2, confidence: 0.5, source: "gemini-direct" });
-  assert.deepEqual(charge.value, chargeValue("active").coordinates);
-  assert.equal(charge.evidence[0].length, 0);
-  assert.equal(charge.evidence[1].length, 1);
+test("evidenceOfEstimate reads a refuting estimate as the negative-only FOUR value", () => {
+  const evidence = evidenceOfEstimate({ probability: 0.2, confidence: 0.5, source: "gemini-direct" });
+  assert.equal(knowledgeReading(evidence), "active");
+  assert.equal(evidence.for.length, 0);
+  assert.equal(evidence.against.length, 1);
 });
 
-test("chargeFromEvidenceEstimate reads an exactly-0.5 estimate as absurd (no assertion either side)", () => {
-  const charge = chargeFromEvidenceEstimate({ probability: 0.5, confidence: 0.9, source: "ollama-local" });
-  assert.deepEqual(charge.value, chargeValue("absurd").coordinates);
+test("evidenceOfEstimate reads an exactly-0.5 estimate as absurd (no assertion either side)", () => {
+  const evidence = evidenceOfEstimate({ probability: 0.5, confidence: 0.9, source: "ollama-local" });
+  assert.equal(knowledgeReading(evidence), "absurd");
 });
 
-test("chargeFromEvidenceEstimate rejects an out-of-range probability", () => {
-  assert.throws(() => chargeFromEvidenceEstimate({ probability: 1.5, confidence: 0.5, source: "x" }), /must be a finite number in \[0,1\]/u);
+test("evidenceOfEstimate rejects an out-of-range probability", () => {
+  assert.throws(() => evidenceOfEstimate({ probability: 1.5, confidence: 0.5, source: "x" }), /must be a finite number in \[0,1\]/u);
 });
 
 test("fuseEvidenceToForecast rejects an empty evidence array", () => {
@@ -39,25 +39,25 @@ test("fuseEvidenceToForecast on two agreeing sources: confidence-weighted mean a
   const fusion = fuseEvidenceToForecast(estimates);
   const expectedMean = (0.7 * 0.8 + 0.9 * 0.4) / (0.8 + 0.4);
   assert.ok(Math.abs(fusion.probability - expectedMean) < 1e-12);
-  assert.deepEqual(fusion.charge.value, chargeValue("potential").coordinates);
+  assert.equal(knowledgeReading(fusion.evidence), "potential");
   assert.equal(fusion.conflicted, false);
-  assert.equal(isTop(fusion.charge), false);
-  assert.equal(fusion.charge.evidence[0].length, 2);
-  assert.equal(fusion.charge.evidence[1].length, 0);
+  assert.equal(knowledgeReading(fusion.evidence) === "stable", false);
+  assert.equal(fusion.evidence.for.length, 2);
+  assert.equal(fusion.evidence.against.length, 0);
 });
 
-test("fuseEvidenceToForecast on disagreeing sources: charge settles at top (told-both) and conflicted is true", () => {
+test("fuseEvidenceToForecast on disagreeing sources: evidence settles at top (told-both) and conflicted is true", () => {
   const estimates = [
     { probability: 0.8, confidence: 0.5, source: "groq" },
     { probability: 0.2, confidence: 0.5, source: "openrouter" },
   ];
   const fusion = fuseEvidenceToForecast(estimates);
   assert.equal(fusion.probability, 0.5);
-  assert.deepEqual(fusion.charge.value, chargeValue("stable").coordinates);
+  assert.equal(knowledgeReading(fusion.evidence), "stable");
   assert.equal(fusion.conflicted, true);
-  assert.equal(isTop(fusion.charge), true);
-  assert.equal(fusion.charge.evidence[0].length, 1);
-  assert.equal(fusion.charge.evidence[1].length, 1);
+  assert.equal(knowledgeReading(fusion.evidence) === "stable", true);
+  assert.equal(fusion.evidence.for.length, 1);
+  assert.equal(fusion.evidence.against.length, 1);
 });
 
 test("fuseEvidenceToForecast falls back to a plain mean when every confidence is 0", () => {
