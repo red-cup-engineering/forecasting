@@ -14,14 +14,13 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "check": "node --check src/forecasting.mjs && node --check src/evidence-fusion.mjs && node --check scripts/ingest-forecasting-question.mjs && node --check scripts/gather-question-evidence.mjs && node --check scripts/fuse-forecast.mjs && node --check scripts/record-forecast.mjs && node --check scripts/score-forecast.mjs && node --check scripts/derive-calibration-record.mjs && node --check scripts/resolve-set-of-forecast-questions.mjs && node --check apps/forecasting-cli.mjs && node --check apps/forecast-weather-markets-cli.mjs && node --check apps/forecasting-daily-cycle.mjs",
+    "check": "node --check src/forecasting.mjs && node --check src/evidence-fusion.mjs && node --check scripts/ingest-forecasting-question.mjs && node --check scripts/fuse-forecast.mjs && node --check scripts/record-forecast.mjs && node --check scripts/score-forecast.mjs && node --check scripts/derive-calibration-record.mjs && node --check scripts/resolve-set-of-forecast-questions.mjs && node --check apps/forecasting-cli.mjs && node --check apps/forecast-weather-markets-cli.mjs && node --check apps/forecasting-daily-cycle.mjs",
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
     "@red-cup-engineering/metrologic": "0.3.0",
     "@red-cup-engineering/computer-code-engineering-services-section": "0.1.0",
     "@red-cup-engineering/computer-data-engineering-services-section": "0.1.0",
-    "@red-cup-engineering/computer-inference-engine": "0.1.0",
     "@red-cup-engineering/computer-text-content-engineering-services-section": "0.1.0",
     "@red-cup-engineering/javascript-file-services-section": "0.1.0",
     "@red-cup-engineering/javascript-node-services-section": "0.3.0",

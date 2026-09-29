@@ -7,9 +7,9 @@ import { resolve } from "node:path";
 function defaultRationale(evidenceEstimates, fusion) {
   const sources = evidenceEstimates.map((estimate) => estimate.source).join(", ");
   const conflictNote = fusion.conflicted
-    ? " Evidence sources disagreed in direction (the fused evidence is told both ways); the fused probability is a confidence-weighted mean over that conflict, not a resolution of it."
-    : " Evidence sources agreed in direction.";
-  return `Fused from ${evidenceEstimates.length} evidence estimate(s) (${sources}) via confidence-weighted mean probability and metrologic bilattice support/refutation aggregation.${conflictNote}`;
+    ? " Supplied estimates disagreed in direction (the joined claims are told both ways); the fused probability is a confidence-weighted mean over that conflict, not a resolution of it."
+    : " Supplied estimates agreed in direction.";
+  return `Fused from ${evidenceEstimates.length} supplied estimate(s) (${sources}) via confidence-weighted mean probability and SignChain support/refutation aggregation.${conflictNote}`;
 }
 
 /**
@@ -20,6 +20,15 @@ function defaultRationale(evidenceEstimates, fusion) {
  * @returns {{forecast: Readonly<import("../src/forecasting.mjs").ForecastRecord>, fusion: {probability: number, evidence: object, conflicted: boolean}}}
  */
 export function fuseForecast({ questionId, evidenceEstimates, rationale }, options = {}) {
+  if (!Array.isArray(evidenceEstimates) || evidenceEstimates.length === 0) {
+    throw new TypeError("forecasting: supply a non-empty array of sourced estimates");
+  }
+  for (const [index, estimate] of evidenceEstimates.entries()) {
+    if (typeof estimate?.source !== "string" || estimate.source.trim() === ""
+      || ![estimate.url, estimate.note].some((value) => typeof value === "string" && value.trim() !== "")) {
+      throw new TypeError(`forecasting: estimate ${index} needs a named source and a URL or source note`);
+    }
+  }
   const fusion = fuseEvidenceToForecast(evidenceEstimates);
   const timestamp = options.at ?? new Date().toISOString();
   const forecast = createForecast({
@@ -28,7 +37,8 @@ export function fuseForecast({ questionId, evidenceEstimates, rationale }, optio
     rationale: rationale ?? defaultRationale(evidenceEstimates, fusion),
     evidenceCitations: evidenceEstimates.map((estimate) => ({
       source: estimate.source,
-      note: `stated probability ${estimate.probability}, confidence ${estimate.confidence}`,
+      ...(estimate.url === undefined ? {} : { url: estimate.url }),
+      note: `stated probability ${estimate.probability}, confidence ${estimate.confidence}${estimate.note ? `; source note: ${estimate.note}` : ""}`,
     })),
     timestamp,
   });

@@ -113,9 +113,14 @@ export async function runObserveAndForecast({ configPath, dataRoot, now, request
   const observedAt = now ?? new Date().toISOString();
   const seriesTickers = config.citySeries.map((row) => row.seriesTicker);
   const observations = await observeSetOfKalshiWeatherMarkets({ seriesTickers, observedAt }, { fetchImpl: request });
-  const brackets = observations.map((observation) => ({
+  const omittedMarkets = observations.filter((observation) => !observation.targetDate).map((observation) => ({
+    ticker: observation.ticker,
+    reason: "event ticker has no recognized weather target date",
+  }));
+  const brackets = observations.filter((observation) => observation.targetDate).map((observation) => ({
     marketTicker: observation.ticker,
     city: observation.seriesTicker,
+    targetDate: observation.targetDate,
     strikeType: observation.strikeType,
     floorStrike: observation.floorStrike,
     capStrike: observation.capStrike,
@@ -128,7 +133,14 @@ export async function runObserveAndForecast({ configPath, dataRoot, now, request
   const results = [];
   for (const observation of observations) {
     const derivation = derivationByTicker.get(observation.ticker);
-    if (!derivation) continue;
+    if (!derivation) {
+      if (observation.targetDate) omittedMarkets.push({
+        ticker: observation.ticker,
+        targetDate: observation.targetDate,
+        reason: "NWS returned no matching daytime forecast period",
+      });
+      continue;
+    }
     const referenceClass = referenceClassFromSeries(observation.seriesTicker);
     const questionId = questionIdFromTicker(observation.ticker);
     const houseProbability = clampOpenUnitInterval(derivation.probability);
@@ -145,7 +157,7 @@ export async function runObserveAndForecast({ configPath, dataRoot, now, request
       questionId: question.id,
       probability: houseProbability,
       rationale: `NWS forecast high ${derivation.forecastHigh}${derivation.forecastHighUnit} (${derivation.forecastPeriodName}) via ${derivation.forecastSource}; normal error model stdDev=${derivation.stdDevUsed} at lead ${derivation.leadDays}d.`,
-      evidenceCitations: [{ source: HOUSE_EVIDENCE_SOURCE, note: `forecastHigh=${derivation.forecastHigh}${derivation.forecastHighUnit}, stdDev=${derivation.stdDevUsed}, leadDays=${derivation.leadDays}` }],
+      evidenceCitations: [{ source: HOUSE_EVIDENCE_SOURCE, url: derivation.forecastSource, note: `eventTicker=${observation.eventTicker}, targetDate=${derivation.targetDate}, period=${derivation.forecastPeriodStartTime}..${derivation.forecastPeriodEndTime}, forecastHigh=${derivation.forecastHigh}${derivation.forecastHighUnit}, stdDev=${derivation.stdDevUsed}, leadDays=${derivation.leadDays}, observedAt=${observedAt}` }],
       timestamp: observedAt,
     });
     const houseReceipt = recordForecast(houseForecast, { dataRoot });
@@ -157,7 +169,7 @@ export async function runObserveAndForecast({ configPath, dataRoot, now, request
         questionId: question.id,
         probability: clampOpenUnitInterval(impliedProbability),
         rationale: `Kalshi market implied probability from mid of yes bid ${observation.yesBid} / yes ask ${observation.yesAsk} (fallback lastPrice ${observation.lastPrice}).`,
-        evidenceCitations: [{ source: MARKET_EVIDENCE_SOURCE, note: `yesBid=${observation.yesBid}, yesAsk=${observation.yesAsk}, lastPrice=${observation.lastPrice}` }],
+        evidenceCitations: [{ source: MARKET_EVIDENCE_SOURCE, url: observation.sourceUrl, note: `ticker=${observation.ticker}, yesBid=${observation.yesBid}, yesAsk=${observation.yesAsk}, lastPrice=${observation.lastPrice}, observedAt=${observation.observedAt}` }],
         timestamp: observedAt,
       });
       marketReceipt = recordForecast(marketForecast, { dataRoot });
@@ -166,7 +178,7 @@ export async function runObserveAndForecast({ configPath, dataRoot, now, request
     const sizingStep = buildPaperSizingStep({ observation, derivation, referenceClass, config }, { dataRoot });
     results.push({ ticker: observation.ticker, questionId: question.id, referenceClass, houseProbability, impliedProbability, houseReceiptId: houseReceipt.id, marketReceiptId: marketReceipt?.id ?? null, sizingStep });
   }
-  return { marketCount: observations.length, forecastCount: results.length, results };
+  return { marketCount: observations.length, forecastCount: results.length, omittedMarkets, results };
 }
 
 /**
