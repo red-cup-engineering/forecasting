@@ -7,8 +7,8 @@
  * separate rather than one dressed up as the other.
  */
 
-import { evidence, told } from "@red-cup-engineering/computer-data-engineering-services-section/signcell/cell";
-import { knowledgeJoin } from "@red-cup-engineering/computer-code-engineering-services-section/signchain/bilattice";
+import { evidence, told } from "@red-cup-engineering/signcell/cell";
+import { knowledgeJoin } from "@red-cup-engineering/signchain/bilattice";
 
 /** @typedef {{probability: number, confidence: number, source: string}} EvidenceEstimate One source's stated probability estimate (in [0,1]) and its self-reported confidence (in [0,1]). */
 

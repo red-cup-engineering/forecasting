@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { knowledgeReading } from "@red-cup-engineering/computer-data-engineering-services-section/signcell/cell";
+import { knowledgeReading } from "@red-cup-engineering/signcell/cell";
 import { evidenceOfEstimate, fuseEvidenceToForecast } from "../src/evidence-fusion.mjs";
 
 test("evidenceOfEstimate reads a supportive estimate as the positive-only FOUR value", () => {

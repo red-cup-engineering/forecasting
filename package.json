@@ -26,7 +26,9 @@
     "@red-cup-engineering/javascript-node-services-section": "0.3.0",
     "@red-cup-engineering/kalshi-services-section": "0.1.0",
     "@red-cup-engineering/position-sizing-service": "0.3.1",
-    "@red-cup-engineering/witness-journal-document-service": "0.1.0"
+    "@red-cup-engineering/witness-journal-document-service": "0.1.0",
+    "@red-cup-engineering/signcell": "0.1.0",
+    "@red-cup-engineering/signchain": "0.1.0"
   },
   "engines": {
     "node": ">=22"
