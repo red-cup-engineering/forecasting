@@ -7,7 +7,7 @@
  * separate rather than one dressed up as the other.
  */
 
-import { evidence, told } from "@red-cup-engineering/signcell/cell";
+import { evidence, sidesOf } from "@red-cup-engineering/signcell/cell";
 import { knowledgeJoin } from "@red-cup-engineering/signchain/bilattice";
 
 /** @typedef {{probability: number, confidence: number, source: string}} EvidenceEstimate One source's stated probability estimate (in [0,1]) and its self-reported confidence (in [0,1]). */
@@ -84,5 +84,5 @@ export function fuseEvidenceToForecast(evidenceEstimates) {
   const probability = totalConfidence > 0
     ? evidenceEstimates.reduce((sum, estimate) => sum + estimate.probability * estimate.confidence, 0) / totalConfidence
     : evidenceEstimates.reduce((sum, estimate) => sum + estimate.probability, 0) / evidenceEstimates.length;
-  return { probability, evidence: fused, conflicted: told(fused)[0] && told(fused)[1] };
+  return { probability, evidence: fused, conflicted: sidesOf(fused)[0] && sidesOf(fused)[1] };
 }
