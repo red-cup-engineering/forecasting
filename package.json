@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@red-cup-engineering/metrologic": "0.3.0",
-    "@red-cup-engineering/computer-code-engineering-services-section": "0.1.0",
+    "@red-cup-engineering/semiotic-eavt-services-section": "0.1.0",
     "@red-cup-engineering/computer-data-engineering-services-section": "0.1.0",
     "@red-cup-engineering/computer-text-content-engineering-services-section": "0.1.0",
     "@red-cup-engineering/javascript-file-services-section": "0.1.0",
