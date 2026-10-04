@@ -1,0 +1,38 @@
+-- ALL: 367 markets, 56 events
+   kalshi mid  Brier 0.0767  logloss 0.2536
+   reference   Brier 0.1245  logloss 0.3853
+   blend0.5    Brier 0.0863  logloss 0.2847
+   Brier(kalshi)-Brier(ref): -0.0477 [-0.0672,-0.0299]  logloss diff -0.1317 [-0.183,-0.085] (negative = Kalshi better)
+   calibration (bin by Kalshi mid): n | mean mid | mean ref | freq YES
+   [0.00,0.05)   85 | 0.022 | 0.139 | 0.012
+   [0.05,0.15)   49 | 0.088 | 0.291 | 0.041
+   [0.15,0.35)   30 | 0.239 | 0.403 | 0.233
+   [0.35,0.65)   39 | 0.489 | 0.559 | 0.462
+   [0.65,0.85)   34 | 0.747 | 0.659 | 0.824
+   [0.85,0.95)   43 | 0.908 | 0.794 | 0.884
+   [0.95,1.00)   87 | 0.980 | 0.917 | 0.989
+-- TRAIN <= 2024-12-31: 248 markets, 39 events
+   kalshi mid  Brier 0.0830  logloss 0.2700
+   reference   Brier 0.1387  logloss 0.4238
+   blend0.5    Brier 0.0943  logloss 0.3072
+   Brier(kalshi)-Brier(ref): -0.0558 [-0.0837,-0.0306]  logloss diff -0.1538 [-0.230,-0.089] (negative = Kalshi better)
+-- TEST > 2024-12-31: 119 markets, 17 events
+   kalshi mid  Brier 0.0638  logloss 0.2195
+   reference   Brier 0.0948  logloss 0.3050
+   blend0.5    Brier 0.0696  logloss 0.2379
+   Brier(kalshi)-Brier(ref): -0.0310 [-0.0448,-0.0172]  logloss diff -0.0856 [-0.124,-0.043] (negative = Kalshi better)
+   fitted blend weight on reference (train): 0.0
+   train theta=0.00: no trades
+   TEST  theta=0.00: no trades
+   train theta=0.02: no trades
+   TEST  theta=0.02: no trades
+   train theta=0.05: no trades
+   TEST  theta=0.05: no trades
+   train theta=0.10: no trades
+   TEST  theta=0.10: no trades
+   -- using w=1.0 (pure reference), TEST only
+   TEST w=1 theta=0.02: n=80 events=17 mean EV/contract -1.39c  CI[-5.73,+3.28]c  total(10-lots) $-11.2
+   TEST w=1 theta=0.05: n=64 events=17 mean EV/contract -1.68c  CI[-7.13,+4.30]c  total(10-lots) $-10.8
+   TEST w=1 theta=0.10: n=47 events=17 mean EV/contract -3.80c  CI[-10.66,+4.08]c  total(10-lots) $-17.9
+   -- fee sensitivity none (frictionless) at TEST w fitted theta .05
+   TEST nofee: no trades

@@ -1,0 +1,311 @@
+{
+  "type": "KalshiMarketBrief",
+  "version": 1,
+  "briefId": "KXHIGHAUS-26OCT04@20261003T201512Z",
+  "asOf": "2026-10-03T20:15:12.469Z",
+  "event": {
+    "eventTicker": "KXHIGHAUS-26OCT04",
+    "seriesTicker": "KXHIGHAUS",
+    "title": "Highest temperature in Austin on Oct 4, 2026?",
+    "subTitle": "On Oct 4, 2026",
+    "category": "Climate and Weather",
+    "frequency": "daily",
+    "mutuallyExclusive": true,
+    "tags": [
+      "Daily temperature"
+    ],
+    "closesAt": "2026-10-05T06:00:00.000Z",
+    "expectedSettleAt": "2026-10-05T19:00:00.000Z",
+    "settlesOn": "2026-10-04",
+    "hoursToClose": 33.75,
+    "feeMultiplier": 1,
+    "url": "https://kalshi.com/markets/kxhighaus/highest-temperature-in-austin/kxhighaus-26oct04",
+    "seriesUrl": "https://kalshi.com/markets/kxhighaus"
+  },
+  "rules": {
+    "primary": "If the maximum temperature recorded at Austin (CLIAUS) for Oct 4, 2026, is less than 80° fahrenheit according to The Weather Company, then the market resolves to Yes.",
+    "secondary": "Not all weather data is the same. While checking a source like AccuWeather or Google Weather may help guide your decision, the official and final value used to determine this market is the maximum/minimum temperature as reported by the Weather Company.\n\nReading weather data\nPreliminary Weather Company data may be subject to rounding and conversion differences from the final reported value.\nUse caution when interpreting preliminary Weather Company readings.\n\nIf it is determined in the sole discretion of the Exchange that there is a material error in the initial non-preliminary publication, Expiration may be held until the publication of a non-materially-erroneous data revision or until the Expiration Date, whichever comes first. If no data is available at the end of this period, all markets will resolve to the last fair price determined by Kalshi. Please note, a status of \"Final\" on weather.com/kalshi is provided for convenience only, and does not guarantee data to be error-free and thus exempt from the above.",
+    "contractTermsUrl": "https://assets.kalshi.com/contract_terms/GLOBALTEMPERATURE.pdf"
+  },
+  "settlementSource": {
+    "primary": {
+      "name": "The Weather Company",
+      "url": "https://weather.com/kalshi"
+    },
+    "all": [
+      {
+        "name": "The Weather Company",
+        "url": "https://weather.com/kalshi"
+      }
+    ]
+  },
+  "markets": [
+    {
+      "ticker": "KXHIGHAUS-26OCT04-T80",
+      "label": "79° or below",
+      "strike": {
+        "type": "less",
+        "floor": null,
+        "cap": 80
+      },
+      "yesBidCents": 23,
+      "yesAskCents": 24,
+      "noBidCents": 76,
+      "noAskCents": 77,
+      "lastCents": 24,
+      "bidSize": 72.01,
+      "askSize": 38,
+      "volume": 1389.67,
+      "volume24h": 1389.67,
+      "openInterest": 1291.85,
+      "impliedYes": 0.235,
+      "impliedYesNormalized": 0.2227,
+      "house": {
+        "probability": 0.1261,
+        "kind": "high",
+        "model": "nbm-student-t-temperature"
+      },
+      "baseRate": null
+    },
+    {
+      "ticker": "KXHIGHAUS-26OCT04-B86.5",
+      "label": "86° to 87°",
+      "strike": {
+        "type": "between",
+        "floor": 86,
+        "cap": 87
+      },
+      "yesBidCents": 6,
+      "yesAskCents": 7,
+      "noBidCents": 93,
+      "noAskCents": 94,
+      "lastCents": 6,
+      "bidSize": 357.94,
+      "askSize": 368.16,
+      "volume": 1007.45,
+      "volume24h": 994.39,
+      "openInterest": 832.61,
+      "impliedYes": 0.065,
+      "impliedYesNormalized": 0.0616,
+      "house": {
+        "probability": 0.08165,
+        "kind": "high",
+        "model": "nbm-student-t-temperature"
+      },
+      "baseRate": null
+    },
+    {
+      "ticker": "KXHIGHAUS-26OCT04-B82.5",
+      "label": "82° to 83°",
+      "strike": {
+        "type": "between",
+        "floor": 82,
+        "cap": 83
+      },
+      "yesBidCents": 31,
+      "yesAskCents": 32,
+      "noBidCents": 68,
+      "noAskCents": 69,
+      "lastCents": 33,
+      "bidSize": 8.11,
+      "askSize": 5,
+      "volume": 833.65,
+      "volume24h": 833.65,
+      "openInterest": 664.71,
+      "impliedYes": 0.315,
+      "impliedYesNormalized": 0.2986,
+      "house": {
+        "probability": 0.31836,
+        "kind": "high",
+        "model": "nbm-student-t-temperature"
+      },
+      "baseRate": null
+    },
+    {
+      "ticker": "KXHIGHAUS-26OCT04-B84.5",
+      "label": "84° to 85°",
+      "strike": {
+        "type": "between",
+        "floor": 84,
+        "cap": 85
+      },
+      "yesBidCents": 20,
+      "yesAskCents": 21,
+      "noBidCents": 79,
+      "noAskCents": 80,
+      "lastCents": 22,
+      "bidSize": 15,
+      "askSize": 132.85,
+      "volume": 604.02,
+      "volume24h": 604.02,
+      "openInterest": 509.64,
+      "impliedYes": 0.205,
+      "impliedYesNormalized": 0.1943,
+      "house": {
+        "probability": 0.2142,
+        "kind": "high",
+        "model": "nbm-student-t-temperature"
+      },
+      "baseRate": null
+    },
+    {
+      "ticker": "KXHIGHAUS-26OCT04-B80.5",
+      "label": "80° to 81°",
+      "strike": {
+        "type": "between",
+        "floor": 80,
+        "cap": 81
+      },
+      "yesBidCents": 21,
+      "yesAskCents": 23,
+      "noBidCents": 77,
+      "noAskCents": 79,
+      "lastCents": 25,
+      "bidSize": 10,
+      "askSize": 4,
+      "volume": 544.97,
+      "volume24h": 544.97,
+      "openInterest": 508.36,
+      "impliedYes": 0.22,
+      "impliedYesNormalized": 0.2085,
+      "house": {
+        "probability": 0.22362,
+        "kind": "high",
+        "model": "nbm-student-t-temperature"
+      },
+      "baseRate": null
+    },
+    {
+      "ticker": "KXHIGHAUS-26OCT04-T87",
+      "label": "88° or above",
+      "strike": {
+        "type": "greater",
+        "floor": 87,
+        "cap": null
+      },
+      "yesBidCents": 1,
+      "yesAskCents": 2,
+      "noBidCents": 98,
+      "noAskCents": 99,
+      "lastCents": 2,
+      "bidSize": 640.37,
+      "askSize": 216.43,
+      "volume": 311.63,
+      "volume24h": 311.63,
+      "openInterest": 293.69,
+      "impliedYes": 0.015,
+      "impliedYesNormalized": 0.0142,
+      "house": {
+        "probability": 0.03608,
+        "kind": "high",
+        "model": "nbm-student-t-temperature"
+      },
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Climate and Weather",
+        "horizonHours": 24,
+        "n": 109,
+        "yesCount": 2,
+        "yesRate": 0.0183,
+        "yesRate95": [
+          0.005,
+          0.0644
+        ],
+        "avgYesAsk": 0.0293
+      }
+    }
+  ],
+  "book": {
+    "markets": 6,
+    "volume24h": 4678.33,
+    "openInterest": 4100.86,
+    "midSum": 1.055
+  },
+  "house": {
+    "model": "nbm-student-t-temperature",
+    "status": "priced",
+    "evidence": [
+      {
+        "label": "Settlement station",
+        "value": "KAUS (NWS Daily Climate Report CLIAUS)",
+        "url": "https://forecast.weather.gov/product.php?site=NWS&product=CLI&issuedby=AUS"
+      },
+      {
+        "label": "National Blend of Models daytime maximum guidance",
+        "value": "82 F with NBM spread 3 F, run 2026-10-03T18:00:00.000Z, 30 hours ahead",
+        "url": "https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20261003/18/text/blend_nbstx.t18z"
+      },
+      {
+        "label": "House error model",
+        "value": "location 82.4 F, scale 2.32 F, Student-t with 5.97 degrees of freedom, fitted on 2026-08-05..10-02 (content/config/temperature-markets.json)"
+      },
+      {
+        "label": "Measured skill",
+        "value": "Out of sample the model alone lost to the Kalshi mid near the money (Brier 0.138-0.164 vs 0.119-0.130); it is used to certify far tails, where brackets asked at 5c or less with model p of 1% or less settled yes on 0 of 296 high markets (data/records/2026-10-03-kalshi-temperature-tail-backtest)."
+      }
+    ],
+    "usableAs": "far-tail certification only (see content/config/kalshi-house-lanes.json weather-tail-premium)"
+  },
+  "baseRate": {
+    "category": {
+      "category": "Climate and Weather",
+      "horizonHours": 24,
+      "markets": 359,
+      "brierOfMid": 0.0879,
+      "longshot": {
+        "n": 109,
+        "yesCount": 2,
+        "yesRate": 0.0183,
+        "yesRate95": [
+          0.005,
+          0.0644
+        ],
+        "avgYesAsk": 0.0293
+      },
+      "favorite": {
+        "n": 5,
+        "yesCount": 5,
+        "yesRate": 1,
+        "yesRate95": [
+          0.5655,
+          1
+        ],
+        "avgYesAsk": 0.968
+      },
+      "source": "content/config/kalshi-category-base-rates.json",
+      "window": [
+        "2026-09-29",
+        "2026-10-03"
+      ]
+    },
+    "family": null
+  },
+  "whatWouldMoveIt": [
+    "The next NBM run (hourly; the current run is 2026-10-03T18:00:00.000Z).",
+    "A new National Blend of Models or National Weather Service forecast run, issued hourly.",
+    "For a same-day high, the maximum already observed at the station (the day's high cannot settle below it); for a low, the minimum so far.",
+    "A correction or late revision to the NWS Daily Climate Report that settles the market.",
+    "A rules clarification or settlement-source change published by Kalshi on the market page.",
+    "Order-book depth: thin books move on small orders, so a large price move on little volume says little."
+  ],
+  "opportunities": [],
+  "provenance": [
+    {
+      "what": "Kalshi market data (event, markets, series)",
+      "url": "https://api.elections.kalshi.com/trade-api/v2/events/KXHIGHAUS-26OCT04",
+      "fetchedAt": "2026-10-03T20:15:12.469Z"
+    },
+    {
+      "what": "House model evidence",
+      "url": "https://forecast.weather.gov/product.php?site=NWS&product=CLI&issuedby=AUS",
+      "fetchedAt": "2026-10-03T20:15:12.469Z"
+    },
+    {
+      "what": "Category base rates",
+      "url": null,
+      "fetchedAt": "2026-10-03"
+    }
+  ],
+  "disclosure": "Built from public information (Kalshi market data, the contract rules, and public data sources). Odds are a snapshot, not a prediction of the future and not financial advice. Prediction-market contracts can lose their entire price."
+}

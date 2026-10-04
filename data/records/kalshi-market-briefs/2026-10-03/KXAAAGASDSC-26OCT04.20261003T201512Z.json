@@ -1,0 +1,740 @@
+{
+  "type": "KalshiMarketBrief",
+  "version": 1,
+  "briefId": "KXAAAGASDSC-26OCT04@20261003T201512Z",
+  "asOf": "2026-10-03T20:15:12.469Z",
+  "event": {
+    "eventTicker": "KXAAAGASDSC-26OCT04",
+    "seriesTicker": "KXAAAGASDSC",
+    "title": "South Carolina gas prices tomorrow",
+    "subTitle": "On Oct 4, 2026",
+    "category": "Economics",
+    "frequency": "daily",
+    "mutuallyExclusive": false,
+    "tags": [
+      "Oil and energy",
+      "Econ Daily"
+    ],
+    "closesAt": "2026-10-04T03:59:00.000Z",
+    "expectedSettleAt": "2026-10-04T14:00:00.000Z",
+    "settlesOn": "2026-10-04",
+    "hoursToClose": 7.73,
+    "feeMultiplier": 1,
+    "url": "https://kalshi.com/markets/kxaaagasdsc/south-carolina-gas-price/kxaaagasdsc-26oct04",
+    "seriesUrl": "https://kalshi.com/markets/kxaaagasdsc"
+  },
+  "rules": {
+    "primary": "If average regular gas prices for South Carolina are strictly greater than $3.9050 on Oct 4, 2026 according to AAA, then the market resolves to Yes.",
+    "secondary": "",
+    "contractTermsUrl": "https://assets.kalshi.com/contract_terms/AAAGAS.pdf"
+  },
+  "settlementSource": {
+    "primary": {
+      "name": "AAA",
+      "url": "https://gasprices.aaa.com/?state=SC"
+    },
+    "all": [
+      {
+        "name": "AAA",
+        "url": "https://gasprices.aaa.com/?state=SC"
+      }
+    ]
+  },
+  "markets": [
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9700",
+      "label": "Above 3.9700",
+      "strike": {
+        "type": "greater",
+        "floor": 3.97,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 2000,
+      "volume": 14000,
+      "volume24h": 14000,
+      "openInterest": 14000,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Economics",
+        "horizonHours": 24,
+        "n": 20,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1611
+        ],
+        "avgYesAsk": 0.0285
+      }
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9500",
+      "label": "Above 3.9500",
+      "strike": {
+        "type": "greater",
+        "floor": 3.95,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 2000,
+      "volume": 4560,
+      "volume24h": 4560,
+      "openInterest": 4560,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Economics",
+        "horizonHours": 24,
+        "n": 20,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1611
+        ],
+        "avgYesAsk": 0.0285
+      }
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9650",
+      "label": "Above 3.9650",
+      "strike": {
+        "type": "greater",
+        "floor": 3.965,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 2,
+      "noBidCents": 98,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 875,
+      "volume": 2200,
+      "volume24h": 2200,
+      "openInterest": 2200,
+      "impliedYes": 0.01,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "family",
+        "n": 2159,
+        "yesCount": 20,
+        "yesRate": 0.0093,
+        "yesRate95": [
+          0.006,
+          0.0143
+        ],
+        "avgYesAsk": 0.0315,
+        "family": "KXAAAGASD*",
+        "horizonHours": 8
+      }
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9600",
+      "label": "Above 3.9600",
+      "strike": {
+        "type": "greater",
+        "floor": 3.96,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 3,
+      "noBidCents": 97,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 1026,
+      "volume": 2000,
+      "volume24h": 2000,
+      "openInterest": 2000,
+      "impliedYes": 0.015,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "family",
+        "n": 2159,
+        "yesCount": 20,
+        "yesRate": 0.0093,
+        "yesRate95": [
+          0.006,
+          0.0143
+        ],
+        "avgYesAsk": 0.0315,
+        "family": "KXAAAGASD*",
+        "horizonHours": 8
+      }
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9050",
+      "label": "Above 3.9050",
+      "strike": {
+        "type": "greater",
+        "floor": 3.905,
+        "cap": null
+      },
+      "yesBidCents": 90,
+      "yesAskCents": 100,
+      "noBidCents": 0,
+      "noAskCents": 10,
+      "lastCents": 99,
+      "bidSize": 1782,
+      "askSize": 0,
+      "volume": 1500,
+      "volume24h": 1500,
+      "openInterest": 1500,
+      "impliedYes": 0.95,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Economics",
+        "horizonHours": 24,
+        "n": 31,
+        "yesCount": 30,
+        "yesRate": 0.9677,
+        "yesRate95": [
+          0.8381,
+          0.9943
+        ],
+        "avgYesAsk": 0.9829
+      }
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9550",
+      "label": "Above 3.9550",
+      "strike": {
+        "type": "greater",
+        "floor": 3.955,
+        "cap": null
+      },
+      "yesBidCents": 1,
+      "yesAskCents": 2,
+      "noBidCents": 98,
+      "noAskCents": 99,
+      "lastCents": 1,
+      "bidSize": 1000,
+      "askSize": 6278,
+      "volume": 1000,
+      "volume24h": 1000,
+      "openInterest": 1000,
+      "impliedYes": 0.015,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "family",
+        "n": 2159,
+        "yesCount": 20,
+        "yesRate": 0.0093,
+        "yesRate95": [
+          0.006,
+          0.0143
+        ],
+        "avgYesAsk": 0.0315,
+        "family": "KXAAAGASD*",
+        "horizonHours": 8
+      }
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9750",
+      "label": "Above 3.9750",
+      "strike": {
+        "type": "greater",
+        "floor": 3.975,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 2,
+      "noBidCents": 98,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 4000,
+      "volume": 1000,
+      "volume24h": 1000,
+      "openInterest": 1000,
+      "impliedYes": 0.01,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "family",
+        "n": 2159,
+        "yesCount": 20,
+        "yesRate": 0.0093,
+        "yesRate95": [
+          0.006,
+          0.0143
+        ],
+        "avgYesAsk": 0.0315,
+        "family": "KXAAAGASD*",
+        "horizonHours": 8
+      }
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9800",
+      "label": "Above 3.9800",
+      "strike": {
+        "type": "greater",
+        "floor": 3.98,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 2,
+      "noBidCents": 98,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 5500,
+      "volume": 1000,
+      "volume24h": 1000,
+      "openInterest": 1000,
+      "impliedYes": 0.01,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "family",
+        "n": 2159,
+        "yesCount": 20,
+        "yesRate": 0.0093,
+        "yesRate95": [
+          0.006,
+          0.0143
+        ],
+        "avgYesAsk": 0.0315,
+        "family": "KXAAAGASD*",
+        "horizonHours": 8
+      }
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9850",
+      "label": "Above 3.9850",
+      "strike": {
+        "type": "greater",
+        "floor": 3.985,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 2,
+      "noBidCents": 98,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 4000,
+      "volume": 1000,
+      "volume24h": 1000,
+      "openInterest": 1000,
+      "impliedYes": 0.01,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "family",
+        "n": 2159,
+        "yesCount": 20,
+        "yesRate": 0.0093,
+        "yesRate95": [
+          0.006,
+          0.0143
+        ],
+        "avgYesAsk": 0.0315,
+        "family": "KXAAAGASD*",
+        "horizonHours": 8
+      }
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9400",
+      "label": "Above 3.9400",
+      "strike": {
+        "type": "greater",
+        "floor": 3.94,
+        "cap": null
+      },
+      "yesBidCents": 1,
+      "yesAskCents": 3,
+      "noBidCents": 97,
+      "noAskCents": 99,
+      "lastCents": 2,
+      "bidSize": 4959,
+      "askSize": 3074,
+      "volume": 550,
+      "volume24h": 250,
+      "openInterest": 300,
+      "impliedYes": 0.02,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "family",
+        "n": 2159,
+        "yesCount": 20,
+        "yesRate": 0.0093,
+        "yesRate95": [
+          0.006,
+          0.0143
+        ],
+        "avgYesAsk": 0.0315,
+        "family": "KXAAAGASD*",
+        "horizonHours": 8
+      }
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9350",
+      "label": "Above 3.9350",
+      "strike": {
+        "type": "greater",
+        "floor": 3.935,
+        "cap": null
+      },
+      "yesBidCents": 9,
+      "yesAskCents": 17,
+      "noBidCents": 83,
+      "noAskCents": 91,
+      "lastCents": 18,
+      "bidSize": 469.22,
+      "askSize": 5253.09,
+      "volume": 15.76,
+      "volume24h": 15.76,
+      "openInterest": 15.76,
+      "impliedYes": 0.13,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9100",
+      "label": "Above 3.9100",
+      "strike": {
+        "type": "greater",
+        "floor": 3.91,
+        "cap": null
+      },
+      "yesBidCents": 98,
+      "yesAskCents": 99,
+      "noBidCents": 1,
+      "noAskCents": 2,
+      "lastCents": 98,
+      "bidSize": 3980,
+      "askSize": 2000,
+      "volume": 10,
+      "volume24h": 10,
+      "openInterest": 10,
+      "impliedYes": 0.985,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "family",
+        "n": 2107,
+        "yesCount": 2103,
+        "yesRate": 0.9981,
+        "yesRate95": [
+          0.9951,
+          0.9993
+        ],
+        "avgYesAsk": 0.9919,
+        "avgYesBid": 0.9684,
+        "family": "KXAAAGASD*",
+        "horizonHours": 8
+      }
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9250",
+      "label": "Above 3.9250",
+      "strike": {
+        "type": "greater",
+        "floor": 3.925,
+        "cap": null
+      },
+      "yesBidCents": 83,
+      "yesAskCents": 91,
+      "noBidCents": 9,
+      "noAskCents": 17,
+      "lastCents": 76,
+      "bidSize": 3293.09,
+      "askSize": 3967.22,
+      "volume": 10,
+      "volume24h": 10,
+      "openInterest": 10,
+      "impliedYes": 0.87,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9200",
+      "label": "Above 3.9200",
+      "strike": {
+        "type": "greater",
+        "floor": 3.92,
+        "cap": null
+      },
+      "yesBidCents": 97,
+      "yesAskCents": 99,
+      "noBidCents": 1,
+      "noAskCents": 3,
+      "lastCents": 0,
+      "bidSize": 2879,
+      "askSize": 26357.59,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.98,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "family",
+        "n": 2107,
+        "yesCount": 2103,
+        "yesRate": 0.9981,
+        "yesRate95": [
+          0.9951,
+          0.9993
+        ],
+        "avgYesAsk": 0.9919,
+        "avgYesBid": 0.9684,
+        "family": "KXAAAGASD*",
+        "horizonHours": 8
+      }
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9150",
+      "label": "Above 3.9150",
+      "strike": {
+        "type": "greater",
+        "floor": 3.915,
+        "cap": null
+      },
+      "yesBidCents": 97,
+      "yesAskCents": 98,
+      "noBidCents": 2,
+      "noAskCents": 3,
+      "lastCents": 0,
+      "bidSize": 4076,
+      "askSize": 1,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.975,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "family",
+        "n": 2107,
+        "yesCount": 2103,
+        "yesRate": 0.9981,
+        "yesRate95": [
+          0.9951,
+          0.9993
+        ],
+        "avgYesAsk": 0.9919,
+        "avgYesBid": 0.9684,
+        "family": "KXAAAGASD*",
+        "horizonHours": 8
+      }
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9300",
+      "label": "Above 3.9300",
+      "strike": {
+        "type": "greater",
+        "floor": 3.93,
+        "cap": null
+      },
+      "yesBidCents": 39,
+      "yesAskCents": 55,
+      "noBidCents": 45,
+      "noAskCents": 61,
+      "lastCents": 0,
+      "bidSize": 414.28,
+      "askSize": 5539.44,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.47,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXAAAGASDSC-26OCT04-3.9450",
+      "label": "Above 3.9450",
+      "strike": {
+        "type": "greater",
+        "floor": 3.945,
+        "cap": null
+      },
+      "yesBidCents": 1,
+      "yesAskCents": 2,
+      "noBidCents": 98,
+      "noAskCents": 99,
+      "lastCents": 0,
+      "bidSize": 3360,
+      "askSize": 3945,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.015,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "family",
+        "n": 2159,
+        "yesCount": 20,
+        "yesRate": 0.0093,
+        "yesRate95": [
+          0.006,
+          0.0143
+        ],
+        "avgYesAsk": 0.0315,
+        "family": "KXAAAGASD*",
+        "horizonHours": 8
+      }
+    }
+  ],
+  "book": {
+    "markets": 17,
+    "volume24h": 28545.76,
+    "openInterest": 28595.76,
+    "midSum": 5.475
+  },
+  "house": {
+    "model": null,
+    "status": "no-model",
+    "reason": "the house has no model for this market; the brief carries market-implied odds and the category base rate",
+    "evidence": [],
+    "usableAs": null
+  },
+  "baseRate": {
+    "category": {
+      "category": "Economics",
+      "horizonHours": 24,
+      "markets": 116,
+      "brierOfMid": 0.1108,
+      "longshot": {
+        "n": 20,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1611
+        ],
+        "avgYesAsk": 0.0285
+      },
+      "favorite": {
+        "n": 31,
+        "yesCount": 30,
+        "yesRate": 0.9677,
+        "yesRate95": [
+          0.8381,
+          0.9943
+        ],
+        "avgYesAsk": 0.9829
+      },
+      "source": "content/config/kalshi-category-base-rates.json",
+      "window": [
+        "2026-09-29",
+        "2026-10-03"
+      ]
+    },
+    "family": {
+      "family": "KXAAAGASD*",
+      "horizonHours": 8,
+      "favorite": {
+        "n": 2107,
+        "yesCount": 2103,
+        "yesRate": 0.9981,
+        "yesRate95": [
+          0.9951,
+          0.9993
+        ],
+        "avgYesAsk": 0.9919,
+        "avgYesBid": 0.9684
+      },
+      "longshot": {
+        "n": 2159,
+        "yesCount": 20,
+        "yesRate": 0.0093,
+        "yesRate95": [
+          0.006,
+          0.0143
+        ],
+        "avgYesAsk": 0.0315
+      },
+      "source": "content/config/kalshi-category-base-rates.json",
+      "window": [
+        "2026-09-29",
+        "2026-10-03"
+      ]
+    }
+  },
+  "whatWouldMoveIt": [
+    "The release of the named data series (the settlement source), or a revision to it.",
+    "For daily published series such as gas prices, the latest published value relative to the strike: these series move a fraction of a cent a day, so the odds only swing when the value sits near a strike.",
+    "A rules clarification or settlement-source change published by Kalshi on the market page.",
+    "Order-book depth: thin books move on small orders, so a large price move on little volume says little."
+  ],
+  "opportunities": [
+    {
+      "marketTicker": "KXAAAGASDSC-26OCT04-3.9150",
+      "eventTicker": "KXAAAGASDSC-26OCT04",
+      "lane": "published-series-favorite",
+      "side": "yes",
+      "priceCents": 98,
+      "restingPriceCents": 97,
+      "payoffCents": 2,
+      "winProbability": 0.9951,
+      "point": 0.9981,
+      "feeCents": 0.2,
+      "edgeCents": 1.31,
+      "settlesOn": "2026-10-04",
+      "settlesAt": "2026-10-04T14:00:00.000Z",
+      "correlation": {
+        "event": "KXAAAGASDSC-26OCT04",
+        "series": "KXAAAGASDSC",
+        "settlementDate": "2026-10-04"
+      },
+      "briefId": "KXAAAGASDSC-26OCT04@20261003T201512Z",
+      "asOf": "2026-10-03T20:15:12.469Z"
+    }
+  ],
+  "provenance": [
+    {
+      "what": "Kalshi market data (event, markets, series)",
+      "url": "https://api.elections.kalshi.com/trade-api/v2/events/KXAAAGASDSC-26OCT04",
+      "fetchedAt": "2026-10-03T20:15:12.469Z"
+    },
+    {
+      "what": "Category base rates",
+      "url": null,
+      "fetchedAt": "2026-10-03"
+    }
+  ],
+  "disclosure": "Built from public information (Kalshi market data, the contract rules, and public data sources). Odds are a snapshot, not a prediction of the future and not financial advice. Prediction-market contracts can lose their entire price."
+}

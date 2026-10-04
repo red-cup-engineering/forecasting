@@ -1,0 +1,7 @@
+KXTRUMPMENTION-26OCT02 jumpable 20 best ('zF4o179A1YA', 8, -40.8812620639801, [-41.24850797653198, -38.74820303916931], 'was_live', 'Agenda-Free TV')
+KXTRUMPMENTION-26OCT01 jumpable 16 best ('tC0E65BGvn4', 7, -5.786131858825684, [-7.334247827529907, -4.972402811050415], 'was_live', "Oklahoma's Own")
+Traceback (most recent call last):
+  File "/home/emsenn/info/lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/data/records/2026-10-04-kalshi-live-mentions/scripts/lm_videos.py", line 45, in <module>
+    tr = trs[m['ticker']]; J = jump(tr)
+         ~~~^^^^^^^^^^^^^
+KeyError: 'KXTRUMPMENTION-26SEP16-BIDE'

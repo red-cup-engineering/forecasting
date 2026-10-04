@@ -15,6 +15,7 @@
     "./temperature-distribution": "./src/temperature-distribution.mjs",
     "./temperature-market-model": "./src/temperature-market-model.mjs",
     "./nbm-station-guidance": "./src/nbm-station-guidance.mjs",
+    "./rain-market-model": "./src/rain-market-model.mjs",
     "./station-observations": "./src/station-observations.mjs"
   },
   "scripts": {

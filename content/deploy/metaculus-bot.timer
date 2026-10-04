@@ -1,0 +1,11 @@
+[Unit]
+Description=Poll Metaculus tournaments every ten minutes (questions are open only 1.5-3 hours)
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec=10min
+AccuracySec=30s
+Persistent=false
+
+[Install]
+WantedBy=timers.target

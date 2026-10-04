@@ -1,0 +1,235 @@
+
+===== KXBTCD horizon 4.0h: 1053 rows (0.02<=mid<=0.98), 90 days, train<= 2026-08-27; fitted vol scale on train: DVOL/VIX x0.50, RV x0.60
+   realized move / model sd: sd z(implied vol)=0.57 z(realized-vol)=0.70  (1.00 = model sd right); events=90
+   Kalshi-implied sigma / model sigma (median) by |z| bin and side; mean(mid-pc) ; freq YES vs mean mid:
+   z[-9.0,-2.0) n= 154 impl/DVOL=1.44  mean(mid)=0.970 mean(model c)=1.000 freq=1.000
+   z[-2.0,-1.0) n= 175 impl/DVOL=0.99  mean(mid)=0.930 mean(model c)=0.995 freq=0.989
+   z[-1.0,-0.5) n=  92 impl/DVOL=0.84  mean(mid)=0.818 mean(model c)=0.925 freq=0.924
+   z[-0.5,+0.0) n= 101 impl/DVOL=0.74  mean(mid)=0.635 mean(model c)=0.686 freq=0.683
+   z[+0.0,+0.5) n=  96 impl/DVOL=0.82  mean(mid)=0.372 mean(model c)=0.312 freq=0.333
+   z[+0.5,+1.0) n=  92 impl/DVOL=0.87  mean(mid)=0.194 mean(model c)=0.079 freq=0.087
+   z[+1.0,+2.0) n= 187 impl/DVOL=1.02  mean(mid)=0.076 mean(model c)=0.005 freq=0.016
+   z[+2.0,+9.0) n= 156 impl/DVOL=1.62  mean(mid)=0.033 mean(model c)=0.000 freq=0.000
+--- evaluator vs reference 'pn' (raw implied-vol lognormal) ---
+-- ALL: 1053 markets, 90 events
+   kalshi mid  Brier 0.0622  logloss 0.2180
+   reference   Brier 0.0652  logloss 0.2239
+   blend0.5    Brier 0.0627  logloss 0.2176
+   Brier(kalshi)-Brier(ref): -0.0030 [-0.0058,-0.0004]  logloss diff -0.0059 [-0.017,+0.005] (negative = Kalshi better)
+   calibration (bin by Kalshi mid): n | mean mid | mean ref | freq YES
+   [0.00,0.05)  209 | 0.030 | 0.025 | 0.000
+   [0.05,0.15)  146 | 0.089 | 0.101 | 0.021
+   [0.15,0.35)  113 | 0.240 | 0.257 | 0.159
+   [0.35,0.65)  121 | 0.497 | 0.491 | 0.488
+   [0.65,0.85)  113 | 0.755 | 0.725 | 0.858
+   [0.85,0.95)  130 | 0.911 | 0.889 | 0.969
+   [0.95,1.00)  221 | 0.970 | 0.973 | 1.000
+-- TRAIN <= 2026-08-27: 608 markets, 55 events
+   kalshi mid  Brier 0.0599  logloss 0.2140
+   reference   Brier 0.0625  logloss 0.2185
+   blend0.5    Brier 0.0601  logloss 0.2127
+   Brier(kalshi)-Brier(ref): -0.0027 [-0.0068,+0.0009]  logloss diff -0.0045 [-0.021,+0.010] (negative = Kalshi better)
+-- TEST > 2026-08-27: 445 markets, 35 events
+   kalshi mid  Brier 0.0653  logloss 0.2235
+   reference   Brier 0.0688  logloss 0.2313
+   blend0.5    Brier 0.0661  logloss 0.2243
+   Brier(kalshi)-Brier(ref): -0.0035 [-0.0072,-0.0002]  logloss diff -0.0078 [-0.022,+0.004] (negative = Kalshi better)
+   fitted blend weight on reference (train): 0.3
+   train theta=0.00: n=176 events=37 mean EV/contract -1.27c  CI[-7.01,+2.82]c  total(10-lots) $-22.3
+   TEST  theta=0.00: n=112 events=25 mean EV/contract -0.56c  CI[-6.26,+5.09]c  total(10-lots) $-6.3
+   train theta=0.02: n=13 events=5 mean EV/contract -0.16c  CI[-12.32,+7.77]c  total(10-lots) $-0.2
+   TEST  theta=0.02: n=7 events=3 mean EV/contract -13.34c  CI[-19.60,-8.05]c  total(10-lots) $-9.3
+   -- using w=1.0 (pure reference), TEST only
+   TEST w=1 theta=0.02: n=132 events=29 mean EV/contract -2.01c  CI[-6.93,+3.13]c  total(10-lots) $-26.6
+   TEST w=1 theta=0.05: n=57 events=13 mean EV/contract -5.71c  CI[-12.51,+3.78]c  total(10-lots) $-32.5
+   TEST w=1 theta=0.10: n=24 events=7 mean EV/contract -10.63c  CI[-15.48,-3.40]c  total(10-lots) $-25.5
+   -- fee sensitivity none (frictionless) at TEST w fitted theta .05
+--- evaluator vs reference 'pc' (vol-scaled lognormal, scale fitted on train) ---
+-- ALL: 1053 markets, 90 events
+   kalshi mid  Brier 0.0622  logloss 0.2180
+   reference   Brier 0.0588  logloss 0.1962
+   blend0.5    Brier 0.0585  logloss 0.1968
+   Brier(kalshi)-Brier(ref): +0.0033 [-0.0008,+0.0071]  logloss diff +0.0219 [+0.001,+0.040] (negative = Kalshi better)
+   calibration (bin by Kalshi mid): n | mean mid | mean ref | freq YES
+   [0.00,0.05)  209 | 0.030 | 0.001 | 0.000
+   [0.05,0.15)  146 | 0.089 | 0.016 | 0.021
+   [0.15,0.35)  113 | 0.240 | 0.118 | 0.159
+   [0.35,0.65)  121 | 0.497 | 0.485 | 0.488
+   [0.65,0.85)  113 | 0.755 | 0.866 | 0.858
+   [0.85,0.95)  130 | 0.911 | 0.983 | 0.969
+   [0.95,1.00)  221 | 0.970 | 0.998 | 1.000
+-- TRAIN <= 2026-08-27: 608 markets, 55 events
+   kalshi mid  Brier 0.0599  logloss 0.2140
+   reference   Brier 0.0539  logloss 0.1835
+   blend0.5    Brier 0.0546  logloss 0.1878
+   Brier(kalshi)-Brier(ref): +0.0060 [-0.0001,+0.0110]  logloss diff +0.0305 [-0.001,+0.054] (negative = Kalshi better)
+-- TEST > 2026-08-27: 445 markets, 35 events
+   kalshi mid  Brier 0.0653  logloss 0.2235
+   reference   Brier 0.0656  logloss 0.2136
+   blend0.5    Brier 0.0640  logloss 0.2090
+   Brier(kalshi)-Brier(ref): -0.0003 [-0.0052,+0.0043]  logloss diff +0.0100 [-0.017,+0.033] (negative = Kalshi better)
+   fitted blend weight on reference (train): 0.9
+   train theta=0.00: n=551 events=55 mean EV/contract +5.26c  CI[+2.49,+7.46]c  total(10-lots) $+289.8
+   TEST  theta=0.00: n=400 events=35 mean EV/contract +2.13c  CI[-0.45,+4.50]c  total(10-lots) $+85.0
+   train theta=0.02: n=324 events=49 mean EV/contract +7.81c  CI[+3.50,+11.37]c  total(10-lots) $+253.0
+   TEST  theta=0.02: n=235 events=33 mean EV/contract +2.91c  CI[-1.09,+6.37]c  total(10-lots) $+68.4
+   train theta=0.05: n=205 events=42 mean EV/contract +9.36c  CI[+3.01,+14.13]c  total(10-lots) $+191.8
+   TEST  theta=0.05: n=149 events=27 mean EV/contract +3.82c  CI[-1.53,+8.88]c  total(10-lots) $+56.9
+   train theta=0.10: n=87 events=26 mean EV/contract +13.47c  CI[+3.67,+19.93]c  total(10-lots) $+117.2
+   TEST  theta=0.10: n=51 events=18 mean EV/contract +3.41c  CI[-7.64,+12.69]c  total(10-lots) $+17.4
+   -- using w=1.0 (pure reference), TEST only
+   TEST w=1 theta=0.02: n=238 events=33 mean EV/contract +3.20c  CI[-0.69,+6.63]c  total(10-lots) $+76.1
+   TEST w=1 theta=0.05: n=154 events=28 mean EV/contract +4.78c  CI[-0.90,+9.77]c  total(10-lots) $+73.6
+   TEST w=1 theta=0.10: n=68 events=20 mean EV/contract +4.47c  CI[-6.19,+12.99]c  total(10-lots) $+30.4
+   -- fee sensitivity none (frictionless) at TEST w fitted theta .05
+   TEST nofee: n=163 events=30 mean EV/contract +4.10c  CI[-1.16,+8.69]c  total(10-lots) $+66.8
+
+===== KXBTCD horizon 1.0h: 468 rows (0.02<=mid<=0.98), 90 days, train<= 2026-08-27; fitted vol scale on train: DVOL/VIX x0.65, RV x0.75
+   realized move / model sd: sd z(implied vol)=0.59 z(realized-vol)=0.66  (1.00 = model sd right); events=90
+   Kalshi-implied sigma / model sigma (median) by |z| bin and side; mean(mid-pc) ; freq YES vs mean mid:
+   z[-9.0,-2.0) n=  54 impl/DVOL=1.28  mean(mid)=0.971 mean(model c)=1.000 freq=1.000
+   z[-2.0,-1.0) n=  83 impl/DVOL=0.93  mean(mid)=0.948 mean(model c)=0.982 freq=0.976
+   z[-1.0,-0.5) n=  50 impl/DVOL=0.66  mean(mid)=0.856 mean(model c)=0.872 freq=0.960
+   z[-0.5,+0.0) n=  45 impl/DVOL=0.60  mean(mid)=0.659 mean(model c)=0.638 freq=0.733
+   z[+0.0,+0.5) n=  51 impl/DVOL=0.68  mean(mid)=0.349 mean(model c)=0.346 freq=0.294
+   z[+0.5,+1.0) n=  44 impl/DVOL=0.74  mean(mid)=0.150 mean(model c)=0.123 freq=0.136
+   z[+1.0,+2.0) n=  79 impl/DVOL=0.91  mean(mid)=0.059 mean(model c)=0.021 freq=0.025
+   z[+2.0,+9.0) n=  57 impl/DVOL=1.49  mean(mid)=0.030 mean(model c)=0.000 freq=0.018
+--- evaluator vs reference 'pn' (raw implied-vol lognormal) ---
+-- ALL: 468 markets, 90 events
+   kalshi mid  Brier 0.0632  logloss 0.2257
+   reference   Brier 0.0737  logloss 0.2570
+   blend0.5    Brier 0.0667  logloss 0.2365
+   Brier(kalshi)-Brier(ref): -0.0105 [-0.0142,-0.0072]  logloss diff -0.0313 [-0.045,-0.019] (negative = Kalshi better)
+   calibration (bin by Kalshi mid): n | mean mid | mean ref | freq YES
+   [0.00,0.05)   99 | 0.030 | 0.037 | 0.010
+   [0.05,0.15)   64 | 0.089 | 0.134 | 0.047
+   [0.15,0.35)   43 | 0.238 | 0.291 | 0.140
+   [0.35,0.65)   49 | 0.484 | 0.480 | 0.551
+   [0.65,0.85)   46 | 0.765 | 0.706 | 0.891
+   [0.85,0.95)   59 | 0.912 | 0.841 | 0.966
+   [0.95,1.00)  108 | 0.971 | 0.963 | 0.991
+-- TRAIN <= 2026-08-27: 250 markets, 55 events
+   kalshi mid  Brier 0.0757  logloss 0.2669
+   reference   Brier 0.0872  logloss 0.2997
+   blend0.5    Brier 0.0796  logloss 0.2783
+   Brier(kalshi)-Brier(ref): -0.0115 [-0.0171,-0.0068]  logloss diff -0.0329 [-0.053,-0.015] (negative = Kalshi better)
+-- TEST > 2026-08-27: 218 markets, 35 events
+   kalshi mid  Brier 0.0489  logloss 0.1785
+   reference   Brier 0.0582  logloss 0.2081
+   blend0.5    Brier 0.0519  logloss 0.1885
+   Brier(kalshi)-Brier(ref): -0.0093 [-0.0145,-0.0050]  logloss diff -0.0296 [-0.047,-0.015] (negative = Kalshi better)
+   fitted blend weight on reference (train): 0.0
+   -- using w=1.0 (pure reference), TEST only
+   TEST w=1 theta=0.02: n=94 events=32 mean EV/contract -8.32c  CI[-12.11,-4.08]c  total(10-lots) $-78.2
+   TEST w=1 theta=0.05: n=47 events=22 mean EV/contract -5.52c  CI[-11.13,+0.80]c  total(10-lots) $-25.9
+   TEST w=1 theta=0.10: n=21 events=12 mean EV/contract -7.35c  CI[-12.92,+1.31]c  total(10-lots) $-15.4
+   -- fee sensitivity none (frictionless) at TEST w fitted theta .05
+--- evaluator vs reference 'pc' (vol-scaled lognormal, scale fitted on train) ---
+-- ALL: 468 markets, 90 events
+   kalshi mid  Brier 0.0632  logloss 0.2257
+   reference   Brier 0.0663  logloss 0.2299
+   blend0.5    Brier 0.0640  logloss 0.2238
+   Brier(kalshi)-Brier(ref): -0.0031 [-0.0058,-0.0004]  logloss diff -0.0042 [-0.020,+0.008] (negative = Kalshi better)
+   calibration (bin by Kalshi mid): n | mean mid | mean ref | freq YES
+   [0.00,0.05)   99 | 0.030 | 0.009 | 0.010
+   [0.05,0.15)   64 | 0.089 | 0.058 | 0.047
+   [0.15,0.35)   43 | 0.238 | 0.206 | 0.140
+   [0.35,0.65)   49 | 0.484 | 0.471 | 0.551
+   [0.65,0.85)   46 | 0.765 | 0.790 | 0.891
+   [0.85,0.95)   59 | 0.912 | 0.923 | 0.966
+   [0.95,1.00)  108 | 0.971 | 0.992 | 0.991
+-- TRAIN <= 2026-08-27: 250 markets, 55 events
+   kalshi mid  Brier 0.0757  logloss 0.2669
+   reference   Brier 0.0806  logloss 0.2826
+   blend0.5    Brier 0.0774  logloss 0.2706
+   Brier(kalshi)-Brier(ref): -0.0050 [-0.0082,-0.0016]  logloss diff -0.0157 [-0.042,+0.004] (negative = Kalshi better)
+-- TEST > 2026-08-27: 218 markets, 35 events
+   kalshi mid  Brier 0.0489  logloss 0.1785
+   reference   Brier 0.0499  logloss 0.1696
+   blend0.5    Brier 0.0486  logloss 0.1701
+   Brier(kalshi)-Brier(ref): -0.0010 [-0.0048,+0.0027]  logloss diff +0.0089 [-0.003,+0.021] (negative = Kalshi better)
+   fitted blend weight on reference (train): 0.1
+   train theta=0.00: n=6 events=4 mean EV/contract +7.78c  CI[+5.60,+8.99]c  total(10-lots) $+4.7
+   TEST  theta=0.00: n=12 events=6 mean EV/contract +3.46c  CI[-9.48,+12.33]c  total(10-lots) $+4.1
+   -- using w=1.0 (pure reference), TEST only
+   TEST w=1 theta=0.02: n=70 events=28 mean EV/contract +1.69c  CI[-3.59,+7.01]c  total(10-lots) $+11.8
+   TEST w=1 theta=0.05: n=33 events=14 mean EV/contract +0.45c  CI[-7.29,+8.79]c  total(10-lots) $+1.5
+   TEST w=1 theta=0.10: n=9 events=5 mean EV/contract -12.27c  CI[-38.97,+6.35]c  total(10-lots) $-11.0
+   -- fee sensitivity none (frictionless) at TEST w fitted theta .05
+
+===== KXBTCD horizon 0.5h: 1591 rows (0.02<=mid<=0.98), 91 days, train<= 2026-08-27; fitted vol scale on train: DVOL/VIX x1.00, RV x1.00
+   realized move / model sd: sd z(implied vol)=1.15 z(realized-vol)=1.30  (1.00 = model sd right); events=204
+   Kalshi-implied sigma / model sigma (median) by |z| bin and side; mean(mid-pc) ; freq YES vs mean mid:
+   z[-9.0,-2.0) n= 235 impl/DVOL=1.80  mean(mid)=0.951 mean(model c)=0.995 freq=0.987
+   z[-2.0,-1.0) n= 225 impl/DVOL=1.14  mean(mid)=0.894 mean(model c)=0.918 freq=0.920
+   z[-1.0,-0.5) n= 154 impl/DVOL=0.87  mean(mid)=0.813 mean(model c)=0.771 freq=0.825
+   z[-0.5,+0.0) n= 156 impl/DVOL=0.69  mean(mid)=0.651 mean(model c)=0.597 freq=0.712
+   z[+0.0,+0.5) n= 157 impl/DVOL=0.87  mean(mid)=0.376 mean(model c)=0.399 freq=0.408
+   z[+0.5,+1.0) n= 157 impl/DVOL=0.93  mean(mid)=0.200 mean(model c)=0.229 freq=0.210
+   z[+1.0,+2.0) n= 237 impl/DVOL=1.18  mean(mid)=0.106 mean(model c)=0.080 freq=0.131
+   z[+2.0,+9.0) n= 269 impl/DVOL=1.81  mean(mid)=0.049 mean(model c)=0.005 freq=0.045
+--- evaluator vs reference 'pn' (raw implied-vol lognormal) ---
+-- ALL: 1591 markets, 91 events
+   kalshi mid  Brier 0.1048  logloss 0.3372
+   reference   Brier 0.1124  logloss 0.3694
+   blend0.5    Brier 0.1071  logloss 0.3457
+   Brier(kalshi)-Brier(ref): -0.0077 [-0.0121,-0.0035]  logloss diff -0.0322 [-0.060,-0.010] (negative = Kalshi better)
+   calibration (bin by Kalshi mid): n | mean mid | mean ref | freq YES
+   [0.00,0.05)  256 | 0.031 | 0.031 | 0.031
+   [0.05,0.15)  249 | 0.091 | 0.081 | 0.088
+   [0.15,0.35)  201 | 0.242 | 0.219 | 0.274
+   [0.35,0.65)  213 | 0.498 | 0.486 | 0.568
+   [0.65,0.85)  196 | 0.760 | 0.769 | 0.776
+   [0.85,0.95)  240 | 0.907 | 0.903 | 0.933
+   [0.95,1.00)  236 | 0.967 | 0.966 | 0.996
+-- TRAIN <= 2026-08-27: 573 markets, 55 events
+   kalshi mid  Brier 0.0957  logloss 0.3125
+   reference   Brier 0.1032  logloss 0.3358
+   blend0.5    Brier 0.0971  logloss 0.3161
+   Brier(kalshi)-Brier(ref): -0.0076 [-0.0150,-0.0020]  logloss diff -0.0233 [-0.049,-0.001] (negative = Kalshi better)
+-- TEST > 2026-08-27: 1018 markets, 36 events
+   kalshi mid  Brier 0.1099  logloss 0.3511
+   reference   Brier 0.1176  logloss 0.3883
+   blend0.5    Brier 0.1126  logloss 0.3624
+   Brier(kalshi)-Brier(ref): -0.0077 [-0.0133,-0.0026]  logloss diff -0.0372 [-0.075,-0.005] (negative = Kalshi better)
+   fitted blend weight on reference (train): 0.1
+   train theta=0.00: n=58 events=13 mean EV/contract +1.81c  CI[-6.15,+7.07]c  total(10-lots) $+10.5
+   TEST  theta=0.00: n=132 events=23 mean EV/contract -4.17c  CI[-12.18,+3.92]c  total(10-lots) $-55.0
+   -- using w=1.0 (pure reference), TEST only
+   TEST w=1 theta=0.02: n=560 events=36 mean EV/contract -1.55c  CI[-5.60,+2.40]c  total(10-lots) $-86.9
+   TEST w=1 theta=0.05: n=333 events=34 mean EV/contract -2.08c  CI[-7.16,+3.20]c  total(10-lots) $-69.4
+   TEST w=1 theta=0.10: n=129 events=21 mean EV/contract -6.85c  CI[-16.00,+3.13]c  total(10-lots) $-88.3
+   -- fee sensitivity none (frictionless) at TEST w fitted theta .05
+--- evaluator vs reference 'pc' (vol-scaled lognormal, scale fitted on train) ---
+-- ALL: 1591 markets, 91 events
+   kalshi mid  Brier 0.1048  logloss 0.3372
+   reference   Brier 0.1124  logloss 0.3694
+   blend0.5    Brier 0.1071  logloss 0.3457
+   Brier(kalshi)-Brier(ref): -0.0077 [-0.0121,-0.0035]  logloss diff -0.0322 [-0.060,-0.010] (negative = Kalshi better)
+   calibration (bin by Kalshi mid): n | mean mid | mean ref | freq YES
+   [0.00,0.05)  256 | 0.031 | 0.031 | 0.031
+   [0.05,0.15)  249 | 0.091 | 0.081 | 0.088
+   [0.15,0.35)  201 | 0.242 | 0.219 | 0.274
+   [0.35,0.65)  213 | 0.498 | 0.486 | 0.568
+   [0.65,0.85)  196 | 0.760 | 0.769 | 0.776
+   [0.85,0.95)  240 | 0.907 | 0.903 | 0.933
+   [0.95,1.00)  236 | 0.967 | 0.966 | 0.996
+-- TRAIN <= 2026-08-27: 573 markets, 55 events
+   kalshi mid  Brier 0.0957  logloss 0.3125
+   reference   Brier 0.1032  logloss 0.3358
+   blend0.5    Brier 0.0971  logloss 0.3161
+   Brier(kalshi)-Brier(ref): -0.0076 [-0.0150,-0.0020]  logloss diff -0.0233 [-0.049,-0.001] (negative = Kalshi better)
+-- TEST > 2026-08-27: 1018 markets, 36 events
+   kalshi mid  Brier 0.1099  logloss 0.3511
+   reference   Brier 0.1176  logloss 0.3883
+   blend0.5    Brier 0.1126  logloss 0.3624
+   Brier(kalshi)-Brier(ref): -0.0077 [-0.0133,-0.0026]  logloss diff -0.0372 [-0.075,-0.005] (negative = Kalshi better)
+   fitted blend weight on reference (train): 0.1
+   train theta=0.00: n=58 events=13 mean EV/contract +1.81c  CI[-6.15,+7.07]c  total(10-lots) $+10.5
+   TEST  theta=0.00: n=132 events=23 mean EV/contract -4.17c  CI[-12.18,+3.92]c  total(10-lots) $-55.0
+   -- using w=1.0 (pure reference), TEST only
+   TEST w=1 theta=0.02: n=560 events=36 mean EV/contract -1.55c  CI[-5.60,+2.40]c  total(10-lots) $-86.9
+   TEST w=1 theta=0.05: n=333 events=34 mean EV/contract -2.08c  CI[-7.16,+3.20]c  total(10-lots) $-69.4
+   TEST w=1 theta=0.10: n=129 events=21 mean EV/contract -6.85c  CI[-16.00,+3.13]c  total(10-lots) $-88.3
+   -- fee sensitivity none (frictionless) at TEST w fitted theta .05

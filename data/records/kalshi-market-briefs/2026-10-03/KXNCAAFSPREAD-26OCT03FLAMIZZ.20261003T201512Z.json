@@ -1,0 +1,782 @@
+{
+  "type": "KalshiMarketBrief",
+  "version": 1,
+  "briefId": "KXNCAAFSPREAD-26OCT03FLAMIZZ@20261003T201512Z",
+  "asOf": "2026-10-03T20:15:12.469Z",
+  "event": {
+    "eventTicker": "KXNCAAFSPREAD-26OCT03FLAMIZZ",
+    "seriesTicker": "KXNCAAFSPREAD",
+    "title": "Florida vs Missouri: Spread",
+    "subTitle": "FLA vs MIZZ (Oct 3)",
+    "category": "Sports",
+    "frequency": "custom",
+    "mutuallyExclusive": false,
+    "tags": [
+      "Football"
+    ],
+    "closesAt": "2026-10-05T19:30:00.000Z",
+    "expectedSettleAt": "2026-10-03T22:30:00.000Z",
+    "settlesOn": "2026-10-03",
+    "hoursToClose": 2.25,
+    "feeMultiplier": 1,
+    "url": "https://kalshi.com/markets/kxncaafspread/college-football-spread/kxncaafspread-26oct03flamizz",
+    "seriesUrl": "https://kalshi.com/markets/kxncaafspread"
+  },
+  "rules": {
+    "primary": "If Florida wins by more than 20.5 points in the Florida vs Missouri college football game originally scheduled for Oct 3, 2026, then the market resolves to Yes.",
+    "secondary": "If the game is postponed but begins within 48 hours of its originally scheduled start time, the market will remain open and resolve based on the official final result. If the game is not started within 48 hours, the market will resolve to a fair price.\n\nKalshi is not affiliated, associated, authorized, endorsed by, or in any way officially connected with the NCAA. All trademarks, logos, and brand names are the property of their respective owners.",
+    "contractTermsUrl": "https://assets.kalshi.com/contract_terms/FOOTBALLSPREAD.pdf"
+  },
+  "settlementSource": {
+    "primary": {
+      "name": "ESPN",
+      "url": "https://www.espn.com"
+    },
+    "all": [
+      {
+        "name": "ESPN",
+        "url": "https://www.espn.com"
+      },
+      {
+        "name": "Kalshi using information originating from the NCAA",
+        "url": "https://www.ncaa.com/sports/football/fbs"
+      }
+    ]
+  },
+  "markets": [
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA6",
+      "label": "Florida wins by over 5.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 5.5,
+        "cap": null
+      },
+      "yesBidCents": 44,
+      "yesAskCents": 46,
+      "noBidCents": 54,
+      "noAskCents": 56,
+      "lastCents": 44,
+      "bidSize": 7016.97,
+      "askSize": 10813.31,
+      "volume": 1650966.64,
+      "volume24h": 1532948.56,
+      "openInterest": 1500814.08,
+      "impliedYes": 0.45,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA7",
+      "label": "Florida wins by over 6.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 6.5,
+        "cap": null
+      },
+      "yesBidCents": 42,
+      "yesAskCents": 43,
+      "noBidCents": 57,
+      "noAskCents": 58,
+      "lastCents": 43,
+      "bidSize": 4722.22,
+      "askSize": 1055.58,
+      "volume": 974644.73,
+      "volume24h": 933933.74,
+      "openInterest": 807856.09,
+      "impliedYes": 0.425,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA8",
+      "label": "Florida wins by over 7.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 7.5,
+        "cap": null
+      },
+      "yesBidCents": 35,
+      "yesAskCents": 36,
+      "noBidCents": 64,
+      "noAskCents": 65,
+      "lastCents": 35,
+      "bidSize": 56.89,
+      "askSize": 3358.66,
+      "volume": 366754.9,
+      "volume24h": 356525.23,
+      "openInterest": 336798.35,
+      "impliedYes": 0.355,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA10",
+      "label": "Florida wins by over 9.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 9.5,
+        "cap": null
+      },
+      "yesBidCents": 31,
+      "yesAskCents": 32,
+      "noBidCents": 68,
+      "noAskCents": 69,
+      "lastCents": 32,
+      "bidSize": 9847.58,
+      "askSize": 0.26,
+      "volume": 90137.45,
+      "volume24h": 83991.13,
+      "openInterest": 78655.71,
+      "impliedYes": 0.315,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA5",
+      "label": "Florida wins by over 4.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 4.5,
+        "cap": null
+      },
+      "yesBidCents": 47,
+      "yesAskCents": 48,
+      "noBidCents": 52,
+      "noAskCents": 53,
+      "lastCents": 48,
+      "bidSize": 46.31,
+      "askSize": 6870.7,
+      "volume": 99138.81,
+      "volume24h": 79402.79,
+      "openInterest": 89249.26,
+      "impliedYes": 0.475,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA3",
+      "label": "Florida wins by over 2.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 2.5,
+        "cap": null
+      },
+      "yesBidCents": 58,
+      "yesAskCents": 59,
+      "noBidCents": 41,
+      "noAskCents": 42,
+      "lastCents": 59,
+      "bidSize": 5436.49,
+      "askSize": 4701.55,
+      "volume": 77584.08,
+      "volume24h": 69183.63,
+      "openInterest": 70652.48,
+      "impliedYes": 0.585,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA4",
+      "label": "Florida wins by over 3.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 3.5,
+        "cap": null
+      },
+      "yesBidCents": 50,
+      "yesAskCents": 51,
+      "noBidCents": 49,
+      "noAskCents": 50,
+      "lastCents": 51,
+      "bidSize": 13437.28,
+      "askSize": 6024.6,
+      "volume": 84673.35,
+      "volume24h": 43696.9,
+      "openInterest": 65011.72,
+      "impliedYes": 0.505,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA14",
+      "label": "Florida wins by over 13.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 13.5,
+        "cap": null
+      },
+      "yesBidCents": 25,
+      "yesAskCents": 26,
+      "noBidCents": 74,
+      "noAskCents": 75,
+      "lastCents": 26,
+      "bidSize": 4508.26,
+      "askSize": 1845.72,
+      "volume": 52745.6,
+      "volume24h": 42022.24,
+      "openInterest": 49544.53,
+      "impliedYes": 0.255,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA11",
+      "label": "Florida wins by over 10.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 10.5,
+        "cap": null
+      },
+      "yesBidCents": 29,
+      "yesAskCents": 30,
+      "noBidCents": 70,
+      "noAskCents": 71,
+      "lastCents": 29,
+      "bidSize": 18.96,
+      "askSize": 3211,
+      "volume": 31993.86,
+      "volume24h": 29316.77,
+      "openInterest": 29657.76,
+      "impliedYes": 0.295,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ15",
+      "label": "Missouri wins by over 14.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 14.5,
+        "cap": null
+      },
+      "yesBidCents": 8,
+      "yesAskCents": 9,
+      "noBidCents": 91,
+      "noAskCents": 92,
+      "lastCents": 8,
+      "bidSize": 60,
+      "askSize": 1799.32,
+      "volume": 28688.1,
+      "volume24h": 28454.1,
+      "openInterest": 27604.9,
+      "impliedYes": 0.085,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA21",
+      "label": "Florida wins by over 20.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 20.5,
+        "cap": null
+      },
+      "yesBidCents": 13,
+      "yesAskCents": 14,
+      "noBidCents": 86,
+      "noAskCents": 87,
+      "lastCents": 14,
+      "bidSize": 60,
+      "askSize": 913,
+      "volume": 37952.48,
+      "volume24h": 22621.63,
+      "openInterest": 36659.27,
+      "impliedYes": 0.135,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA15",
+      "label": "Florida wins by over 14.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 14.5,
+        "cap": null
+      },
+      "yesBidCents": 22,
+      "yesAskCents": 23,
+      "noBidCents": 77,
+      "noAskCents": 78,
+      "lastCents": 22,
+      "bidSize": 40,
+      "askSize": 1883,
+      "volume": 19358.23,
+      "volume24h": 17982.88,
+      "openInterest": 18470.14,
+      "impliedYes": 0.225,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA18",
+      "label": "Florida wins by over 17.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 17.5,
+        "cap": null
+      },
+      "yesBidCents": 16,
+      "yesAskCents": 17,
+      "noBidCents": 83,
+      "noAskCents": 84,
+      "lastCents": 17,
+      "bidSize": 45.32,
+      "askSize": 1000,
+      "volume": 11759.17,
+      "volume24h": 9670.82,
+      "openInterest": 11191.06,
+      "impliedYes": 0.165,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA12",
+      "label": "Florida wins by over 11.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 11.5,
+        "cap": null
+      },
+      "yesBidCents": 27,
+      "yesAskCents": 29,
+      "noBidCents": 71,
+      "noAskCents": 73,
+      "lastCents": 27,
+      "bidSize": 47.58,
+      "askSize": 8419.11,
+      "volume": 10520.2,
+      "volume24h": 9465.76,
+      "openInterest": 9849.6,
+      "impliedYes": 0.28,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ2",
+      "label": "Missouri wins by over 1.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 1.5,
+        "cap": null
+      },
+      "yesBidCents": 36,
+      "yesAskCents": 37,
+      "noBidCents": 63,
+      "noAskCents": 64,
+      "lastCents": 37,
+      "bidSize": 42,
+      "askSize": 16364.18,
+      "volume": 8283.18,
+      "volume24h": 7628.94,
+      "openInterest": 7859.98,
+      "impliedYes": 0.365,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ5",
+      "label": "Missouri wins by over 4.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 4.5,
+        "cap": null
+      },
+      "yesBidCents": 24,
+      "yesAskCents": 25,
+      "noBidCents": 75,
+      "noAskCents": 76,
+      "lastCents": 25,
+      "bidSize": 30,
+      "askSize": 838.16,
+      "volume": 7813.85,
+      "volume24h": 7517.82,
+      "openInterest": 7300.14,
+      "impliedYes": 0.245,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA17",
+      "label": "Florida wins by over 16.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 16.5,
+        "cap": null
+      },
+      "yesBidCents": 18,
+      "yesAskCents": 19,
+      "noBidCents": 81,
+      "noAskCents": 82,
+      "lastCents": 18,
+      "bidSize": 48.48,
+      "askSize": 3998,
+      "volume": 8088.77,
+      "volume24h": 6480.01,
+      "openInterest": 7344.75,
+      "impliedYes": 0.185,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ4",
+      "label": "Missouri wins by over 3.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 3.5,
+        "cap": null
+      },
+      "yesBidCents": 26,
+      "yesAskCents": 27,
+      "noBidCents": 73,
+      "noAskCents": 74,
+      "lastCents": 27,
+      "bidSize": 60,
+      "askSize": 1118.05,
+      "volume": 4269.13,
+      "volume24h": 3514.72,
+      "openInterest": 3700.69,
+      "impliedYes": 0.265,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ10",
+      "label": "Missouri wins by over 9.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 9.5,
+        "cap": null
+      },
+      "yesBidCents": 14,
+      "yesAskCents": 15,
+      "noBidCents": 85,
+      "noAskCents": 86,
+      "lastCents": 14,
+      "bidSize": 60,
+      "askSize": 1807.37,
+      "volume": 3300.37,
+      "volume24h": 3296.37,
+      "openInterest": 3257.37,
+      "impliedYes": 0.145,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ7",
+      "label": "Missouri wins by over 6.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 6.5,
+        "cap": null
+      },
+      "yesBidCents": 20,
+      "yesAskCents": 21,
+      "noBidCents": 79,
+      "noAskCents": 80,
+      "lastCents": 21,
+      "bidSize": 30,
+      "askSize": 75.8,
+      "volume": 4389.76,
+      "volume24h": 2905.21,
+      "openInterest": 4245.4,
+      "impliedYes": 0.205,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-FLA2",
+      "label": "Florida wins by over 1.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 1.5,
+        "cap": null
+      },
+      "yesBidCents": 61,
+      "yesAskCents": 62,
+      "noBidCents": 38,
+      "noAskCents": 39,
+      "lastCents": 60,
+      "bidSize": 62.9,
+      "askSize": 13664,
+      "volume": 3635.62,
+      "volume24h": 2329.29,
+      "openInterest": 3565.73,
+      "impliedYes": 0.615,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ6",
+      "label": "Missouri wins by over 5.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 5.5,
+        "cap": null
+      },
+      "yesBidCents": 21,
+      "yesAskCents": 23,
+      "noBidCents": 77,
+      "noAskCents": 79,
+      "lastCents": 23,
+      "bidSize": 1182,
+      "askSize": 77.51,
+      "volume": 2451.4,
+      "volume24h": 2284.73,
+      "openInterest": 2351.93,
+      "impliedYes": 0.22,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ3",
+      "label": "Missouri wins by over 2.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 2.5,
+        "cap": null
+      },
+      "yesBidCents": 32,
+      "yesAskCents": 33,
+      "noBidCents": 67,
+      "noAskCents": 68,
+      "lastCents": 34,
+      "bidSize": 6,
+      "askSize": 1039.86,
+      "volume": 2018.89,
+      "volume24h": 1995.63,
+      "openInterest": 1913.31,
+      "impliedYes": 0.325,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ18",
+      "label": "Missouri wins by over 17.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 17.5,
+        "cap": null
+      },
+      "yesBidCents": 6,
+      "yesAskCents": 7,
+      "noBidCents": 93,
+      "noAskCents": 94,
+      "lastCents": 6,
+      "bidSize": 60,
+      "askSize": 2096.24,
+      "volume": 4132.64,
+      "volume24h": 1909.64,
+      "openInterest": 3699.3,
+      "impliedYes": 0.065,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ8",
+      "label": "Missouri wins by over 7.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 7.5,
+        "cap": null
+      },
+      "yesBidCents": 16,
+      "yesAskCents": 17,
+      "noBidCents": 83,
+      "noAskCents": 84,
+      "lastCents": 20,
+      "bidSize": 60,
+      "askSize": 1799.54,
+      "volume": 1347.92,
+      "volume24h": 1345.92,
+      "openInterest": 1139.98,
+      "impliedYes": 0.165,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ11",
+      "label": "Missouri wins by over 10.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 10.5,
+        "cap": null
+      },
+      "yesBidCents": 11,
+      "yesAskCents": 12,
+      "noBidCents": 88,
+      "noAskCents": 89,
+      "lastCents": 11,
+      "bidSize": 60,
+      "askSize": 168,
+      "volume": 763.92,
+      "volume24h": 558.92,
+      "openInterest": 752.92,
+      "impliedYes": 0.115,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ17",
+      "label": "Missouri wins by over 16.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 16.5,
+        "cap": null
+      },
+      "yesBidCents": 7,
+      "yesAskCents": 8,
+      "noBidCents": 92,
+      "noAskCents": 93,
+      "lastCents": 9,
+      "bidSize": 60,
+      "askSize": 1796.8,
+      "volume": 715.43,
+      "volume24h": 434.9,
+      "openInterest": 651.9,
+      "impliedYes": 0.075,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ14",
+      "label": "Missouri wins by over 13.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 13.5,
+        "cap": null
+      },
+      "yesBidCents": 9,
+      "yesAskCents": 10,
+      "noBidCents": 90,
+      "noAskCents": 91,
+      "lastCents": 11,
+      "bidSize": 60,
+      "askSize": 1029,
+      "volume": 155.5,
+      "volume24h": 151.5,
+      "openInterest": 90.36,
+      "impliedYes": 0.095,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXNCAAFSPREAD-26OCT03FLAMIZZ-MIZZ12",
+      "label": "Missouri wins by over 11.5 points",
+      "strike": {
+        "type": "greater",
+        "floor": 11.5,
+        "cap": null
+      },
+      "yesBidCents": 11,
+      "yesAskCents": 12,
+      "noBidCents": 88,
+      "noAskCents": 89,
+      "lastCents": 8,
+      "bidSize": 60,
+      "askSize": 1045.41,
+      "volume": 10.11,
+      "volume24h": 10.11,
+      "openInterest": 10.11,
+      "impliedYes": 0.115,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    }
+  ],
+  "book": {
+    "markets": 29,
+    "volume24h": 3301579.89,
+    "openInterest": 3179898.82,
+    "midSum": 7.75
+  },
+  "house": {
+    "model": null,
+    "status": "no-model",
+    "reason": "the house has no model for this market; the brief carries market-implied odds and the category base rate",
+    "evidence": [],
+    "usableAs": null
+  },
+  "baseRate": {
+    "category": {
+      "category": "Sports",
+      "horizonHours": 6,
+      "markets": 1013,
+      "brierOfMid": 0.1789,
+      "longshot": {
+        "n": 47,
+        "yesCount": 1,
+        "yesRate": 0.0213,
+        "yesRate95": [
+          0.0038,
+          0.1111
+        ],
+        "avgYesAsk": 0.0332
+      },
+      "favorite": {
+        "n": 20,
+        "yesCount": 20,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8389,
+          1
+        ],
+        "avgYesAsk": 0.9665
+      },
+      "source": "content/config/kalshi-category-base-rates.json",
+      "window": [
+        "2026-09-29",
+        "2026-10-03"
+      ]
+    },
+    "family": null
+  },
+  "whatWouldMoveIt": [
+    "Lineup and injury news, and the live game state once play starts.",
+    "Postponement or cancellation under the rules' fair-price clause.",
+    "A rules clarification or settlement-source change published by Kalshi on the market page.",
+    "Order-book depth: thin books move on small orders, so a large price move on little volume says little."
+  ],
+  "opportunities": [],
+  "provenance": [
+    {
+      "what": "Kalshi market data (event, markets, series)",
+      "url": "https://api.elections.kalshi.com/trade-api/v2/events/KXNCAAFSPREAD-26OCT03FLAMIZZ",
+      "fetchedAt": "2026-10-03T20:15:12.469Z"
+    },
+    {
+      "what": "Category base rates",
+      "url": null,
+      "fetchedAt": "2026-10-03"
+    }
+  ],
+  "disclosure": "Built from public information (Kalshi market data, the contract rules, and public data sources). Odds are a snapshot, not a prediction of the future and not financial advice. Prediction-market contracts can lose their entire price."
+}

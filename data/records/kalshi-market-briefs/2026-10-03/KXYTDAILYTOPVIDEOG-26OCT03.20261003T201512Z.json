@@ -1,0 +1,626 @@
+{
+  "type": "KalshiMarketBrief",
+  "version": 1,
+  "briefId": "KXYTDAILYTOPVIDEOG-26OCT03@20261003T201512Z",
+  "asOf": "2026-10-03T20:15:12.469Z",
+  "event": {
+    "eventTicker": "KXYTDAILYTOPVIDEOG-26OCT03",
+    "seriesTicker": "KXYTDAILYTOPVIDEOG",
+    "title": "Top Daily Music Video Global on YouTube: Oct 3, 2026",
+    "subTitle": "Oct 3, 2026 Chart",
+    "category": "Entertainment",
+    "frequency": "one_off",
+    "mutuallyExclusive": true,
+    "tags": [
+      "Views",
+      "Music charts",
+      "Music"
+    ],
+    "closesAt": "2026-10-04T03:59:00.000Z",
+    "expectedSettleAt": "2026-10-17T14:00:00.000Z",
+    "settlesOn": "2026-10-17",
+    "hoursToClose": 7.73,
+    "feeMultiplier": 1,
+    "url": "https://kalshi.com/markets/kxytdailytopvideog/top-music-video-global/kxytdailytopvideog-26oct03",
+    "seriesUrl": "https://kalshi.com/markets/kxytdailytopvideog"
+  },
+  "rules": {
+    "primary": "If Dai Dai ranks #1 on YouTube Charts’ Daily Top Music Videos - Global chart dated Oct 3, 2026, then the market resolves to Yes.",
+    "secondary": "This market and these products have not been endorsed by YouTube. Any references to YouTube or any associated marks are descriptive only and do not indicate an endorsement of this product or any affiliation between YouTube and Kalshi.",
+    "contractTermsUrl": "https://assets.kalshi.com/contract_terms/RANKLIST.pdf"
+  },
+  "settlementSource": {
+    "primary": {
+      "name": "YouTube Charts",
+      "url": "https://charts.youtube.com/US"
+    },
+    "all": [
+      {
+        "name": "YouTube Charts",
+        "url": "https://charts.youtube.com/US"
+      }
+    ]
+  },
+  "markets": [
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-CAS",
+      "label": "Casa Tupka Anthemo",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 2,
+      "yesAskCents": 6,
+      "noBidCents": 94,
+      "noAskCents": 98,
+      "lastCents": 6,
+      "bidSize": 100,
+      "askSize": 2,
+      "volume": 450,
+      "volume24h": 450,
+      "openInterest": 450,
+      "impliedYes": 0.04,
+      "impliedYesNormalized": 0.0063,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-DAI",
+      "label": "Dai Dai",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 36,
+      "yesAskCents": 90,
+      "noBidCents": 10,
+      "noAskCents": 64,
+      "lastCents": 0,
+      "bidSize": 507,
+      "askSize": 200,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.63,
+      "impliedYesNormalized": 0.0988,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-TAY",
+      "label": "Taylor Swift - Patient Zero (Official Music Video)",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 95,
+      "noBidCents": 5,
+      "noAskCents": 100,
+      "lastCents": 0,
+      "bidSize": 0,
+      "askSize": 133,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.475,
+      "impliedYesNormalized": 0.0745,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-XAM",
+      "label": "Xamdam Sobirov - Peshta / Хамдам Собиров - Пешта / Video Klip",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 95,
+      "noBidCents": 5,
+      "noAskCents": 100,
+      "lastCents": 0,
+      "bidSize": 0,
+      "askSize": 133,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.475,
+      "impliedYesNormalized": 0.0745,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-YES",
+      "label": "Yeshanagula | The Paradise | Nani | Keerthy Suresh | Anirudh Ravichander | Srikanth Odela",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 95,
+      "noBidCents": 5,
+      "noAskCents": 100,
+      "lastCents": 0,
+      "bidSize": 0,
+      "askSize": 133,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.475,
+      "impliedYesNormalized": 0.0745,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-PAR",
+      "label": "Parvati",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 95,
+      "noBidCents": 5,
+      "noAskCents": 100,
+      "lastCents": 0,
+      "bidSize": 0,
+      "askSize": 133,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.475,
+      "impliedYesNormalized": 0.0745,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-BAR",
+      "label": "Barsaat",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 95,
+      "noBidCents": 5,
+      "noAskCents": 100,
+      "lastCents": 0,
+      "bidSize": 0,
+      "askSize": 133,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.475,
+      "impliedYesNormalized": 0.0745,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-BAS",
+      "label": "Basinga Balaalu",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 95,
+      "noBidCents": 5,
+      "noAskCents": 100,
+      "lastCents": 0,
+      "bidSize": 0,
+      "askSize": 133,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.475,
+      "impliedYesNormalized": 0.0745,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-ASH",
+      "label": "Ashke (Music Video) Karan Aujla | Mxrci | Aujla Szn 1",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 95,
+      "noBidCents": 5,
+      "noAskCents": 100,
+      "lastCents": 0,
+      "bidSize": 0,
+      "askSize": 133,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.475,
+      "impliedYesNormalized": 0.0745,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-TRA",
+      "label": "Training Season (Live)",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 95,
+      "noBidCents": 5,
+      "noAskCents": 100,
+      "lastCents": 0,
+      "bidSize": 0,
+      "askSize": 133,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.475,
+      "impliedYesNormalized": 0.0745,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-BBY",
+      "label": "BbY WOW",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 95,
+      "noBidCents": 5,
+      "noAskCents": 100,
+      "lastCents": 0,
+      "bidSize": 0,
+      "askSize": 133,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.475,
+      "impliedYesNormalized": 0.0745,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-AAY",
+      "label": "Aaya Sher",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 95,
+      "noBidCents": 5,
+      "noAskCents": 100,
+      "lastCents": 0,
+      "bidSize": 0,
+      "askSize": 133,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.475,
+      "impliedYesNormalized": 0.0745,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-SHA",
+      "label": "Shararat",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 95,
+      "noBidCents": 5,
+      "noAskCents": 100,
+      "lastCents": 0,
+      "bidSize": 0,
+      "askSize": 133,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.475,
+      "impliedYesNormalized": 0.0745,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-SAW",
+      "label": "SaWaDiKa (Official Music Video)",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 95,
+      "noBidCents": 5,
+      "noAskCents": 100,
+      "lastCents": 0,
+      "bidSize": 0,
+      "askSize": 133,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.475,
+      "impliedYesNormalized": 0.0745,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXYTDAILYTOPVIDEOG-26OCT03-KAL",
+      "label": "KALYANI (Remix)",
+      "strike": {
+        "type": null,
+        "floor": null,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 0,
+      "bidSize": 0,
+      "askSize": 100,
+      "volume": 0,
+      "volume24h": 0,
+      "openInterest": 0,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": 0.0008,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    }
+  ],
+  "book": {
+    "markets": 15,
+    "volume24h": 450,
+    "openInterest": 450,
+    "midSum": 6.375
+  },
+  "house": {
+    "model": null,
+    "status": "no-model",
+    "reason": "the house has no model for this market; the brief carries market-implied odds and the category base rate",
+    "evidence": [],
+    "usableAs": null
+  },
+  "baseRate": {
+    "category": {
+      "category": "Entertainment",
+      "horizonHours": 24,
+      "markets": 95,
+      "brierOfMid": 0.06,
+      "longshot": {
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      },
+      "favorite": {
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      },
+      "source": "content/config/kalshi-category-base-rates.json",
+      "window": [
+        "2026-09-29",
+        "2026-10-03"
+      ]
+    },
+    "family": null
+  },
+  "whatWouldMoveIt": [
+    "The daily or weekly chart the market settles on, as the platform publishes it, and in-day movement on the ranked item.",
+    "A rules clarification or settlement-source change published by Kalshi on the market page.",
+    "Order-book depth: thin books move on small orders, so a large price move on little volume says little."
+  ],
+  "opportunities": [],
+  "provenance": [
+    {
+      "what": "Kalshi market data (event, markets, series)",
+      "url": "https://api.elections.kalshi.com/trade-api/v2/events/KXYTDAILYTOPVIDEOG-26OCT03",
+      "fetchedAt": "2026-10-03T20:15:12.469Z"
+    },
+    {
+      "what": "Category base rates",
+      "url": null,
+      "fetchedAt": "2026-10-03"
+    }
+  ],
+  "disclosure": "Built from public information (Kalshi market data, the contract rules, and public data sources). Odds are a snapshot, not a prediction of the future and not financial advice. Prediction-market contracts can lose their entire price."
+}

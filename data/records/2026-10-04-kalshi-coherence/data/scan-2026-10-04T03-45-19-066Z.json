@@ -1,0 +1,1589 @@
+{
+ "ts": "2026-10-04T03:45:19.066Z",
+ "ms": 70345,
+ "lpMs": 9616,
+ "events": 12865,
+ "markets": 119905,
+ "families": 11380,
+ "skipped": {
+  "no-interval": 0,
+  "duplicate-strike": 3
+ },
+ "byKind": {
+  "station-day": {
+   "families": 48,
+   "markets": 576,
+   "glued": 35,
+   "tension": 7,
+   "dutchBook": 6,
+   "unsolved": 0,
+   "rawViolation": 6,
+   "postFee": 0,
+   "dollars": 0
+  },
+  "interval-ladder": {
+   "families": 6926,
+   "markets": 57329,
+   "glued": 6856,
+   "tension": 59,
+   "dutchBook": 11,
+   "unsolved": 0,
+   "rawViolation": 11,
+   "postFee": 2,
+   "dollars": 2.750000000000016
+  },
+  "exclusive-set": {
+   "families": 3250,
+   "markets": 30043,
+   "glued": 3059,
+   "tension": 151,
+   "dutchBook": 40,
+   "unsolved": 0,
+   "rawViolation": 40,
+   "postFee": 0,
+   "dollars": 0
+  },
+  "exclusive-exhaustive-assumed": {
+   "families": 1134,
+   "markets": 2843,
+   "glued": 1087,
+   "tension": 41,
+   "dutchBook": 6,
+   "unsolved": 0,
+   "rawViolation": 6,
+   "postFee": 0,
+   "dollars": 0
+  },
+  "window-union": {
+   "families": 22,
+   "markets": 66,
+   "glued": 17,
+   "tension": 0,
+   "dutchBook": 5,
+   "unsolved": 0,
+   "rawViolation": 5,
+   "postFee": 4,
+   "dollars": 11.090000000000009
+  }
+ },
+ "tensions": 258,
+ "postFeeDutchBooks": 6,
+ "totalGuaranteed": 13.840000000000025,
+ "detections": [
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "window:KXRAINWKND-26OCT03-BOS",
+   "kind": "window-union",
+   "margin": -0.046666666666666655,
+   "unitProfitBeforeFees": 0.36999999999999966,
+   "depth": "full-book",
+   "risks": [
+    "rule-text-parsed"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": {
+    "legs": [
+     {
+      "ticker": "KXRAINWKND-26OCT03-BOS",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 31,
+      "price": 0.52,
+      "fee": 0.55
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-BOS",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 2,
+      "price": 0.53,
+      "fee": 0.04
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-BOS",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 12,
+      "price": 0.54,
+      "fee": 0.21
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-BOS",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 9,
+      "price": 0.56,
+      "fee": 0.16
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-BOS",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 2,
+      "price": 0.57,
+      "fee": 0.04
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-BOS",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 14,
+      "price": 0.58,
+      "fee": 0.24
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-BOS",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 15,
+      "price": 0.59,
+      "fee": 0.26
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-BOS",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 11,
+      "price": 0.6,
+      "fee": 0.19
+     },
+     {
+      "ticker": "KXRAIN-26OCT03-BOS",
+      "venue": "kalshi",
+      "side": "yes",
+      "qty": 99,
+      "price": 0.01,
+      "fee": 0.07
+     },
+     {
+      "ticker": "KXRAIN-26OCT04-BOS",
+      "venue": "kalshi",
+      "side": "yes",
+      "qty": 26,
+      "price": 0.33,
+      "fee": 0.41
+     },
+     {
+      "ticker": "KXRAIN-26OCT04-BOS",
+      "venue": "kalshi",
+      "side": "yes",
+      "qty": 55,
+      "price": 0.34,
+      "fee": 0.87
+     },
+     {
+      "ticker": "KXRAIN-26OCT04-BOS",
+      "venue": "kalshi",
+      "side": "yes",
+      "qty": 18,
+      "price": 0.35,
+      "fee": 0.29
+     }
+    ],
+    "cost": 87.98,
+    "fees": 3.33,
+    "worstPayout": 96,
+    "guaranteed": 4.689999999999996,
+    "maxLoss": 0
+   },
+   "sig": "5fe20ef7b0b2"
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "window:KXRAINWKND-26OCT03-MIA",
+   "kind": "window-union",
+   "margin": -0.04333333333333333,
+   "unitProfitBeforeFees": 0.3199999999999998,
+   "depth": "full-book",
+   "risks": [
+    "rule-text-parsed"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": {
+    "legs": [
+     {
+      "ticker": "KXRAINWKND-26OCT03-MIA",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 6,
+      "price": 0.64,
+      "fee": 0.1
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-MIA",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 4,
+      "price": 0.65,
+      "fee": 0.07
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-MIA",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 54,
+      "price": 0.67,
+      "fee": 0.84
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-MIA",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 1,
+      "price": 0.68,
+      "fee": 0.02
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-MIA",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 1,
+      "price": 0.69,
+      "fee": 0.02
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-MIA",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 2,
+      "price": 0.71,
+      "fee": 0.03
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-MIA",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 2,
+      "price": 0.73,
+      "fee": 0.03
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-MIA",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 8,
+      "price": 0.74,
+      "fee": 0.11
+     },
+     {
+      "ticker": "KXRAIN-26OCT03-MIA",
+      "venue": "kalshi",
+      "side": "yes",
+      "qty": 81,
+      "price": 0.07,
+      "fee": 0.37
+     },
+     {
+      "ticker": "KXRAIN-26OCT04-MIA",
+      "venue": "kalshi",
+      "side": "yes",
+      "qty": 81,
+      "price": 0.16,
+      "fee": 0.77
+     }
+    ],
+    "cost": 71.41999999999999,
+    "fees": 2.3600000000000003,
+    "worstPayout": 78,
+    "guaranteed": 4.220000000000012,
+    "maxLoss": 0
+   },
+   "sig": "d4bb4501ccec"
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "ladder:KXMORTGAGERATE-27DEC30/",
+   "kind": "interval-ladder",
+   "margin": -0.0049999999999999975,
+   "unitProfitBeforeFees": 0.01000000000000005,
+   "depth": "full-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": {
+    "legs": [
+     {
+      "ticker": "KXMORTGAGERATE-27DEC30-T9.50",
+      "venue": "kalshi",
+      "side": "yes",
+      "qty": 925,
+      "price": 0.05,
+      "fee": 3.08
+     },
+     {
+      "ticker": "KXMORTGAGERATE-27DEC30-T9.75",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 925,
+      "price": 0.94,
+      "fee": 3.66
+     }
+    ],
+    "cost": 915.75,
+    "fees": 6.74,
+    "worstPayout": 925,
+    "guaranteed": 2.51,
+    "maxLoss": 0
+   },
+   "sig": "3340eebdf99b"
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "window:KXRAINWKND-26OCT03-OKC",
+   "kind": "window-union",
+   "margin": -0.006666666666666665,
+   "unitProfitBeforeFees": 0.02000000000000005,
+   "depth": "full-book",
+   "risks": [
+    "rule-text-parsed"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": {
+    "legs": [
+     {
+      "ticker": "KXRAINWKND-26OCT03-OKC",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 106,
+      "price": 0.94,
+      "fee": 0.42
+     },
+     {
+      "ticker": "KXRAINWKND-26OCT03-OKC",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 3,
+      "price": 0.95,
+      "fee": 0.01
+     },
+     {
+      "ticker": "KXRAIN-26OCT03-OKC",
+      "venue": "kalshi",
+      "side": "yes",
+      "qty": 110,
+      "price": 0.02,
+      "fee": 0.16
+     },
+     {
+      "ticker": "KXRAIN-26OCT04-OKC",
+      "venue": "kalshi",
+      "side": "yes",
+      "qty": 110,
+      "price": 0.02,
+      "fee": 0.16
+     }
+    ],
+    "cost": 106.89,
+    "fees": 0.75,
+    "worstPayout": 109,
+    "guaranteed": 1.3599999999999994,
+    "maxLoss": 0
+   },
+   "sig": "707e6f092806"
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "window:KXRAINWKND-26OCT03-AUS",
+   "kind": "window-union",
+   "margin": -0.016666666666666687,
+   "unitProfitBeforeFees": 0.050000000000000044,
+   "depth": "full-book",
+   "risks": [
+    "rule-text-parsed"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": {
+    "legs": [
+     {
+      "ticker": "KXRAINWKND-26OCT03-AUS",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 56,
+      "price": 0.33,
+      "fee": 0.87
+     },
+     {
+      "ticker": "KXRAIN-26OCT03-AUS",
+      "venue": "kalshi",
+      "side": "yes",
+      "qty": 56,
+      "price": 0.02,
+      "fee": 0.08
+     },
+     {
+      "ticker": "KXRAIN-26OCT04-AUS",
+      "venue": "kalshi",
+      "side": "yes",
+      "qty": 47,
+      "price": 0.6,
+      "fee": 0.79
+     },
+     {
+      "ticker": "KXRAIN-26OCT04-AUS",
+      "venue": "kalshi",
+      "side": "yes",
+      "qty": 9,
+      "price": 0.61,
+      "fee": 0.15
+     }
+    ],
+    "cost": 53.29,
+    "fees": 1.89,
+    "worstPayout": 56,
+    "guaranteed": 0.820000000000001,
+    "maxLoss": 0
+   },
+   "sig": "01a2abc2ce35"
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "ladder:KXNASDAQ100MINY-26DEC31H1600/",
+   "kind": "interval-ladder",
+   "margin": -0.004999999999999996,
+   "unitProfitBeforeFees": 0.01000000000000005,
+   "depth": "full-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": {
+    "legs": [
+     {
+      "ticker": "KXNASDAQ100MINY-26DEC31H1600-T22800.01",
+      "venue": "kalshi",
+      "side": "yes",
+      "qty": 92,
+      "price": 0.05,
+      "fee": 0.31
+     },
+     {
+      "ticker": "KXNASDAQ100MINY-26DEC31H1600-T22400.01",
+      "venue": "kalshi",
+      "side": "no",
+      "qty": 92,
+      "price": 0.94,
+      "fee": 0.37
+     }
+    ],
+    "cost": 91.07999999999998,
+    "fees": 0.6799999999999999,
+    "worstPayout": 92,
+    "guaranteed": 0.24000000000001598,
+    "maxLoss": 0
+   },
+   "sig": "939cd36fd8a3"
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "stationday:KXHIGHTSATX-26OCT04+KXLOWTSATX-26OCT04",
+   "kind": "station-day",
+   "margin": -0.002499999999999937,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "stationday:KXHIGHTOKC-26OCT04+KXLOWTOKC-26OCT04",
+   "kind": "station-day",
+   "margin": -0.003999999999999998,
+   "unitProfitBeforeFees": 0.020000000000000018,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "stationday:KXHIGHMIA-26OCT04+KXLOWTMIA-26OCT04",
+   "kind": "station-day",
+   "margin": -0.001999999999999987,
+   "unitProfitBeforeFees": 0.010000000000000231,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "stationday:KXHIGHDEN-26OCT04+KXLOWTDEN-26OCT04",
+   "kind": "station-day",
+   "margin": -0.005000000000000011,
+   "unitProfitBeforeFees": 0.030000000000000027,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "stationday:KXHIGHTDAL-26OCT04+KXLOWTDAL-26OCT04",
+   "kind": "station-day",
+   "margin": -0.008000000000000014,
+   "unitProfitBeforeFees": 0.040000000000000036,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "stationday:KXHIGHAUS-26OCT04+KXLOWTAUS-26OCT04",
+   "kind": "station-day",
+   "margin": -0.001999999999999956,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "ladder:KXEOTRUMPTERM-29JAN20/",
+   "kind": "interval-ladder",
+   "margin": -0.000833333333333327,
+   "unitProfitBeforeFees": 0.009999999999999787,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "ladder:KXCCLA-28JANALBD/",
+   "kind": "interval-ladder",
+   "margin": -0.005000000000000001,
+   "unitProfitBeforeFees": 0.009999999999999967,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "ladder:KXMIDTERMVOTETURN-TNGOV/",
+   "kind": "interval-ladder",
+   "margin": -0.015000000000000013,
+   "unitProfitBeforeFees": 0.030000000000000027,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "ladder:KXMIDTERMVOTETURN-FL25/",
+   "kind": "interval-ladder",
+   "margin": -0.0050000000000000044,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "ladder:KXMIDTERMMOV-NV01D/P",
+   "kind": "interval-ladder",
+   "margin": -0.0050000000000000044,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "ladder:KXMIDTERMMOV-CT03D/P",
+   "kind": "interval-ladder",
+   "margin": -0.0050000000000000044,
+   "unitProfitBeforeFees": 0.009999999999999981,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "ladder:KXARENASCORE-GEMI35P/",
+   "kind": "interval-ladder",
+   "margin": -0.0050000000000000044,
+   "unitProfitBeforeFees": 0.020000000000000073,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "ladder:KXLOSEREELECTIONDSEN-2026/",
+   "kind": "interval-ladder",
+   "margin": -0.002166666666666655,
+   "unitProfitBeforeFees": 0.013000000000000123,
+   "depth": "full-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": {
+    "legs": [],
+    "cost": 0,
+    "fees": 0,
+    "worstPayout": 0,
+    "guaranteed": 0,
+    "maxLoss": 0
+   }
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "ladder:KXAPRPOTUS-26OCT09/",
+   "kind": "interval-ladder",
+   "margin": -0.0037500000000000033,
+   "unitProfitBeforeFees": 0.03000000000000025,
+   "depth": "top-of-book",
+   "risks": [],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:POPVOTEMOV-28NOV07",
+   "kind": "exclusive-set",
+   "margin": -0.0011111111111111044,
+   "unitProfitBeforeFees": 0.020000000000000462,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXSAARLAND-27APR18",
+   "kind": "exclusive-set",
+   "margin": -0.0028571428571428593,
+   "unitProfitBeforeFees": 0.020000000000000018,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXOSCARSUPACTR-27",
+   "kind": "exclusive-set",
+   "margin": -0.0014285714285714526,
+   "unitProfitBeforeFees": 0.010000000000000231,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXOSCARDIR-27",
+   "kind": "exclusive-set",
+   "margin": -0.006666666666666673,
+   "unitProfitBeforeFees": 0.040000000000000036,
+   "depth": "full-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": {
+    "legs": [],
+    "cost": 0,
+    "fees": 0,
+    "worstPayout": 0,
+    "guaranteed": 0,
+    "maxLoss": 0
+   }
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXOSCARACTO-27",
+   "kind": "exclusive-set",
+   "margin": -0.00375,
+   "unitProfitBeforeFees": 0.030000000000000027,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXMNSENGOVCOMBO-26NOV",
+   "kind": "exclusive-set",
+   "margin": -0.0025000000000000005,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXNHL-27",
+   "kind": "exclusive-set",
+   "margin": -0.0009090909090909149,
+   "unitProfitBeforeFees": 0.020000000000000462,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXFRENCHPRES-27",
+   "kind": "exclusive-set",
+   "margin": -0.0007931034482758541,
+   "unitProfitBeforeFees": 0.02299999999999991,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXNFLDROTY-27",
+   "kind": "exclusive-set",
+   "margin": -0.002857142857142868,
+   "unitProfitBeforeFees": 0.040000000000000036,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXGRAMBNA-69",
+   "kind": "exclusive-set",
+   "margin": -0.001999999999999988,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXRECORDNFLWORST-27",
+   "kind": "exclusive-set",
+   "margin": -0.0027272727272727275,
+   "unitProfitBeforeFees": 0.03000000000000025,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXGRAMAOTY-69",
+   "kind": "exclusive-set",
+   "margin": -0.0014285714285714284,
+   "unitProfitBeforeFees": 0.010000000000000231,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:GOVPARTYIL-26",
+   "kind": "exclusive-set",
+   "margin": -0.0004999999999999866,
+   "unitProfitBeforeFees": 0.0009999999999998899,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXATTYGENCO-26",
+   "kind": "exclusive-set",
+   "margin": -0.0005000000000000213,
+   "unitProfitBeforeFees": 0.0009999999999998899,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXGOVCA-26",
+   "kind": "exclusive-set",
+   "margin": -0.0004999999999999866,
+   "unitProfitBeforeFees": 0.0009999999999998899,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXHOUSERACE-WV02-26",
+   "kind": "exclusive-set",
+   "margin": -0.0005000000000000004,
+   "unitProfitBeforeFees": 0.0009999999999998899,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXHOUSERACE-SC05-26",
+   "kind": "exclusive-set",
+   "margin": -0.0040000000000000036,
+   "unitProfitBeforeFees": 0.008000000000000007,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXHOUSERACE-KY06-26",
+   "kind": "exclusive-set",
+   "margin": -0.0050000000000000044,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:SENATEMS-26",
+   "kind": "exclusive-set",
+   "margin": -0.0005000000000000143,
+   "unitProfitBeforeFees": 0.0009999999999998899,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:HOUSEFL13-26",
+   "kind": "exclusive-set",
+   "margin": -0.0050000000000000044,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXATTYGENID-26",
+   "kind": "exclusive-set",
+   "margin": -0.0015000000000000013,
+   "unitProfitBeforeFees": 0.0030000000000001137,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXBALLONDOR-26",
+   "kind": "exclusive-set",
+   "margin": -0.006666666666666647,
+   "unitProfitBeforeFees": 0.040000000000000036,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:GOVPARTYMI-26",
+   "kind": "exclusive-set",
+   "margin": -0.0006666666666666841,
+   "unitProfitBeforeFees": 0.0020000000000000018,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXUFCHEAVYWEIGHTTITLE-26",
+   "kind": "exclusive-set",
+   "margin": -0.0050000000000000044,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXMLBNLROTY-26",
+   "kind": "exclusive-set",
+   "margin": -0.003333333333333328,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXLLM1-26DEC31",
+   "kind": "exclusive-set",
+   "margin": -0.0034999999999999823,
+   "unitProfitBeforeFees": 0.021999999999999797,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXDWTSRANK-326DEC31",
+   "kind": "exclusive-set",
+   "margin": -0.0016666666666666566,
+   "unitProfitBeforeFees": 0.020000000000000018,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXCLOSERAKTXSEN-26DEC07",
+   "kind": "exclusive-set",
+   "margin": -0.0050000000000000044,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXNWSL-26",
+   "kind": "exclusive-set",
+   "margin": -0.0022222222222222504,
+   "unitProfitBeforeFees": 0.020000000000000018,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXMISENATE-26",
+   "kind": "exclusive-set",
+   "margin": -0.004999999999999977,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXMLB-26",
+   "kind": "exclusive-set",
+   "margin": -0.0028750000000000026,
+   "unitProfitBeforeFees": 0.02300000000000013,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXLLM1-26OCT31",
+   "kind": "exclusive-set",
+   "margin": -0.004285714285714281,
+   "unitProfitBeforeFees": 0.030000000000000027,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXBRPRES-26",
+   "kind": "exclusive-set",
+   "margin": -0.0006666666666666655,
+   "unitProfitBeforeFees": 0.0020000000000000018,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXMLBSERIESSCORE-26ATLLADNLDS",
+   "kind": "exclusive-set",
+   "margin": -0.004000000000000017,
+   "unitProfitBeforeFees": 0.020000000000000018,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXUCLGAME-26OCT14ROMRMA",
+   "kind": "exclusive-exhaustive-assumed",
+   "margin": -0.003333333333333327,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [
+    "void-or-tie-risk"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXHORMUZMAX-26OCT11",
+   "kind": "exclusive-set",
+   "margin": -0.008571428571428577,
+   "unitProfitBeforeFees": 0.06000000000000005,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXSERIEAGAME-26OCT11LAZMON",
+   "kind": "exclusive-exhaustive-assumed",
+   "margin": -0.003333333333333336,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [
+    "void-or-tie-risk"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXNCAAFGAME-26OCT09FSULOU",
+   "kind": "exclusive-exhaustive-assumed",
+   "margin": -0.004999999999999977,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [
+    "void-or-tie-risk"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXNFL1H-26OCT04MIAMIN",
+   "kind": "exclusive-set",
+   "margin": -0.003333333333333341,
+   "unitProfitBeforeFees": 0.009999999999999787,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXCONCACAFNL1H-26OCT04BAHVIR",
+   "kind": "exclusive-set",
+   "margin": -0.003333333333333355,
+   "unitProfitBeforeFees": 0.010000000000000231,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXBBLGAME-26OCT041030CHESCJ",
+   "kind": "exclusive-exhaustive-assumed",
+   "margin": -0.0050000000000000044,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [
+    "void-or-tie-risk"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXKHLGAME-26OCT041000HCBSPA",
+   "kind": "exclusive-exhaustive-assumed",
+   "margin": -0.009999999999999981,
+   "unitProfitBeforeFees": 0.020000000000000018,
+   "depth": "top-of-book",
+   "risks": [
+    "void-or-tie-risk"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXINTLFRIENDLYGAME-26OCT04COMSEN",
+   "kind": "exclusive-exhaustive-assumed",
+   "margin": -0.003333333333333355,
+   "unitProfitBeforeFees": 0.010000000000000231,
+   "depth": "top-of-book",
+   "risks": [
+    "void-or-tie-risk"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXF1FASTLAP-BAH26",
+   "kind": "exclusive-set",
+   "margin": -0.0012500000000000011,
+   "unitProfitBeforeFees": 0.010000000000000231,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXF1BIGGESTMOVER-BAH26",
+   "kind": "exclusive-set",
+   "margin": -0.0033333333333333375,
+   "unitProfitBeforeFees": 0.020000000000000018,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "exclusive:KXWTAMATCH-26OCT03SAKSVI",
+   "kind": "exclusive-set",
+   "margin": -0.0050000000000000044,
+   "unitProfitBeforeFees": 0.010000000000000009,
+   "depth": "top-of-book",
+   "risks": [
+    "exclusivity-from-event-flag"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  },
+  {
+   "ts": "2026-10-04T03:45:19.066Z",
+   "family": "window:KXRAINWKND-26OCT03-PHIL",
+   "kind": "window-union",
+   "margin": -0.009999999999999974,
+   "unitProfitBeforeFees": 0.029999999999999916,
+   "depth": "top-of-book",
+   "risks": [
+    "rule-text-parsed"
+   ],
+   "venues": [
+    "kalshi"
+   ],
+   "portfolio": null,
+   "portfolioRaw": null
+  }
+ ],
+ "tensionSample": [
+  {
+   "family": "stationday:KXHIGHTTTN-26OCT04+KXLOWTTTN-26OCT04",
+   "kind": "station-day",
+   "margin": 6.071532165918822e-17
+  },
+  {
+   "family": "stationday:KXHIGHPHIL-26OCT04+KXLOWTPHIL-26OCT04",
+   "kind": "station-day",
+   "margin": 0.001999999999999995
+  },
+  {
+   "family": "stationday:KXHIGHNY-26OCT04+KXLOWTNYC-26OCT04",
+   "kind": "station-day",
+   "margin": 6.938893903907228e-18
+  },
+  {
+   "family": "stationday:KXHIGHTMIN-26OCT04+KXLOWTMIN-26OCT04",
+   "kind": "station-day",
+   "margin": 1.7636355339097535e-17
+  },
+  {
+   "family": "stationday:KXHIGHLAX-26OCT04+KXLOWTLAX-26OCT04",
+   "kind": "station-day",
+   "margin": 2.168404344971009e-17
+  },
+  {
+   "family": "stationday:KXHIGHCHI-26OCT04+KXLOWTCHI-26OCT04",
+   "kind": "station-day",
+   "margin": 5.2735593669694946e-17
+  },
+  {
+   "family": "stationday:KXHIGHTATL-26OCT04+KXLOWTATL-26OCT04",
+   "kind": "station-day",
+   "margin": 1.3877787807814457e-17
+  },
+  {
+   "family": "ladder:USCLIMATE/",
+   "kind": "interval-ladder",
+   "margin": 0
+  },
+  {
+   "family": "ladder:KXDEBTGROWTH-28DEC31/",
+   "kind": "interval-ladder",
+   "margin": 0.0014999999999999458
+  },
+  {
+   "family": "ladder:KXMIDTERMMOV-TXSENR/P",
+   "kind": "interval-ladder",
+   "margin": 0.0009999999999999992
+  },
+  {
+   "family": "ladder:KXMIDTERMMOV-NVGOVD/P",
+   "kind": "interval-ladder",
+   "margin": 0.0010000000000000009
+  },
+  {
+   "family": "ladder:KXMIDTERMMOV-MO04R/P",
+   "kind": "interval-ladder",
+   "margin": 0.0010000000000000009
+  },
+  {
+   "family": "ladder:KXMIDTERMMOV-MISEND/P",
+   "kind": "interval-ladder",
+   "margin": 0.0009999999999999992
+  },
+  {
+   "family": "ladder:KXMIDTERMMOV-CA11SWIE/P",
+   "kind": "interval-ladder",
+   "margin": 0.0005000000000000004
+  },
+  {
+   "family": "ladder:KXHOUSEPOPVOTEMARGIN-27NOV03/",
+   "kind": "interval-ladder",
+   "margin": 0.0004999999999999935
+  },
+  {
+   "family": "ladder:KXDDR5EMS-27OCT/",
+   "kind": "interval-ladder",
+   "margin": 0
+  },
+  {
+   "family": "ladder:KXTPSENATEMAX-26NOV03/AL",
+   "kind": "interval-ladder",
+   "margin": 0
+  },
+  {
+   "family": "ladder:KXFEDCHGCOUNT-27JAN01/E",
+   "kind": "interval-ladder",
+   "margin": 0.0010000000000000009
+  },
+  {
+   "family": "ladder:KXGOVTCUTS-26/",
+   "kind": "interval-ladder",
+   "margin": 0.0010000000000000009
+  },
+  {
+   "family": "ladder:KXHOOD-26NOVFUNDED/",
+   "kind": "interval-ladder",
+   "margin": 0
+  },
+  {
+   "family": "ladder:KXGDPYEAR-26/",
+   "kind": "interval-ladder",
+   "margin": 0.0010000000000000009
+  },
+  {
+   "family": "ladder:KXFSLR-26OCTMWSOLD/",
+   "kind": "interval-ladder",
+   "margin": 0
+  },
+  {
+   "family": "ladder:KXDSENATESEATSH-27/E",
+   "kind": "interval-ladder",
+   "margin": 0.0010000000000000009
+  },
+  {
+   "family": "ladder:KXDSENATESEATS-27/",
+   "kind": "interval-ladder",
+   "margin": 0.0005000000000000004
+  },
+  {
+   "family": "ladder:KXCPIYOY-26DEC/",
+   "kind": "interval-ladder",
+   "margin": 0
+  }
+ ]
+}
