@@ -1,0 +1,3 @@
+rule,markets,wrong,taker_c_per_ct,rest_fill_rate,rest_c_per_placed,median_flow
+tail_sell p<=0.03 bid>=3c,32,0,4.71,0.31,3.22,0.0
+fav_buy p>=0.97 ask<=97c,23,0,12.25,0.22,4.96,0.0

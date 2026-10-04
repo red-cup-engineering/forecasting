@@ -1,0 +1,367 @@
+{
+  "type": "RainMarketModel",
+  "version": 1,
+  "provenance": {
+    "record": "data/records/2026-10-04-weather-coverage (results/rain-model.md, results/rain-edges.md, scripts/rain_dataset.py, scripts/rain_model.py)",
+    "fitted": "2026-10-04",
+    "data": "1524 settled KXRAIN markets 2026-07-26..2026-10-02, 28 city codes; NBS P06 from IEM's archive; truth is Kalshi's own results",
+    "feature": "pany = 1 - prod(1 - P06/100) over the NBS 6-hour periods whose midpoint lies inside the station's local-standard-time climate day (strictly; at least 3 periods)",
+    "form": "P(yes) = sigmoid(w0 + w1 * logit(clamp(pany, eps, 1 - eps))), eps = 0.001",
+    "frozen": "weights are the single fit on ALL rows of each decision time (ridge 1e-3 on w1, BFGS), the record's two cross-fit halves are kept in crossFit for audit. The record's edge tables used the cross-fit predictions (each row out of sample); the frozen weights are in-sample on those rows, so quote the record's numbers as an upper estimate until the forward test (kalshi-stake-path-service lane daily-rain) confirms them.",
+    "heldOut": "Out-of-fold Brier at D-1 15h 0.0885 (Kalshi mid 0.0903), D-1 21h 0.0854 (mid 0.0848); same-day 07h 0.0810 vs mid 0.0670 so the market is better than the model on the day itself and no same-day decision time is used."
+  },
+  "series": "KXRAIN",
+  "eps": 0.001,
+  "minPeriods": 3,
+  "settlement": {
+    "source": "The Weather Company (weather.com/kalshi), station CLIxxx",
+    "rule": "total precipitation strictly greater than 0 inches over the local day; trace amounts and missing values count as 0 inches",
+    "traceCountsAsZero": true,
+    "earlyClose": {
+      "canCloseEarly": true,
+      "condition": "the market closes and expires early (resolves yes) the first time rain occurs; close_time is only the latest close",
+      "consequence": "a settled-yes market may be settled before its close_time; the tail seller's loss arrives early, the favourite buyer's win arrives early; a market that is still open at its close_time without rain settles no"
+    }
+  },
+  "decisionTimes": {
+    "D-1 15h": {
+      "weights": [
+        -0.463798,
+        1.165823
+      ],
+      "crossFit": {
+        "early": [
+          -0.487964,
+          1.091624
+        ],
+        "late": [
+          -0.442054,
+          1.251734
+        ]
+      },
+      "n": 1504
+    },
+    "D-1 21h": {
+      "weights": [
+        -0.493646,
+        1.207093
+      ],
+      "crossFit": {
+        "early": [
+          -0.510695,
+          1.100341
+        ],
+        "late": [
+          -0.479314,
+          1.339955
+        ]
+      },
+      "n": 1509
+    }
+  },
+  "decisionTimesUnused": {
+    "D 07h": {
+      "weights": [
+        -0.432712,
+        1.182533
+      ],
+      "crossFit": {
+        "early": [
+          -0.445,
+          1.094084
+        ],
+        "late": [
+          -0.421985,
+          1.290835
+        ]
+      },
+      "n": 1524
+    }
+  },
+  "decisionRule": "the stage is read off the station's local clock on the calendar day before the event date: 15:00-20:59 uses D-1 15h, 21:00-23:59 uses D-1 21h; no other time is priced",
+  "cities": {
+    "ABQ": {
+      "name": "Albuquerque",
+      "station": "KABQ",
+      "zone": "America/Denver",
+      "cli": "CLIABQ",
+      "region": "interior-west",
+      "validated": false
+    },
+    "ATL": {
+      "name": "Atlanta",
+      "station": "KATL",
+      "zone": "America/New_York",
+      "cli": "CLIATL",
+      "region": "southeast",
+      "validated": true
+    },
+    "AUS": {
+      "name": "Austin",
+      "station": "KAUS",
+      "zone": "America/Chicago",
+      "cli": "CLIAUS",
+      "region": "south-central",
+      "validated": true
+    },
+    "BOS": {
+      "name": "Boston",
+      "station": "KBOS",
+      "zone": "America/New_York",
+      "cli": "CLIBOS",
+      "region": "northeast",
+      "validated": true
+    },
+    "CHI": {
+      "name": "Chicago",
+      "station": "KORD",
+      "zone": "America/Chicago",
+      "cli": "CLIORD",
+      "region": "midwest",
+      "validated": true
+    },
+    "CLL": {
+      "name": "College Station",
+      "station": "KCLL",
+      "zone": "America/Chicago",
+      "cli": "CLICLL",
+      "region": "south-central",
+      "validated": true
+    },
+    "CMH": {
+      "name": "Columbus",
+      "station": "KCMH",
+      "zone": "America/New_York",
+      "cli": "CLICMH",
+      "region": "midwest",
+      "validated": true
+    },
+    "DAL": {
+      "name": "Dallas",
+      "station": "KDFW",
+      "zone": "America/Chicago",
+      "cli": "CLIDFW",
+      "region": "south-central",
+      "validated": true
+    },
+    "DC": {
+      "name": "Washington DC",
+      "station": "KDCA",
+      "zone": "America/New_York",
+      "cli": "CLIDCA",
+      "region": "northeast",
+      "validated": true
+    },
+    "DEN": {
+      "name": "Denver",
+      "station": "KDEN",
+      "zone": "America/Denver",
+      "cli": "CLIDEN",
+      "region": "interior-west",
+      "validated": true
+    },
+    "EWR": {
+      "name": "Newark",
+      "station": "KEWR",
+      "zone": "America/New_York",
+      "cli": "CLIEWR",
+      "region": "northeast",
+      "validated": true
+    },
+    "HOU": {
+      "name": "Houston",
+      "station": "KIAH",
+      "zone": "America/Chicago",
+      "cli": "CLIIAH",
+      "region": "south-central",
+      "validated": true
+    },
+    "LAX": {
+      "name": "Los Angeles",
+      "station": "KLAX",
+      "zone": "America/Los_Angeles",
+      "cli": "CLILAX",
+      "region": "pacific",
+      "validated": true
+    },
+    "LV": {
+      "name": "Las Vegas",
+      "station": "KLAS",
+      "zone": "America/Los_Angeles",
+      "cli": "CLILAS",
+      "region": "interior-west",
+      "validated": true
+    },
+    "MIA": {
+      "name": "Miami",
+      "station": "KMIA",
+      "zone": "America/New_York",
+      "cli": "CLIMIA",
+      "region": "southeast",
+      "validated": true
+    },
+    "MIN": {
+      "name": "Minneapolis",
+      "station": "KMSP",
+      "zone": "America/Chicago",
+      "cli": "CLIMSP",
+      "region": "midwest",
+      "validated": true
+    },
+    "MKE": {
+      "name": "Milwaukee",
+      "station": "KMKE",
+      "zone": "America/Chicago",
+      "cli": "CLIMKE",
+      "region": "midwest",
+      "validated": true
+    },
+    "NOLA": {
+      "name": "New Orleans",
+      "station": "KMSY",
+      "zone": "America/Chicago",
+      "cli": "CLIMSY",
+      "region": "south-central",
+      "validated": true
+    },
+    "NYC": {
+      "name": "New York City",
+      "station": "KNYC",
+      "zone": "America/New_York",
+      "cli": "CLINYC",
+      "region": "northeast",
+      "validated": true
+    },
+    "OKC": {
+      "name": "Oklahoma City",
+      "station": "KOKC",
+      "zone": "America/Chicago",
+      "cli": "CLIOKC",
+      "region": "south-central",
+      "validated": true
+    },
+    "PHIL": {
+      "name": "Philadelphia",
+      "station": "KPHL",
+      "zone": "America/New_York",
+      "cli": "CLIPHL",
+      "region": "northeast",
+      "validated": true
+    },
+    "PHX": {
+      "name": "Phoenix",
+      "station": "KPHX",
+      "zone": "America/Phoenix",
+      "cli": "CLIPHX",
+      "region": "interior-west",
+      "validated": true
+    },
+    "PIT": {
+      "name": "Pittsburgh",
+      "station": "KPIT",
+      "zone": "America/New_York",
+      "cli": "CLIPIT",
+      "region": "northeast",
+      "validated": true
+    },
+    "PVD": {
+      "name": "Providence",
+      "station": "KPVD",
+      "zone": "America/New_York",
+      "cli": "CLIPVD",
+      "region": "northeast",
+      "validated": true
+    },
+    "SATX": {
+      "name": "San Antonio",
+      "station": "KSAT",
+      "zone": "America/Chicago",
+      "cli": "CLISAT",
+      "region": "south-central",
+      "validated": true
+    },
+    "SEA": {
+      "name": "Seattle",
+      "station": "KSEA",
+      "zone": "America/Los_Angeles",
+      "cli": "CLISEA",
+      "region": "pacific",
+      "validated": true
+    },
+    "SFO": {
+      "name": "San Francisco",
+      "station": "KSFO",
+      "zone": "America/Los_Angeles",
+      "cli": "CLISFO",
+      "region": "pacific",
+      "validated": true
+    },
+    "SGF": {
+      "name": "Springfield",
+      "station": "KSGF",
+      "zone": "America/Chicago",
+      "cli": "CLISGF",
+      "region": "midwest",
+      "validated": false
+    },
+    "TTN": {
+      "name": "Trenton",
+      "station": "KTTN",
+      "zone": "America/New_York",
+      "cli": "CLITTN",
+      "region": "northeast",
+      "validated": true
+    },
+    "LEX": {
+      "name": "Lexington",
+      "station": "KLEX",
+      "zone": "America/New_York",
+      "cli": "CLILEX",
+      "region": "midwest",
+      "validated": true
+    },
+    "DTW": {
+      "name": "Detroit",
+      "station": "KDTW",
+      "zone": "America/New_York",
+      "cli": "CLIDTW",
+      "region": "midwest",
+      "validated": true
+    },
+    "WPB": {
+      "name": "West Palm Beach",
+      "station": "KPBI",
+      "zone": "America/New_York",
+      "cli": "CLIPBI",
+      "region": "southeast",
+      "validated": true
+    },
+    "PROV": {
+      "name": "Providence",
+      "station": "KPVD",
+      "zone": "America/New_York",
+      "cli": "CLIPVD",
+      "region": "northeast",
+      "validated": true,
+      "alias": "PVD"
+    },
+    "MIL": {
+      "name": "Milwaukee",
+      "station": "KMKE",
+      "zone": "America/Chicago",
+      "cli": "CLIMKE",
+      "region": "midwest",
+      "validated": true,
+      "alias": "MKE"
+    },
+    "COL": {
+      "name": "College Station",
+      "station": "KCLL",
+      "zone": "America/Chicago",
+      "cli": "CLICLL",
+      "region": "south-central",
+      "validated": true,
+      "alias": "CLL"
+    }
+  }
+}

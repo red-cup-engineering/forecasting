@@ -1,0 +1,18 @@
+[Unit]
+Description=One poll of the Metaculus FutureEval/MiniBench forecasting bot: find newly opened tournament questions, forecast them once, update on new evidence, record to machine state
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/emsenn/info/lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service
+Environment=PATH=%h/.local/bin:/usr/local/bin:/usr/bin:/bin
+# METACULUS_TOKEN=... (the bot account's API token; the founder creates it, mode 0600). Holds nothing else.
+EnvironmentFile=%h/.config/561-group/metaculus.env
+# The node's MCP machine client (MCP_ORIGIN, MCP_CLIENT_ID, MCP_CLIENT_SECRET) for house inference dispatch.
+EnvironmentFile=%h/.config/561-group/bare-cedar-fog.561.group-mcp-client.env
+# Dry-run until --live is added to ExecStart. Dry-run writes would-submit payloads and never posts.
+ExecStart=%h/.local/bin/node --max-old-space-size=400 scripts/metaculus-tick.mjs
+TimeoutStartSec=9min
+UMask=0077
+NoNewPrivileges=true

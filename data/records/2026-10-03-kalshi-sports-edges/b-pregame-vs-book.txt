@@ -1,0 +1,24 @@
+games with book odds + kalshi quote: 552
+Brier book 0.1892  kalshi-mid 0.1888  (lower better; n sides=1225)
+mean |book-mid| = 0.0094
+== thr 0.02: bet best side if book_prob - kalshi_ask > thr (taker fee) ==
+ALL                        n=  19 win=0.105 [0.029,0.314] avgP=0.165 EV/ct=-0.0681 CI[-0.2101,+0.0740]
+  fit <2026-09-21          n=  14 win=0.143 [0.040,0.399] avgP=0.134 EV/ct=+0.0017 CI[-0.1698,+0.1731]
+  test >=2026-09-21        n=   5 win=0.000 [0.000,0.434] avgP=0.252 EV/ct=-0.2633 CI[-0.4305,-0.0961]
+  MLB                      n=   1 win=1.000 [0.207,1.000] avgP=0.380 EV/ct=+0.6117 CI[-inf,+inf]
+  NCAAF                    n=  11 win=0.091 [0.016,0.377] avgP=0.088 EV/ct=-0.0026 CI[-0.1798,+0.1746]
+  NFL                      n=   2 win=0.000 [0.000,0.658] avgP=0.435 EV/ct=-0.4520 CI[-0.5608,-0.3432]
+  WNBA                     n=   4 win=0.000 [0.000,0.490] avgP=0.198 EV/ct=-0.2086 CI[-0.2402,-0.1770]
+  soccer                   n=   1 win=0.000 [0.000,0.793] avgP=0.130 EV/ct=-0.1380 CI[-inf,+inf]
+  gross(no fee)            n=  19 win=0.105 [0.029,0.314] avgP=0.165 EV/ct=-0.0596 CI[-0.2012,+0.0820]
+== thr 0.03: bet best side if book_prob - kalshi_ask > thr (taker fee) ==
+ALL                        n=   2 win=0.000 [0.000,0.658] avgP=0.025 EV/ct=-0.0267 CI[-0.0372,-0.0163]
+  fit <2026-09-21          n=   1 win=0.000 [0.000,0.793] avgP=0.030 EV/ct=-0.0321 CI[-inf,+inf]
+  test >=2026-09-21        n=   1 win=0.000 [0.000,0.793] avgP=0.020 EV/ct=-0.0214 CI[-inf,+inf]
+  NCAAF                    n=   2 win=0.000 [0.000,0.658] avgP=0.025 EV/ct=-0.0267 CI[-0.0372,-0.0163]
+  gross(no fee)            n=   2 win=0.000 [0.000,0.658] avgP=0.025 EV/ct=-0.0250 CI[-0.0348,-0.0152]
+== thr 0.05: bet best side if book_prob - kalshi_ask > thr (taker fee) ==
+ALL                        n=   0 win=0.000 [0.000,1.000] avgP=0.000 EV/ct=+0.0000 CI[-inf,+inf]
+  fit <2026-09-21          n=   0 win=0.000 [0.000,1.000] avgP=0.000 EV/ct=+0.0000 CI[-inf,+inf]
+  test >=2026-09-21        n=   0 win=0.000 [0.000,1.000] avgP=0.000 EV/ct=+0.0000 CI[-inf,+inf]
+  gross(no fee)            n=   0 win=0.000 [0.000,1.000] avgP=0.000 EV/ct=+0.0000 CI[-inf,+inf]

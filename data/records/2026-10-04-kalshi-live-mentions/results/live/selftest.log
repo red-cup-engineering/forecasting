@@ -1,0 +1,4 @@
+[aost#0:0/pcm_f32le @ 0x59bfe0852000] Error submitting a packet to the muxer: Broken pipe
+[out#0/f32le @ 0x59bfe0b79200] Error muxing a packet
+[out#0/f32le @ 0x59bfe0b79200] Error writing trailer: Broken pipe
+[out#0/f32le @ 0x59bfe0b79200] Error closing file: Broken pipe

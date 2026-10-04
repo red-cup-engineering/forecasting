@@ -1,0 +1,146 @@
+{
+ "KXNETFLIXRANKSHOW|h72": {
+  "split": {
+   "fit": {
+    "ev": -0.0105,
+    "n_ev": 43,
+    "ci": [
+     -0.1065,
+     0.0753
+    ]
+   },
+   "test": {
+    "ev": -0.0095,
+    "n_ev": 44,
+    "ci": [
+     -0.0977,
+     0.0664
+    ]
+   }
+  },
+  "events": 89,
+  "fav_n": 87,
+  "fav_mean_price": 0.859,
+  "fav_hit": 0.862,
+  "fav_ev_ask": -0.01,
+  "fav_ev_ci": [
+   -0.0736,
+   0.0477
+  ],
+  "mid_gap_n": 120,
+  "mid_gap": -0.0365,
+  "mid_gap_ci": [
+   -0.0698,
+   -0.0083
+  ],
+  "mean_sum_mid": 1.014
+ },
+ "KXNETFLIXRANKSHOW|h24": {
+  "split": {
+   "fit": {
+    "ev": -0.0627,
+    "n_ev": 33,
+    "ci": [
+     -0.1715,
+     0.0315
+    ]
+   },
+   "test": {
+    "ev": -0.0032,
+    "n_ev": 34,
+    "ci": [
+     -0.08,
+     0.0526
+    ]
+   }
+  },
+  "events": 89,
+  "fav_n": 67,
+  "fav_mean_price": 0.871,
+  "fav_hit": 0.851,
+  "fav_ev_ask": -0.0325,
+  "fav_ev_ci": [
+   -0.0991,
+   0.0239
+  ],
+  "mid_gap_n": 81,
+  "mid_gap": -0.03,
+  "mid_gap_ci": [
+   -0.0676,
+   0.0012
+  ],
+  "mean_sum_mid": 1.012
+ },
+ "KXNETFLIXRANKSHOW|h6": {
+  "split": {
+   "fit": {
+    "ev": -0.0719,
+    "n_ev": 31,
+    "ci": [
+     -0.1749,
+     0.021
+    ]
+   },
+   "test": {
+    "ev": -0.0368,
+    "n_ev": 25,
+    "ci": [
+     -0.1368,
+     0.024
+    ]
+   }
+  },
+  "events": 89,
+  "fav_n": 56,
+  "fav_mean_price": 0.866,
+  "fav_hit": 0.821,
+  "fav_ev_ask": -0.0563,
+  "fav_ev_ci": [
+   -0.1254,
+   0.0038
+  ],
+  "mid_gap_n": 63,
+  "mid_gap": -0.0214,
+  "mid_gap_ci": [
+   -0.0495,
+   0.003
+  ],
+  "mean_sum_mid": 1.019
+ },
+ "KXNETFLIXRANKSHOW|h1": {
+  "split": {
+   "fit": {
+    "ev": -0.0567,
+    "n_ev": 27,
+    "ci": [
+     -0.1737,
+     0.0408
+    ]
+   },
+   "test": {
+    "ev": -0.0395,
+    "n_ev": 20,
+    "ci": [
+     -0.1535,
+     0.034
+    ]
+   }
+  },
+  "events": 89,
+  "fav_n": 47,
+  "fav_mean_price": 0.868,
+  "fav_hit": 0.83,
+  "fav_ev_ask": -0.0494,
+  "fav_ev_ci": [
+   -0.1317,
+   0.0194
+  ],
+  "mid_gap_n": 67,
+  "mid_gap": -0.0304,
+  "mid_gap_ci": [
+   -0.0702,
+   0.0026
+  ],
+  "mean_sum_mid": 1.017
+ }
+}

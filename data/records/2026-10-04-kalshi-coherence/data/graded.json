@@ -1,0 +1,185 @@
+[
+ {
+  "sig": "3340eebdf99b",
+  "family": "ladder:KXMORTGAGERATE-27DEC30/",
+  "kind": "interval-ladder",
+  "risks": [],
+  "firstSeen": "2026-10-04T03:41:22.733Z",
+  "lastSeen": "2026-10-04T03:52:22.699Z",
+  "scansSeen": 3,
+  "guaranteed": 2.51,
+  "cost": 915.75,
+  "fees": 6.74,
+  "status": "pending",
+  "realizedPnl": null,
+  "shortfall": null
+ },
+ {
+  "sig": "939cd36fd8a3",
+  "family": "ladder:KXNASDAQ100MINY-26DEC31H1600/",
+  "kind": "interval-ladder",
+  "risks": [],
+  "firstSeen": "2026-10-04T03:41:22.733Z",
+  "lastSeen": "2026-10-04T03:52:22.699Z",
+  "scansSeen": 3,
+  "guaranteed": 0.24000000000001598,
+  "cost": 91.07999999999998,
+  "fees": 0.6799999999999999,
+  "status": "pending",
+  "realizedPnl": null,
+  "shortfall": null
+ },
+ {
+  "sig": "ecf297a561b4",
+  "family": "window:KXRAINWKND-26OCT03-AUS",
+  "kind": "window-union",
+  "risks": [
+   "rule-text-parsed"
+  ],
+  "firstSeen": "2026-10-04T03:41:22.733Z",
+  "lastSeen": "2026-10-04T03:41:22.733Z",
+  "scansSeen": 1,
+  "guaranteed": 3.2700000000000027,
+  "cost": 50.8,
+  "fees": 1.9300000000000002,
+  "status": "pending",
+  "realizedPnl": null,
+  "shortfall": null
+ },
+ {
+  "sig": "6a74594f1c80",
+  "family": "window:KXRAINWKND-26OCT03-MIA",
+  "kind": "window-union",
+  "risks": [
+   "rule-text-parsed"
+  ],
+  "firstSeen": "2026-10-04T03:41:22.733Z",
+  "lastSeen": "2026-10-04T03:41:22.733Z",
+  "scansSeen": 1,
+  "guaranteed": 5.710000000000029,
+  "cost": 179.96999999999997,
+  "fees": 5.32,
+  "status": "pending",
+  "realizedPnl": null,
+  "shortfall": null
+ },
+ {
+  "sig": "e198a55330bb",
+  "family": "window:KXRAINWKND-26OCT03-BOS",
+  "kind": "window-union",
+  "risks": [
+   "rule-text-parsed"
+  ],
+  "firstSeen": "2026-10-04T03:41:22.733Z",
+  "lastSeen": "2026-10-04T03:41:22.733Z",
+  "scansSeen": 1,
+  "guaranteed": 0.8099999999999989,
+  "cost": 22.37,
+  "fees": 0.8200000000000001,
+  "status": "pending",
+  "realizedPnl": null,
+  "shortfall": null
+ },
+ {
+  "sig": "01a2abc2ce35",
+  "family": "window:KXRAINWKND-26OCT03-AUS",
+  "kind": "window-union",
+  "risks": [
+   "rule-text-parsed"
+  ],
+  "firstSeen": "2026-10-04T03:45:19.066Z",
+  "lastSeen": "2026-10-04T03:45:19.066Z",
+  "scansSeen": 1,
+  "guaranteed": 0.820000000000001,
+  "cost": 53.29,
+  "fees": 1.89,
+  "status": "pending",
+  "realizedPnl": null,
+  "shortfall": null
+ },
+ {
+  "sig": "d4bb4501ccec",
+  "family": "window:KXRAINWKND-26OCT03-MIA",
+  "kind": "window-union",
+  "risks": [
+   "rule-text-parsed"
+  ],
+  "firstSeen": "2026-10-04T03:45:19.066Z",
+  "lastSeen": "2026-10-04T03:45:19.066Z",
+  "scansSeen": 1,
+  "guaranteed": 4.220000000000012,
+  "cost": 71.41999999999999,
+  "fees": 2.3600000000000003,
+  "status": "pending",
+  "realizedPnl": null,
+  "shortfall": null
+ },
+ {
+  "sig": "5fe20ef7b0b2",
+  "family": "window:KXRAINWKND-26OCT03-BOS",
+  "kind": "window-union",
+  "risks": [
+   "rule-text-parsed"
+  ],
+  "firstSeen": "2026-10-04T03:45:19.066Z",
+  "lastSeen": "2026-10-04T03:45:19.066Z",
+  "scansSeen": 1,
+  "guaranteed": 4.689999999999996,
+  "cost": 87.98,
+  "fees": 3.33,
+  "status": "pending",
+  "realizedPnl": null,
+  "shortfall": null
+ },
+ {
+  "sig": "707e6f092806",
+  "family": "window:KXRAINWKND-26OCT03-OKC",
+  "kind": "window-union",
+  "risks": [
+   "rule-text-parsed"
+  ],
+  "firstSeen": "2026-10-04T03:45:19.066Z",
+  "lastSeen": "2026-10-04T03:52:22.699Z",
+  "scansSeen": 2,
+  "guaranteed": 1.3599999999999994,
+  "cost": 106.89,
+  "fees": 0.75,
+  "status": "pending",
+  "realizedPnl": null,
+  "shortfall": null
+ },
+ {
+  "sig": "c4b7b4bb6849",
+  "family": "window:KXRAINWKND-26OCT03-MIA",
+  "kind": "window-union",
+  "risks": [
+   "rule-text-parsed"
+  ],
+  "firstSeen": "2026-10-04T03:52:22.699Z",
+  "lastSeen": "2026-10-04T03:52:22.699Z",
+  "scansSeen": 1,
+  "guaranteed": 1.050000000000002,
+  "cost": 38.76,
+  "fees": 1.19,
+  "status": "pending",
+  "realizedPnl": null,
+  "shortfall": null
+ },
+ {
+  "sig": "2d2a60697d36",
+  "family": "window:KXRAINWKND-26OCT03-BOS",
+  "kind": "window-union",
+  "risks": [
+   "rule-text-parsed"
+  ],
+  "firstSeen": "2026-10-04T03:52:22.699Z",
+  "lastSeen": "2026-10-04T03:52:22.699Z",
+  "scansSeen": 1,
+  "guaranteed": 1.939999999999999,
+  "cost": 14.46,
+  "fees": 0.6000000000000001,
+  "status": "pending",
+  "realizedPnl": null,
+  "shortfall": null
+ }
+]

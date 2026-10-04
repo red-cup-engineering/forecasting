@@ -1,0 +1,425 @@
+series,title,freq,fee,markets,events,vol24h,oi,bid_top,ask_top,source,tags,family,settled,span
+HMONTH,Hottest month instance,monthly,quadraticx1,0,0,0,0,0,0,NCEI,Climate change,climate / other,0,
+KXEMERGENCYMIA,Natural disaster hits Miami,custom,quadraticx1,0,0,0,0,0,0,National Weather Service,Hurricanes,climate / other,0,
+KXNAMEDSTORM,Named Storms,custom,quadraticx1,14,2,0,7339,234,354,National Oceanic and Atmospheric Administration,Hurricanes,hurricane / tropical,0,
+KXAVGTKIAH,Average Weekly Temp in Houston (Bush) ,weekly,quadraticx1,5,1,156,434,0,4498,The Weather Company,Heatwaves,"temperature, weekly average (consecutive hot days)",30,2026-08-24..2026-09-28
+KXEMERGENCYCOL,Natural disaster hits Columbus,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Columbus, OH)",Hurricanes,climate / other,0,
+RAINNYCM,Monthly rain in New York,monthly,quadraticx1,0,0,0,0,0,0,National Weather Service,Snow and rain,climate / other,0,
+KXBACHELOROPEN,Mt. Bachelor Opening,annual,quadraticx1,5,1,0,340,1020,1105,USA Today; Associated Press; Mt. Bachelor; The Wall Street Journal; Reuters; the,Ski Resorts,ski-resort open/close dates,0,
+KXHURRICANENAMES,Hurricane Names,custom,quadraticx1,50,3,399,69773,114041,465442,National Weather Service; National Oceanic and Atmospheric Administration,Hurricanes,hurricane / tropical,8,2026-07-29..2026-09-10
+KXSPURRERUPT,Mount Spurr eruption,custom,quadraticx1,0,0,0,0,0,0,Alaska Volcano Observatory,,climate / other,0,
+KXAQICITY,AQI in city at time,custom,quadraticx1,0,0,0,0,0,0,AirNow New York City,,climate / other,0,
+KXJACWSNOWM,"Jackson, WY Monthly Snow",monthly,quadraticx1,0,0,0,0,0,0,National Weather Service,,snow,0,
+KXHURNYC,Hurricane hits NYC,custom,quadraticx1,0,0,0,0,0,0,National Weather Service; National Weather Service,Hurricanes,hurricane / tropical,0,
+KXECLIPSECOVERBUFF,Eclipse Cover Buffalo,one_off,quadraticx1,0,0,0,0,0,0,National Weather Service,Space,climate / other,0,
+KXRAINSNYC,Rainstorm in NYC,custom,quadraticx1,0,0,0,0,0,0,The Weather Company,Snow and rain,"rain, monthly/custom",10,2026-09-28..2026-09-28
+EMERGENCYSF,Natural disaster hits San Francisco,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (San Francisco, CA)",Hurricanes,climate / other,0,
+KXHIGHTTTN,"Trenton, NJ Daily Max Temp",daily,quadraticx1,12,2,1535,1677,6011,36938,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXAVGTKLAS,Average Weekly Temp in Las Vegas ,weekly,quadraticx1,5,1,935,1107,0,5175,The Weather Company,Heatwaves,"temperature, weekly average (consecutive hot days)",30,2026-08-24..2026-09-28
+KXHIGHTEWR,"Newark, NJ (EWR) Daily Max Temp",daily,quadraticx1,12,2,2075,1839,3176,41467,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHIGHTZSPD,Daily high temp Shanghai,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXVEI4,VEI 4,one_off,quadraticx1,3,1,54,5879,140,108,the U,Natural disasters,earthquake / volcano,0,
+KXLOWNY,Lowest Temperature in NYC,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",0,
+HURMYR,Hurricane hits North Myrtle Beach,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (North Myrtle Beach),Hurricanes,climate / other,0,
+KXHOBBYTEMP,Maximum temperature at Houston Hobby Airport,one_off,quadraticx1,0,0,0,0,0,0,if not U.S.: the national weather service governing area.; the National Weather ,,climate / other,1,2026-09-01..2026-09-01
+KXDCSNOWM,DC Monthly Snow,monthly,quadraticx1,6,1,1032,1045,4540,3180,The Weather Company,Snow and rain,snow,0,
+KXASPSNOWM,Aspen Snow Monthly,monthly,quadraticx1,0,0,0,0,0,0,the National Weather Service,Snow and rain,snow,0,
+KXHIGHMIA,Highest temperature in Miami,daily,quadraticx1,12,2,133890,100423,70078,306418,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXTEMPCHIH,Hourly Directional Chicago Temperature,hourly,quadraticx1,0,0,0,0,0,0,The Weather Company,Hourly temperature,"temperature, hourly directional",10808,2026-07-25..2026-09-10
+KXHIGHTLV,Las Vegas Max Daily Temperature,daily,quadraticx1,12,2,22544,20856,7098,169087,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHIGHTOKC,Oklahoma City Maximum High Temperature,daily,quadraticx1,12,2,27584,21041,4419,35129,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXRAINLEXM,RAIN LEXINGTON,custom,quadraticx1,14,2,0,87,314,141,The Weather Company,Snow and rain,"rain, monthly/custom",0,
+KXHIGHTKSAN,Daily High Temperature San Diego,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXEMERGENCYRAP,Natural disaster hits Rapid City,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Rapid City, SD)",Hurricanes,climate / other,0,
+KXEARTHQUAKE,earthquake,custom,quadraticx1,0,0,0,0,0,0,USGS,Natural disasters,earthquake / volcano,0,
+KXLOWTLTFM,Daily low temp Istanbul,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXMIASNOWM,Chicago Snowfall Monthly,one_off,quadraticx1,0,0,0,0,0,0,NWS Climatological Report Miami,Snow and rain,snow,0,
+KXEARTHQUAKEM,Earthquake monthly,one_off,quadraticx1,0,0,0,0,0,0,USGS,Natural disasters,earthquake / volcano,13,2026-08-10..2026-09-01
+KXHURPATHNC,Hurricane hits north carolina,one_off,quadraticx1,1,1,0,1282,421,5,AccuWeather; NBC; Associated Press; National Oceanic and Atmospheric Administrat,Hurricanes,hurricane / tropical,0,
+KXNYCSNOWM,NYC Snowfall monthly,monthly,quadraticx1,6,1,1545,1545,1546,314,The Weather Company,Snow and rain,snow,0,
+KXHIGHTVHHH,Daily high temp Hong Kong,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+FEMA,States that declare natural disasters,annual,quadraticx1,0,0,0,0,0,0,FEMA,,climate / other,0,
+KXHIGHTPHX,Phoenix High Temperature Daily,daily,quadraticx1,12,2,17544,17181,7093,230538,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXSNOWNY,Snow in NYC,custom,quadraticx1,0,0,0,0,0,0,National Weather Service ,Snow and rain,snow,0,
+CO2,US CO2 totals,monthly,quadraticx1,0,0,0,0,0,0,Energy Information Administration,Climate change,climate / other,0,
+KXHURWIL,Hurricane hits Wilmington,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (Wilmington),Hurricanes,hurricane / tropical,0,
+KXSEASNOWM,Seattle Snowfall Monthly,monthly,quadraticx1,0,0,0,0,0,0,NWS Climatological Report Seattle,Snow and rain,snow,0,
+KXBOSSNOWM,Boston Snow Monthly,monthly,quadraticx1,6,1,3374,3319,552,499,The Weather Company,Snow and rain,snow,0,
+KXLOWTCYYZ,Daily low temp Toronto,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXINDIACLIMATE,India climate goals,custom,quadraticx1,1,1,12,2816,10,15,Indian government,Climate change,climate / other,0,
+EMERGENCYLA,Natural disaster hits Los Angeles,custom,quadraticx1,0,0,0,0,0,0,National Weather Service,Hurricanes,climate / other,0,
+CORIVER,Lake Mead water level projections,annual,quadraticx1,0,0,0,0,0,0,Bureau of Reclamation,Climate change,climate / other,0,
+KXRAINHOLIDAY,Where will it rain on holidays? ,custom,quadraticx1,0,0,0,0,0,0,The Weather Channel,Snow and rain,"rain, monthly/custom",0,
+KXHIGHNY,Highest temperature in NYC,daily,quadraticx1,12,2,88793,69549,26481,451430,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHOLIDAYTMIN,Min temperature holidays ,custom,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",0,
+KXHURNJ,Hurricane hitting New Jersey,custom,quadraticx1,0,0,0,0,0,0,National Weather Service; National Weather Service,Hurricanes,hurricane / tropical,0,
+RAINMIA,Miami rain,custom,quadraticx1,0,0,0,0,0,0,,,climate / other,0,
+KXNYCSNOWXMAS,NYC Snow christmas,one_off,quadraticx1,0,0,0,0,0,0,NWS Climatological Report NY,Snow and rain,snow,0,
+KXLOWTNYC,Lowest temperature in NYC,daily,quadraticx1,12,2,9967,9972,381,15164,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXSNOWCRABCATCH,Bering Sea snow crab catch,annual,quadraticx1,6,1,2,3130,425,624,Alaska Department of Fish and Game,Jobs & Economy,snow,0,
+KXRAINSTPM,St Petersburg Rain Monthly,monthly,quadraticx1,0,0,0,0,0,0,The Weather Company,Snow and rain,"rain, monthly/custom",10,2026-08-01..2026-08-01
+KXLOWTCHI,Lowest Temperature Chicago,daily,quadraticx1,12,2,9103,9180,280,34921,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXTEMPNYCHS,Hourly Directional NYC Temperature,hourly,quadraticx1,10,1,3478,3462,651,400,Synoptic Data,Hourly temperature,"temperature, hourly directional",5550,2026-09-10..2026-10-04
+KXPHILSNOWM,Philadelphia Monthly Snow,monthly,quadraticx1,6,1,0,0,3008,557,The Weather Company,Snow and rain,snow,0,
+KXTEMPMON,Global monthly temperature average,monthly,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,,"temperature, other",0,
+KXSNOWS,White Christmas,annual,quadraticx1,0,0,0,0,0,0,National Weather Service,,snow,0,
+HURCATFL,Hurricane warning FL,custom,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,Hurricanes,climate / other,0,
+KXHIGHTEDDF,Daily high temp Frankfurt,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+HURJACKFL,Hurricane hits Jacksonville,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Jacksonville, FL)",Hurricanes,climate / other,0,
+KXEARTHQUAKEM7,Will there be a 7.0 mag earthquake in June,one_off,quadraticx1,0,0,0,0,0,0,USGS,Natural disasters,earthquake / volcano,0,
+KXEARTHQUAKELA,Earthquake in LA,custom,quadraticx1,0,0,0,0,0,0,USGS,Natural disasters,earthquake / volcano,0,
+KXHURCAL,Hurricane hits California,custom,quadraticx1,0,0,0,0,0,0,National Weather Service,Hurricanes,hurricane / tropical,0,
+KXHURMIA,Hurricane hits Miami,custom,quadraticx1,0,0,0,0,0,0,National Weather Service; National Weather Service,"Hurricanes,Natural disasters",hurricane / tropical,0,
+KXBRECKCLOSE,Breckenridge Ski Resort Closing,annual,quadraticx1,0,0,0,0,0,0,Breckenridge Ski Resort Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+KXASPENMTNOPEN,Aspen Mountain Opening,annual,quadraticx1,5,1,0,3723,28602,38392,USA Today; Associated Press; Aspen Mountain; The Wall Street Journal; Reuters; t,Ski Resorts,ski-resort open/close dates,0,
+KXMAXTEMP100,Max temp 100,custom,quadraticx1,0,0,0,0,0,0,the National Weather Service,,"temperature, daily high/low",0,
+KXAVGTKDEN,Average Weekly Temp in Denver ,weekly,quadraticx1,5,1,0,0,0,1501,The Weather Company,Heatwaves,"temperature, weekly average (consecutive hot days)",30,2026-08-24..2026-09-28
+KXHIGHTSFO,San Francisco High Temperature Daily,daily,quadraticx1,12,2,143839,100208,32428,672295,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXTEMPMIAH,Hourly Directional Miami Temperature,hourly,quadraticx1,10,1,4349,3629,3317,1346,Synoptic Data,Hourly temperature,"temperature, hourly directional",11770,2026-08-15..2026-10-04
+KXEMERGENCYSF,Natural disaster hits San Francisco,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (San Francisco, CA)",Hurricanes,climate / other,0,
+KXHURSAV,Hurricane hits Savannah,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (Savannah),Hurricanes,hurricane / tropical,0,
+KXECLIPSECOVER,Cloud coverage in cities during eclipse,one_off,quadraticx1,0,0,0,0,0,0,National Weather Service,Space,climate / other,0,
+HURORL,Hurricane hits Orlando,custom,quadraticx1,0,0,0,0,0,0,National Weather Service; National Weather Service,Hurricanes,climate / other,0,
+EMERGENCYPHIL,Natural disaster in Philadelphia,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Philadelphia, PA)",Hurricanes,climate / other,0,
+HURTB,Hurricane hits Tampa,custom,quadraticx1,0,0,0,0,0,0,National Weather Service,Hurricanes,climate / other,0,
+EARTHQUAKE,earthquake,custom,quadraticx1,0,0,0,0,0,0,USGS,Natural disasters,climate / other,0,
+KXLOWTPHIL,Lowest temperature in Philadelphia,daily,quadraticx1,12,2,4966,4128,21,18542,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXRAIN,Where will it rain daily,daily,quadraticx1,60,2,880443,465498,1801138,144846,The Weather Company,Snow and rain,"rain, daily",1529,2026-07-27..2026-10-03
+KXHURPATHFLA,hurricane hits florida,custom,quadraticx1,0,0,0,0,0,0,AccuWeather; NBC; Associated Press; National Oceanic and Atmospheric Administrat,Hurricanes,hurricane / tropical,0,
+HURCMAJ,Number of major hurricanes,custom,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,"Hurricanes,Natural disasters",climate / other,0,
+KXGTEMP,Hottest year ever,annual,quadraticx1,2,2,4816,125275,61,496,"NASA Goddard
+Institute for Space Studies",Climate change,climate / other,0,
+KXHIGHTEMPDEN,High temperature denver,custom,quadraticx1,0,0,0,0,0,0,NWS Climatological Report,,"temperature, daily high/low",,
+KXRAINPVDM,RAIN PROVIDENCE,custom,quadraticx1,14,2,172,157,191,1039,The Weather Company,Snow and rain,"rain, monthly/custom",0,
+KXRAINDPARIS,Daily Rain - Paris ,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,Snow and rain,"rain, daily",0,
+HIGHCHI,Highest temperature in Chicago,daily,quadraticx1,0,0,0,0,0,0,National Weather Service ,Daily temperature,climate / other,0,
+KXHIGHAUS,Highest temperature in Austin,daily,quadraticx1,12,2,59866,43892,53314,85845,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXLOWTNOLA,NOLA Low Temperature,daily,quadraticx1,12,2,3521,2244,168,27120,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXBIGGESTQUAKE,Biggest earthquake,daily,quadraticx1,10,1,447,446,8710,4068,the United States Geological Survey,,earthquake / volcano,299,2026-09-02..2026-10-03
+EMERGENCYRAP,Natural disaster hits Rapid City,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Rapid City, SD)",Hurricanes,climate / other,0,
+KXHURCHARL,Hurricane hits Charleston,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (Charleston),Hurricanes,hurricane / tropical,0,
+KXLAXSNOWM,LA Snowfall Markets,monthly,quadraticx1,0,0,0,0,0,0,NWS Climatological Report Los Angeles,Snow and rain,snow,0,
+KXHIGHHOU,Highest temperature in Houston,daily,quadraticx1,0,0,0,0,0,0,NWS Climatological Report Houston,Daily temperature,"temperature, daily high/low",0,
+KXRAINDC,Daily Rain DC,daily,quadraticx1,0,0,0,0,0,0,The Weather Channel,,"rain, daily",0,
+KXHURCATI,Hurricane Ida size,custom,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,Hurricanes,hurricane / tropical,0,
+KXWEEKHTNYC,Weekly high temperature New York,weekly,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, weekly high",0,
+KXRAINNYCM,Monthly rain in New York,monthly,quadraticx1,7,1,336,2847,258,229,NWS Climatological Report NY,Snow and rain,"rain, monthly/custom",33,2026-08-01..2026-10-01
+KXSNOWSTORM,Snowstorms,one_off,quadraticx1,0,0,0,0,0,0,the National Weather Service,Snow and rain,snow,0,
+KXNORTHSTAROPEN,Northstar California Resort Opening,annual,quadraticx1,6,1,0,1958,1104,210,Northstar California Resort Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+KXLOWTSEA,Low Temperature Seattle,daily,quadraticx1,12,2,1701,1736,339,310,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXWEEKHTLAX,Weekly high temperature Los Angeles,weekly,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, weekly high",0,
+KXLOWTVHHH,Daily low temp Hong Kong,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXELNINO,Will El Niño conditions be declared?,one_off,quadraticx1,0,0,0,0,0,0, San Francisco Unified School District; the National Weather Service; National C,,climate / other,0,
+KXHURHAT,Hurricane hits Hatteras Island,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (Cape Hatteras),Hurricanes,hurricane / tropical,0,
+KXLOWTLSGG,Daily low temperature Geneva,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXARCTICICEMAX,Arctic sea ice max extent,custom,quadraticx1,0,0,0,0,0,0,National Snow & Ice Data Center,Climate change,climate / other,0,
+KXRAINCHIM,Rain Chicago,monthly,quadraticx1,13,2,906,2769,3494,938,The Weather Company,Snow and rain,"rain, monthly/custom",28,2026-08-01..2026-10-03
+KXHOTYEAR,Global heat,annual,quadraticx1,0,0,0,0,0,0,"NASA Goddard
+Institute for Space Studies",Climate change,climate / other,0,
+KXKILAUEA,Kilauea eruption,one_off,quadraticx1,0,0,0,0,0,0,Government of Hawaii County; State Government of Hawaii,,earthquake / volcano,0,
+USCLIMATE,US climate goals,one_off,quadraticx1,0,0,0,0,0,0,EPA,Climate change,climate / other,0,
+HMONTHRANGE,Monthly Temperature Increase (ºC),custom,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,Climate change,climate / other,0,
+KXLOWTATL,Low Temperature Atlanta,daily,quadraticx1,12,2,3951,3976,1432,50677,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXNORTHSTARCLOSE,Northstar California Resort Closing,annual,quadraticx1,0,0,0,0,0,0,Northstar California Resort Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+EMERGENCYCOL,Natural disaster hits Columbus,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Columbus, OH)",Hurricanes,climate / other,0,
+KXLOWTSDF,Lowest Temperature SDX,daily,quadraticx1,12,2,1613,1283,1012,4548,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXLOWTEDDB,Daily Low Temp Berlin ,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXLOWNYC,Lowest temperature in New York,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,,"temperature, daily high/low",0,
+KXRAINCLLM,RAIN COLLEGE STATION,custom,quadraticx1,13,2,5310,5312,3850,180,The Weather Company,Snow and rain,"rain, monthly/custom",1,2026-10-03..2026-10-03
+KXERUPTKILUAEA,Kiluaea,custom,quadraticx1,0,0,0,0,0,0,ABC; Axios; CBS; CNN; Fox News; MSNBC; New York Times; Reuters; the Associated P,,earthquake / volcano,0,
+KXWASDESTATCORN,Corn,one_off,quadraticx1,0,0,0,0,0,0,the World Agricultural Outlook Board; U.S. Department of Agriculture Office of ,,climate / other,0,
+KXHIGHTHOU,Daily High Temperature Houston,daily,quadraticx1,12,2,49579,38824,40259,401758,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXRAINSBOS,Rainstorm in Boston,custom,quadraticx1,0,0,0,0,0,0,The Weather Company,Snow and rain,"rain, monthly/custom",10,2026-09-28..2026-09-28
+KXBEAVERCLOSE,Beaver Creek Resort Closing,annual,quadraticx1,0,0,0,0,0,0,Beaver Creek Resort Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+KXTSUNAMI,Tsunami ,custom,quadraticx1,0,0,0,0,0,0,NCEI,"Climate change,Natural disasters",earthquake / volcano,0,
+KXHIGHTEBBR,Daily high temp Brussels,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXDVHIGH,Death Valley temperature,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,,"temperature, daily high/low",0,
+KXCHISNOWM,Chicago Snowfall Monthly,monthly,quadraticx1,6,1,0,0,31970,4145,The Weather Company,Snow and rain,snow,0,
+KXHURTB,Hurricane hits Tampa,custom,quadraticx1,0,0,0,0,0,0,National Weather Service,Hurricanes,hurricane / tropical,0,
+KXRAINCMHM,RAIN COLUMBUS,custom,quadraticx1,14,2,3,31,3259,1202,The Weather Company,Snow and rain,"rain, monthly/custom",0,
+HURCLAND,Hurricanes making landfall,custom,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,"Hurricanes,Natural disasters",climate / other,0,
+HURNYC,Hurricane hits NYC,custom,quadraticx1,0,0,0,0,0,0,National Weather Service; National Weather Service,Hurricanes,climate / other,0,
+EMERGENCYDES,Natural disaster hits Des Moines,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Des Moines, IA)",Hurricanes,climate / other,0,
+HURWIL,Hurricane hits Wilmington,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (Wilmington),Hurricanes,climate / other,0,
+KXLOWTTTN,Trenton Daily low temp ,daily,quadraticx1,12,2,2711,2824,47,20611,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXEARTHQUAKEJAPAN,Earthquake in Japan,custom,quadraticx1,1,1,0,13385,340,146,USGS,Natural disasters,earthquake / volcano,0,
+INDIACLIMATE,India climate goals,custom,quadraticx1,0,0,0,0,0,0,Indian government,Climate change,climate / other,0,
+KXTEMPLAXHS,Hourly Directional Coastal LA Temperature,hourly,quadraticx1,10,1,2406,1599,1173,2073,Synoptic Data,Hourly temperature,"temperature, hourly directional",5580,2026-09-10..2026-10-04
+TEMPMON,Global monthly temperature average,monthly,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,Global heat,climate / other,0,
+EMERGENCYJAC,Natural disaster hits Jackson,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Jackson, MS)",Hurricanes,climate / other,0,
+KXKILLINGTONOPEN,Killington Opening,annual,quadraticx1,5,1,0,736,610,1104,USA Today; Killington Ski Resort; Associated Press; The Wall Street Journal; Reu,Ski Resorts,ski-resort open/close dates,0,
+KXSFOSNOWM,San Francisco Snowfall markets,monthly,quadraticx1,0,0,0,0,0,0,NWS Climatological Report San Francisco,Snow and rain,snow,0,
+KXHIGHTATL,Atlanta Max Temperature,daily,quadraticx1,12,2,84906,71491,11365,194562,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXDENSNOWMB,Denver monthly snow,monthly,quadraticx1,0,0,0,0,0,0,National Weather Service,,snow,0,
+KXKEYSTONEOPEN,Keystone Resort Opening,annual,quadraticx1,5,1,0,420,515,508,Keystone Resort Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+HURCAT,Hurricane category,custom,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,Hurricanes,climate / other,0,
+HURCTOTMAJ,Number of major hurricanes,annual,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,"Hurricanes,Natural disasters",climate / other,0,
+KXHURPATHSCAROLINA,hurricane hits SOUTH CAROLINA,custom,quadraticx1,0,0,0,0,0,0,AccuWeather; NBC; Associated Press; National Oceanic and Atmospheric Administrat,Hurricanes,hurricane / tropical,0,
+KXAVGTKSAT,Average Weekly Temp in San Antonio ,weekly,quadraticx1,5,1,0,468,0,5688,The Weather Company,Heatwaves,"temperature, weekly average (consecutive hot days)",30,2026-08-24..2026-09-28
+KXBIGSKYOPEN,Big Sky Opening,annual,quadraticx1,5,1,76,10281,22322,33319,USA Today; Associated Press; The Wall Street Journal; Reuters; Big Sky Ski Resor,Ski Resorts,ski-resort open/close dates,0,
+KXWHISTLEROPEN,Whistler Blackcomb opening,one_off,quadraticx1,0,0,0,0,0,0,Vail Resorts,Ski Resorts,ski-resort open/close dates,0,
+KXCO2LEVEL,CO2 level,custom,quadraticx1,5,1,30,4953,2043,2500,with data provided by NOAA Global Monitoring Laboratory; the National Aeronautic,,climate / other,0,
+KXEMERGENCYLA,Natural disaster hits Los Angeles,custom,quadraticx1,0,0,0,0,0,0,National Weather Service,Hurricanes,climate / other,0,
+KXHEATWARNING,Heat warning,custom,quadraticx1,0,0,0,0,0,0,NWS Extreme Heat Warnings,,climate / other,0,
+KXNEXTHURDATE,Next hurricane date,custom,quadraticx1,4,1,155,7885,497,37,National Oceanic and Atmospheric Administration,Hurricanes,hurricane / tropical,4,2026-08-15..2026-10-01
+KXEUCLIMATE,EU hits climate goals,one_off,quadraticx1,1,1,0,1574,5,24,EU,Climate change,climate / other,0,
+KXEMERGENCYPHIL,Natural disaster in Philadelphia,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Philadelphia, PA)",Hurricanes,climate / other,0,
+TEMP,Average annual temperature deviation,annual,quadraticx1,0,0,0,0,0,0,"NASA Goddard
+Institute for Space Studies",Global heat,climate / other,0,
+HURCAL,Hurricane hits California,custom,quadraticx1,0,0,0,0,0,0,National Weather Service,Hurricanes,climate / other,0,
+ERCOTX,Texas share of electricity from renewables,monthly,quadraticx1,0,0,0,0,0,0,ERCOT,Climate change,climate / other,0,
+HIGHAUS,Highest temperature in Austin,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,Daily temperature,climate / other,0,
+KXRAINDALM,Rain Dallas,custom,quadraticx1,14,2,1688,3370,1919,1375,The Weather Company,Snow and rain,"rain, daily",24,2026-08-01..2026-10-03
+KXHIGHDEN,Highest temperature in Denver,daily,quadraticx1,12,2,27493,22758,12039,82198,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHIGHTEGLL,Daily high temp London ,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXHURCATH,Hurricane Henri size,custom,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,Hurricanes,hurricane / tropical,0,
+KXRAIND,Rain Daily,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,,"rain, daily",0,
+KXAVGTATL,Average Weekly Temp in Atlanta ,weekly,quadraticx1,0,0,0,0,0,0,The Weather Company,Heatwaves,"temperature, weekly average (consecutive hot days)",5,2026-08-24..2026-08-24
+KXERUPTETNA,Etna,custom,quadraticx1,0,0,0,0,0,0,ABC; Axios; CBS; CNN; Fox News; MSNBC; New York Times; Reuters; the Associated P,,earthquake / volcano,0,
+SNOWNYM,Total snow in NYC,monthly,quadraticx1,0,0,0,0,0,0,NOAA,Snow and rain,snow,0,
+KXRONI,RONI,one_off,quadraticx1,16,3,277,31870,2225,2975, San Francisco Unified School District,,climate / other,0,
+KXLOWTBOS,Low Temperature Boston,daily,quadraticx1,12,2,2920,2713,421,22047,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+ECLIPSECOVER,Cloud coverage in cities during eclipse,one_off,quadraticx1,0,0,0,0,0,0,National Weather Service,Space,climate / other,0,
+KXRAINNYC,NYC rain,daily,quadraticx1,0,0,0,0,0,0,NWS Climatological Report,Snow and rain,"rain, monthly/custom",0,
+HURCTOT,Number of hurricanes,annual,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,"Hurricanes,Natural disasters",climate / other,0,
+KXLOWTLAX,Lowest Temperature in LA,daily,quadraticx1,12,2,12579,11773,525,97524,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+GTEMP,Hottest year ever,annual,quadraticx1,0,0,0,0,0,0,"NASA Goddard
+Institute for Space Studies",Climate change,climate / other,0,
+KXSJCLOWT,Monthly minimum temperature in San Jose,monthly,quadraticx1,1,1,40,1871,13,956,The Weather Company,Heatwaves,"temperature, daily high/low",0,
+KXLOWTZSPD,Daily low temp Shanghai,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXHIGHTSATX,San Antonio Daily Maximum Temperature,daily,quadraticx1,12,2,16276,15481,10649,39567,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXDROUGHTLEVEL,Drought level,one_off,quadraticx1,0,0,0,0,0,0,U.S. Drought Monitor,Natural disasters,climate / other,14,2026-07-31..2026-07-31
+KXDENSNOWM,Denver snowfall monthly,monthly,quadraticx1,6,1,5,5,1502,808,The Weather Company,Snow and rain,snow,0,
+KXMSPSNOWM,Minneapolis monthly snowfall,monthly,quadraticx1,6,1,402,402,2133,2048,The Weather Company,Snow and rain,snow,0,
+KILAUEA,Kilauea eruption,one_off,quadraticx1,0,0,0,0,0,0,Government of Hawaii County; State Government of Hawaii,,climate / other,0,
+KXHIGHTSBGR,Daly high temp Sao Paulo,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXTXURI,Will the average temperature in Texas (DFW & IAH) fall below 20°F for at least 2 days within a 4-day span?,one_off,quadraticx1,3,1,43,188,37,205,National Weather Service,,climate / other,0,
+KXRAINLAXM,Rain Los Angeles,custom,quadraticx1,14,2,3902,13948,6689,27522,The Weather Company,Snow and rain,"rain, monthly/custom",21,2026-08-01..2026-10-01
+KXHURRICANE,Hurricanes,custom,quadraticx1,24,4,1181,16881,61072,3980,National Oceanic and Atmospheric Administration,Hurricanes,hurricane / tropical,0,
+TORNADO,Number of Tornadoes,monthly,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,Natural disasters,climate / other,0,
+KXRAINNAPAM,Napa rainfall totals,monthly,quadraticx1,24,4,0,22,6744,6774,The Weather Company,Snow and rain,"rain, monthly/custom",0,
+KXRAINMIAM,Rain Miami,custom,quadraticx1,13,2,1299,2464,565,1656,The Weather Company,Snow and rain,"rain, monthly/custom",34,2026-08-01..2026-10-03
+KXLOWTMIN,Low  temperature Minnesota,daily,quadraticx1,12,2,3180,3409,365,1108,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXMKESNOWM,Milwaukee monthly snowfall,monthly,quadraticx1,6,1,0,0,4000,364,The Weather Company,Snow and rain,snow,0,
+KXLOWTOMDB,Daily low temp Dubai,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXNEXTCAT5HURDATE,Next CAT 5 hurricane date,custom,quadraticx1,2,1,76,4786,8,26,National Oceanic and Atmospheric Administration,Hurricanes,hurricane / tropical,2,2026-09-01..2026-10-01
+KXLOWTLFPG,Daily low temp Paris ,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXLOWDEN,Lowest temperature in Denver,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,,"temperature, daily high/low",0,
+KXJACKSONOPEN,Jackson Hole Mountain Resort Opening,annual,quadraticx1,5,1,0,108,5,172,USA Today; Associated Press; Jackson Hole Mountain Resort; The Wall Street Journ,Ski Resorts,ski-resort open/close dates,0,
+KXSNOWAZ,Snow in Phoenix,custom,quadraticx1,0,0,0,0,0,0,National Weather Service,,snow,0,
+KXARTICICE,Arctic sea ice,custom,quadraticx1,0,0,0,0,0,0,National Snow & Ice Data Center,Climate change,climate / other,0,
+EMERGENCYHOU,Natural disaster hits Houston,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Houston, TX)",Hurricanes,climate / other,0,
+HURNJ,Hurricane hitting New Jersey,custom,quadraticx1,0,0,0,0,0,0,National Weather Service; National Weather Service,Hurricanes,climate / other,0,
+KXLOWAUS,Lowest temperature in Austin,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,,"temperature, daily high/low",0,
+KXHOLIDAYTMAX,Max temperature holiday by city,custom,quadraticx1,0,0,0,0,0,0,The Weather Company,Daily temperature,"temperature, daily high/low",0,
+KXEMERGENCYSTL,Natural disaster hits St. Louis,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (St. Louis, MO)",Hurricanes,climate / other,0,
+KXHURPATHGULFCOAST,GULF COAST HURRICANE LANDFALL,custom,quadraticx1,0,0,0,0,0,0,AccuWeather; NBC; Associated Press; National Oceanic and Atmospheric Administrat,Hurricanes,hurricane / tropical,0,
+KXDALSNOWM,Dallas Snowfall Monthly,monthly,quadraticx1,0,0,0,0,0,0,NWS Climatological Report Dallas,Snow and rain,snow,0,
+MINNYC,Min NYC temp,monthly,quadraticx1,0,0,0,0,0,0,National Weather Service,"Climate change,Daily temperature",climate / other,0,
+KXXFLARE,X flare,custom,quadraticx1,0,0,0,0,0,0,NASA Solar Dynamics Observatory; the European Space Agency Space Weather Service,,climate / other,0,
+KXWARMING,Global warming,one_off,quadraticx1,1,1,0,4086,20,432,"Berkeley Earth; NASA Goddard
+Institute for Space Studies; NCEI; UK Met Office Ha",Climate change,climate / other,0,
+KXLOWTSATX,Lowest Temperature SATX,daily,quadraticx1,12,2,1406,1435,211,224,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHIGHTZBAA,Beijing Daily High Temperature,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXTEMPCHIHS,Hourly Directional Chicago Metro Temperature,hourly,quadraticx1,10,1,2672,1717,2751,2150,Kalshi,Hourly temperature,"temperature, hourly directional",5590,2026-09-10..2026-10-04
+KXRAINDNYC,Daily Rain - NYC,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,Snow and rain,"rain, daily",1,2026-09-20..2026-09-20
+KXSLCSNOWM,Salt Lake City Monthly,monthly,quadraticx1,0,0,0,0,0,0,NWS Climatological Report Salt Lake City,Snow and rain,snow,0,
+KXRAINSEAM,RAIN SEATTLE,custom,quadraticx1,14,2,2956,4118,1679,2308,The Weather Company,Snow and rain,"rain, monthly/custom",21,2026-08-01..2026-10-01
+KXALTAOPEN,Alta Opening,annual,quadraticx1,5,1,0,829,3010,6,USA Today; Associated Press; Alta Ski Area; The Wall Street Journal; Reuters; th,Ski Resorts,ski-resort open/close dates,0,
+KXBRECKOPEN,Breckenridge Ski Resort Opening,annual,quadraticx1,5,1,0,3179,140,1752,Breckenridge Ski Resort Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+KXLOWTSFO,Lowest Temperature San Francisco,daily,quadraticx1,12,2,3203,3499,1077,45393,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXUSCLIMATE,US climate goals,one_off,quadraticx1,2,1,51,9178,531,523,EPA,Climate change,climate / other,0,
+KXTEMPAUSH,Hourly Directional Austin Temperature,hourly,quadraticx1,0,0,0,0,0,0,The Weather Company,Hourly temperature,"temperature, hourly directional",10772,2026-07-25..2026-09-10
+KXLOWTSBGR,Daily low temp Sao Paulo ,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXLOWTRKSI,Daily low temp Seoul,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXHURJACKFL,Hurricane hits Jacksonville,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Jacksonville, FL)",Hurricanes,hurricane / tropical,0,
+KXHIGHTNOLA,New Orleans Max temp Daily,daily,quadraticx1,12,2,14972,13869,3434,173196,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXEVSHARE,EV market share,custom,quadraticx1,4,1,0,11802,41,1010,Argonne National Laboratory,"Energy,KPIs,Companies",climate / other,0,
+KXHIGHTYSSY,Daily high temp Sydney,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+SNOWCHIM,Total snow in Chicago,one_off,quadraticx1,0,0,0,0,0,0,NOAA,Snow and rain,snow,0,
+KXHIGHOU,Highest temperature in Houston,daily,quadraticx1,0,0,0,0,0,0,NWS Climatological Report Houston,Daily temperature,"temperature, daily high/low",0,
+KXVAILOPEN,Vail Mountain Opening,annual,quadraticx1,0,0,0,0,0,0,Vail Resorts,Ski Resorts,ski-resort open/close dates,0,
+KXSOCKEYERUN,Bristol Bay sockeye run forecast,annual,quadraticx1,6,1,0,4067,618,862,Alaska Department of Fish and Game,Jobs & Economy,climate / other,0,
+EMERGENCYNOLA,Natural disaster in New Orleans,custom,quadraticx1,0,0,0,0,0,0,National Weather Service,Hurricanes,climate / other,0,
+KXHIGHTSEA,Seattle Maximum Temperature Daily,daily,quadraticx1,12,2,33975,26126,14859,178048,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXLOWTEBBR,Daily low temp Brussels,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXHURPATHHAWAII,HURRICANE HITS HAWAII,custom,quadraticx1,1,1,449,53228,86,58,AccuWeather; NBC; Associated Press; National Oceanic and Atmospheric Administrat,Hurricanes,hurricane / tropical,0,
+KXHURCMAJ,Number of major hurricanes,custom,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,"Hurricanes,Natural disasters",hurricane / tropical,0,
+KXLOWTDAL,Lowest temperature Dallas,daily,quadraticx1,12,2,6519,6642,450,20616,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXAVGTKDFW,Average Weekly Temp in Dallas ,weekly,quadraticx1,5,1,0,0,0,1991,The Weather Company,Heatwaves,"temperature, weekly average (consecutive hot days)",30,2026-08-24..2026-09-28
+KXEMERGENCYWIL,Natural disaster hits Wilmington,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (Wilmington),Hurricanes,climate / other,0,
+KXSTOWECLOSE,Stowe Mountain Resort Closing,annual,quadraticx1,0,0,0,0,0,0,Stowe Mountain Resort Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+KXHEATAPHX,Average weekly heat in Phoenix,weekly,quadraticx1,0,0,0,0,0,0,NWS Climatological Report Phoenix,,"temperature, daily high/low",1,2026-08-18..2026-08-18
+EVSHARE,EV market share,custom,quadraticx1,0,0,0,0,0,0,Argonne National Laboratory,"Elon Musk,Energy",climate / other,0,
+KXHIGHTDAL,Dallas Maximum Temperature,daily,quadraticx1,12,2,19058,15971,6021,76041,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+HOTYEAR,Global heat,annual,quadraticx1,0,0,0,0,0,0,"NASA Goddard
+Institute for Space Studies",Climate change,climate / other,0,
+KXERUPTSUPER,Supervolcano,custom,quadraticx1,1,1,4,10898,8,20,ABC; Axios; CBS; CNN; Fox News; MSNBC; New York Times; Reuters; the Associated P,,earthquake / volcano,0,
+KXRAINSEA,Seattle rain,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,,"rain, monthly/custom",0,
+KXLOWTWSSS,Daily low temp Singapore,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXEMERGENCYHOU,Natural disaster hits Houston,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Houston, TX)",Hurricanes,climate / other,0,
+KXLOWTDEN,Lowest temperature in Denver,daily,quadraticx1,12,2,8362,6820,267,11953,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHIGHTRKSI,Daily high temp Seoul,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXHIGHTSAN,High Temperature San Diego,daily,quadraticx1,12,2,15991,12756,1471,24828,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHIGHTMIN,Minneapolis Daily High Temperature,daily,quadraticx1,12,2,42739,27791,6064,174608,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+HURHAT,Hurricane hits Hatteras Island,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (Cape Hatteras),Hurricanes,climate / other,0,
+KXHURORL,Hurricane hits Orlando,custom,quadraticx1,0,0,0,0,0,0,National Weather Service; National Weather Service,Hurricanes,hurricane / tropical,0,
+MEAD,Lake Mead water levels,monthly,quadraticx1,0,0,0,0,0,0,U.S. Bureau of Reclamation,,climate / other,0,
+HURCOASTTEX,Hurricane hits coastal Texas,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (Corpus Christi area),Hurricanes,climate / other,0,
+KXTEMPLAXH,Hourly Directional Los Angeles Temperature,hourly,quadraticx1,0,0,0,0,0,0,The Weather Company,Hourly temperature,"temperature, hourly directional",10796,2026-07-25..2026-09-10
+SNOW,Snow totals,one_off,quadraticx1,0,0,0,0,0,0,,,snow,0,
+KXDENHIGH,Highest temperature in Denver,daily,quadraticx1,0,0,0,0,0,0,NWS Climatological Report,Daily temperature,"temperature, daily high/low",0,
+KXLOWLAX,Lowest temperature in Los Angeles,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,,"temperature, daily high/low",0,
+KXHURPATHGENERALMAJOR,MAJOR HURRICANE GENERAL LANDFALL,custom,quadraticx1,0,0,0,0,0,0,AccuWeather; NBC; Associated Press; National Oceanic and Atmospheric Administrat,Hurricanes,hurricane / tropical,0,
+KXCOPPEROPEN,Copper Mountain Opening,annual,quadraticx1,5,1,0,3233,53,103,Copper Mountain Resort; USA Today; Associated Press; The Wall Street Journal; Re,Ski Resorts,ski-resort open/close dates,0,
+EMERGENCYLOU,Natural disaster hits Louisville,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Louisville, KY)",Hurricanes,climate / other,0,
+KXMINNYC,Min NYC temp,monthly,quadraticx1,0,0,0,0,0,0,NWS Climatological Report,"Climate change,Daily temperature","temperature, daily high/low",0,
+KXCORIVER,Lake Mead water level projections,annual,quadraticx1,0,0,0,0,0,0,Bureau of Reclamation,Climate change,climate / other,0,
+KXAVGTKSAN,Average Weekly Temp in San Diego ,weekly,quadraticx1,5,1,5155,5303,0,10896,The Weather Company,Heatwaves,"temperature, weekly average (consecutive hot days)",35,2026-08-24..2026-09-28
+KXBIGGESTQUAKEH,Biggest earthquake hourly,hourly,quadraticx1,0,0,0,0,0,0,the United States Geological Survey,,earthquake / volcano,0,
+KXTROPSTORM,Number of tropical storms,annual,quadraticx1,8,1,106,16374,2073,643,National Oceanic and Atmospheric Administration,"Hurricanes,Natural disasters",hurricane / tropical,0,
+KXLOWCHI,Lowest temperature in Chicago,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,,"temperature, daily high/low",0,
+KXLOWTPHX,Low Temperature Phoenix,daily,quadraticx1,12,2,6216,5600,718,36982,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXTEMPCHIMETROHS,Hourly Directional Chicago Metro Temperature,hourly,quadraticx1,0,0,0,0,0,0,Kalshi,,"temperature, hourly directional",0,
+KXCITIESWEATHER,Highest temperature in cities,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,Daily temperature,climate / other,0,
+KXHIGHTBOS,Boston Maximum Daily Temperature,daily,quadraticx1,12,2,26920,19666,18539,157696,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+TSUNAMI,Tsunami ,custom,quadraticx1,0,0,0,0,0,0,NCEI,"Climate change,Natural disasters",climate / other,0,
+ARCTICICEMIN,Arctic sea ice min extent,custom,quadraticx1,0,0,0,0,0,0,National Snow & Ice Data Center,Climate change,climate / other,0,
+KXBALDYOPEN,Bald Mountain Opening,annual,quadraticx1,5,1,0,1439,1020,1103,USA Today; Associated Press; Bald Mountain at Sun Valley Resort; The Wall Street,Ski Resorts,ski-resort open/close dates,0,
+KXHIGHTDC,Washington DC Daily Max Temp,daily,quadraticx1,12,2,19730,19013,22843,98876,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHIGHTOMDB,Daily high temp Dubai,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXHIGHTEDDB,Daily high temp Berlin,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+ARTICICE,Arctic sea ice,custom,quadraticx1,0,0,0,0,0,0,National Snow & Ice Data Center,Climate change,climate / other,0,
+KXSTOWEOPEN,Stowe Mountain Resort Opening,annual,quadraticx1,5,1,22,1477,18,137,Stowe Mountain Resort Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+KXLOWTMIA,Lowest temperature in Miami,daily,quadraticx1,12,2,10992,9529,310,9593,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHIGHNYD,Hourly Directional NYC Temperature,hourly,quadraticx1,0,0,0,0,0,0,The Weather Company,Hourly temperature,"temperature, daily high/low",0,
+KXHOUSNOWM,Houston Snowfall Markets,monthly,quadraticx1,0,0,0,0,0,0,NWS Climatological Report Houston,Snow and rain,snow,0,
+AVGTEMP,US average temp,monthly,quadraticx1,0,0,0,0,0,0,National Centers for Environmental Information,Climate change,climate / other,0,
+KXDENSNOWXMAS,Denver Snow Christmas,one_off,quadraticx1,0,0,0,0,0,0,the National Weather Service,Snow and rain,snow,0,
+KXLOWTAUS,Lowest temperature in Austin,daily,quadraticx1,12,2,3018,3862,654,310,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHIGHTLFPG,Daily high temp Paris,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXRAINHOUM,Rain Houston,custom,quadraticx1,14,2,249,966,672,558,The Weather Company,Snow and rain,"rain, monthly/custom",21,2026-08-01..2026-10-01
+KXWEEKHTMIA,Weekly high temperature Miami,weekly,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, weekly high",0,
+KXDETSNOWM,Detroit Monthly Snow,monthly,quadraticx1,6,1,600,600,1722,829,The Weather Company,Snow and rain,snow,0,
+KXHURCTOT,Number of hurricanes,annual,quadraticx1,9,1,430,38461,2546,3001,National Oceanic and Atmospheric Administration,"Hurricanes,Natural disasters",hurricane / tropical,0,
+KXECLIPSEREYK,Solar Eclipse Reykjavik,one_off,quadraticx1,0,0,0,0,0,0,National Weather Service,Space,climate / other,0,
+KXHURPATHGENERAL,HURRICANE GENERAL LANDFALL,one_off,quadraticx1,0,0,0,0,0,0,AccuWeather; NBC; Associated Press; National Oceanic and Atmospheric Administrat,Hurricanes,hurricane / tropical,0,
+KXHIGHTRJTT,Daily high temp Tokyo,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXTEMPBOSH,Hourly Directional Boston Temperature,hourly,quadraticx1,0,0,0,0,0,0,The Weather Company,Hourly temperature,"temperature, hourly directional",0,
+KXHURCOASTTEX,Hurricane hits coastal Texas,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (Corpus Christi area),Hurricanes,hurricane / tropical,0,
+KXLOWTKSAN,Low Temperature San Diego,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+RAINNYC,NYC rain,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,Snow and rain,climate / other,0,
+KXLOWTEGLL,Daily low temp London,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+EUCLIMATE,EU hits climate goals,one_off,quadraticx1,0,0,0,0,0,0,EU,Climate change,climate / other,0,
+HURNO,Hurricane hits New Orleans,annual,quadraticx1,0,0,0,0,0,0,National Weather Service; National Weather Service,"Hurricanes,Natural disasters",climate / other,0,
+KXLOWTOKC,Low Temperature Oklahoma City,daily,quadraticx1,12,2,1311,1503,549,1596,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHURNOR,Hurricane hits Norfolk,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Norfolk, VA)",Hurricanes,hurricane / tropical,0,
+KXAVGTKMSY,Average Weekly Temp in New Orleans ,weekly,quadraticx1,5,1,0,0,0,2249,The Weather Company,Heatwaves,"temperature, weekly average (consecutive hot days)",30,2026-08-24..2026-09-28
+KXKEYSTONECLOSE,Keystone Resort Closing,annual,quadraticx1,0,0,0,0,0,0,Keystone Resort Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+KXEARTHQUAKEJAPANTATSUKI,Earthquake in Japan July 2025,custom,quadraticx1,0,0,0,0,0,0,USGS,Natural disasters,earthquake / volcano,0,
+HURMIA,Hurricane hits Miami,custom,quadraticx1,0,0,0,0,0,0,National Weather Service; National Weather Service,"Hurricanes,Natural disasters",climate / other,0,
+KXHOUHIGH,Highest temperature in Houston,daily,quadraticx1,0,0,0,0,0,0,NWS Climatological Report Houston,Daily temperature,"temperature, daily high/low",0,
+KXHIGHLAX,Highest temperature in Los Angeles,daily,quadraticx1,12,2,468888,322732,265692,1739912,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXAUSSNOWM,Austin Snowfall Monthly,monthly,quadraticx1,0,0,0,0,0,0,NWS Climatological Report Austin,Snow and rain,snow,0,
+KXTORNADO,Number of Tornadoes,monthly,quadraticx1,11,1,750,1245,1787,286,National Oceanic and Atmospheric Administration,Natural disasters,climate / other,33,2026-08-01..2026-10-01
+KXHIGHCHI,Highest temperature in Chicago,daily,quadraticx1,12,2,73309,57614,9588,495947,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHDDCVG,Cincinnati heating degree days,custom,quadraticx1,9,1,0,1075,0,0,The Weather Company,,climate / other,0,
+KXLOWPHIL,Lowest temperature in Philadelphia,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,,"temperature, daily high/low",0,
+SNOWNY,Total snow in NYC,custom,quadraticx1,0,0,0,0,0,0,National Weather Service ,Snow and rain,snow,0,
+KXHIGHTEHAM,Amsterdam Daily High Temperature,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXLOWTVABB,Daily low temp Mumbai,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXEMERGENCYJAC,Natural disaster hits Jackson,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Jackson, MS)",Hurricanes,climate / other,0,
+KXPITSNOWM,Pittsburgh monthly snowfall,monthly,quadraticx1,6,1,500,500,1608,390,The Weather Company,Snow and rain,snow,0,
+KXLOWTRJTT,Daily low temp Tokyo,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXHURCATFL,Hurricane warning FL,custom,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,Hurricanes,hurricane / tropical,0,
+KXAVGTEMP,US average temp,monthly,quadraticx1,0,0,0,0,0,0,National Centers for Environmental Information,Climate change,"temperature, weekly average (consecutive hot days)",0,
+EMERGENCYSTL,Natural disaster hits St. Louis,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (St. Louis, MO)",Hurricanes,climate / other,0,
+KXARCTICICEMIN,Arctic sea ice min extent,custom,quadraticx1,0,0,0,0,0,0,National Snow & Ice Data Center,Climate change,climate / other,0,
+KXBOSSNOWXMAS,Boston White Christmas,one_off,quadraticx1,0,0,0,0,0,0,the National Weather Service,Snow and rain,snow,0,
+KXRAINNYCW,How much will it rain in NYC this week? ,weekly,quadraticx1,4,1,1,834,491,199,The Weather Company,Snow and rain,"rain, weekend/weekly",0,
+KXLOWTLSSG,Daily low temp Geneva,daily,quadraticx1,0,0,0,0,0,0,National Weather Service; the national weather service for area (e.g. Australian,,"temperature, daily high/low",,
+KXWEEKHTLAS,Weekly high temperature Las Vegas,weekly,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, weekly high",0,
+KXALTASNOW,Snowfall in Alta Ski Resort,annual,quadraticx1,0,0,0,0,0,0,OnTheSnow,,snow,0,
+KXLOWTEHAM,Amsterdam Daily Low Temperature,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXAVGTKPHX,Average Weekly Temp in Phoenix ,weekly,quadraticx1,5,1,1251,1867,0,7400,The Weather Company,Heatwaves,"temperature, weekly average (consecutive hot days)",30,2026-08-24..2026-09-28
+KXTSNOWFALLBIGSKYM,Big Sky monthly snowfall,monthly,quadraticx1,10,1,2760,49299,36518,70474,OnTheSnow - Big Sky,,snow,0,
+KXTEMPNYCH,Hourly Directional NYC Temperature,hourly,quadraticx1,0,0,0,0,0,0,The Weather Company,Hourly temperature,"temperature, hourly directional",10719,2026-07-27..2026-09-10
+KXSNOWCHIM,Total snow in Chicago,one_off,quadraticx1,0,0,0,0,0,0,NOAA,Snow and rain,snow,0,
+KXSNOWNYC,SNOW IN NYC,custom,quadraticx1,0,0,0,0,0,0,the National Weather Service,Snow and rain,snow,0,
+HIGHNY,Highest temperature in NYC,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,Daily temperature,climate / other,0,
+RAINSEA,Seattle rain,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,,climate / other,0,
+KXRAINAUSM,RAIN AUSTIN,custom,quadraticx1,13,2,1232,3724,1807,796,The Weather Company,Snow and rain,"rain, monthly/custom",22,2026-08-01..2026-10-03
+KXLOWMIA,Lowest temperature in Miami,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,,"temperature, daily high/low",0,
+KXLOWTMMMX,Daily low temp Mexico City,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+HIGHUS,High temp in United States,daily,quadraticx1,0,0,0,0,0,0,National Weather Service (US High),,climate / other,0,
+KXHEAVENLYOPEN,Heavenly Mountain Resort Opening,annual,quadraticx1,5,1,0,2140,109,122,Heavenly Mountain Resort Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+KXRAINWKND,Where will it rain this weekend?,weekly,quadraticx1,23,1,36566,58988,1317844,23894,The Weather Company,Snow and rain,"rain, weekend/weekly",133,2026-08-24..2026-09-28
+KXHIGHTWSSS,Daily high temp Singapore,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXWEEKHTPHX,Weekly high temperature Phoenix,weekly,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, weekly high",0,
+KXAVGTKOKC,Average Weekly Temp in Oklahoma City ,weekly,quadraticx1,5,1,0,0,0,2317,The Weather Company,Heatwaves,"temperature, weekly average (consecutive hot days)",30,2026-08-24..2026-09-28
+KXCO2,US CO2 totals,monthly,quadraticx1,0,0,0,0,0,0,Energy Information Administration,Climate change,climate / other,0,
+HURCHARL,Hurricane hits Charleston,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (Charleston),Hurricanes,climate / other,0,
+KXLOWTZBAA,Beijing Daily Low Temperature,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXHIGHPHIL,Highest temperature in Philadelphia,daily,quadraticx1,12,2,32224,25697,21266,223153,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHMONTHRANGE,Monthly Temperature Increase (ºC),custom,quadraticx1,12,2,567,10481,539,13817,National Oceanic and Atmospheric Administration,Climate change,climate / other,12,2026-08-16..2026-09-13
+EMERGENCYWIL,Natural disaster hits Wilmington,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (Wilmington),Hurricanes,climate / other,0,
+KXMICHTEMP,Lake Michigan surface water temperature,monthly,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,,climate / other,0,
+KXHIGHTSDF,HIGHEST Temperature SATX,daily,quadraticx1,12,2,2080,1923,1679,5859,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXRAINDENM,RAIN DENVER,monthly,quadraticx1,14,2,105,9625,8751,21784,The Weather Company,Snow and rain,"rain, daily",24,2026-08-01..2026-10-01
+KXFIRSTHURRICANE,First Hurricane,custom,quadraticx1,21,1,3005,343575,447,651366,National Weather Service; National Oceanic and Atmospheric Administration,Hurricanes,hurricane / tropical,0,
+KXHURCLAND,Hurricanes making landfall,custom,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,"Hurricanes,Natural disasters",hurricane / tropical,0,
+TROPSTORM,Number of tropical storms,annual,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,"Hurricanes,Natural disasters",climate / other,0,
+KXFEMA,States that declare natural disasters,annual,quadraticx1,0,0,0,0,0,0,FEMA,,climate / other,0,
+KXPARKCOPEN,Park City Mountain Opening,annual,quadraticx1,5,1,97,791,1626,1213,Park City Mountain Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+KXLOWTHOU,Low Temperature Houston,daily,quadraticx1,12,2,2440,2437,448,44734,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXALYOPEN,Alyeska Opening,annual,quadraticx1,5,1,0,2257,1020,2979,USA Today; Associated Press; Alyeska Resort; The Wall Street Journal; Reuters; t,Ski Resorts,ski-resort open/close dates,0,
+KXEMERGENCYDES,Natural disaster hits Des Moines,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Des Moines, IA)",Hurricanes,climate / other,0,
+MICHTEMP,Lake Michigan surface water temperature,monthly,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,,climate / other,0,
+KXLOWTYSSY,Daily low temp Sydney,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXHEAVENLYCLOSE,Heavenly Mountain Resort Closing,annual,quadraticx1,0,0,0,0,0,0,Heavenly Mountain Resort Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+KXBEAVEROPEN,Beaver Creek Resort Opening,annual,quadraticx1,5,1,0,1286,21,3404,Beaver Creek Resort Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+KXTEMP,Average annual temperature deviation,annual,quadraticx1,0,0,0,0,0,0,"NASA Goddard
+Institute for Space Studies",,climate / other,0,
+KXEMERGENCYLOU,Natural disaster hits Louisville,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Louisville, KY)",Hurricanes,climate / other,0,
+KXHIGHTCYYZ,Daily high temp Toronto,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXTEMPDCH,Hourly Directional DC Temperature,hourly,quadraticx1,0,0,0,0,0,0,The Weather Company,Hourly temperature,"temperature, hourly directional",10823,2026-07-25..2026-09-10
+KXHIGHUS,High temp in United States,daily,quadraticx1,0,0,0,0,0,0,National Weather Service (US High),,"temperature, daily high/low",0,
+KXHURCAT,Hurricane category,custom,quadraticx1,145,29,3082,134046,221858,470722,National Oceanic and Atmospheric Administration; The Weather Company,Hurricanes,hurricane / tropical,68,2026-07-29..2026-10-01
+KXLOWTEDDF,Daily low temp Frankfurt,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXLOWTLV,Las Vegas Daily Low Temperature,daily,quadraticx1,12,2,6558,6575,929,48196,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXTEMPLAHS,Hourly Directional Coastal LA Temperature,hourly,quadraticx1,0,0,0,0,0,0,Kalshi,,"temperature, hourly directional",0,
+HURSAV,Hurricane hits Savannah,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (Savannah),Hurricanes,climate / other,0,
+KXMEAD,Lake Mead water levels,monthly,quadraticx1,8,1,0,7445,233,438,U.S. Bureau of Reclamation,,climate / other,0,
+ARCTICICEMAX,Arctic sea ice max extent,custom,quadraticx1,0,0,0,0,0,0,National Snow & Ice Data Center,Climate change,climate / other,0,
+KXSNOWBIRDOPEN,Snowbird Opening,annual,quadraticx1,5,1,0,3674,17,305,USA Today; Associated Press; The Wall Street Journal; Reuters; the New York Time,Ski Resorts,snow,0,
+KXERCOTX,Texas share of electricity from renewables,monthly,quadraticx1,0,0,0,0,0,0,ERCOT,Climate change,climate / other,0,
+KXLOWTEWR,"Newark, NJ (EWR) Daily Low Temp",daily,quadraticx1,12,2,1176,1435,25,21426,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+HURCATI,Hurricane Ida size,custom,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,Hurricanes,climate / other,0,
+KXASPENOPEN,Aspen Snowmass Opening,annual,quadraticx1,0,0,0,0,0,0,Aspen Mountain,Ski Resorts,ski-resort open/close dates,0,
+KXHIGHTLSGG,Daily high temp Geneva,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXHURCTOTMAJ,Number of major hurricanes,annual,quadraticx1,8,1,1250,53675,974,788,National Oceanic and Atmospheric Administration,"Hurricanes,Natural disasters",hurricane / tropical,0,
+EMERGENCYMIA,Natural disaster hits Miami,custom,quadraticx1,0,0,0,0,0,0,National Weather Service,Hurricanes,climate / other,0,
+KXEARTHQUAKECALIFORNIA,Earthquake in California,custom,quadraticx1,3,3,1571,254041,4570,2225,USGS,Natural disasters,earthquake / volcano,0,
+KXHURNO,Hurricane hits New Orleans,annual,quadraticx1,0,0,0,0,0,0,National Weather Service; National Weather Service,"Hurricanes,Natural disasters",hurricane / tropical,0,
+KXHURPATHHOU,hurricane hits houston,custom,quadraticx1,0,0,0,0,0,0,AccuWeather; NBC; Associated Press; National Oceanic and Atmospheric Administrat,Hurricanes,hurricane / tropical,0,
+KXRAINMKEM,RAIN MILWAUKEE,custom,quadraticx1,13,2,0,30,1239,161,The Weather Company,Snow and rain,"rain, monthly/custom",1,2026-10-03..2026-10-03
+KXLOWTSAN,Low Temperature San Diego,daily,quadraticx1,12,2,2465,2199,509,9898,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXCHISNOWXMAS,Chistmas Chicago ,one_off,quadraticx1,0,0,0,0,0,0,NWS Climatological Report Chicago O'Hare,Snow and rain,snow,0,
+HIGHMIA,Highest temperature in Miami,daily,quadraticx1,0,0,0,0,0,0,National Weather Service,Daily temperature,climate / other,0,
+HURCATH,Hurricane Henri size,custom,quadraticx1,0,0,0,0,0,0,National Oceanic and Atmospheric Administration,Hurricanes,climate / other,0,
+HURNOR,Hurricane hits Norfolk,custom,quadraticx1,0,0,0,0,0,0,"National Weather Service (Norfolk, VA)",Hurricanes,climate / other,0,
+KXRAINSFOM,RAIN SAN FRANCISCO,custom,quadraticx1,14,2,67,506,1118,1144,The Weather Company,Snow and rain,"rain, monthly/custom",21,2026-08-01..2026-10-01
+KXLOWTDC,Lowest Temperature DC ,daily,quadraticx1,12,2,5961,5703,825,60584,The Weather Company,Daily temperature,"temperature, daily high/low",(~400),2026-07-28..
+KXHMONTH,Hottest month instance,monthly,quadraticx1,2,2,1326,15488,97,97,NCEI,Climate change,climate / other,2,2026-08-14..2026-09-15
+KXPHILHIGH,Highest temperature in Philadelphia,custom,quadraticx1,0,0,0,0,0,0,NWS Climatological Report,Daily temperature,"temperature, daily high/low",0,
+KXPARKCCLOSE,Park City Mountain Closing,annual,quadraticx1,0,0,0,0,0,0,Park City Mountain Snow & Weather Report,Ski Resorts,ski-resort open/close dates,0,
+KXEMERGENCYNOLA,Natural disaster in New Orleans,custom,quadraticx1,0,0,0,0,0,0,National Weather Service,Hurricanes,climate / other,0,
+KXHURMYR,Hurricane hits North Myrtle Beach,custom,quadraticx1,0,0,0,0,0,0,National Weather Service (North Myrtle Beach),Hurricanes,hurricane / tropical,0,
+ECLIPSECOVERBUFF,Eclipse Cover Buffalo,one_off,quadraticx1,0,0,0,0,0,0,National Weather Service,Space,climate / other,0,
+KXSNOWBASINOPEN,Snowbasin Opening,annual,quadraticx1,5,1,0,45,10,172,Snowbasin Resort; USA Today; Associated Press; The Wall Street Journal; Reuters;,Ski Resorts,snow,0,
+KXHIGHTMMMX,Daily high temp Mexico City,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXSIERRAOPEN,Sierra-at-Tahoe Opening,annual,quadraticx1,5,1,0,3,1020,3100,Sierra-at-Tahoe Resort; USA Today; Associated Press; The Wall Street Journal; Re,Ski Resorts,ski-resort open/close dates,0,
+KXHIGHTVABB,Daily high temp Mumbai,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXHIGHTLTFM,Daily high temp Istanbul,daily,quadraticx1,0,0,0,0,0,0,The Weather Company,,"temperature, daily high/low",,
+KXSNOWNYM,Total snow in NYC,monthly,quadraticx1,0,0,0,0,0,0,NOAA,Snow and rain,snow,0,
+KXAVGTKAUS,Average Weekly Temp in Austin ,weekly,quadraticx1,5,1,0,0,0,2732,The Weather Company,Heatwaves,"temperature, weekly average (consecutive hot days)",30,2026-08-24..2026-09-28

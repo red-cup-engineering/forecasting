@@ -1,0 +1,508 @@
+{
+  "type": "KalshiMarketBrief",
+  "version": 1,
+  "briefId": "KXTRUMPACT-26SEP27@20261003T201512Z",
+  "asOf": "2026-10-03T20:15:12.469Z",
+  "event": {
+    "eventTicker": "KXTRUMPACT-26SEP27",
+    "seriesTicker": "KXTRUMPACT",
+    "title": "How many presidential actions will Trump take this week? (9/27-10/3)",
+    "subTitle": "9/27-10/3",
+    "category": "Politics",
+    "frequency": "weekly",
+    "mutuallyExclusive": false,
+    "tags": [
+      "Recurring",
+      "Trump"
+    ],
+    "closesAt": "2026-10-04T14:00:00.000Z",
+    "expectedSettleAt": "2026-10-04T14:00:00.000Z",
+    "settlesOn": "2026-10-04",
+    "hoursToClose": 17.75,
+    "feeMultiplier": 1,
+    "url": "https://kalshi.com/markets/kxtrumpact/will-trump-do-anything-today/kxtrumpact-26sep27",
+    "seriesUrl": "https://kalshi.com/markets/kxtrumpact"
+  },
+  "rules": {
+    "primary": "If Donald Trump has taken at least 1 presidential actions from Sep 27, 2026 through Oct 3, 2026 (as checked on the “Presidential Actions” page at whitehouse.gov at 10:00 AM ET on Oct 4, 2026), then the market resolves to Yes.",
+    "secondary": "How this is resolved\n\nThe market solely resolves to the publication dates visibly displayed on the \"Presidential Actions\" tab at whitehouse.gov at 10:00 AM ET on Oct 4, 2026.\nThe week runs from Sep 27, 2026 through Oct 3, 2026.\n\nPayout criteria\n\nThe actions may include proclamations, executive orders, nominations & appointments, and memoranda.\nAny item listed on the page counts, regardless of its legal effect.\n\nExamples (for Jan 10, 2026):\n\nExecutive Order with a Jan 7 signing date is released with a Jan 10 publication date → resolves Yes\nProclamation e-mailed to White House Press Pool but not uploaded by 10:00 AM next day → resolves No\nProclamation is released Jan 10 with a backdated Jan 9 publication date → resolves No\nBill signed into law and shows up on \"Briefings & Statements\" instead of \"Presidential Actions\" → resolves No",
+    "contractTermsUrl": "https://assets.kalshi.com/contract_terms/POLITICALSTAT.pdf"
+  },
+  "settlementSource": {
+    "primary": {
+      "name": "the White House",
+      "url": "https://www.whitehouse.gov/presidential-actions/"
+    },
+    "all": [
+      {
+        "name": "the White House",
+        "url": "https://www.whitehouse.gov/presidential-actions/"
+      }
+    ]
+  },
+  "markets": [
+    {
+      "ticker": "KXTRUMPACT-26SEP27-T7",
+      "label": "At least 7",
+      "strike": {
+        "type": "greater_or_equal",
+        "floor": 7,
+        "cap": null
+      },
+      "yesBidCents": 1,
+      "yesAskCents": 2,
+      "noBidCents": 98,
+      "noAskCents": 99,
+      "lastCents": 2,
+      "bidSize": 3200,
+      "askSize": 1200,
+      "volume": 10380.04,
+      "volume24h": 4961.76,
+      "openInterest": 6143.72,
+      "impliedYes": 0.015,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Politics",
+        "horizonHours": 24,
+        "n": 41,
+        "yesCount": 2,
+        "yesRate": 0.0488,
+        "yesRate95": [
+          0.0135,
+          0.1614
+        ],
+        "avgYesAsk": 0.0341
+      }
+    },
+    {
+      "ticker": "KXTRUMPACT-26SEP27-T6",
+      "label": "At least 6",
+      "strike": {
+        "type": "greater_or_equal",
+        "floor": 6,
+        "cap": null
+      },
+      "yesBidCents": 2,
+      "yesAskCents": 5,
+      "noBidCents": 95,
+      "noAskCents": 98,
+      "lastCents": 4,
+      "bidSize": 1678,
+      "askSize": 533,
+      "volume": 10041.62,
+      "volume24h": 3746.53,
+      "openInterest": 3664.58,
+      "impliedYes": 0.035,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Politics",
+        "horizonHours": 24,
+        "n": 41,
+        "yesCount": 2,
+        "yesRate": 0.0488,
+        "yesRate95": [
+          0.0135,
+          0.1614
+        ],
+        "avgYesAsk": 0.0341
+      }
+    },
+    {
+      "ticker": "KXTRUMPACT-26SEP27-T8",
+      "label": "At least 8",
+      "strike": {
+        "type": "greater_or_equal",
+        "floor": 8,
+        "cap": null
+      },
+      "yesBidCents": 1,
+      "yesAskCents": 2,
+      "noBidCents": 98,
+      "noAskCents": 99,
+      "lastCents": 1,
+      "bidSize": 3000.01,
+      "askSize": 1695,
+      "volume": 8587.55,
+      "volume24h": 2151.87,
+      "openInterest": 5105.51,
+      "impliedYes": 0.015,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Politics",
+        "horizonHours": 24,
+        "n": 41,
+        "yesCount": 2,
+        "yesRate": 0.0488,
+        "yesRate95": [
+          0.0135,
+          0.1614
+        ],
+        "avgYesAsk": 0.0341
+      }
+    },
+    {
+      "ticker": "KXTRUMPACT-26SEP27-T10",
+      "label": "At least 10",
+      "strike": {
+        "type": "greater_or_equal",
+        "floor": 10,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 2,
+      "noBidCents": 98,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 4038.3,
+      "volume": 2032.72,
+      "volume24h": 1519.7,
+      "openInterest": 1332.71,
+      "impliedYes": 0.01,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Politics",
+        "horizonHours": 24,
+        "n": 41,
+        "yesCount": 2,
+        "yesRate": 0.0488,
+        "yesRate95": [
+          0.0135,
+          0.1614
+        ],
+        "avgYesAsk": 0.0341
+      }
+    },
+    {
+      "ticker": "KXTRUMPACT-26SEP27-T5",
+      "label": "At least 5",
+      "strike": {
+        "type": "greater_or_equal",
+        "floor": 5,
+        "cap": null
+      },
+      "yesBidCents": 99,
+      "yesAskCents": 100,
+      "noBidCents": 0,
+      "noAskCents": 1,
+      "lastCents": 99,
+      "bidSize": 1588.18,
+      "askSize": 0,
+      "volume": 25822.73,
+      "volume24h": 858.27,
+      "openInterest": 12712.84,
+      "impliedYes": 0.995,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Politics",
+        "horizonHours": 24,
+        "n": 8,
+        "yesCount": 8,
+        "yesRate": 1,
+        "yesRate95": [
+          0.6756,
+          1
+        ],
+        "avgYesAsk": 0.9716
+      }
+    },
+    {
+      "ticker": "KXTRUMPACT-26SEP27-T15",
+      "label": "At least 15",
+      "strike": {
+        "type": "greater_or_equal",
+        "floor": 15,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 1797.14,
+      "volume": 5336.92,
+      "volume24h": 102.86,
+      "openInterest": 2940.57,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Politics",
+        "horizonHours": 24,
+        "n": 41,
+        "yesCount": 2,
+        "yesRate": 0.0488,
+        "yesRate95": [
+          0.0135,
+          0.1614
+        ],
+        "avgYesAsk": 0.0341
+      }
+    },
+    {
+      "ticker": "KXTRUMPACT-26SEP27-T9",
+      "label": "At least 9",
+      "strike": {
+        "type": "greater_or_equal",
+        "floor": 9,
+        "cap": null
+      },
+      "yesBidCents": 1,
+      "yesAskCents": 2,
+      "noBidCents": 98,
+      "noAskCents": 99,
+      "lastCents": 3,
+      "bidSize": 1600.01,
+      "askSize": 2245,
+      "volume": 764.35,
+      "volume24h": 35.4,
+      "openInterest": 624.39,
+      "impliedYes": 0.015,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Politics",
+        "horizonHours": 24,
+        "n": 41,
+        "yesCount": 2,
+        "yesRate": 0.0488,
+        "yesRate95": [
+          0.0135,
+          0.1614
+        ],
+        "avgYesAsk": 0.0341
+      }
+    },
+    {
+      "ticker": "KXTRUMPACT-26SEP27-T1",
+      "label": "At least 1",
+      "strike": {
+        "type": "greater_or_equal",
+        "floor": 1,
+        "cap": null
+      },
+      "yesBidCents": 99,
+      "yesAskCents": 100,
+      "noBidCents": 0,
+      "noAskCents": 1,
+      "lastCents": 99,
+      "bidSize": 7987.8,
+      "askSize": 0,
+      "volume": 1427.2,
+      "volume24h": 0,
+      "openInterest": 1395.2,
+      "impliedYes": 0.995,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Politics",
+        "horizonHours": 24,
+        "n": 8,
+        "yesCount": 8,
+        "yesRate": 1,
+        "yesRate95": [
+          0.6756,
+          1
+        ],
+        "avgYesAsk": 0.9716
+      }
+    },
+    {
+      "ticker": "KXTRUMPACT-26SEP27-T2",
+      "label": "At least 2",
+      "strike": {
+        "type": "greater_or_equal",
+        "floor": 2,
+        "cap": null
+      },
+      "yesBidCents": 99,
+      "yesAskCents": 100,
+      "noBidCents": 0,
+      "noAskCents": 1,
+      "lastCents": 99,
+      "bidSize": 2201.37,
+      "askSize": 0,
+      "volume": 6520.14,
+      "volume24h": 0,
+      "openInterest": 5209.34,
+      "impliedYes": 0.995,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Politics",
+        "horizonHours": 24,
+        "n": 8,
+        "yesCount": 8,
+        "yesRate": 1,
+        "yesRate95": [
+          0.6756,
+          1
+        ],
+        "avgYesAsk": 0.9716
+      }
+    },
+    {
+      "ticker": "KXTRUMPACT-26SEP27-T3",
+      "label": "At least 3",
+      "strike": {
+        "type": "greater_or_equal",
+        "floor": 3,
+        "cap": null
+      },
+      "yesBidCents": 99,
+      "yesAskCents": 100,
+      "noBidCents": 0,
+      "noAskCents": 1,
+      "lastCents": 99,
+      "bidSize": 2936.4,
+      "askSize": 0,
+      "volume": 6914.91,
+      "volume24h": 0,
+      "openInterest": 4870.38,
+      "impliedYes": 0.995,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Politics",
+        "horizonHours": 24,
+        "n": 8,
+        "yesCount": 8,
+        "yesRate": 1,
+        "yesRate95": [
+          0.6756,
+          1
+        ],
+        "avgYesAsk": 0.9716
+      }
+    },
+    {
+      "ticker": "KXTRUMPACT-26SEP27-T4",
+      "label": "At least 4",
+      "strike": {
+        "type": "greater_or_equal",
+        "floor": 4,
+        "cap": null
+      },
+      "yesBidCents": 99,
+      "yesAskCents": 100,
+      "noBidCents": 0,
+      "noAskCents": 1,
+      "lastCents": 99,
+      "bidSize": 3479.35,
+      "askSize": 0,
+      "volume": 11584.46,
+      "volume24h": 0,
+      "openInterest": 5683.78,
+      "impliedYes": 0.995,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Politics",
+        "horizonHours": 24,
+        "n": 8,
+        "yesCount": 8,
+        "yesRate": 1,
+        "yesRate95": [
+          0.6756,
+          1
+        ],
+        "avgYesAsk": 0.9716
+      }
+    }
+  ],
+  "book": {
+    "markets": 11,
+    "volume24h": 13376.39,
+    "openInterest": 49683.02,
+    "midSum": 5.07
+  },
+  "house": {
+    "model": null,
+    "status": "no-model",
+    "reason": "the house has no model for this market; the brief carries market-implied odds and the category base rate",
+    "evidence": [],
+    "usableAs": null
+  },
+  "baseRate": {
+    "category": {
+      "category": "Politics",
+      "horizonHours": 24,
+      "markets": 119,
+      "brierOfMid": 0.0809,
+      "longshot": {
+        "n": 41,
+        "yesCount": 2,
+        "yesRate": 0.0488,
+        "yesRate95": [
+          0.0135,
+          0.1614
+        ],
+        "avgYesAsk": 0.0341
+      },
+      "favorite": {
+        "n": 8,
+        "yesCount": 8,
+        "yesRate": 1,
+        "yesRate95": [
+          0.6756,
+          1
+        ],
+        "avgYesAsk": 0.9716
+      },
+      "source": "content/config/kalshi-category-base-rates.json",
+      "window": [
+        "2026-09-29",
+        "2026-10-03"
+      ]
+    },
+    "family": null
+  },
+  "whatWouldMoveIt": [
+    "New polling, official announcements or filings, and statements by the named officials.",
+    "The publication schedule of the named poll or tracker.",
+    "A rules clarification or settlement-source change published by Kalshi on the market page.",
+    "Order-book depth: thin books move on small orders, so a large price move on little volume says little."
+  ],
+  "opportunities": [],
+  "provenance": [
+    {
+      "what": "Kalshi market data (event, markets, series)",
+      "url": "https://api.elections.kalshi.com/trade-api/v2/events/KXTRUMPACT-26SEP27",
+      "fetchedAt": "2026-10-03T20:15:12.469Z"
+    },
+    {
+      "what": "Category base rates",
+      "url": null,
+      "fetchedAt": "2026-10-03"
+    }
+  ],
+  "disclosure": "Built from public information (Kalshi market data, the contract rules, and public data sources). Odds are a snapshot, not a prediction of the future and not financial advice. Prediction-market contracts can lose their entire price."
+}

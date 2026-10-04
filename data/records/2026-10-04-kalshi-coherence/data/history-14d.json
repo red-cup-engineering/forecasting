@@ -1,0 +1,129 @@
+{
+ "days": 14,
+ "markets": 3528,
+ "events": 588,
+ "ladders": 588,
+ "stationDays": 280,
+ "stats": {
+  "ladder": {
+   "families": 588,
+   "familyHours": 15948,
+   "rawViolationHours": 1897,
+   "netViolationHours": 19,
+   "netShare": 0.0011913719588663154,
+   "netPerUnitMean": 0.00742073684210526,
+   "netPerUnitMedian": 0.005077999999999916,
+   "netPerUnitP90": 0.017835000000000045,
+   "netPerUnitMax": 0.021272999999999875,
+   "runs": 19,
+   "runHoursMedian": 1,
+   "runHoursMax": 1
+  },
+  "stationDay": {
+   "families": 280,
+   "familyHours": 5291,
+   "rawViolationHours": 1155,
+   "netViolationHours": 8,
+   "netShare": 0.001512001512001512,
+   "netPerUnitMean": 0.006848374999999976,
+   "netPerUnitMedian": 0.005077999999999916,
+   "netPerUnitP90": 0.021272999999999875,
+   "netPerUnitMax": 0.021272999999999875,
+   "runs": 8,
+   "runHoursMedian": 1,
+   "runHoursMax": 1
+  }
+ },
+ "examples": [
+  {
+   "kind": "ladder",
+   "family": "ladder:KXHIGHTSEA-26SEP24/",
+   "t": "2026-09-23T18:00:00.000Z",
+   "margin": -0.011666666666666634,
+   "unitNet": 0.021272999999999875,
+   "legs": [
+    [
+     "KXHIGHTSEA-26SEP24-T65",
+     "yes",
+     0.05,
+     1
+    ],
+    [
+     "KXHIGHTSEA-26SEP24-T58",
+     "yes",
+     0.04,
+     1
+    ],
+    [
+     "KXHIGHTSEA-26SEP24-B64.5",
+     "yes",
+     0.07,
+     1
+    ],
+    [
+     "KXHIGHTSEA-26SEP24-B62.5",
+     "yes",
+     0.28,
+     1
+    ],
+    [
+     "KXHIGHTSEA-26SEP24-B60.5",
+     "yes",
+     0.36,
+     1
+    ],
+    [
+     "KXHIGHTSEA-26SEP24-B58.5",
+     "yes",
+     0.13,
+     1
+    ]
+   ]
+  },
+  {
+   "kind": "stationDay",
+   "family": "stationday:KXHIGHTSEA-26SEP24+KXLOWTSEA-26SEP24",
+   "t": "2026-09-23T18:00:00.000Z",
+   "margin": -0.011666666666666633,
+   "unitNet": 0.021272999999999875,
+   "legs": [
+    [
+     "KXHIGHTSEA-26SEP24-T65",
+     "yes",
+     0.05,
+     1
+    ],
+    [
+     "KXHIGHTSEA-26SEP24-T58",
+     "yes",
+     0.04,
+     1
+    ],
+    [
+     "KXHIGHTSEA-26SEP24-B64.5",
+     "yes",
+     0.07,
+     1
+    ],
+    [
+     "KXHIGHTSEA-26SEP24-B62.5",
+     "yes",
+     0.28,
+     1
+    ],
+    [
+     "KXHIGHTSEA-26SEP24-B60.5",
+     "yes",
+     0.36,
+     1
+    ],
+    [
+     "KXHIGHTSEA-26SEP24-B58.5",
+     "yes",
+     0.13,
+     1
+    ]
+   ]
+  }
+ ]
+}

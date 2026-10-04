@@ -1,0 +1,746 @@
+{
+  "type": "KalshiMarketBrief",
+  "version": 1,
+  "briefId": "KXALBUMEQUIV-TSLOASG26OCT01@20261003T201512Z",
+  "asOf": "2026-10-03T20:15:12.469Z",
+  "event": {
+    "eventTicker": "KXALBUMEQUIV-TSLOASG26OCT01",
+    "seriesTicker": "KXALBUMEQUIV",
+    "title": "The Life of a Showgirl · The Encore: First Week Album Equivalent Units",
+    "subTitle": "The Life of a Showgirl: The Encore | September 25, 2026 - October 01, 2026",
+    "category": "Entertainment",
+    "frequency": "weekly",
+    "mutuallyExclusive": false,
+    "tags": [
+      "New Music",
+      "Music"
+    ],
+    "closesAt": "2026-10-04T14:00:00.000Z",
+    "expectedSettleAt": "2026-10-04T14:00:00.000Z",
+    "settlesOn": "2026-10-04",
+    "hoursToClose": 17.75,
+    "feeMultiplier": 1,
+    "url": "https://kalshi.com/markets/kxalbumequiv/how-many-album-equivalent-will-album-sell/kxalbumequiv-tsloasg26oct01",
+    "seriesUrl": "https://kalshi.com/markets/kxalbumequiv"
+  },
+  "rules": {
+    "primary": "If The Life of a Showgirl: The Encore by Taylor Swift has above 100K Album Equivalent Units during the September 25, 2026 - October 01, 2026, tracking week, then the market resolves to Yes.",
+    "secondary": "IMPORTANT INFORMATION: This event pertains to the U.S. and will resolve based on the value reported by Luminate’s API as of 10:00 AM ET on the Sunday immediately following the September 25, 2026 - October 01, 2026 tracking week.\n\nLuminate Data, LLC is a neutral provider of market metrics which does not endorse, verify or participate in any way in the outcomes of any prediction market.",
+    "contractTermsUrl": "https://assets.kalshi.com/contract_terms/PERIODMEDIACONSUMPTION.pdf"
+  },
+  "settlementSource": {
+    "primary": {
+      "name": "Luminate",
+      "url": "https://luminatedata.com/"
+    },
+    "all": [
+      {
+        "name": "Luminate",
+        "url": "https://luminatedata.com/"
+      }
+    ]
+  },
+  "markets": [
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-180K",
+      "label": "Above 180K",
+      "strike": {
+        "type": "greater",
+        "floor": 180000,
+        "cap": null
+      },
+      "yesBidCents": 5,
+      "yesAskCents": 7,
+      "noBidCents": 93,
+      "noAskCents": 95,
+      "lastCents": 5,
+      "bidSize": 105,
+      "askSize": 32,
+      "volume": 9866.65,
+      "volume24h": 4505.97,
+      "openInterest": 3780.75,
+      "impliedYes": 0.06,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": null
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-300K",
+      "label": "Above 300K",
+      "strike": {
+        "type": "greater",
+        "floor": 300000,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 4889.78,
+      "volume": 73953.67,
+      "volume24h": 3133.7,
+      "openInterest": 26831.64,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-200K",
+      "label": "Above 200K",
+      "strike": {
+        "type": "greater",
+        "floor": 200000,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 2,
+      "noBidCents": 98,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 1183.03,
+      "volume": 48640.9,
+      "volume24h": 1816.12,
+      "openInterest": 19765.35,
+      "impliedYes": 0.01,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-250K",
+      "label": "Above 250K",
+      "strike": {
+        "type": "greater",
+        "floor": 250000,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 3,
+      "noBidCents": 97,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 725.79,
+      "volume": 11320.56,
+      "volume24h": 849.17,
+      "openInterest": 4959.8,
+      "impliedYes": 0.015,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-170K",
+      "label": "Above 170K",
+      "strike": {
+        "type": "greater",
+        "floor": 170000,
+        "cap": null
+      },
+      "yesBidCents": 96,
+      "yesAskCents": 100,
+      "noBidCents": 0,
+      "noAskCents": 4,
+      "lastCents": 99,
+      "bidSize": 102,
+      "askSize": 0,
+      "volume": 8469.43,
+      "volume24h": 746.58,
+      "openInterest": 5089.72,
+      "impliedYes": 0.98,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-190K",
+      "label": "Above 190K",
+      "strike": {
+        "type": "greater",
+        "floor": 190000,
+        "cap": null
+      },
+      "yesBidCents": 1,
+      "yesAskCents": 3,
+      "noBidCents": 97,
+      "noAskCents": 99,
+      "lastCents": 1,
+      "bidSize": 135.17,
+      "askSize": 446,
+      "volume": 4443.81,
+      "volume24h": 726.2,
+      "openInterest": 2300.37,
+      "impliedYes": 0.02,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-1.0M",
+      "label": "Above 1M",
+      "strike": {
+        "type": "greater",
+        "floor": 1000000,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 2613.38,
+      "volume": 8937.73,
+      "volume24h": 93.51,
+      "openInterest": 6056.35,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-100K",
+      "label": "Above 100K",
+      "strike": {
+        "type": "greater",
+        "floor": 100000,
+        "cap": null
+      },
+      "yesBidCents": 99,
+      "yesAskCents": 100,
+      "noBidCents": 0,
+      "noAskCents": 1,
+      "lastCents": 99,
+      "bidSize": 6189.59,
+      "askSize": 0,
+      "volume": 5945.41,
+      "volume24h": 0,
+      "openInterest": 4874.38,
+      "impliedYes": 0.995,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-150KB",
+      "label": "Above 150K",
+      "strike": {
+        "type": "greater",
+        "floor": 150000,
+        "cap": null
+      },
+      "yesBidCents": 97,
+      "yesAskCents": 100,
+      "noBidCents": 0,
+      "noAskCents": 3,
+      "lastCents": 97,
+      "bidSize": 298.93,
+      "askSize": 0,
+      "volume": 10523.13,
+      "volume24h": 0,
+      "openInterest": 6560.91,
+      "impliedYes": 0.985,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-160K",
+      "label": "Above 160K",
+      "strike": {
+        "type": "greater",
+        "floor": 160000,
+        "cap": null
+      },
+      "yesBidCents": 97,
+      "yesAskCents": 100,
+      "noBidCents": 0,
+      "noAskCents": 3,
+      "lastCents": 99,
+      "bidSize": 300,
+      "askSize": 0,
+      "volume": 6832.5,
+      "volume24h": 0,
+      "openInterest": 6482.27,
+      "impliedYes": 0.985,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "favorite",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-350K",
+      "label": "Above 350K",
+      "strike": {
+        "type": "greater",
+        "floor": 350000,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 4,
+      "bidSize": 0,
+      "askSize": 2500,
+      "volume": 1865.25,
+      "volume24h": 0,
+      "openInterest": 1350.66,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-400K",
+      "label": "Above 400K",
+      "strike": {
+        "type": "greater",
+        "floor": 400000,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 8916,
+      "volume": 19324.74,
+      "volume24h": 0,
+      "openInterest": 6408.09,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-500K",
+      "label": "Above 500K",
+      "strike": {
+        "type": "greater",
+        "floor": 500000,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 6600,
+      "volume": 15758.81,
+      "volume24h": 0,
+      "openInterest": 8987.29,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-600K",
+      "label": "Above 600K",
+      "strike": {
+        "type": "greater",
+        "floor": 600000,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 2200,
+      "volume": 6493.49,
+      "volume24h": 0,
+      "openInterest": 4988.21,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-700K",
+      "label": "Above 700K",
+      "strike": {
+        "type": "greater",
+        "floor": 700000,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 7200,
+      "volume": 8834.23,
+      "volume24h": 0,
+      "openInterest": 6210.47,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-750K",
+      "label": "Above 750K",
+      "strike": {
+        "type": "greater",
+        "floor": 750000,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 2,
+      "bidSize": 0,
+      "askSize": 1000,
+      "volume": 604.62,
+      "volume24h": 0,
+      "openInterest": 410.81,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-800K",
+      "label": "Above 800K",
+      "strike": {
+        "type": "greater",
+        "floor": 800000,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 2200.8,
+      "volume": 7404.41,
+      "volume24h": 0,
+      "openInterest": 5171.74,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    },
+    {
+      "ticker": "KXALBUMEQUIV-TSLOASG26OCT01-900K",
+      "label": "Above 900K",
+      "strike": {
+        "type": "greater",
+        "floor": 900000,
+        "cap": null
+      },
+      "yesBidCents": 0,
+      "yesAskCents": 1,
+      "noBidCents": 99,
+      "noAskCents": 100,
+      "lastCents": 1,
+      "bidSize": 0,
+      "askSize": 2629.41,
+      "volume": 5949.3,
+      "volume24h": 0,
+      "openInterest": 4351.84,
+      "impliedYes": 0.005,
+      "impliedYesNormalized": null,
+      "house": null,
+      "baseRate": {
+        "band": "longshot",
+        "scope": "category",
+        "category": "Entertainment",
+        "horizonHours": 24,
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      }
+    }
+  ],
+  "book": {
+    "markets": 18,
+    "volume24h": 11871.25,
+    "openInterest": 124580.65,
+    "midSum": 4.1
+  },
+  "house": {
+    "model": null,
+    "status": "no-model",
+    "reason": "the house has no model for this market; the brief carries market-implied odds and the category base rate",
+    "evidence": [],
+    "usableAs": null
+  },
+  "baseRate": {
+    "category": {
+      "category": "Entertainment",
+      "horizonHours": 24,
+      "markets": 95,
+      "brierOfMid": 0.06,
+      "longshot": {
+        "n": 27,
+        "yesCount": 0,
+        "yesRate": 0,
+        "yesRate95": [
+          0,
+          0.1246
+        ],
+        "avgYesAsk": 0.0319
+      },
+      "favorite": {
+        "n": 28,
+        "yesCount": 28,
+        "yesRate": 1,
+        "yesRate95": [
+          0.8794,
+          1
+        ],
+        "avgYesAsk": 0.9886
+      },
+      "source": "content/config/kalshi-category-base-rates.json",
+      "window": [
+        "2026-09-29",
+        "2026-10-03"
+      ]
+    },
+    "family": null
+  },
+  "whatWouldMoveIt": [
+    "The daily or weekly chart the market settles on, as the platform publishes it, and in-day movement on the ranked item.",
+    "A rules clarification or settlement-source change published by Kalshi on the market page.",
+    "Order-book depth: thin books move on small orders, so a large price move on little volume says little."
+  ],
+  "opportunities": [],
+  "provenance": [
+    {
+      "what": "Kalshi market data (event, markets, series)",
+      "url": "https://api.elections.kalshi.com/trade-api/v2/events/KXALBUMEQUIV-TSLOASG26OCT01",
+      "fetchedAt": "2026-10-03T20:15:12.469Z"
+    },
+    {
+      "what": "Category base rates",
+      "url": null,
+      "fetchedAt": "2026-10-03"
+    }
+  ],
+  "disclosure": "Built from public information (Kalshi market data, the contract rules, and public data sources). Odds are a snapshot, not a prediction of the future and not financial advice. Prediction-market contracts can lose their entire price."
+}

@@ -1,0 +1,6 @@
+cell markets 139
+cell: z[1.0,2.0) rest SELL YES at ask, 4h->10min before close; EV/contract in cents (maker fee 0)
+ Q0=    0: placed 139 filled 116 (83%) clean 97 sweep 19; EV per filled +6.07c CI[+3.4,+8.2]; clean +5.86c sweep +7.16c; EV per placement +5.06c
+ Q0=   50: placed 139 filled 108 (78%) clean 79 sweep 29; EV per filled +5.99c CI[+3.1,+8.1]; clean +4.95c sweep +8.83c; EV per placement +4.65c
+ Q0=  200: placed 139 filled 105 (76%) clean 69 sweep 36; EV per filled +5.97c CI[+3.0,+8.1]; clean +4.75c sweep +8.31c; EV per placement +4.51c
+ Q0= 1000: placed 139 filled 90 (65%) clean 36 sweep 54; EV per filled +6.03c CI[+2.9,+8.6]; clean +6.42c sweep +5.78c; EV per placement +3.91c
