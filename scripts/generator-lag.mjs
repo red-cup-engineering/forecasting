@@ -167,8 +167,13 @@ async function record() {
     ws.onopen = () => { log('ws open'); wsOpen = true; for (const c of CH) Object.assign(chan[c], { sid: null, asked: false, sent: new Set() }); flush(); };
     ws.onmessage = (m) => {
       wsMsgs += 1; const r = Date.now(); const raw = String(m.data).trim();
-      // update_subscription acks echo the whole cumulative market list (~100 KB each); they carry no market data, so count them instead of journaling them
-      if (raw.length > 2000 && /^\{"id":\d+,"sid":\d+,"seq":\d+,"type":"ok"/u.test(raw)) { acks += 1; return; }
+      // update_subscription acks echo the whole cumulative market list (~100 KB each) but carry the subscription's sid and seq:
+      // journal them slimmed ({type, id, sid, seq, n}) so a replay sees no false sequence gap
+      if (raw.length > 2000 && /^\{"id":\d+,"sid":\d+,"seq":\d+,"type":"ok"/u.test(raw)) {
+        acks += 1; const x = JSON.parse(raw);
+        try { appendFileSync(kfile(), `{"r":${r},"m":${JSON.stringify({ type: 'ok', id: x.id, sid: x.sid, seq: x.seq, n: x.msg?.market_tickers?.length ?? null })}}\n`); } catch (e) { log('write', e.message); }
+        return;
+      }
       try { appendFileSync(kfile(), `{"r":${r},"m":${raw}}\n`); } catch (e) { log('write', e.message); }
       if (raw.length < 400 && /"type":"(subscribed|error)"/u.test(raw)) {
         const x = JSON.parse(raw);
@@ -214,7 +219,7 @@ async function record() {
       nextPoll[s] = now + (active(s) ? poll : 60e3);
       busy.add(s); pollSport(s).finally(() => busy.delete(s));
     }
-    if (now - lastLog > 60e3) { lastLog = now; log('polls', polls, 'feed rows', rows, 'ws msgs', wsMsgs, 'acks dropped', acks, 'markets', known.size); }
+    if (now - lastLog > 60e3) { lastLog = now; log('polls', polls, 'feed rows', rows, 'ws msgs', wsMsgs, 'acks slimmed', acks, 'markets', known.size); }
     await sleep(200);
   }
   clearInterval(disc); stopping = true; ws?.close(); log('done');
