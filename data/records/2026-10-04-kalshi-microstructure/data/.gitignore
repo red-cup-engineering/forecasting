@@ -1,3 +1,0 @@
-# Regenerable raw tape and book snapshots (about 100 MB); scripts/ rebuild them. Keep out of git.
-*
-!.gitignore

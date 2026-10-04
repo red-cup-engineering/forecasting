@@ -1,6 +1,0 @@
-GDP pooled, reference=GDPNow normal (sd=walk-forward RMSE), rule: trade toward reference when edge after fee > theta, 10-lot taker
-theta 0.00: n=98 events=19/19 mean +8.05c CI[+1.5,+14.9]  sum $+79 per 10-lot
-theta 0.02: n=81 events=19/19 mean +9.83c CI[+2.2,+17.6]  sum $+80 per 10-lot
-theta 0.05: n=64 events=18/19 mean +10.70c CI[+2.3,+19.3]  sum $+68 per 10-lot
-theta 0.10: n=46 events=17/19 mean +12.09c CI[+0.8,+23.8]  sum $+56 per 10-lot
-theta 0.15: n=28 events=13/19 mean +16.71c CI[+2.8,+30.6]  sum $+47 per 10-lot

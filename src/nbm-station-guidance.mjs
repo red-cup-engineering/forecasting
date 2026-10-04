@@ -22,7 +22,7 @@ import { join } from 'node:path';
 
 export const NBM_OPEN_DATA = 'https://noaa-nbm-grib2-pds.s3.amazonaws.com';
 const HEADER = /^\s*(\S+)\s+NBM V[\d.]+ NBS GUIDANCE\s+(\d\d)\/(\d\d)\/(\d{4})\s+(\d\d)(\d\d) UTC/u;
-const ROWS = new Set(['FHR', 'TXN', 'XND', 'TMP', 'TSD', 'P06', 'Q06']);
+const ROWS = new Set(['FHR', 'TXN', 'XND', 'TMP', 'TSD']);
 
 const pad2 = (n) => String(n).padStart(2, '0');
 export const bulletinUrl = (runtime, base = NBM_OPEN_DATA) => {
@@ -44,8 +44,7 @@ function columns(line) {
  * Parse an NBS bulletin, keeping only `stations` (all when omitted).
  * @param {string} text
  * @param {Iterable<string>} [stations]
- * @returns {Map<string, {station: string, runtime: string, rows: {ftime: string, txn: number|null, xnd: number|null, tmp: number|null, tsd: number|null, p06: number|null, q06: number|null}[]}>}
- * p06 is NBM's probability (percent) of at least 0.01 inch of liquid in the 6 hours ending at ftime; q06 its amount (hundredths of an inch, NBS code).
+ * @returns {Map<string, {station: string, runtime: string, rows: {ftime: string, txn: number|null, xnd: number|null, tmp: number|null, tsd: number|null}[]}>}
  */
 export function parseNbsBulletin(text, stations) {
   const wanted = stations ? new Set(stations) : null;
@@ -65,7 +64,6 @@ export function parseNbsBulletin(text, stations) {
     const rows = block.FHR.map((fhr, c) => ({
       ftime: new Date(runtime + fhr * 3600_000).toISOString(),
       txn: block.TXN?.[c] ?? null, xnd: block.XND?.[c] ?? null, tmp: block.TMP?.[c] ?? null, tsd: block.TSD?.[c] ?? null,
-      p06: block.P06?.[c] ?? null, q06: block.Q06?.[c] ?? null,
     })).filter((row) => Number.isFinite(Date.parse(row.ftime)));
     out.set(station, { station, runtime: new Date(runtime).toISOString(), rows });
   }
