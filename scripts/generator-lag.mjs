@@ -20,6 +20,7 @@
  * lead > 0 means Kalshi had repriced before the free feed showed the score: a maker quoting off that feed
  * is picked off for `lead` ms on every scoring play.
  */
+import { appendFile } from 'node:fs/promises';
 import { appendFileSync, mkdirSync, readFileSync, existsSync, writeFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
@@ -38,7 +39,18 @@ const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const day = opt('day', new Date().toISOString().slice(0, 10));
 const stateRoot = opt('dir', join(process.env.HOME ?? homedir(), '.local', 'state', '561-group', 'settlements', 'forecasting-service', 'generator-lag'));
 const dir = join(stateRoot, day);
-const dayDir = (t = Date.now()) => { const d = join(stateRoot, new Date(t).toISOString().slice(0, 10)); mkdirSync(d, { recursive: true }); return d; };
+const madeDirs = new Set();
+const dayDir = (t = Date.now()) => { const d = join(stateRoot, new Date(t).toISOString().slice(0, 10)); if (!madeDirs.has(d)) { mkdirSync(d, { recursive: true }); madeDirs.add(d); } return d; };
+// Journal: lines are stamped by the caller, queued here and appended asynchronously in batches, so no write runs on the frame path.
+const journal = new Map(); let flushing = false;
+const enqueue = (file, line) => { (journal.get(file) ?? journal.set(file, []).get(file)).push(line); };
+async function flushJournal() {
+  if (flushing) return; flushing = true;
+  try {
+    for (const [file, lines] of [...journal]) { journal.delete(file); await appendFile(file, lines.join('')).catch((e) => log('write', e.message)); }
+  } finally { flushing = false; }
+}
+setInterval(flushJournal, 250).unref();
 const recordDir = join(dirname(fileURLToPath(import.meta.url)), '..', 'data', 'records', '2026-10-04-generator-lag');
 const WS = { host: 'wss://api.elections.kalshi.com', path: '/trade-api/ws/v2' };
 
@@ -155,7 +167,7 @@ async function record() {
     const before = known.size; for (const t of d.tickers) known.add(t);
     const bySport = {}; for (const g of d.games) bySport[g.sport] = (bySport[g.sport] ?? 0) + 1;
     const fresh = d.unmatched.filter((u) => { const k = `${u.side}:${u.id ?? u.event}`; if (unmatchedSeen.has(k)) return false; unmatchedSeen.add(k); return true; });
-    for (const u of fresh) appendFileSync(join(dayDir(), 'unmatched.jsonl'), JSON.stringify({ r: Date.now(), ...u }) + '\n');
+    for (const u of fresh) enqueue(join(dayDir(), 'unmatched.jsonl'), JSON.stringify({ r: Date.now(), ...u }) + '\n');
     writeFileSync(join(dayDir(), 'games.json'), JSON.stringify({ round, at: new Date().toISOString(), sports, games: [...gamesAll.values()], tickers: [...known], propSeries: d.propSeries, unmatched: d.unmatched }, null, 1));
     log(`discover #${round} ${Date.now() - t0}ms games`, JSON.stringify(bySport), 'markets', known.size, `(+${known.size - before})`, 'props', JSON.stringify(d.propSeries), 'unmatched', d.unmatched.length, `(new ${fresh.length})`);
     flush();
@@ -166,15 +178,15 @@ async function record() {
     ws = new WebSocket(WS.host + WS.path, { headers: h });
     ws.onopen = () => { log('ws open'); wsOpen = true; for (const c of CH) Object.assign(chan[c], { sid: null, asked: false, sent: new Set() }); flush(); };
     ws.onmessage = (m) => {
-      wsMsgs += 1; const r = Date.now(); const raw = String(m.data).trim();
-      // update_subscription acks echo the whole cumulative market list (~100 KB each) but carry the subscription's sid and seq:
+      const r = Date.now(); wsMsgs += 1; const raw = String(m.data).trim(); const file = kfile();
+      // update_subscription acks echo the whole cumulative market list (~100 KB) but carry the subscription's sid and seq:
       // journal them slimmed ({type, id, sid, seq, n}) so a replay sees no false sequence gap
-      if (raw.length > 2000 && /^\{"id":\d+,"sid":\d+,"seq":\d+,"type":"ok"/u.test(raw)) {
+      if (raw.length > 2000 && raw.startsWith('{"id":') && raw.includes('"type":"ok"')) {
         acks += 1; const x = JSON.parse(raw);
-        try { appendFileSync(kfile(), `{"r":${r},"m":${JSON.stringify({ type: 'ok', id: x.id, sid: x.sid, seq: x.seq, n: x.msg?.market_tickers?.length ?? null })}}\n`); } catch (e) { log('write', e.message); }
+        enqueue(file, `{"r":${r},"m":${JSON.stringify({ type: 'ok', id: x.id, sid: x.sid, seq: x.seq, n: x.msg?.market_tickers?.length ?? null })}}\n`);
         return;
       }
-      try { appendFileSync(kfile(), `{"r":${r},"m":${raw}}\n`); } catch (e) { log('write', e.message); }
+      enqueue(file, `{"r":${r},"m":${raw}}\n`);
       if (raw.length < 400 && /"type":"(subscribed|error)"/u.test(raw)) {
         const x = JSON.parse(raw);
         if (x.type === 'subscribed') chan[x.msg.channel].sid = x.msg.sid; else log('ws error msg', raw);
@@ -206,7 +218,7 @@ async function record() {
         if (last.get(key) === sk) continue;
         const prev = last.get(key) ? JSON.parse(last.get(key)) : null; last.set(key, sk);
         const scored = Boolean(prev) && JSON.stringify(prev.scores) !== JSON.stringify(state.scores);
-        appendFileSync(ffile(), JSON.stringify({ r, rtt: r - t0, sport, espnId: e.id, event: g.event, code: g.gameCode, ...state, scored, prevScores: prev?.scores ?? null, text: e.playText, playType: e.playType, clock: e.clock, period: e.period }) + '\n'); rows += 1;
+        enqueue(ffile(), JSON.stringify({ r, rtt: r - t0, sport, espnId: e.id, event: g.event, code: g.gameCode, ...state, scored, prevScores: prev?.scores ?? null, text: e.playText, playType: e.playType, clock: e.clock, period: e.period }) + '\n'); rows += 1;
       }
       polls += 1;
     } catch (e) { log('feed', sport, e.message); }
@@ -222,7 +234,7 @@ async function record() {
     if (now - lastLog > 60e3) { lastLog = now; log('polls', polls, 'feed rows', rows, 'ws msgs', wsMsgs, 'acks slimmed', acks, 'markets', known.size); }
     await sleep(200);
   }
-  clearInterval(disc); stopping = true; ws?.close(); log('done');
+  clearInterval(disc); stopping = true; ws?.close(); await sleep(300); while (flushing) await sleep(20); await flushJournal(); log('done');
   process.exit(0);
 }
 
