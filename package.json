@@ -15,24 +15,25 @@
     "./temperature-distribution": "./src/temperature-distribution.mjs",
     "./temperature-market-model": "./src/temperature-market-model.mjs",
     "./nbm-station-guidance": "./src/nbm-station-guidance.mjs",
-    "./station-observations": "./src/station-observations.mjs"
+    "./station-observations": "./src/station-observations.mjs",
+    "./rain-market-model": "./src/rain-market-model.mjs"
   },
   "scripts": {
     "check": "node --check src/forecasting.mjs && node --check src/evidence-fusion.mjs && node --check scripts/ingest-forecasting-question.mjs && node --check scripts/fuse-forecast.mjs && node --check scripts/record-forecast.mjs && node --check scripts/score-forecast.mjs && node --check scripts/derive-calibration-record.mjs && node --check scripts/resolve-set-of-forecast-questions.mjs && node --check apps/forecasting-cli.mjs && node --check apps/forecast-weather-markets-cli.mjs && node --check apps/forecasting-daily-cycle.mjs",
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
-    "@red-cup-engineering/metrologic": "0.3.0",
-    "@red-cup-engineering/semiotic-eavt-services-section": "0.1.0",
-    "@red-cup-engineering/computer-data-engineering-services-section": "0.1.0",
-    "@red-cup-engineering/computer-text-content-engineering-services-section": "0.1.0",
-    "@red-cup-engineering/javascript-file-services-section": "0.1.0",
-    "@red-cup-engineering/javascript-node-services-section": "0.3.0",
-    "@red-cup-engineering/kalshi-services-section": "0.1.0",
-    "@red-cup-engineering/position-sizing-service": "0.3.1",
-    "@red-cup-engineering/witness-journal-document-service": "0.1.0",
-    "@red-cup-engineering/signcell": "0.1.0",
-    "@red-cup-engineering/signchain": "0.1.0"
+    "@red-cup-engineering/metrologic": "workspace:*",
+    "@red-cup-engineering/semiotic-eavt-services-section": "workspace:*",
+    "@red-cup-engineering/computer-data-engineering-services-section": "workspace:*",
+    "@red-cup-engineering/computer-text-content-engineering-services-section": "workspace:*",
+    "@red-cup-engineering/javascript-file-services-section": "workspace:*",
+    "@red-cup-engineering/javascript-node-services-section": "workspace:*",
+    "@red-cup-engineering/kalshi-services-section": "workspace:*",
+    "@red-cup-engineering/position-sizing-service": "workspace:*",
+    "@red-cup-engineering/witness-journal-document-service": "workspace:*",
+    "@red-cup-engineering/signcell": "workspace:*",
+    "@red-cup-engineering/signchain": "workspace:*"
   },
   "engines": {
     "node": ">=22"

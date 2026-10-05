@@ -9,7 +9,7 @@
       "maxModelProbability": { "high": 0.01, "low": 0.005 },
       "yesAskBand": [0.02, 0.06],
       "lossRateFloor": { "high": 0.01, "low": 0.012 },
-      "mirrors": "kalshi-stake-path-service/content/config/weather-desk-policy.json (certification, sizing.lossRateFloor); keep the two equal",
+      "mirrors": "kalshi-stake-path-service/content/config/kalshi-desk-policy.json (certification, sizing.lossRateFloor); keep the two equal",
       "evidence": "data/records/2026-10-03-kalshi-temperature-tail-backtest/README.md: at model p <= 0.01 (high) / 0.005 (low) and ask <= 0.05, 0 of 422 high and 1 of 448 low certified tails settled yes."
     },
     "published-series-favorite": {
