@@ -71,8 +71,8 @@ async function record() {
   const kfile = join(dir, 'kalshi.jsonl'); const ffile = join(dir, 'feed.jsonl');
 
   let ws; let wsMsgs = 0;
-  const connect = () => {
-    const h = authHeaders({ ...creds, method: 'GET', path: WS.path }); delete h.accept; delete h['content-type'];
+  const connect = async () => {
+    const h = await authHeaders({ ...creds, method: 'GET', path: WS.path }); delete h.accept; delete h['content-type'];
     ws = new WebSocket(WS.host + WS.path, { headers: h });
     ws.onopen = () => { log('ws open'); ws.send(JSON.stringify({ id: 1, cmd: 'subscribe', params: { channels: ['trade', 'ticker'], market_tickers: tickers } })); };
     ws.onmessage = (m) => { wsMsgs += 1; appendFileSync(kfile, `{"r":${Date.now()},"m":${m.data}}\n`); };
