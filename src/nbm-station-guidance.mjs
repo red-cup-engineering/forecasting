@@ -17,8 +17,6 @@
  * the daytime maximum in the 00Z column and the overnight minimum in the 12Z
  * column; XND is NBM's own spread for it, in whole degrees F.
  */
-import { mkdir, readFile, readdir, rename, unlink, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
 
 export const NBM_OPEN_DATA = 'https://noaa-nbm-grib2-pds.s3.amazonaws.com';
 const HEADER = /^\s*(\S+)\s+NBM V[\d.]+ NBS GUIDANCE\s+(\d\d)\/(\d\d)\/(\d{4})\s+(\d\d)(\d\d) UTC/u;
@@ -47,27 +45,67 @@ function columns(line) {
  * @returns {Map<string, {station: string, runtime: string, rows: {ftime: string, txn: number|null, xnd: number|null, tmp: number|null, tsd: number|null}[]}>}
  */
 export function parseNbsBulletin(text, stations) {
+  const parser = createNbsParser(stations);
+  for (const line of text.split('\n')) parser.push(line);
+  return parser.result();
+}
+
+/**
+ * The bulletin parser fed one line at a time, so a 30 MB bulletin can be read as a stream keeping
+ * only `stations`: a station's block runs from its header to the next header or a blank line.
+ */
+export function createNbsParser(stations) {
   const wanted = stations ? new Set(stations) : null;
   const out = new Map();
-  const lines = text.split('\n');
-  for (let i = 0; i < lines.length; i += 1) {
-    const header = HEADER.exec(lines[i]);
-    if (!header || (wanted && !wanted.has(header[1]))) continue;
-    const [, station, mm, dd, yyyy, hh, mi] = header;
-    const runtime = Date.UTC(Number(yyyy), Number(mm) - 1, Number(dd), Number(hh), Number(mi));
-    const block = {};
-    for (let j = i + 1; j < lines.length && !HEADER.test(lines[j]) && lines[j].trim() !== ''; j += 1) {
-      const label = lines[j].slice(0, 5).trim();
-      if (ROWS.has(label)) block[label] = columns(lines[j]);
+  let current = null;
+  const close = () => {
+    if (current?.block.FHR) {
+      const { station, runtime, block } = current;
+      const rows = block.FHR.map((fhr, c) => ({
+        ftime: new Date(runtime + fhr * 3600_000).toISOString(),
+        txn: block.TXN?.[c] ?? null, xnd: block.XND?.[c] ?? null, tmp: block.TMP?.[c] ?? null, tsd: block.TSD?.[c] ?? null,
+      })).filter((row) => Number.isFinite(Date.parse(row.ftime)));
+      out.set(station, { station, runtime: new Date(runtime).toISOString(), rows });
     }
-    if (!block.FHR) continue;
-    const rows = block.FHR.map((fhr, c) => ({
-      ftime: new Date(runtime + fhr * 3600_000).toISOString(),
-      txn: block.TXN?.[c] ?? null, xnd: block.XND?.[c] ?? null, tmp: block.TMP?.[c] ?? null, tsd: block.TSD?.[c] ?? null,
-    })).filter((row) => Number.isFinite(Date.parse(row.ftime)));
-    out.set(station, { station, runtime: new Date(runtime).toISOString(), rows });
+    current = null;
+  };
+  return {
+    push(line) {
+      const header = HEADER.exec(line);
+      if (header) {
+        close();
+        if (wanted && !wanted.has(header[1])) return;
+        const [, station, mm, dd, yyyy, hh, mi] = header;
+        current = { station, runtime: Date.UTC(Number(yyyy), Number(mm) - 1, Number(dd), Number(hh), Number(mi)), block: {} };
+        return;
+      }
+      if (current === null) return;
+      if (line.trim() === '') { close(); return; }
+      const label = line.slice(0, 5).trim();
+      if (ROWS.has(label)) current.block[label] = columns(line);
+    },
+    result() { close(); return out; },
+  };
+}
+
+/** One NBS run for `stations`, streamed from the open-data bucket; null when the run is not published. */
+export async function fetchRunGuidance(runtime, stations, { fetchImpl = fetch, baseUrl = NBM_OPEN_DATA } = {}) {
+  const source = bulletinUrl(runtime, baseUrl);
+  const res = await fetchImpl(source, { signal: AbortSignal.timeout(180_000) });
+  if (res.status === 404 || res.status === 403) return null;
+  if (!res.ok) throw new Error(`nbm-station-guidance: GET ${source} answered ${res.status}`);
+  const parser = createNbsParser(stations);
+  const reader = res.body.pipeThrough(new TextDecoderStream()).getReader();
+  let rest = '';
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    const lines = (rest + value).split('\n');
+    rest = lines.pop();
+    for (const line of lines) parser.push(line);
   }
-  return out;
+  if (rest !== '') parser.push(rest);
+  return { runtime: new Date(runtime).toISOString(), source, stations: Object.fromEntries(parser.result()) };
 }
 
 /**
@@ -80,6 +118,8 @@ export function parseNbsBulletin(text, stations) {
  * @returns {Promise<{runtime: string, source: string, stations: Record<string, object>}>}
  */
 export async function latestStationGuidance({ stations, now = Date.now(), cacheDir, lookbackHours = 8, keepRuns = 6 }, { fetchImpl = fetch, baseUrl = NBM_OPEN_DATA } = {}) {
+  const { mkdir, readFile, readdir, rename, unlink, writeFile } = await import('node:fs/promises');
+  const { join } = await import('node:path');
   const hour = Math.floor(new Date(now).getTime() / 3600_000) * 3600_000;
   await mkdir(cacheDir, { recursive: true });
   for (let back = 0; back <= lookbackHours; back += 1) {
@@ -91,12 +131,8 @@ export async function latestStationGuidance({ stations, now = Date.now(), cacheD
     } catch (error) {
       if (error.code !== 'ENOENT' && !(error instanceof SyntaxError)) throw error;
     }
-    const source = bulletinUrl(runtime, baseUrl);
-    const res = await fetchImpl(source, { signal: AbortSignal.timeout(180_000) });
-    if (res.status === 404 || res.status === 403) continue;
-    if (!res.ok) throw new Error(`nbm-station-guidance: GET ${source} answered ${res.status}`);
-    const parsed = parseNbsBulletin(await res.text(), stations);
-    const doc = { runtime, source, stations: Object.fromEntries(parsed) };
+    const doc = await fetchRunGuidance(runtime, stations, { fetchImpl, baseUrl });
+    if (doc === null) continue;
     const temporary = `${cached}.${process.pid}.tmp`;
     await writeFile(temporary, JSON.stringify(doc));
     await rename(temporary, cached);

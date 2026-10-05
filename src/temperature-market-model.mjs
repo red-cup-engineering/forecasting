@@ -5,11 +5,12 @@
  * error model, and any extreme already observed that day. Pure: guidance and
  * observations are passed in.
  */
-import { readFileSync } from 'node:fs';
 import { bracketProbability, forecastScale } from './temperature-distribution.mjs';
 import { guidanceForExtreme } from './nbm-station-guidance.mjs';
 
-export const TEMPERATURE_MARKETS = JSON.parse(readFileSync(new URL('../content/config/temperature-markets.json', import.meta.url), 'utf8'));
+import TEMPERATURE_MARKETS from '../content/config/temperature-markets.json' with { type: 'json' };
+
+export { TEMPERATURE_MARKETS };
 const BY_SERIES = new Map(TEMPERATURE_MARKETS.series.map((row) => [row.seriesTicker, row]));
 
 /** The declared row for a series, or undefined when the house does not price it. */
