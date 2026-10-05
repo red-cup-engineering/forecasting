@@ -60,3 +60,31 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
   const maxF = Math.max(...temps), minF = Math.min(...temps);
   return { station, date, from: from.toISOString(), count: temps.length, maxF, minF, floor: Math.floor(maxF) - 1, ceiling: Math.ceil(minF) + 1, latest };
 }
+
+/**
+ * NWS products that announce a temperature regime the station's guidance error model was not fitted on.
+ * Under one, the far tail on its side is the regime's risk, not a mispriced premium (2026-10-04: KSAN and
+ * KLAX reached 100F under an Extreme Heat Warning while the model put 101F+ near 0.2%).
+ */
+export const WARM_HAZARDS = Object.freeze(['Extreme Heat Warning', 'Extreme Heat Watch', 'Excessive Heat Warning', 'Excessive Heat Watch', 'Heat Advisory']);
+export const COLD_HAZARDS = Object.freeze(['Extreme Cold Warning', 'Extreme Cold Watch', 'Cold Weather Advisory', 'Wind Chill Warning', 'Wind Chill Advisory', 'Hard Freeze Warning', 'Hard Freeze Watch', 'Freeze Warning', 'Freeze Watch', 'Frost Advisory']);
+
+const stationPoints = new Map();
+
+/**
+ * The warm and cold temperature hazards NWS has active at `station`'s location now.
+ * @returns {Promise<{station: string, warm: string[], cold: string[]}>}
+ */
+export async function activeTemperatureHazards({ station }, { fetchImpl = fetch, baseUrl = NWS_API, userAgent = NWS_USER_AGENT } = {}) {
+  const get = async (url) => {
+    const response = await fetchImpl(url, { headers: { 'User-Agent': userAgent, Accept: 'application/geo+json' } });
+    if (!response.ok) throw new Error(`NWS ${url}: ${response.status}`);
+    return response.json();
+  };
+  if (!stationPoints.has(station)) {
+    const [lon, lat] = (await get(`${baseUrl}/stations/${station}`)).geometry.coordinates;
+    stationPoints.set(station, `${lat.toFixed(4)},${lon.toFixed(4)}`);
+  }
+  const events = (await get(`${baseUrl}/alerts/active?point=${stationPoints.get(station)}`)).features.map((feature) => feature.properties.event);
+  return { station, warm: events.filter((event) => WARM_HAZARDS.includes(event)), cold: events.filter((event) => COLD_HAZARDS.includes(event)) };
+}
