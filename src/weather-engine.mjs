@@ -1,3 +1,4 @@
+import {collectWeatherStrategyResearch} from './weather-strategy-research.mjs';
 import {collectRelationalTemperatureScience} from './weather-relational-temperature.mjs';
 import {deriveDailyTemperatureExtremes} from './weather-temperature-extremes.mjs';
 import {INDEX_CITIES} from './weather-index.mjs';
@@ -92,6 +93,14 @@ export async function weatherRelationalScience({region='nyc',root=weatherRoot(),
  await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
  const evidenceId=digest(packet);await archivePacket(join(root,'evidence',`${evidenceId}.json.gz`),packet);
  const {rawSource,...report}=packet;return {evidenceId,...report};
+}
+/** A generated-learner study with lossless fits/plays archived and a bounded public summary. */
+export async function weatherStrategyResearch({region='nyc',root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
+ const packet=await collectWeatherStrategyResearch({region,now,fetchImpl});
+ await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
+ const evidenceId=digest(packet);await archivePacket(join(root,'evidence',`${evidenceId}.json.gz`),packet);
+ const {rawSource,...report}=packet;
+ return {...report,evidenceId,study:{...packet.study,generatedLearners:packet.study.generatedLearners.map(({lastFrozenFits,...learner})=>learner),game:{arena:packet.study.game.arena,semantics:packet.study.game.semantics,scope:packet.study.game.scope,admittedPlayCount:packet.study.game.strategy.plays.length}}};
 }
 export function weatherStationSkill({root=weatherRoot(),station}={}){return readStationScience({root:join(root,'station-science'),station});}
 export async function weatherStationEvidence({stations,root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
