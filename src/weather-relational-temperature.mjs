@@ -40,6 +40,15 @@ export function relationalTemperatureFeatures(panel,t,target,stations,relational
  if(relational)for(const peer of stations.filter(s=>s!==target)){if(['both','gradients'].includes(peerFeatures))x.push(T(a,peer)-T(a,target));if(['both','increments'].includes(peerFeatures))x.push(T(a,peer)-T(b,peer));}
  return {x,anchorC:T(a,target),witnesses:required.flatMap(s=>[a[s],b[s],c[s]].flatMap(r=>r.witnesses)),lastObservedAt:Math.max(...required.map(s=>Date.parse(a[s].observedAt)))};
 }
+/** Different learner: actual report durations and ages, without filling missing bins. */
+export function relationalIrregularTemperatureFeatures(panel,t,target,stations){
+ const histories=new Map(stations.map(s=>[s,[...panel].filter(([b,p])=>b<=t&&b>=t-4*HOUR&&p[s]).sort(([a],[b])=>b-a).map(([,p])=>p[s])])),own=histories.get(target);
+ if(own.length<3||!stations.every(s=>histories.get(s).length>=2&&panel.get(t)?.[s]))return null;
+ const elapsed=(a,b)=>(Date.parse(a.observedAt)-Date.parse(b.observedAt))/HOUR,span1=elapsed(own[0],own[1]),span2=elapsed(own[1],own[2]);if(span1<=0||span2<=0)return null;
+ const theta=2*Math.PI*(t/HOUR%24)/24,x=[(own[0].temperatureC-own[1].temperatureC)/span1,(own[1].temperatureC-own[2].temperatureC)/span2,Math.sin(theta),Math.cos(theta),span1,span2];
+ for(const peer of stations.filter(s=>s!==target)){const [a,b]=histories.get(peer),span=elapsed(a,b);if(span<=0)return null;x.push(a.temperatureC-own[0].temperatureC,(a.temperatureC-b.temperatureC)/span,span);}
+ const used=stations.flatMap(s=>histories.get(s).slice(0,s===target?3:2));return {x,anchorC:own[0].temperatureC,witnesses:used.flatMap(r=>r.witnesses),lastObservedAt:Math.max(...used.map(r=>Date.parse(r.observedAt))),reportSpansHours:[span1,span2],operator:'actual temporal rates and durations, current peer gradients; no filled report'};
+}
 function solve(A,b){
  const n=b.length,L=Array.from({length:n},()=>Array(n).fill(0));
  for(let i=0;i<n;i++)for(let j=0;j<=i;j++){let v=A[i][j];for(let k=0;k<j;k++)v-=L[i][k]*L[j][k];if(i===j){if(!(v>0))throw new Error('nonpositive ridge normal matrix');L[i][j]=Math.sqrt(v);}else L[i][j]=v/L[j][j];}
@@ -79,10 +88,10 @@ function relationalModels(train,cal,{ridge=10}={}){
  return models;
 }
 /** Freeze a prospective learner on labels strictly before a specified day. */
-export function fitRelationalTemperatureForIssuance(reading,{stations,before,ridge=10,peerFeatures='both',trainingDays=60,calibrationDays=14}={}){
+export function fitRelationalTemperatureForIssuance(reading,{stations,before,ridge=10,peerFeatures='both',trainingDays=60,calibrationDays=14,irregular=false}={}){
  const day=Date.parse(before);if(!Number.isFinite(day)||day%DAY||!Number.isFinite(ridge)||ridge<=0||ridge>1000||!['both','gradients','increments','none'].includes(peerFeatures)||trainingDays!==60||calibrationDays!==14)throw new TypeError('UTC-day cutoff and bounded prospective specification required');
  const panel=new Map(relationalTemperaturePanel(reading,{stations}).map(p=>[p.at,p.stations])),fits=[];
- for(const station of stations){const past=[];for(const [t] of panel){if(t+HOUR>=day||t+HOUR<day-trainingDays*DAY)continue;const own=relationalTemperatureFeatures(panel,t,station,stations,false),rel=relationalTemperatureFeatures(panel,t,station,stations,true,peerFeatures),truth=panel.get(t+HOUR)?.[station];if(own&&rel&&truth)past.push({own:own.x,relational:rel.x,y:truth.temperatureC-own.anchorC,targetAt:t+HOUR});}
+ for(const station of stations){const past=[];for(const [t] of panel){if(t+HOUR>=day||t+HOUR<day-trainingDays*DAY)continue;const rel=irregular?relationalIrregularTemperatureFeatures(panel,t,station,stations):relationalTemperatureFeatures(panel,t,station,stations,true,peerFeatures),own=irregular?rel&&{x:rel.x.slice(0,6),anchorC:rel.anchorC}:relationalTemperatureFeatures(panel,t,station,stations,false),truth=panel.get(t+HOUR)?.[station];if(own&&rel&&truth)past.push({own:own.x,relational:rel.x,y:truth.temperatureC-own.anchorC,targetAt:t+HOUR});}
  const train=past.filter(r=>r.targetAt<day-calibrationDays*DAY),cal=past.filter(r=>r.targetAt>=day-calibrationDays*DAY);if(train.length<72||cal.length<48)continue;
  fits.push({station,trainingLabelBefore:iso(day-calibrationDays*DAY),calibrationLabelBefore:iso(day),trainingExamples:train.length,calibrationExamples:cal.length,models:relationalModels(train,cal,{ridge})});}
  return fits;
