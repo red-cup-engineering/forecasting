@@ -3,7 +3,7 @@ import { NWS_API, NWS_USER_AGENT, climateDayStart, observedExtremes, activeTempe
 import { TEMPERATURE_MARKETS } from './temperature-market-model.mjs';
 import { forecastScale, bracketProbability } from './temperature-distribution.mjs';
 import { priceRainMarket } from './rain-market-model.mjs';
-import {settlementWeatherEvidence} from './weather-settlement-source.mjs';
+import {climateReportEvidence} from './weather-settlement-source.mjs';
 import {latestStationQuantiles,priceStationQuantiles} from './weather-quantiles.mjs';
 import { mapLimit } from './weather-universe.mjs';
 import { cell, merge, address } from '@red-cup-engineering/signcell/cell';
@@ -13,17 +13,27 @@ async function nws(url, fetchImpl) {
   if(!r.ok)throw new Error(`NWS ${r.status}: ${url}`);
   return r.json();
 }
-export async function collectWeatherEvidence(contracts,{cacheDir,now=Date.now(),fetchImpl=fetch}={}) {
-  const stations=[...new Set(contracts.flatMap(c=>c.binding?[c.binding.station]:[]))];
-  const errors=[];
-  let guidance=null;
+/** Public station evidence for research and forecasting, independent of any market. */
+export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.now(),fetchImpl=fetch,marketCollection=false}={}) {
+  if(!Array.isArray(requests)||requests.length<1||(!marketCollection&&requests.length>16))throw new TypeError('provide 1..16 station requests');
+  const normalized=requests.map(r=>{
+    if(!r||!/^[A-Z0-9]{4}$/.test(r.station)||typeof r.timeZone!=='string')throw new TypeError('station ICAO and IANA time zone required');
+    const fmt=new Intl.DateTimeFormat('en-CA',{timeZone:r.timeZone,year:'numeric',month:'2-digit',day:'2-digit'});
+    let today=fmt.format(new Date(now));
+    if(climateDayStart(today,r.timeZone).getTime()>now)today=new Date(Date.parse(today+'T00:00:00Z')-86400000).toISOString().slice(0,10);
+    const targetDates=r.targetDates??[today];
+    if(!Array.isArray(targetDates)||targetDates.length<1||(!marketCollection&&targetDates.length>4)||targetDates.some(d=>typeof d!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(d)||!Number.isFinite(Date.parse(d+'T00:00:00Z'))||new Date(d+'T00:00:00Z').toISOString().slice(0,10)!==d))throw new TypeError('provide 1..4 real ISO target dates per station');
+    return {station:r.station,timeZone:r.timeZone,targetDates:[...new Set(targetDates)]};
+  });
+  if(new Set(normalized.map(r=>r.station)).size!==normalized.length)throw new TypeError('combine target dates into one request per station');
+  const stations=normalized.map(r=>r.station),errors=[];
+  let guidance=null,quantiles=null;
   try{guidance=await latestStationGuidance({stations,cacheDir,now},{fetchImpl});}catch(e){errors.push({source:'NBM',error:e.message});}
-  let quantiles=null;try{quantiles=await latestStationQuantiles({stations,cacheDir,now,fetchImpl});}catch(e){errors.push({source:'NBM-QMD',error:e.message});}
-  const settlement=await settlementWeatherEvidence(contracts,{now,fetchImpl});errors.push(...settlement.errors);
+  try{quantiles=await latestStationQuantiles({stations,cacheDir,now,fetchImpl});}catch(e){errors.push({source:'NBM-QMD',error:e.message});}
+  const settlement=await climateReportEvidence({dates:normalized.flatMap(r=>r.targetDates),now,fetchImpl});errors.push(...settlement.errors);
   const observations={},local={};
-  await mapLimit(stations,3,async station=>{
-    const contractsHere=contracts.filter(c=>c.binding?.station===station);
-    const b=contractsHere[0].binding;
+  await mapLimit(normalized,3,async b=>{
+    const station=b.station;
     try{
       const info=await nws(`${NWS_API}/stations/${station}`,fetchImpl);
       const [lon,lat]=info.geometry.coordinates;
@@ -31,15 +41,22 @@ export async function collectWeatherEvidence(contracts,{cacheDir,now=Date.now(),
       const hourlyUrl=point.properties.forecastHourly;
       const hourly=await nws(hourlyUrl,fetchImpl);
       const alerts=await activeTemperatureHazards({station},{fetchImpl});
-      local[station]={station,latitude:lat,longitude:lon,hourlyUrl,updated:hourly.properties.updateTime ?? hourly.properties.updated,periods:hourly.properties.periods,alerts};
+      local[station]={station,latitude:lat,longitude:lon,hourlyUrl,updated:hourly.properties.updateTime??hourly.properties.updated,periods:hourly.properties.periods,alerts};
     }catch(e){errors.push({station,source:'NWS-hourly/alerts',error:e.message});}
-    for(const date of new Set(contractsHere.map(c=>c.binding.targetDate))) {
-      if(now<Date.parse(climateDayStart(date,b.timeZone)) || now>Date.parse(climateDayStart(date,b.timeZone))+86400000)continue;
-      try{observations[`${station}/${date}`]=await observedExtremes({station,date,timeZone:b.timeZone,now},{fetchImpl});}
+    for(const date of b.targetDates) {
+      const start=climateDayStart(date,b.timeZone).getTime();
+      if(now<start)continue;
+      try{observations[`${station}/${date}`]=await observedExtremes({station,date,timeZone:b.timeZone,now:Math.min(now,start+86400000)},{fetchImpl});}
       catch(e){errors.push({station,date,source:'NWS-observations',error:e.message});}
     }
   });
-  return {at:new Date(now).toISOString(),guidance,quantiles,settlement,local,observations,errors};
+  return {at:new Date(now).toISOString(),stations:normalized,guidance,quantiles,settlement,local,observations,errors};
+}
+export async function collectWeatherEvidence(contracts,options={}) {
+  const requests=new Map();
+  for(const c of contracts)if(c.binding){const b=c.binding;if(!requests.has(b.station))requests.set(b.station,{station:b.station,timeZone:b.timeZone,targetDates:[]});const r=requests.get(b.station);if(!r.targetDates.includes(b.targetDate))r.targetDates.push(b.targetDate);}
+  if(!requests.size)return {at:new Date(options.now??Date.now()).toISOString(),stations:[],guidance:null,quantiles:null,settlement:null,local:{},observations:{},errors:[]};
+  return collectStationWeatherEvidence([...requests.values()],{...options,marketCollection:true});
 }
 export function weatherEstimates(c,e,now) {
   const b=c.binding;if(!b)return [];

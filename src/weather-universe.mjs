@@ -9,6 +9,15 @@ export async function mapLimit(rows, limit, fn) {
   }));
   return out;
 }
+export function weatherRuleKey(market,seriesTicker,source,station) {
+  // Dates and rung numbers vary; measurement/source/revision rules must never share skill after changing.
+  const template=(`${market.rules_primary??''}\n${market.rules_secondary??''}`)
+    .replace(/\b(?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+(?:\d{1,2},\s*)?\d{4}\b/gi,'{date}')
+    .replace(/((?:greater than|less than|above|below)\s+)-?\d+(?:\.\d+)?(?=°| inches)/gi,'$1{strike}')
+    .replace(/(between\s+)-?\d+(?:\.\d+)?--?\d+(?:\.\d+)?(?=°)/gi,'$1{range}')
+    .replace(/\s+/g,' ').trim();
+  return digest({series:seriesTicker,source,station,strike:market.strike_type,template});
+}
 export function weatherContract(market, series) {
   const rules = `${market.rules_primary ?? ''}\n${market.rules_secondary ?? ''}`;
   const title = `${series.title} ${market.title}`;
@@ -25,7 +34,7 @@ export function weatherContract(market, series) {
     family = 'daily-rain'; const city = rainCity(rainCityCode(market.ticker));
     if (city && date && stationRule === city.cli && source === 'twc' && /strictly greater than 0 inches/i.test(rules)) binding = {...city, timeZone:city.zone, targetDate:date, source, kind:'rain', climateReport:city.cli, proxy:true};
   } else if (series.frequency === 'hourly' && family === 'temperature') family = 'hourly-temperature';
-  const ruleKey = digest({series:series.ticker,source,station:stationRule,strike:market.strike_type,unit:/fahrenheit/i.test(rules)?'F':null});
+  const ruleKey = weatherRuleKey(market,series.ticker,source,stationRule);
   return {...market, seriesTicker:series.ticker, feeType:series.fee_type, feeMultiplier:series.fee_multiplier, family, source, stationRule, binding, ruleKey,
     blocker: binding ? null : !source ? 'settlement source is not bound' : `${family}: station, measurement window and validated model need binding`};
 }

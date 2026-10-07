@@ -25,8 +25,11 @@ export function gradeModels(resolved, {minDates=30}={}) {
     const bins=Array.from({length:10},(_,b)=>{
       const rs=[...events.values()].flatMap(v=>v.filter(r=>Math.min(9,Math.floor(r.p*10))===b));
       // Conservative: one effective trial per date, even if many cities/rungs are in this bin.
-      const count=new Set(rs.map(r=>r.date)).size;
-      const rate=rs.length?rs.reduce((s,r)=>s+r.y,0)/rs.length:null;
+      const outcomesByDate=new Map();
+      for(const r of rs){if(!outcomesByDate.has(r.date))outcomesByDate.set(r.date,[]);outcomesByDate.get(r.date).push(r.y);}
+      const dailyRates=[...outcomesByDate.values()].map(xs=>xs.reduce((s,y)=>s+y,0)/xs.length);
+      const count=dailyRates.length;
+      const rate=count?dailyRates.reduce((s,y)=>s+y,0)/count:null;
       if(!count)return {n:0,low:0,high:1};
       const z=1.96,den=1+z*z/count,center=(rate+z*z/(2*count))/den;
       const half=z*Math.sqrt(rate*(1-rate)/count+z*z/(4*count*count))/den;

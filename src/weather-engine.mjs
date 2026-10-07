@@ -5,8 +5,8 @@ import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { gzipSync, gunzipSync } from 'node:zlib';
 import { createKalshiClient } from '../../../src/client.mjs';
-import { digest, discoverWeather, mapLimit } from './weather-universe.mjs';
-import { collectWeatherEvidence, weatherEstimates, forecastCell } from './weather-evidence.mjs';
+import { digest, discoverWeather, weatherRuleKey, mapLimit } from './weather-universe.mjs';
+import { collectWeatherEvidence, collectStationWeatherEvidence, weatherEstimates, forecastCell } from './weather-evidence.mjs';
 import { gradeModels, probabilityBand, allocateWeather } from './weather-learning.mjs';
 import {sourceReport} from './weather-settlement-source.mjs';
 import { bracketSettlesYes } from './temperature-distribution.mjs';
@@ -41,7 +41,7 @@ async function locked(root,fn){
         if(!(error instanceof SyntaxError))throw error;
         if(Date.now()-(await stat(lock)).mtimeMs<60000)throw new Error('weather cycle lock is being acquired');
       }
-      if(old&&(await processStart(old.pid))===old.start)throw new Error('weather cycle already running');
+      if(old&&(await processStart(old.pid))===old.start)throw Object.assign(new Error('weather cycle already running'),{code:'WEATHER_CYCLE_RUNNING'});
       await rm(lock,{force:true});
       if(attempt===2)throw new Error('weather cycle lock contention');
     }
@@ -49,10 +49,33 @@ async function locked(root,fn){
   try{return await fn();}finally{await rm(lock,{force:true});}
 }
 
+export async function weatherCashBudget({client=createKalshiClient(),exchangeIndex=0}={}) {
+  if(!Number.isInteger(exchangeIndex)||exchangeIndex<0)throw new TypeError('weather exchange index required');
+  const [balance,orders]=await Promise.all([
+    client.call('GET','/portfolio/balance',{query:{exchange_index:exchangeIndex,subaccount:0}}),
+    client.getOrders({status:'resting',exchange_index:exchangeIndex,subaccount:0}),
+  ]);
+  const capitalUsd=Number(balance.balance_dollars??(balance.balance===undefined?NaN:balance.balance/100));
+  if(!Number.isFinite(capitalUsd)||capitalUsd<0)throw new Error('weather-shard cash balance cannot be read');
+  let reserved=0;
+  for(const o of orders){
+    const count=Number(o.remaining_count_fp??o.remaining_count),yes=Number(o.yes_price_dollars??(o.yes_price===undefined?o.price:o.yes_price/100));
+    const side=o.book_side??(['bid','ask'].includes(o.side)?o.side:(['yes','no'].includes(o.side)&&['buy','sell'].includes(o.action)?((o.side==='yes')===(o.action==='buy')?'bid':'ask'):null));
+    if(!['bid','ask'].includes(side)||!Number.isFinite(count)||count<0||!Number.isFinite(yes)||yes<0||yes>1||o.exchange_index!==undefined&&o.exchange_index!==exchangeIndex||o.subaccount_number!==undefined&&o.subaccount_number!==0)throw new Error('resting order collateral cannot be read; cash budget remains unavailable');
+    reserved+=count*(side==='bid'?yes:1-yes);
+  }
+  return {capitalUsd,encumberedUsd:Math.ceil(reserved*100-1e-8)/100,exchangeIndex,observedAt:new Date().toISOString(),source:'weather-shard cash minus gross resting-order commitments (conservative)',orderEffect:false};
+}
+export async function weatherStationEvidence({stations,root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
+  const evidence=await collectStationWeatherEvidence(stations,{cacheDir:join(root,'nbm'),now,fetchImpl});
+  const evidenceId=digest(evidence);await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
+  await writeFile(join(root,'evidence',`${evidenceId}.json.gz`),gzipSync(JSON.stringify(evidence)),{mode:0o600});
+  return {evidenceId,...evidence,orderEffect:false};
+}
 export async function weatherEvidence({root=weatherRoot(),evidenceId,station}={}) {
   if(!/^[a-f0-9]{64}$/.test(evidenceId??''))throw new TypeError('content-addressed evidenceId required');
   const e=JSON.parse(gunzipSync(await readFile(join(root,'evidence',`${evidenceId}.json.gz`))));
-  return station?{at:e.at,station,guidance:e.guidance?.stations[station],local:e.local[station],observations:Object.fromEntries(Object.entries(e.observations).filter(([key])=>key.startsWith(station+'/'))),errors:e.errors.filter(r=>r.station===station)}:e;
+  return station?{at:e.at,station,guidance:e.guidance?.stations[station],quantiles:e.quantiles?{runtime:e.quantiles.runtime,source:e.quantiles.source,station:e.quantiles.stations[station]}:null,settlementReports:Object.fromEntries(Object.entries(e.settlement?.daily??{}).map(([date,r])=>[date,{source:r.source,results:r.data?.results?.filter(x=>x.station?.icao===station)}])),local:e.local[station],observations:Object.fromEntries(Object.entries(e.observations).filter(([key])=>key.startsWith(station+'/'))),errors:e.errors.filter(r=>!r.station||r.station===station)}:e;
 }
 export async function weatherStatus({root=weatherRoot()}={}) {
   const result=await read(join(root,'latest.json'),{status:'no weather cycle recorded',orderEffect:false});
@@ -65,6 +88,7 @@ export async function triggerWeatherCycle({root=weatherRoot()}={}) {
   if(state.running)return {status:'already-running',...state.running,orderEffect:false};
   const startedAt=new Date().toISOString();
   runWeatherCycle({root}).then(()=>rm(join(root,'last-failure.json'),{force:true}),async e=>{
+    if(e.code==='WEATHER_CYCLE_RUNNING')return;
     await mkdir(root,{recursive:true});await atomic(join(root,'last-failure.json'),{startedAt,failedAt:new Date().toISOString(),reason:e.message});
   }).catch(()=>{});
   return {status:'started',startedAt,readResultWith:'weather_status',orderEffect:false};
@@ -139,10 +163,52 @@ async function experiments(root,contracts,now){
     let p=r.forecasts?.find(f=>f.ticker===c.ticker&&f.rulesHash===c.rulesHash)?.probability;const direct=p!==undefined;
     const e=r.ensembles?.find(e=>c.binding&&e.station===c.binding.station&&e.kind===c.binding.kind&&e.targetDate===c.binding.targetDate);
     if(p===undefined&&e){const b={strikeType:c.strike_type,floorStrike:c.floor_strike,capStrike:c.cap_strike};p=e.samples.filter(v=>bracketSettlesYes(b,Math.round(v))).length/e.samples.length;}
-    if(p!==undefined){if(!out.has(c.ticker))out.set(c.ticker,new Map());out.get(c.ticker).set(`${r.model}@${r.version}`,{id:`${r.model}@${r.version}`,p,directContractForecast:direct,details:{recordId:digest(r),source:r.sourceUrl,issuedAt:r.issuedAt,receivedAt:r.receivedAt,ensembleMembers:e?.samples.length??null}});}
+    if(p!==undefined){if(!out.has(c.ticker))out.set(c.ticker,new Map());out.get(c.ticker).set(`${r.model}@${r.version}`,{id:`${r.model}@${r.version}`,p,directContractForecast:direct,details:{recordId:digest(r),source:r.sourceUrl,issuedAt:r.issuedAt,validUntil:r.validUntil,receivedAt:r.receivedAt,ensembleMembers:e?.samples.length??null}});}
   }
   return out;
 }
+async function quoteWeatherContract(c,models,evidence,client) {
+  if(c.blocker&&!models.some(m=>m.directContractForecast))return [];
+  const qualified=models.filter(m=>m.band.admitted&&(!m.details?.validUntil||Date.parse(m.details.validUntil)>Date.now()));
+  if(!qualified.length)return [];
+  const lo=Math.min(...qualified.map(m=>Math.min(m.p,m.band.low))),hi=Math.max(...qualified.map(m=>Math.max(m.p,m.band.high)));
+  if(c.family==='daily-temperature'&&c.binding){
+    const hazards=evidence.local[c.binding.station]?.alerts;
+    if(!hazards||hazards.warm.length||hazards.cold.length)return [];
+  }
+  const fresh=await client.getMarket(c.ticker);
+  if(fresh.status!=='active'||Date.parse(fresh.close_time)<=Date.now()||digest({primary:fresh.rules_primary,secondary:fresh.rules_secondary})!==c.rulesHash||fresh.exchange_index!==c.exchange_index)return [];
+  const book=await client.getOrderbook(c.ticker,10),out=[];
+  for(const side of [{side:'yes',l:book?.no_dollars,p:lo},{side:'no',l:book?.yes_dollars,p:1-hi}]) {
+    const levels=(side.l??[]).map(([p,n])=>({price:Number((1-Number(p)).toFixed(4)),depth:Math.floor(Number(n))})).filter(x=>x.price>0&&x.price<1&&Number.isFinite(x.depth)&&x.depth>0).sort((a,b)=>a.price-b.price);
+    if(!levels.length||c.feeType!=='quadratic'||!Number.isFinite(c.feeMultiplier))continue;
+    const {price,depth}=levels[0];
+    // One-lot rounding overestimates aggregate fees; custody execution applies the actual live fee.
+    const fee=Math.ceil(100*0.07*c.feeMultiplier*price*(1-price))/100,edge=side.p-price-fee;
+    if(edge>0)out.push({ticker:c.ticker,eventTicker:c.event_ticker,targetDate:c.binding?.targetDate,closeTime:fresh.close_time,exchangeIndex:c.exchange_index,side:side.side,price,depth,fee,edge,winLower:side.p,admitted:true,modelIds:qualified.map(m=>m.id),rulesHash:c.rulesHash,observedAt:new Date().toISOString(),quoteExpiresAt:new Date(Date.now()+60000).toISOString()});
+  }
+  return out;
+}
+export async function allocateLiveWeather({root=weatherRoot(),capitalUsd,encumberedUsd=0,client=weatherClient(),portfolioClient,now=Date.now()}={}) {
+  const state=await weatherStatus({root});
+  if(!Number.isFinite(Date.parse(state.at))||now-Date.parse(state.at)>15*60000)throw new Error('weather evidence is older than fifteen minutes; run weather_cycle before allocating');
+  const contracts=new Map((state.contracts??[]).map(c=>[c.ticker,c])),errors=[];
+  const candidates=(state.forecasts??[]).filter(r=>{
+    const c=contracts.get(r.ticker);
+    return c&&stage(c,now)===r.stage&&Date.parse(c.close_time)>now&&r.models.some(m=>m.band.admitted);
+  });
+  const indices=[...new Set([...contracts.values()].map(c=>c.exchange_index))];
+  if(capitalUsd===undefined&&(indices.length!==1||!Number.isInteger(indices[0])))throw new Error('weather contracts span unknown exchange shards; allocation needs a scoped cash budget');
+  const budget=capitalUsd===undefined?await weatherCashBudget({...(portfolioClient?{client:portfolioClient}:{}),exchangeIndex:indices[0]}):{capitalUsd,encumberedUsd};
+  let evidence={local:{}};
+  if(candidates.length)evidence=await weatherEvidence({root,evidenceId:candidates[0].evidenceId});
+  const quotes=(await mapLimit(candidates,3,async r=>{
+    try{return await quoteWeatherContract(contracts.get(r.ticker),r.models,evidence,client);}
+    catch(e){errors.push({ticker:r.ticker,error:e.message});return [];}
+  })).flat().filter(q=>Date.parse(q.quoteExpiresAt)>Date.now());
+  return {...allocateWeather(quotes,budget),evidenceAt:state.at,observedAt:new Date().toISOString(),budgetSource:budget.source??'explicit scenario',errors};
+}
+
 export async function runWeatherCycle({root=weatherRoot(),client=weatherClient(),now=Date.now(),fetchImpl=fetch,capitalUsd=0,encumberedUsd=0}={}) {
   return locked(root,async()=>{
     const scoring=await scorePending(root,client,now);
@@ -157,8 +223,8 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
       catch(e){evidence.errors.push({source:'fresh-market-quotes',error:e.message});}
     }
     const decisionNow=Date.now();
-    const contracts=universe.markets.map(c=>{const fresh=freshQuotes.get(c.ticker);if(!fresh)return c;const changed=digest({primary:c.rules_primary,secondary:c.rules_secondary})!==digest({primary:fresh.rules_primary,secondary:fresh.rules_secondary});return {...c,...fresh,...(changed?{binding:null,blocker:'rules changed during collection; rebind next cycle'}:{})};}).map(c=>({...c,rulesHash:digest({primary:c.rules_primary,secondary:c.rules_secondary})}));
-    const ex=await experiments(root,contracts,now),pending=await read(join(root,'pending.json'),{}),rows=[],opportunities=[];
+    const contracts=universe.markets.map(c=>{const fresh=freshQuotes.get(c.ticker);if(!fresh)return c;const changed=digest({primary:c.rules_primary,secondary:c.rules_secondary})!==digest({primary:fresh.rules_primary,secondary:fresh.rules_secondary});return {...c,...fresh,...(changed?{ruleKey:weatherRuleKey(fresh,c.seriesTicker,c.source,c.stationRule),binding:null,blocker:'rules changed during collection; rebind next cycle'}:{})};}).map(c=>({...c,rulesHash:digest({primary:c.rules_primary,secondary:c.rules_secondary})}));
+    const ex=await experiments(root,contracts,decisionNow),pending=await read(join(root,'pending.json'),{}),rows=[],opportunities=[];
     await mapLimit(contracts,3,async c=>{
       const s=stage(c,decisionNow),models=weatherEstimates(c,evidence,decisionNow);
       models.push(...(ex.get(c.ticker)?.values()??[]));
@@ -171,26 +237,8 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
         const id=digest({ticker:c.ticker,stage:s,rules:c.rulesHash,models:models.map(m=>m.id).sort()});
         pending[id]??=forecast;
       }
-      if(c.blocker&&!modelBands.some(m=>m.directContractForecast))return;
-      const qualified=modelBands.filter(m=>m.band.admitted);
-      if(!qualified.length)return;
-      const lo=Math.min(...qualified.map(m=>Math.min(m.p,m.band.low))),hi=Math.max(...qualified.map(m=>Math.max(m.p,m.band.high)));
-      // Model disagreement contributes uncertainty; hazards revoke experimental temperature opportunities.
-      if(c.family==='daily-temperature'&&b){
-        const hazards=evidence.local[b?.station]?.alerts;
-        if(!hazards||hazards.warm.length||hazards.cold.length)return;
-      }
-      let book;try{const fresh=await client.getMarket(c.ticker);if(fresh.status!=='active'||digest({primary:fresh.rules_primary,secondary:fresh.rules_secondary})!==c.rulesHash)return;book=await client.getOrderbook(c.ticker,10);}catch(e){row.bookError=e.message;return;}
-      const sides=[{side:'yes',l:book?.no_dollars,p:lo},{side:'no',l:book?.yes_dollars,p:1-hi}];
-      for(const side of sides){
-        const levels=(side.l??[]).map(([p,n])=>({price:1-Number(p),depth:Math.floor(Number(n))})).filter(x=>x.price>0&&x.price<1&&x.depth>0).sort((a,b)=>a.price-b.price);
-        if(!levels.length)continue;
-        const {price,depth}=levels[0];
-        // General taker coefficient is a conservative estimate; the executor must apply live venue fees.
-        if(c.feeType!=='quadratic'||!Number.isFinite(c.feeMultiplier))return;
-        const fee=Math.ceil(100*0.07*c.feeMultiplier*price*(1-price))/100,edge=side.p-price-fee;
-        if(edge>0)opportunities.push({ticker:c.ticker,eventTicker:c.event_ticker,targetDate:b?.targetDate,closeTime:c.close_time,side:side.side,price,depth,fee,edge,winLower:side.p,admitted:true,modelIds:qualified.map(m=>m.id),rulesHash:c.rulesHash,observedAt:new Date().toISOString(),quoteExpiresAt:new Date(Date.now()+60000).toISOString()});
-      }
+      try{opportunities.push(...await quoteWeatherContract(c,modelBands,evidence,client));}catch(e){row.bookError=e.message;}
+
     });
     await atomic(join(root,'pending.json'),pending);
     const families={};for(const c of contracts){families[c.family]??={markets:0,modelled:0,volume24h:0};families[c.family].markets++;families[c.family].volume24h+=Number(c.volume_24h_fp??0);if(rows.find(r=>r.ticker===c.ticker)?.models.length)families[c.family].modelled++;}

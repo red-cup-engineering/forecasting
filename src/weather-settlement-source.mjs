@@ -2,10 +2,10 @@ import {mapLimit} from './weather-universe.mjs';
 export const TWC_KALSHI='https://weather.com/kalshi';
 async function get(path,fetchImpl){const source=TWC_KALSHI+path;const r=await fetchImpl(source,{signal:AbortSignal.timeout(15000)});if(!r.ok)throw new Error(`TWC ${r.status}: ${source}`);return {source,data:await r.json()};}
 /** Read the same public report endpoints that weather.com/kalshi's own client uses. */
-export async function settlementWeatherEvidence(contracts,{now=Date.now(),fetchImpl=fetch}={}){
+export async function climateReportEvidence({dates:requestedDates=[],now=Date.now(),fetchImpl=fetch}={}){
  const utcDate=new Date(now).toISOString().slice(0,10);
  const yesterday=new Date(now-86400000).toISOString().slice(0,10);
- const dates=[...new Set([yesterday,...contracts.flatMap(c=>c.binding?.targetDate&&c.binding.targetDate<=utcDate?[c.binding.targetDate]:[])])];
+ const dates=[...new Set([yesterday,...requestedDates.filter(date=>date<=utcDate)])];
  const daily={},international={},errors=[];
  await mapLimit(dates,2,async date=>{
   for(const [kind,target] of [['primary',daily],['international',international]]){
@@ -19,4 +19,8 @@ export function sourceReport(c,e){
  const raw=e?.daily?.[b.targetDate];
  const r=raw?.data?.results?.find(r=>r.station.icao===b.station);
  return r?{source:raw.source,status:r.status,data:r.data,station:r.station,date:b.targetDate}:null;
+}
+
+export function settlementWeatherEvidence(contracts,options={}){
+ return climateReportEvidence({...options,dates:contracts.flatMap(c=>c.binding?.targetDate?[c.binding.targetDate]:[])});
 }
