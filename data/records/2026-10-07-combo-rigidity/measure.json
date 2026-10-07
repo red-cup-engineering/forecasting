@@ -1,0 +1,2128 @@
+{
+  "stateDir": "/home/emsenn/.local/state/561-group/settlements/forecasting-service/combos",
+  "maxAgeS": 900,
+  "priced": 167810,
+  "skipped": {
+    "noLegs": 39314,
+    "stale": 1497,
+    "error": 0
+  },
+  "hinge": {
+    "pinned": {
+      "inside": {
+        "prints": 155239,
+        "settled": 32842,
+        "games": 704,
+        "takerYes": 135674,
+        "makerPnlPerContract": 0.023202898727239477,
+        "seJackknifeByGame": 0.02218364957361488
+      },
+      "above": {
+        "prints": 10382,
+        "settled": 1859,
+        "games": 560,
+        "takerYes": 9854,
+        "makerPnlPerContract": 0.017993437331898864,
+        "seJackknifeByGame": 0.02641550333871513
+      },
+      "below": {
+        "prints": 1546,
+        "settled": 413,
+        "games": 122,
+        "takerYes": 863,
+        "makerPnlPerContract": 0.0109949152542373,
+        "seJackknifeByGame": 0.07791250381711026
+      },
+      "incoherent legs": {
+        "prints": 643,
+        "settled": 143,
+        "games": 190,
+        "takerYes": 436,
+        "makerPnlPerContract": -0.032086713286713274,
+        "seJackknifeByGame": 0.054259776574877884
+      }
+    },
+    "free": {
+      "inside": {
+        "prints": 166491,
+        "settled": 34696,
+        "games": 748,
+        "takerYes": 145998,
+        "makerPnlPerContract": 0.022926077934055718,
+        "seJackknifeByGame": 0.02183389987284464
+      },
+      "above": {
+        "prints": 558,
+        "settled": 345,
+        "games": 155,
+        "takerYes": 343,
+        "makerPnlPerContract": 0.012188985507246381,
+        "seJackknifeByGame": 0.032650414425600446
+      },
+      "incoherent legs": {
+        "prints": 643,
+        "settled": 143,
+        "games": 190,
+        "takerYes": 436,
+        "makerPnlPerContract": -0.032086713286713274,
+        "seJackknifeByGame": 0.054259776574877884
+      },
+      "below": {
+        "prints": 118,
+        "settled": 73,
+        "games": 45,
+        "takerYes": 50,
+        "makerPnlPerContract": 0.0050945205479452265,
+        "seJackknifeByGame": 0.11228428806455439
+      }
+    }
+  },
+  "sameGame": {
+    "prints": 59982,
+    "widthTerciles": [
+      0.06322407666103268,
+      0.3454769999999999
+    ],
+    "byWidth": {
+      "narrow": {
+        "prints": 19995,
+        "settled": 2320,
+        "games": 476,
+        "takerYes": 18847,
+        "makerPnlPerContract": 0.006931293103448276,
+        "seJackknifeByGame": 0.005255096430918903
+      },
+      "middle": {
+        "prints": 20055,
+        "settled": 4184,
+        "games": 408,
+        "takerYes": 18371,
+        "makerPnlPerContract": 0.038985587954110765,
+        "seJackknifeByGame": 0.026239117737296893
+      },
+      "wide": {
+        "prints": 19932,
+        "settled": 6267,
+        "games": 233,
+        "takerYes": 17935,
+        "makerPnlPerContract": -0.0001337960746768624,
+        "seJackknifeByGame": 0.053773716833360866
+      }
+    },
+    "unpinnedClusterShare": 0.2707979060384782
+  },
+  "aboveSuperHedge": {
+    "prints": 10382,
+    "medianExcess": 0.0006278631035016188,
+    "contracts": 28581535.699999753
+  },
+  "sample": [
+    {
+      "ticker": "KXMVECROSSCATEGORY-S202608466FBAB7F-4DD2A36A442",
+      "at": 1791087581579,
+      "price": 0.015,
+      "count": 621.11,
+      "taker": "yes",
+      "legs": 5,
+      "ageS": 3.002,
+      "coherent": true,
+      "games": 1,
+      "pinned": [
+        0,
+        0.148428
+      ],
+      "free": [
+        0,
+        0.148428
+      ],
+      "cluster": true,
+      "maxCells": 23,
+      "unpinnedCluster": false,
+      "gameCodes": [
+        "26OCT04JACCIN"
+      ],
+      "outcome": null
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S202667D58D00A12-49B132FF1C6",
+      "at": 1791087582552,
+      "price": 0.559,
+      "count": 8.94,
+      "taker": "no",
+      "legs": 2,
+      "ageS": 3.975,
+      "coherent": true,
+      "games": 1,
+      "pinned": [
+        0.433806,
+        0.6561279999999999
+      ],
+      "free": [
+        0.433806,
+        0.6561279999999999
+      ],
+      "cluster": true,
+      "maxCells": 42,
+      "unpinnedCluster": true,
+      "gameCodes": [
+        "26OCT03FRESWSU"
+      ],
+      "outcome": 0
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S202685BD8738514-1BBD39F47CE",
+      "at": 1791087587591,
+      "price": 0.126,
+      "count": 52.31,
+      "taker": "yes",
+      "legs": 2,
+      "ageS": 9.014,
+      "coherent": true,
+      "games": 1,
+      "pinned": [
+        0.046675,
+        0.200773
+      ],
+      "free": [
+        0.046675,
+        0.200773
+      ],
+      "cluster": true,
+      "maxCells": 8,
+      "unpinnedCluster": true,
+      "gameCodes": [
+        "26OCT04EGYRSA"
+      ],
+      "outcome": null
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S20264C263E6F093-48F99276243",
+      "at": 1791087588556,
+      "price": 0.111,
+      "count": 127.11,
+      "taker": "yes",
+      "legs": 8,
+      "ageS": 9.979,
+      "coherent": true,
+      "games": 5,
+      "pinned": [
+        0,
+        0.3606407652801542
+      ],
+      "free": [
+        0,
+        0.675708
+      ],
+      "cluster": true,
+      "maxCells": 23,
+      "unpinnedCluster": false,
+      "gameCodes": [
+        "26OCT04DETCAR",
+        "26OCT04JACCIN",
+        "26OCT04MIAMIN",
+        "26OCT04TENBAL",
+        "26OCT04DALHOU"
+      ],
+      "outcome": null
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S20261DCDEE52603-87360BAEAB2",
+      "at": 1791087591536,
+      "price": 0.528,
+      "count": 73.32,
+      "taker": "yes",
+      "legs": 3,
+      "ageS": 12.959,
+      "coherent": true,
+      "games": 1,
+      "pinned": [
+        0.284818,
+        0.675708
+      ],
+      "free": [
+        0.284818,
+        0.675708
+      ],
+      "cluster": true,
+      "maxCells": 10,
+      "unpinnedCluster": false,
+      "gameCodes": [
+        "26OCT04TENBAL"
+      ],
+      "outcome": null
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S2026E4E405135F5-8EF0D257AA7",
+      "at": 1791087594537,
+      "price": 0.645,
+      "count": 15.12,
+      "taker": "yes",
+      "legs": 2,
+      "ageS": 15.96,
+      "coherent": true,
+      "games": 1,
+      "pinned": [
+        0.5572780000000002,
+        0.772768
+      ],
+      "free": [
+        0.5572780000000002,
+        0.772768
+      ],
+      "cluster": true,
+      "maxCells": 1,
+      "unpinnedCluster": false,
+      "gameCodes": [
+        "26OCT040030"
+      ],
+      "outcome": 0
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S202691D241D7683-E067CE3FE88",
+      "at": 1791087595538,
+      "price": 0.175,
+      "count": 153,
+      "taker": "yes",
+      "legs": 2,
+      "ageS": 16.961,
+      "coherent": true,
+      "games": 1,
+      "pinned": [
+        0,
+        0.3454769999999998
+      ],
+      "free": [
+        0,
+        0.3454769999999998
+      ],
+      "cluster": true,
+      "maxCells": 21,
+      "unpinnedCluster": true,
+      "gameCodes": [
+        "26OCT04KCLV"
+      ],
+      "outcome": null
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S202678B1EAB86A1-BEB3F016CB9",
+      "at": 1791087596568,
+      "price": 0.033,
+      "count": 284.13,
+      "taker": "yes",
+      "legs": 26,
+      "ageS": 17.991,
+      "coherent": true,
+      "games": 25,
+      "pinned": [
+        0.00007633355505775086,
+        0.051874429900667464
+      ],
+      "free": [
+        0,
+        0.7147
+      ],
+      "cluster": true,
+      "maxCells": 6,
+      "unpinnedCluster": true,
+      "gameCodes": [
+        "26OCT09BVBSVW",
+        "26OCT10FCABMU",
+        "26OCT04COMSEN",
+        "26OCT04EGYRSA",
+        "26OCT04KGZLBN",
+        "26OCT04MARMLI",
+        "26OCT10BARGET",
+        "26OCT10LILHAC",
+        "26OCT10PSGMAN",
+        "26OCT04AZELTU",
+        "26OCT04GREGER",
+        "26OCT04IRLISR",
+        "26OCT04KOSAUT",
+        "26OCT04MLTAND",
+        "26OCT04NEDSRB",
+        "26OCT04PORNOR",
+        "26OCT04WALDEN",
+        "26OCT05BIHPOL",
+        "26OCT05CYPLAT",
+        "26OCT05FRABEL",
+        "26OCT05ITATUR",
+        "26OCT05MNEARM",
+        "26OCT05NIRGEO",
+        "26OCT05ROUSWE",
+        "26OCT05UKRHUN"
+      ],
+      "outcome": null
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S2026EA12FD42843-3C35B8AD9AD",
+      "at": 1791087597563,
+      "price": 0.113,
+      "count": 24.97,
+      "taker": "yes",
+      "legs": 2,
+      "ageS": 2.101,
+      "coherent": true,
+      "games": 1,
+      "pinned": [
+        0,
+        0.169408
+      ],
+      "free": [
+        0,
+        0.169408
+      ],
+      "cluster": true,
+      "maxCells": 29,
+      "unpinnedCluster": false,
+      "gameCodes": [
+        "26OCT04INDWAS"
+      ],
+      "outcome": 0
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S20263667371AA00-C49E41B8291",
+      "at": 1791087598537,
+      "price": 0.064,
+      "count": 1202.34,
+      "taker": "yes",
+      "legs": 4,
+      "ageS": 3.075,
+      "coherent": true,
+      "games": 1,
+      "pinned": [
+        0,
+        0.36592499999999994
+      ],
+      "free": [
+        0,
+        0.36592499999999994
+      ],
+      "cluster": true,
+      "maxCells": 29,
+      "unpinnedCluster": false,
+      "gameCodes": [
+        "26OCT04INDWAS"
+      ],
+      "outcome": null
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S202656EF47100E0-5F80D3E4E80",
+      "at": 1791087599570,
+      "price": 0.0046,
+      "count": 400,
+      "taker": "yes",
+      "legs": 26,
+      "ageS": 20.993,
+      "coherent": true,
+      "games": 17,
+      "pinned": [
+        0,
+        0.005118910460315972
+      ],
+      "free": [
+        0,
+        0.47738800000000003
+      ],
+      "cluster": true,
+      "maxCells": 15,
+      "unpinnedCluster": true,
+      "gameCodes": [
+        "26OCT04MARMLI",
+        "26OCT03USAMEX",
+        "26OCT04COMSEN",
+        "26OCT04EGYRSA",
+        "26OCT04KGZLBN",
+        "26OCT04KOSAUT",
+        "26OCT04MLTAND",
+        "26OCT04NEDSRB",
+        "26OCT04PORNOR",
+        "26OCT05CYPLAT",
+        "26OCT05FRABEL",
+        "26OCT05ITATUR",
+        "26OCT05MNEARM",
+        "26OCT05ROUSWE",
+        "26OCT04AZELTU",
+        "26OCT04GREGER",
+        "26OCT04WALDEN"
+      ],
+      "outcome": null
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S202684A5AF2D7EF-ACABE2E75A4",
+      "at": 1791087601591,
+      "price": 0.047,
+      "count": 199.2,
+      "taker": "yes",
+      "legs": 3,
+      "ageS": 23.014,
+      "coherent": true,
+      "games": 2,
+      "pinned": [
+        0,
+        0.14103537633600002
+      ],
+      "free": [
+        0,
+        0.355708
+      ],
+      "cluster": true,
+      "maxCells": 15,
+      "unpinnedCluster": false,
+      "gameCodes": [
+        "26OCT04DENSF",
+        "26OCT04KCLV"
+      ],
+      "outcome": null
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S202668D2F6826C4-954E3C84BD3",
+      "at": 1791087604537,
+      "price": 0.0084,
+      "count": 555.55,
+      "taker": "yes",
+      "legs": 9,
+      "ageS": 9.075,
+      "coherent": true,
+      "games": 7,
+      "pinned": [
+        0.002990190534785216,
+        0.016984788202447365
+      ],
+      "free": [
+        0,
+        0.426933
+      ],
+      "cluster": true,
+      "maxCells": 8,
+      "unpinnedCluster": true,
+      "gameCodes": [
+        "26OCT04PORNOR",
+        "26OCT04AZELTU",
+        "26OCT04GREGER",
+        "26OCT04KOSAUT",
+        "26OCT04MLTAND",
+        "26OCT04NEDSRB",
+        "26OCT04WALDEN"
+      ],
+      "outcome": null
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S2026E14A1E68014-762FF6C1FC1",
+      "at": 1791087607536,
+      "price": 0.0093,
+      "count": 2500,
+      "taker": "yes",
+      "legs": 7,
+      "ageS": 12.074,
+      "coherent": true,
+      "games": 6,
+      "pinned": [
+        0.004860361569054711,
+        0.012341411615347825
+      ],
+      "free": [
+        0,
+        0.242397
+      ],
+      "cluster": true,
+      "maxCells": 11,
+      "unpinnedCluster": true,
+      "gameCodes": [
+        "26OCT04PORNOR",
+        "26OCT04GREGER",
+        "26OCT04IRLISR",
+        "26OCT04KOSAUT",
+        "26OCT04MLTAND",
+        "26OCT04WALDEN"
+      ],
+      "outcome": null
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S202678B16614852-EFF3E4871DF",
+      "at": 1791087607581,
+      "price": 0.001,
+      "count": 5000,
+      "taker": "yes",
+      "legs": 11,
+      "ageS": 29.004,
+      "coherent": true,
+      "games": 9,
+      "pinned": [
+        0,
+        0.0018459304770788013
+      ],
+      "free": [
+        0,
+        0.37612799999999996
+      ],
+      "cluster": true,
+      "maxCells": 29,
+      "unpinnedCluster": false,
+      "gameCodes": [
+        "26OCT04ARINYG",
+        "26OCT04DENSF",
+        "26OCT04GBTB",
+        "26OCT04INDWAS",
+        "26OCT04JACCIN",
+        "26OCT04LARPHI",
+        "26OCT04NEBUF",
+        "26OCT04NYJCHI",
+        "26OCT05ATLNO"
+      ],
+      "outcome": null
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S20262C2FEA6002F-6080C95E655",
+      "at": 1791087608551,
+      "price": 0.044,
+      "count": 319.14,
+      "taker": "yes",
+      "legs": 10,
+      "ageS": 13.089,
+      "coherent": true,
+      "games": 1,
+      "pinned": [
+        0,
+        0.6952320000000001
+      ],
+      "free": [
+        0,
+        0.6952320000000001
+      ],
+      "cluster": true,
+      "maxCells": 29,
+      "unpinnedCluster": false,
+      "gameCodes": [
+        "26OCT04INDWAS"
+      ],
+      "outcome": null
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S2026C9993DC951B-8A7A245C8AF",
+      "at": 1791087611564,
+      "price": 0.468,
+      "count": 28.83,
+      "taker": "yes",
+      "legs": 5,
+      "ageS": 1.471,
+      "coherent": true,
+      "games": 1,
+      "pinned": [
+        0.07053799999999999,
+        0.734112
+      ],
+      "free": [
+        0.07053799999999999,
+        0.734112
+      ],
+      "cluster": true,
+      "maxCells": 1,
+      "unpinnedCluster": false,
+      "gameCodes": [
+        "26OCT040030"
+      ],
+      "outcome": 0
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S2026455C4E63D90-46A10512BE6",
+      "at": 1791087615569,
+      "price": 0.131,
+      "count": 71.94,
+      "taker": "yes",
+      "legs": 5,
+      "ageS": 20.107,
+      "coherent": true,
+      "games": 4,
+      "pinned": [
+        0.006650848783348285,
+        0.33966652974652467
+      ],
+      "free": [
+        0,
+        0.5374720000000001
+      ],
+      "cluster": true,
+      "maxCells": 44,
+      "unpinnedCluster": true,
+      "gameCodes": [
+        "26OCT03CINARIZ",
+        "26OCT03FRESWSU",
+        "26OCT04SJSUHAW",
+        "26OCT03TXSTSDSU"
+      ],
+      "outcome": 0
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S2026B92FD91188B-5F5663A368D",
+      "at": 1791087617537,
+      "price": 0.041,
+      "count": 22.83,
+      "taker": "yes",
+      "legs": 8,
+      "ageS": 22.075,
+      "coherent": true,
+      "games": 1,
+      "pinned": [
+        0,
+        0.47738800000000003
+      ],
+      "free": [
+        0,
+        0.47738800000000003
+      ],
+      "cluster": true,
+      "maxCells": 25,
+      "unpinnedCluster": false,
+      "gameCodes": [
+        "26OCT04INDWAS"
+      ],
+      "outcome": 0
+    },
+    {
+      "ticker": "KXMVECROSSCATEGORY-S20265DD1F44C84B-674FDD8337D",
+      "at": 1791087621545,
+      "price": 0.0017,
+      "count": 1052.63,
+      "taker": "yes",
+      "legs": 26,
+      "ageS": 42.968,
+      "coherent": true,
+      "games": 14,
+      "pinned": [
+        0,
+        0.20046827507720572
+      ],
+      "free": [
+        0,
+        0.606933
+      ],
+      "cluster": true,
+      "maxCells": 21,
+      "unpinnedCluster": false,
+      "gameCodes": [
+        "26OCT04TENBAL",
+        "26OCT04ARINYG",
+        "26OCT04DALHOU",
+        "26OCT04DENSF",
+        "26OCT04DETCAR",
+        "26OCT04GBTB",
+        "26OCT04INDWAS",
+        "26OCT04JACCIN",
+        "26OCT04KCLV",
+        "26OCT04LACSEA",
+        "26OCT04LARPHI",
+        "26OCT04MIAMIN",
+        "26OCT04NEBUF",
+        "26OCT04NYJCHI"
+      ],
+      "outcome": 0
+    }
+  ],
+  "incoherentSample": [
+    {
+      "legs": [
+        {
+          "ticker": "KXNCAAFGAME-26OCT03BAYASU-BAY",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03FRESWSU-FRES",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03BARSAB-BAR",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03BARSAB",
+          "books": [
+            {
+              "ticker": "KXWTAMATCH-26OCT03BARSAB-BAR",
+              "event": "KXWTAMATCH-26OCT03BARSAB",
+              "bid": 0.872608,
+              "ask": 0.9063
+            },
+            {
+              "ticker": "KXWTAMATCH-26OCT03BARSAB-SAB",
+              "event": "KXWTAMATCH-26OCT03BARSAB",
+              "bid": 0.13157200000000002,
+              "ask": 0.15892499999999998
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXITFMATCH-26OCT03EHRBEC-EHR",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03BAYASU-BAY",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03EWUUCD-UCD",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03FRESWSU-WSU",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNHLGAME-26OCT03LASJ-SJ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTADOUBLES-26OCT03TANYIFDABSTE-DABSTE",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03BARSAB-BAR",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KRAYAS-KRA",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03BARSAB",
+          "books": [
+            {
+              "ticker": "KXWTAMATCH-26OCT03BARSAB-BAR",
+              "event": "KXWTAMATCH-26OCT03BARSAB",
+              "bid": 0.872608,
+              "ask": 0.9063
+            },
+            {
+              "ticker": "KXWTAMATCH-26OCT03BARSAB-SAB",
+              "event": "KXWTAMATCH-26OCT03BARSAB",
+              "bid": 0.13157200000000002,
+              "ask": 0.15892499999999998
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03VACFIL-FIL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXINTLFRIENDLYGAME-26OCT03USAMEX-USA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXMLBTOTAL-26OCT032030SDMIL-8",
+          "side": "no"
+        },
+        {
+          "ticker": "KXNBAGAME-26OCT03MIATOR-MIA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNHLGAME-26OCT03LASJ-SJ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNHLGAME-26OCT03STLCOL-COL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXUFCFIGHT-26OCT03FIGTAL-TAL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03BARSAB-SAB",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KUDAND-AND",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03BARSAB",
+          "books": [
+            {
+              "ticker": "KXWTAMATCH-26OCT03BARSAB-BAR",
+              "event": "KXWTAMATCH-26OCT03BARSAB",
+              "bid": 0.872608,
+              "ask": 0.9063
+            },
+            {
+              "ticker": "KXWTAMATCH-26OCT03BARSAB-SAB",
+              "event": "KXWTAMATCH-26OCT03BARSAB",
+              "bid": 0.13157200000000002,
+              "ask": 0.15892499999999998
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPCHALLENGERMATCH-26OCT03BELHAR-BEL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXCS2GAME-26OCT040500LGCSHIN-LGC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXCS2GAME-26OCT040500PRVTS-TS",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXCS2GAME-26OCT0410001WING2-G2",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXCS2GAME-26OCT041230M80BB-BB",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXCS2GAME-26OCT041230NAVIVIT-VIT",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXITFWMATCH-26OCT03LEELUO-LEE",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03BAYASU-BAY",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03EWUUCD-UCD",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03FRESWSU-FRES",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03TXSTSDSU-TXST",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT04SJSUHAW-HAW",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNHLGAME-26OCT03LASJ-SJ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXUSLGAME-26OCT03LASSAN-LAS",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTACHALLENGERMATCH-26OCT03JIAZON-JIA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTADOUBLES-26OCT03KOZZVOKICMUH-KICMUH",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03BARSAB-BAR",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KRAYAS-KRA",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03BARSAB",
+          "books": [
+            {
+              "ticker": "KXWTAMATCH-26OCT03BARSAB-BAR",
+              "event": "KXWTAMATCH-26OCT03BARSAB",
+              "bid": 0.872608,
+              "ask": 0.9063
+            },
+            {
+              "ticker": "KXWTAMATCH-26OCT03BARSAB-SAB",
+              "event": "KXWTAMATCH-26OCT03BARSAB",
+              "bid": 0.13157200000000002,
+              "ask": 0.15892499999999998
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03HURKHA-KHA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03VACFIL-FIL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT04LEHVAL-LEH",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT04MEDCER-MED",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT04ZVEDJO-ZVE",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03NOSGOL-NOS",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03SNIPRE-SNI",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03ALCSHA",
+          "books": [
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.6750269999999999,
+              "ask": 0.724413
+            },
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-SHA",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.33407499999999996,
+              "ask": 0.37612799999999996
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPCHALLENGERMATCH-26OCT03BELHAR-BEL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPCHALLENGERMATCH-26OCT04BANTAK-TAK",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPCHALLENGERMATCH-26OCT04YAMBOR-BOR",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTACHALLENGERMATCH-26OCT02HUAKHO-HUA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTACHALLENGERMATCH-26OCT03JIAZON-JIA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTACHALLENGERMATCH-26OCT03ZHEYIH-YIH",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTADOUBLES-26OCT03KOZZVOKICMUH-KICMUH",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03BARSAB-BAR",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KRAYAS-KRA",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03ALCSHA",
+          "books": [
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.6750269999999999,
+              "ask": 0.724413
+            },
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-SHA",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.33407499999999996,
+              "ask": 0.37612799999999996
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03VACFIL-FIL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT04LEHVAL-LEH",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03BARSAB-SAB",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KUDAND-AND",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03NOSGOL-NOS",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03ALCSHA",
+          "books": [
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.6750269999999999,
+              "ask": 0.724413
+            },
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-SHA",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.33407499999999996,
+              "ask": 0.37612799999999996
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPCHALLENGERMATCH-26OCT04HENBOO-HEN",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPCHALLENGERMATCH-26OCT04IZQHAS-HAS",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPCHALLENGERMATCH-26OCT04MARPIE-MAR",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPCHALLENGERMATCH-26OCT04NIJHIP-NIJ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPCHALLENGERMATCH-26OCT04ROCMON-ROC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPDOUBLES-26OCT03AREPELBUBSHA-AREPEL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03HURKHA-KHA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03VACFIL-FIL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT04LEHVAL-LEH",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT04MEDCER-MED",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT04ZVEDJO-ZVE",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTADOUBLES-26OCT03KOZZVOKICMUH-KICMUH",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03ALESHN-SHN",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03BARSAB-BAR",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03BEJOSA-OSA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KRAYAS-KRA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KUDAND-AND",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03MUCSAM-MUC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03NOSGOL-NOS",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03SNIPRE-SNI",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03ALCSHA",
+          "books": [
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.6750269999999999,
+              "ask": 0.724413
+            },
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-SHA",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.33407499999999996,
+              "ask": 0.37612799999999996
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXITFWMATCH-26OCT03LEELUO-LEE",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03BAYASU-BAY",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03EWUUCD-UCD",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03FRESWSU-FRES",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNHLGAME-26OCT03CGYVAN-VAN",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNHLGAME-26OCT03LASJ-SJ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXUSLGAME-26OCT03LASSAN-LAS",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTADOUBLES-26OCT03KOZZVOKICMUH-KICMUH",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03BARSAB-BAR",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KRAYAS-KRA",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03ALCSHA",
+          "books": [
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.6750269999999999,
+              "ask": 0.724413
+            },
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-SHA",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.33407499999999996,
+              "ask": 0.37612799999999996
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPCHALLENGERMATCH-26OCT03BELHAR-BEL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXITFWMATCH-26OCT03LEELUO-LEE",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTACHALLENGERMATCH-26OCT03JIAZON-JIA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03BARSAB-BAR",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KRAYAS-KRA",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03ALCSHA",
+          "books": [
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.6750269999999999,
+              "ask": 0.724413
+            },
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-SHA",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.33407499999999996,
+              "ask": 0.37612799999999996
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPDOUBLES-26OCT02MELZVECASGLA-CASGLA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03HURKHA-KHA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03VACFIL-FIL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT04LEHVAL-LEH",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTACHALLENGERMATCH-26OCT02SHIYUA-SHI",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTACHALLENGERMATCH-26OCT03MATWEI-WEI",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTADOUBLES-26OCT03MERSHNLUMPAN-MERSHN",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KUDAND-AND",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03NOSGOL-NOS",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03ALCSHA",
+          "books": [
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.6750269999999999,
+              "ask": 0.724413
+            },
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-SHA",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.33407499999999996,
+              "ask": 0.37612799999999996
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPMATCH-26OCT03ALCSHA-SHA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNFLGAME-26OCT04INDWAS-IND",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03ALCSHA",
+          "books": [
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.6750269999999999,
+              "ask": 0.724413
+            },
+            {
+              "ticker": "KXATPMATCH-26OCT03ALCSHA-SHA",
+              "event": "KXATPMATCH-26OCT03ALCSHA",
+              "bid": 0.33407499999999996,
+              "ask": 0.37612799999999996
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03EWUUCD-UCD",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03TXSTSDSU-SDSU",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT04SJSUHAW-SJSU",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03CINARIZ",
+          "books": [
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.872608,
+              "ask": 0.9063
+            },
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-CIN",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.13157200000000002,
+              "ask": 0.15892499999999998
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT10INDNEB-IND",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT10TEXOKLA-TEX",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT10UCLAORE-ORE",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNFLGAME-26OCT04NEBUF-BUF",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNFLGAME-26OCT04TENBAL-BAL",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03CINARIZ",
+          "books": [
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.872608,
+              "ask": 0.9063
+            },
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-CIN",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.13157200000000002,
+              "ask": 0.15892499999999998
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXNCAAFGAME-26OCT03CINARIZ-CIN",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT04SJSUHAW-SJSU",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03CINARIZ",
+          "books": [
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.872608,
+              "ask": 0.9063
+            },
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-CIN",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.13157200000000002,
+              "ask": 0.15892499999999998
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXMLBGAME-26OCT032030SDMIL-MIL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03BAYASU-BAY",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03EWUUCD-UCD",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03INDRUTG-IND",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03MCNSLSU-LSU",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03MIACLEM-MIA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03NAUIDST-NAU",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03SUUUTU-SUU",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03TXSTSDSU-TXST",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03UWFLAC-AC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFSPREAD-26OCT04SJSUHAW-HAW15",
+          "side": "no"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03CINARIZ",
+          "books": [
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.872608,
+              "ask": 0.9063
+            },
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-CIN",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.13157200000000002,
+              "ask": 0.15892499999999998
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXMLBGAME-26OCT032030SDMIL-MIL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXMLBTOTAL-26OCT032030SDMIL-6",
+          "side": "no"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03BAYASU-BAY",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03EWUUCD-UCD",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03FRESWSU-FRES",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03TXSTSDSU-TXST",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03WEBCP-WEB",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT04SJSUHAW-HAW",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03CINARIZ",
+          "books": [
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.872608,
+              "ask": 0.9063
+            },
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-CIN",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.13157200000000002,
+              "ask": 0.15892499999999998
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXNCAAFGAME-26OCT03BAYASU-BAY",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03FRESWSU-FRES",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03TXSTSDSU-TXST",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03CINARIZ",
+          "books": [
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.872608,
+              "ask": 0.9063
+            },
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-CIN",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.13157200000000002,
+              "ask": 0.15892499999999998
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03BAYASU-BAY",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03EWUUCD-UCD",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03FRESWSU-FRES",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWNBAGAME-26OCT07NYATL-ATL",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03CINARIZ",
+          "books": [
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.872608,
+              "ask": 0.9063
+            },
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-CIN",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.13157200000000002,
+              "ask": 0.15892499999999998
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXNCAAFGAME-26OCT03BAYASU-BAY",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03EWUUCD-UCD",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFSPREAD-26OCT03CINARIZ-ARIZ25",
+          "side": "no"
+        },
+        {
+          "ticker": "KXNCAAFSPREAD-26OCT04SJSUHAW-SJSU4",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFTOTAL-26OCT03BAYASU-72",
+          "side": "no"
+        },
+        {
+          "ticker": "KXNCAAFTOTAL-26OCT03CINARIZ-35",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03CINARIZ",
+          "books": [
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.872608,
+              "ask": 0.9063
+            },
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-CIN",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.13157200000000002,
+              "ask": 0.15892499999999998
+            },
+            {
+              "ticker": "KXNCAAFTOTAL-26OCT03CINARIZ-77",
+              "event": "KXNCAAFTOTAL-26OCT03CINARIZ",
+              "bid": null,
+              "ask": 0.032036999999999996
+            },
+            {
+              "ticker": "KXNCAAFTOTAL-26OCT03CINARIZ-57",
+              "event": "KXNCAAFTOTAL-26OCT03CINARIZ",
+              "bid": 0.018628,
+              "ask": 0.063948
+            },
+            {
+              "ticker": "KXNCAAFTOTAL-26OCT03CINARIZ-35",
+              "event": "KXNCAAFTOTAL-26OCT03CINARIZ",
+              "bid": 0.343872,
+              "ask": 0.48743699999999995
+            },
+            {
+              "ticker": "KXNCAAFTOTAL-26OCT03CINARIZ-68",
+              "event": "KXNCAAFTOTAL-26OCT03CINARIZ",
+              "bid": 0.018628,
+              "ask": 0.063948
+            },
+            {
+              "ticker": "KXNCAAFSPREAD-26OCT03CINARIZ-CIN8",
+              "event": "KXNCAAFSPREAD-26OCT03CINARIZ",
+              "bid": 0.018628,
+              "ask": 0.085152
+            },
+            {
+              "ticker": "KXNCAAFSPREAD-26OCT03CINARIZ-ARIZ3",
+              "event": "KXNCAAFSPREAD-26OCT03CINARIZ",
+              "bid": 0.736875,
+              "ask": 0.896853
+            },
+            {
+              "ticker": "KXNCAAFSPREAD-26OCT03CINARIZ-ARIZ7",
+              "event": "KXNCAAFSPREAD-26OCT03CINARIZ",
+              "bid": 0.6545230000000001,
+              "ask": 0.792012
+            },
+            {
+              "ticker": "KXNCAAFTEAMTOTAL-26OCT03CINARIZ-ARIZ21",
+              "event": "KXNCAAFTEAMTOTAL-26OCT03CINARIZ",
+              "bid": 0.462528,
+              "ask": 0.8494079999999999
+            },
+            {
+              "ticker": "KXNCAAFTEAMTOTAL-26OCT03CINARIZ-CIN14",
+              "event": "KXNCAAFTEAMTOTAL-26OCT03CINARIZ",
+              "bid": 0.33407499999999996,
+              "ask": 0.704973
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03EWUUCD-UCD",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03CINARIZ",
+          "books": [
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.872608,
+              "ask": 0.9063
+            },
+            {
+              "ticker": "KXNCAAFGAME-26OCT03CINARIZ-CIN",
+              "event": "KXNCAAFGAME-26OCT03CINARIZ",
+              "bid": 0.13157200000000002,
+              "ask": 0.15892499999999998
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXWTACHALLENGERMATCH-26OCT03ZHEYIH-ZHE",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KUDAND-KUD",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03KUDAND",
+          "books": [
+            {
+              "ticker": "KXWTAMATCH-26OCT03KUDAND-KUD",
+              "event": "KXWTAMATCH-26OCT03KUDAND",
+              "bid": 0.19838699999999998,
+              "ask": 0.232012
+            },
+            {
+              "ticker": "KXWTAMATCH-26OCT03KUDAND-AND",
+              "event": "KXWTAMATCH-26OCT03KUDAND",
+              "bid": 0.8096679999999999,
+              "ask": 0.8494079999999999
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPMATCH-26OCT03HURKHA-KHA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTADOUBLES-26OCT04SONVEKPERSCH-PERSCH",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03ALESHN-SHN",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KUDAND-AND",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03KUDAND",
+          "books": [
+            {
+              "ticker": "KXWTAMATCH-26OCT03KUDAND-KUD",
+              "event": "KXWTAMATCH-26OCT03KUDAND",
+              "bid": 0.19838699999999998,
+              "ask": 0.232012
+            },
+            {
+              "ticker": "KXWTAMATCH-26OCT03KUDAND-AND",
+              "event": "KXWTAMATCH-26OCT03KUDAND",
+              "bid": 0.8096679999999999,
+              "ask": 0.8494079999999999
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPCHALLENGERMATCH-26OCT04SAIWAN-SAI",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03HURKHA-KHA",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03TXSTSDSU-TXST",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT04SJSUHAW-SJSU",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTACHALLENGERMATCH-26OCT03ZHEYIH-ZHE",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTADOUBLES-26OCT04SONVEKPERSCH-PERSCH",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03ALESHN-SHN",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KUDAND-AND",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03KUDAND",
+          "books": [
+            {
+              "ticker": "KXWTAMATCH-26OCT03KUDAND-KUD",
+              "event": "KXWTAMATCH-26OCT03KUDAND",
+              "bid": 0.19838699999999998,
+              "ask": 0.232012
+            },
+            {
+              "ticker": "KXWTAMATCH-26OCT03KUDAND-AND",
+              "event": "KXWTAMATCH-26OCT03KUDAND",
+              "bid": 0.8096679999999999,
+              "ask": 0.8494079999999999
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "legs": [
+        {
+          "ticker": "KXATPMATCH-26OCT03ALCSHA-ALC",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT03VACFIL-FIL",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT04LEHVAL-LEH",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT04MEDCER-MED",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXATPMATCH-26OCT04ZVEDJO-ZVE",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03BAYASU-BAY",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03CINARIZ-ARIZ",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03EWUUCD-UCD",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT03TXSTSDSU-TXST",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXNCAAFGAME-26OCT04SJSUHAW-SJSU",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03ALESHN-SHN",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03KUDAND-AND",
+          "side": "yes"
+        },
+        {
+          "ticker": "KXWTAMATCH-26OCT03NOSGOL-NOS",
+          "side": "yes"
+        }
+      ],
+      "parts": [
+        {
+          "game": "26OCT03KUDAND",
+          "books": [
+            {
+              "ticker": "KXWTAMATCH-26OCT03KUDAND-KUD",
+              "event": "KXWTAMATCH-26OCT03KUDAND",
+              "bid": 0.19838699999999998,
+              "ask": 0.232012
+            },
+            {
+              "ticker": "KXWTAMATCH-26OCT03KUDAND-AND",
+              "event": "KXWTAMATCH-26OCT03KUDAND",
+              "bid": 0.8096679999999999,
+              "ask": 0.8494079999999999
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
