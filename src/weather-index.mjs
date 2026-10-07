@@ -1,6 +1,6 @@
 import {cell,address} from '@red-cup-engineering/signcell/cell';
 /** Forecast and verify the published city index using its actual versioned configuration. */
-import {studentTCdf} from './temperature-distribution.mjs';
+import {makeTemperaturePool,postprocessTemperature,temperatureCdf} from './weather-ensemble.mjs';
 export const INDEX_CITIES={
  miami:{timeZone:'America/New_York',version:'1.0',series:'KXTEMPMIAH',terms:'MIAWINDEX',members:4,weight:.8},
  chicago:{timeZone:'America/Chicago',version:'1.1',series:'KXTEMPCHIHS',terms:'CHIMETROWINDEX',members:4,weight:.8},
@@ -75,7 +75,7 @@ function curve(e,station,provider,now){
  if(provider==='lamp'){issued=e.lamp?.runtime;age=3;source=e.lamp?.source;rows=(e.lamp?.stations[station]?.rows??[]).map(r=>({t:Date.parse(r.validTime),mean:r.temperatureF,scale:2.5}));}
  if(provider==='nbh'){issued=e.hourlyGuidance?.runtime;age=3;source=e.hourlyGuidance?.source;rows=(e.hourlyGuidance?.stations[station]?.rows??[]).map(r=>({t:Date.parse(r.ftime),mean:r.tmp,scale:Number.isFinite(r.tsd)?Math.max(1,r.tsd*Math.sqrt(3/5)):2.5}));}
  if(provider==='nbm'){issued=e.guidance?.runtime;age=8;source=e.guidance?.source;rows=(e.guidance?.stations[station]?.rows??[]).map(r=>({t:Date.parse(r.ftime),mean:r.tmp,scale:Number.isFinite(r.tsd)?Math.max(1,r.tsd*Math.sqrt(3/5)):2.5}));}
- if(provider==='nws'){const l=e.local?.[station];issued=l?.updated;age=8;source=l?.hourlyUrl;rows=(l?.periods??[]).filter(r=>['F','C'].includes(r.temperatureUnit)).map(r=>({t:Date.parse(r.startTime),mean:r.temperatureUnit==='C'?r.temperature*9/5+32:r.temperature,scale:2.5}));}
+ if(provider==='nws'){const l=e.local?.[station];issued=l?.updated;age=8;source=l?.hourlyUrl;rows=(l?.periods??[]).filter(r=>['F','C'].includes(r.temperatureUnit)&&Number.isFinite(r.temperature)).map(r=>({t:Date.parse(r.startTime),mean:r.temperatureUnit==='C'?r.temperature*9/5+32:r.temperature,scale:2.5}));}
  if(!Number.isFinite(Date.parse(issued))||now<Date.parse(issued)||now-Date.parse(issued)>age*HOUR)return null;
  rows=rows.filter(r=>Number.isFinite(r.t)&&Number.isFinite(r.mean)&&r.mean>=-150&&r.mean<=180&&Number.isFinite(r.scale)&&r.scale>0).sort((a,b)=>a.t-b.t);return rows.length?{rows,source,issued}:null;
 }
@@ -84,6 +84,10 @@ function interpolate(rows,t,allowBackfill=false){
  if(allowBackfill&&t<rows[0].t&&rows[0].t-t<=HOUR)return {...rows[0],backfilled:true};
  for(let i=0;i<rows.length-1;i++){const a=rows[i],b=rows[i+1];if(a.t<t&&t<b.t&&b.t-a.t<=3*HOUR){const fraction=(t-a.t)/(b.t-a.t);return {mean:a.mean+(b.mean-a.mean)*fraction,scale:Math.max(a.scale,b.scale),backfilled:false};}}
  return null;
+}
+/** Available forecast trajectory at one timestamp, retaining the actual provider provenance. */
+export function stationTemperatureDistribution(e,station,provider,target,now){
+ const c=curve(e,station,provider,now),r=c&&interpolate(c.rows,target);return r?{meanF:r.mean,scaleF:r.scale,nu:5,source:c.source,issuedAt:c.issued}:null;
 }
 export function indexDistributions(city,e,target,now){
  const packet=e.indices?.[city],c=indexConfiguration(packet,city,target,now);if(!c||target<=now||target-now>24*HOUR)return [];
@@ -102,11 +106,16 @@ export function indexDistributions(city,e,target,now){
    out.push({model:model+'/recent-innovation-v1',meanF:shifted,scaleF:scale,nu:5,source:packet.indexSource,details:{...details,mean:shifted,baseMeanF:mean,anchorValueF:anchor.v,anchorTime:new Date(anchor.t).toISOString(),anchorStatus:anchor.status,anchorSource:packet.indexSource,anchorBackfilledForecast:reference.some(r=>r.backfilled),innovationF:innovation,innovationWeight:decay,status:'forward experiment; three-hour decay is uncalibrated; spread retained'}});
   }
  }
+ for(const innovative of [false,true]){
+  const candidates=out.filter(r=>r.model.endsWith('/recent-innovation-v1')===innovative).map(r=>{const provider=/kalshi-index-(lamp|nbh|nbm|nws)-/.exec(r.model)?.[1];return {...r,family:provider==='nbh'?'nbm':provider,priority:provider==='nbh'?1:0,issuedAt:r.details.stationForecasts?.reduce((a,c)=>a<c.issuedAt?c.issuedAt:a,'')};});
+  const pool=makeTemperaturePool(candidates);if(!pool)continue;
+  out.push({...pool,model:'kalshi-index-family-pool-v1'+(innovative?'/recent-innovation-v1':''),source:packet.calibrationSource,details:{...pool,mean:pool.meanF,scale:pool.scaleF,configVersion:c.config_version,configSource:packet.calibrationSource,stationForecasts:c.stations.map(s=>({station:s.station_id,weight:s.weight})),targetTime:new Date(target).toISOString(),status:'prospective ensemble experiment; physical calibration and market advantage unproven'}});
+ }
  return out;
 }
 /** Published 0.01F rounding, preserving strict greater/less comparisons. Daily integer rounding is distinct. */
-export function indexBracketProbability(m,{meanF,scaleF,nu=5}){
- const cdf=x=>studentTCdf((x-meanF)/scaleF,nu),cent=v=>Math.round(v*100);
+export function indexBracketProbability(m,distribution){
+ const cdf=x=>temperatureCdf(distribution,x),cent=v=>Math.round(v*100);
  if(m.strike_type==='greater'&&Number.isFinite(m.floor_strike))return 1-cdf((cent(m.floor_strike)+.5)/100);
  if(m.strike_type==='less'&&Number.isFinite(m.cap_strike))return cdf((cent(m.cap_strike)-.5)/100);
  if(m.strike_type==='between'&&Number.isFinite(m.floor_strike)&&Number.isFinite(m.cap_strike)&&m.floor_strike<=m.cap_strike)return cdf((cent(m.cap_strike)+.5)/100)-cdf((cent(m.floor_strike)-.5)/100);
@@ -117,7 +126,9 @@ export function priceWeatherIndex(c,e,now){
  const target=Date.parse(b.targetTime),h=(target-now)/HOUR,horizon=h<=3?'0-3h':h<=6?'3-6h':h<=12?'6-12h':'12-24h';
  const distributions=indexDistributions(b.city,e,target,now).flatMap(r=>{
   const p=e.science?.parameters?.[`${b.station}/${r.model}/${horizon}`];
-  return p?.ready?[r,{...r,model:r.model+'/station-postprocess-v1',meanF:r.meanF+p.biasF,scaleF:r.scaleF*p.scaleMultiplier,details:{...r.details,mean:r.meanF+p.biasF,scale:r.scaleF*p.scaleMultiplier,postprocessing:{...p,baseModel:r.model}}}]:[r];
+  if(!p?.ready)return [r];
+  const adjusted=postprocessTemperature(r,p);
+  return [r,{...adjusted,model:r.model+'/station-postprocess-v1',details:{...r.details,mean:adjusted.meanF,scale:adjusted.scaleF,meanF:adjusted.meanF,scaleF:adjusted.scaleF,...(adjusted.mixture?{mixture:adjusted.mixture}:{}),postprocessing:{...p,baseModel:r.model}}}];
  });
  return distributions.flatMap(r=>{const p=indexBracketProbability(c,r);return Number.isFinite(p)?[{id:r.model,p,details:r.details}]:[];});
 }

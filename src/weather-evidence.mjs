@@ -1,3 +1,4 @@
+import {makeBracketProbabilityPool} from './weather-ensemble.mjs';
 import {INDEX_CITIES,indexConfiguration,collectWeatherIndexEvidence,priceWeatherIndex} from './weather-index.mjs';
 import {latestHourlyGuidance} from './nbm-hourly-guidance.mjs';
 import {latestLampGuidance} from './lamp-station-guidance.mjs';
@@ -95,9 +96,10 @@ export function weatherEstimates(c,e,now) {
   const start=climateDayStart(b.targetDate,b.timeZone).getTime(),end=start+86400000;
   const periods=(l?.periods??[]).filter(p=>Date.parse(p.startTime)>=start&&Date.parse(p.startTime)<end);
   const beforeDay=now<start;
-  const covered=periods.length&&Date.parse(periods.at(-1).endTime)>=end&&(beforeDay?Date.parse(periods[0].startTime)<=start:Boolean(obs?.count));
-  if(covered&&Number.isFinite(Date.parse(l.updated))&&now-Date.parse(l.updated)<=8*3600000) {
-    const values=periods.map(p=>p.temperatureUnit==='C'?p.temperature*9/5+32:p.temperature).filter(Number.isFinite);
+  const complete=periods.every((p,i)=>['C','F'].includes(p.temperatureUnit)&&Number.isFinite(p.temperature)&&Number.isFinite(Date.parse(p.startTime))&&Number.isFinite(Date.parse(p.endTime))&&Date.parse(p.endTime)>Date.parse(p.startTime)&&(!i||Date.parse(p.startTime)<=Date.parse(periods[i-1].endTime)));
+  const covered=periods.length&&complete&&Date.parse(periods.at(-1).endTime)>=end&&(beforeDay?Date.parse(periods[0].startTime)<=start:Boolean(obs?.count));
+  if(covered&&Number.isFinite(Date.parse(l.updated))&&now>=Date.parse(l.updated)&&now-Date.parse(l.updated)<=8*3600000) {
+    const values=periods.filter(p=>['C','F'].includes(p.temperatureUnit)&&Number.isFinite(p.temperature)).map(p=>p.temperatureUnit==='C'?p.temperature*9/5+32:p.temperature);
     if(obs?.count)values.push(b.kind==='high'?obs.maxF:obs.minF);
     if(values.length) {
       const mean=b.kind==='high'?Math.max(...values):Math.min(...values);
@@ -106,6 +108,12 @@ export function weatherEstimates(c,e,now) {
     }
   }
   out.push(...lampDailyEstimates(c,e,now));
+  const candidates=out.flatMap(r=>{
+    const family=r.id===`nbm-qmd-${b.kind}-v5-v1`||r.id===`nbm-t-${b.kind}-2026-10-02`?'nbm':r.id===`nws-hourly-extreme-${b.kind}-v1`?'nws':r.id===`lamp-hourly-extreme-${b.kind}-v2`?'lamp':null;
+    return family?[{...r,family,priority:r.id.startsWith('nbm-qmd-')?1:0}]:[];
+  });
+  const pool=makeBracketProbabilityPool(candidates);
+  if(pool)out.push({id:`weather-family-pool-${b.kind}-v1`,p:pool.p,details:{...pool,proxy:b.proxy,status:'prospective daily-extreme ensemble experiment; NBM quantiles preferred over NBM location-scale model within one family'}});
   out.push(...softObservationEstimates(c,e,out));
   // Observations and hazards remain witnesses; proxy observations never force a TWC outcome to zero.
   return out;

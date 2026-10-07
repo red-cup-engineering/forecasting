@@ -1,4 +1,4 @@
-import {mkdir,readFile,writeFile,readdir,unlink} from 'node:fs/promises';
+import {mkdir,readFile,writeFile,rename,readdir,unlink} from 'node:fs/promises';
 import {join} from 'node:path';
 import {NBM_OPEN_DATA} from './nbm-station-guidance.mjs';
 import {bracketBounds,studentTCdf} from './temperature-distribution.mjs';
@@ -32,12 +32,14 @@ export async function latestStationQuantiles({stations,cacheDir,now=Date.now(),f
  for(let back=0;back<=24;back++){
   const run=new Date(hour-back*3600000);const h=run.getUTCHours();if(![0,1,7,12,13,19].includes(h))continue;
   const runtime=run.toISOString(),cached=join(cacheDir,`nbp-${runtime.slice(0,13)}.json`);
-  try{const c=JSON.parse(await readFile(cached,'utf8'));if(stations.every(s=>c.stations[s]))return c;}catch(e){if(e.code!=='ENOENT'&&!(e instanceof SyntaxError))throw e;}
+  let prior;try{const c=JSON.parse(await readFile(cached,'utf8'));if(c.runtime===runtime)prior=c;if(prior&&stations.every(s=>c.stations[s]))return c;}catch(e){if(e.code!=='ENOENT'&&!(e instanceof SyntaxError))throw e;}
   const hh=String(h).padStart(2,'0'),date=runtime.slice(0,10).replaceAll('-','');
   const source=`${NBM_OPEN_DATA}/blend.${date}/${hh}/text/blend_nbptx.t${hh}z`;
   const r=await fetchImpl(source,{signal:AbortSignal.timeout(45000)});if([403,404].includes(r.status))continue;if(!r.ok)throw new Error(`NBP ${r.status}: ${source}`);
-  const record={runtime,source,stations:parseNbpBulletin(await r.text(),stations)};if(!Object.keys(record.stations).length)continue;
-  await writeFile(cached,JSON.stringify(record));
+  const parsed=parseNbpBulletin(await r.text(),stations);if(!Object.keys(parsed).length)continue;
+  if(Object.values(parsed).some(s=>s.runtime!==runtime))throw new Error('NBP run/header mismatch');
+  const record={runtime,source,stations:{...prior?.stations,...parsed}},temporary=cached+'.'+process.pid+'.tmp';
+  await writeFile(temporary,JSON.stringify(record));await rename(temporary,cached);
   const files=(await readdir(cacheDir)).filter(n=>n.startsWith('nbp-')).sort();for(const stale of files.slice(0,Math.max(0,files.length-6)))await unlink(join(cacheDir,stale)).catch(()=>{});
   return record;
  }
