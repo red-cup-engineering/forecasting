@@ -1,3 +1,9 @@
+import {collectEcmwfEnsemble} from './weather-ecmwf-ensemble.mjs';
+import {access} from 'node:fs/promises';
+import {homedir} from 'node:os';
+import {collectRelationalWeatherNowcast} from './weather-relational-nowcast.mjs';
+import {RELATIONAL_REGIONS} from './weather-relational-temperature.mjs';
+import {join} from 'node:path';
 import {priceDailyTemperatureExtreme} from './weather-temperature-extremes.mjs';
 import {makeBracketProbabilityPool} from './weather-ensemble.mjs';
 import {INDEX_CITIES,indexConfiguration,collectWeatherIndexEvidence,priceWeatherIndex} from './weather-index.mjs';
@@ -38,12 +44,13 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
   try{quantiles=await latestStationQuantiles({stations,cacheDir,now,fetchImpl});}catch(e){errors.push({source:'NBM-QMD',error:e.message});}
   try{lamp=await latestLampGuidance({stations,cacheDir,now,fetchImpl});for(const station of lamp.missingStations??[])errors.push({station,source:'LAMP',error:'no complete station block in the selected run'});}catch(e){errors.push({source:'LAMP',error:e.message});}
   const settlement=await climateReportEvidence({dates:normalized.flatMap(r=>r.targetDates),now,fetchImpl});errors.push(...settlement.errors);
-  const observations={},local={};
+  const observations={},local={},stationMetadata={};
   await mapLimit(normalized,3,async b=>{
     const station=b.station;
     try{
       const info=await nws(`${NWS_API}/stations/${station}`,fetchImpl);
       const [lon,lat]=info.geometry.coordinates;
+      stationMetadata[station]={latitude:lat,longitude:lon,source:{url:`${NWS_API}/stations/${station}`,availableAt:new Date().toISOString(),raw:info}};
       const point=await nws(`${NWS_API}/points/${lat.toFixed(4)},${lon.toFixed(4)}`,fetchImpl);
       const hourlyUrl=point.properties.forecastHourly;
       const hourly=await nws(hourlyUrl,fetchImpl);
@@ -62,14 +69,27 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
       catch(e){errors.push({station,date,source:'NWS-observations',error:e.message});}
     }
   });
-  return {at:new Date(now).toISOString(),stations:normalized,guidance,hourlyGuidance,quantiles,lamp,settlement,local,observations,errors};
+  const relational={regions:[]};
+  for(const [region,peers] of Object.entries(RELATIONAL_REGIONS))if(stations.some(station=>peers.includes(station.slice(1))))try{relational.regions.push(await collectRelationalWeatherNowcast({region,cacheDir:cacheDir?join(cacheDir,'relational'):undefined,now:Date.now(),fetchImpl}));}catch(e){errors.push({source:'relational-nowcast',region,error:e.message});}
+  let ecmwfEnsemble=null;
+  const python=process.env.WEATHER_ECCODES_PYTHON??join(homedir(),'.local/share/561-group/weather-research/eccodes/bin/python');
+  if(cacheDir&&process.env.WEATHER_ECMWF_ENABLED!=='0'&&Object.keys(stationMetadata).length){
+   let decoderAvailable=false;try{await access(python);decoderAvailable=true;}catch{}
+   if(decoderAvailable)try{ecmwfEnsemble=await collectEcmwfEnsemble(normalized.filter(r=>stationMetadata[r.station]),{cacheDir:join(cacheDir,'..','ecmwf'),now:Date.now(),fetchImpl,python,stationMetadata});}catch(e){errors.push({source:'ECMWF-AIFS-ENS',error:e.message});}
+  }
+  return {at:new Date(now).toISOString(),stations:normalized,guidance,hourlyGuidance,quantiles,lamp,settlement,local,observations,relational,ecmwfEnsemble,errors};
 }
 export async function collectWeatherEvidence(contracts,options={}) {
   const requests=new Map(),now=options.now??Date.now(),cities=[...new Set(contracts.filter(c=>c.binding?.kind==='index-at').map(c=>c.binding.city))];
   const indexEvidence=cities.length?await collectWeatherIndexEvidence(cities,{now,fetchImpl:options.fetchImpl}):{cities:{},errors:[]};
   function request(station,timeZone,targetDate){if(!requests.has(station))requests.set(station,{station,timeZone,targetDates:[]});const r=requests.get(station);if(!r.targetDates.includes(targetDate))r.targetDates.push(targetDate);}
   for(const c of contracts)if(c.binding&&c.binding.kind!=='index-at'){const b=c.binding;request(b.station,b.timeZone,b.targetDate);}
-  for(const city of cities){const cfg=indexConfiguration(indexEvidence.cities[city],city,now,now);if(!cfg)continue;const dates=[...new Set(contracts.filter(c=>c.binding?.city===city).map(c=>c.binding.targetDate))];for(const member of cfg.stations)for(const date of dates)request(member.station_id.slice(0,4),INDEX_CITIES[city].timeZone,date);}
+  const configurationAvailableAt=Date.now();
+  for(const city of cities){
+   const cityContracts=contracts.filter(c=>c.binding?.city===city),dates=[...new Set(cityContracts.map(c=>c.binding.targetDate))],packet=indexEvidence.cities[city];
+   const targetTimes=[configurationAvailableAt,...cityContracts.map(c=>Date.parse(c.binding.targetTime)).filter(Number.isFinite),...(packet.calibrations?.calibrations??[]).filter(c=>c.published_at_ms<=configurationAvailableAt&&c.effective_at_ms<=configurationAvailableAt+24*3600000&&c.effective_at_ms>configurationAvailableAt).map(c=>c.effective_at_ms)];
+   for(const targetTime of new Set(targetTimes)){const cfg=indexConfiguration(packet,city,targetTime,configurationAvailableAt);if(!cfg)continue;for(const member of cfg.stations)for(const date of dates)request(member.station_id.slice(0,4),INDEX_CITIES[city].timeZone,date);}
+  }
   const evidence=requests.size?await collectStationWeatherEvidence([...requests.values()],{...options,now,marketCollection:true}):{at:new Date(now).toISOString(),stations:[],guidance:null,quantiles:null,settlement:null,local:{},observations:{},errors:[]};
   evidence.indices=indexEvidence.cities;evidence.errors.push(...indexEvidence.errors);return evidence;
 }

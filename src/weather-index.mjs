@@ -1,13 +1,31 @@
+import {ecmwfStationDistributions} from './weather-ecmwf-ensemble.mjs';
+import {createHash} from 'node:crypto';
+import {execFile} from 'node:child_process';
+import {promisify} from 'node:util';
 import {cell,address} from '@red-cup-engineering/signcell/cell';
 /** Forecast and verify the published city index using its actual versioned configuration. */
 import {makeTemperaturePool,postprocessTemperature,temperatureCdf} from './weather-ensemble.mjs';
 export const INDEX_CITIES={
- miami:{timeZone:'America/New_York',version:'1.0',series:'KXTEMPMIAH',terms:'MIAWINDEX',members:4,weight:.8},
- chicago:{timeZone:'America/Chicago',version:'1.1',series:'KXTEMPCHIHS',terms:'CHIMETROWINDEX',members:4,weight:.8},
- nyc:{timeZone:'America/New_York',version:'1.0',series:'KXTEMPNYCHS',terms:'NYCWINDEX',members:6,weight:.75},
- 'la-coastal':{timeZone:'America/Los_Angeles',version:'1.0',series:'KXTEMPLAXHS',terms:'LAWINDEX',members:4,weight:.8},
+ miami:{timeZone:'America/New_York',version:'1.0',series:'KXTEMPMIAH',terms:'MIAWINDEX'},
+ chicago:{timeZone:'America/Chicago',version:'1.1',series:'KXTEMPCHIHS',terms:'CHIMETROWINDEX'},
+ nyc:{timeZone:'America/New_York',version:'1.0',series:'KXTEMPNYCHS',terms:'NYCWINDEX'},
+ 'la-coastal':{timeZone:'America/Los_Angeles',version:'1.0',series:'KXTEMPLAXHS',terms:'LAWINDEX'},
 };
-const HOUR=3600000,MINUTE=60000;
+const HOUR=3600000,MINUTE=60000,execute=promisify(execFile);
+/** Certified document, rather than a manually maintained quorum copy, defines eligibility. */
+export function parseIndexMethodology(text,city){
+ const normalized=text.replace(/\s+/gu,' '),version=new RegExp(`${city}-temperature-v([0-9]+\\.[0-9]+)`).exec(normalized)?.[1];
+ const q=/I\. Quorum\..*?\|A\(t\)\|\s*≥\s*(\d+)\s*members.*?w_i\s*≥\s*([0-9]+(?:\.[0-9]+)?)/u.exec(normalized);
+ if(!version||!q||!normalized.includes('nearest 0.01°F')||+q[1]<1||+q[2]<=0||+q[2]>1)throw new TypeError('certified index version, quorum and 0.01F precision required');
+ return {configurationVersion:version,quorum:{members:+q[1],weight:+q[2]},precisionF:.01,roundingTieRule:'not specified in certified text'};
+}
+async function indexMethodology(city,fetchImpl){
+ const url=`https://assets.kalshi.com/contract_terms/${INDEX_CITIES[city].terms}.pdf`,r=await fetchImpl(url,{signal:AbortSignal.timeout(15000)});if(!r.ok)throw new Error(`certified methodology HTTP ${r.status}`);
+ const bytes=Buffer.from(await r.arrayBuffer());if(bytes.length>2*1024*1024||bytes.subarray(0,5).toString()!=='%PDF-')throw new Error('bounded certified PDF required');
+ const availableAt=new Date().toISOString(),job=execute('pdftotext',['-layout','-','-'],{timeout:10000,maxBuffer:512*1024});job.child.stdin.end(bytes);const {stdout}=await job;
+ return {url,availableAt,decodedAt:new Date().toISOString(),sha256:createHash('sha256').update(bytes).digest('hex'),bytes:bytes.length,rawPdfBase64:bytes.toString('base64'),rawText:stdout,...parseIndexMethodology(stdout,city)};
+}
+
 const months={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
 const offsets={EST:-5,EDT:-4,CST:-6,CDT:-5,PST:-8,PDT:-7};
 export function weatherIndexBinding(m,series){
@@ -28,7 +46,8 @@ export function indexConfiguration(packet,city,eventTime,availableAt){
  const rows=packet?.calibrations?.calibrations;
  if(packet?.calibrations?.city!==city||packet.calibrations.units!=='celsius'||!Array.isArray(rows))return null;
  const c=rows.filter(c=>Number.isFinite(c.effective_at_ms)&&c.effective_at_ms<=eventTime&&Number.isFinite(c.published_at_ms)&&c.published_at_ms<=availableAt).sort((a,b)=>b.effective_at_ms-a.effective_at_ms)[0];
- const prefix=city+'-temperature-v'+INDEX_CITIES[city].version,version=c?.config_version;
+ const document=packet?.methodology;if(document&&(Date.parse(document.availableAt)>availableAt||document.configurationVersion!==INDEX_CITIES[city].version))return null;
+ const prefix=city+'-temperature-v'+(document?.configurationVersion??INDEX_CITIES[city].version),version=c?.config_version;
  if(!c||typeof version!=='string'||!(version===prefix||version.startsWith(prefix+'-cal-')&&/^[0-9]{8}$/.test(version.slice((prefix+'-cal-').length)))||!Number.isFinite(c.city_reference_c)||!Array.isArray(c.stations)||!c.stations.length)return null;
  if(c.stations.some(s=>!/^[A-Z0-9]{4}1M$/.test(s.station_id)||!Number.isFinite(s.weight)||s.weight<=0||!Number.isFinite(s.offset_c))||new Set(c.stations.map(s=>s.station_id)).size!==c.stations.length)return null;
  const total=c.stations.reduce((sum,s)=>sum+s.weight,0),reference=c.stations.reduce((sum,s)=>sum+s.weight*s.offset_c,0);
@@ -41,8 +60,9 @@ export function canonicalIndexPoints(packet,city,now){
   if(!Number.isSafeInteger(p.t)||p.t%MINUTE!==0||!Number.isFinite(p.v)||p.v< -40||p.v>122||p.t+5*MINUTE>now||!['normal','degraded'].includes(p.status)||p.receipt_basis!==undefined&&p.receipt_basis!==null&&p.receipt_basis!=='local_receipt')return false;
   const c=indexConfiguration(packet,city,p.t,now),accepted=p.stations?.filter(s=>s.code==='ok');if(!c||!accepted?.length||accepted.length!==p.contributors)return false;
   if(accepted.some(s=>!Number.isFinite(s.received_at_ms)||s.received_at_ms>p.t+5*MINUTE||!Number.isFinite(s.temp_f)))return false;
-  const weight=accepted.reduce((sum,s)=>sum+(c.stations.find(x=>x.station_id===s.station_id)?.weight??0),0),q=INDEX_CITIES[city];
-  return new Set(accepted.map(s=>s.station_id)).size===accepted.length&&accepted.every(s=>c.stations.some(x=>x.station_id===s.station_id))&&accepted.length>=q.members&&weight+1e-9>=q.weight&&(p.status!=='normal'||accepted.length===c.stations.length);
+  const weight=accepted.reduce((sum,s)=>sum+(c.stations.find(x=>x.station_id===s.station_id)?.weight??0),0),q=packet.methodology?.quorum;
+  if(p.status==='degraded'&&!q)return false;
+  return new Set(accepted.map(s=>s.station_id)).size===accepted.length&&accepted.every(s=>c.stations.some(x=>x.station_id===s.station_id))&&(p.status==='normal'?accepted.length===c.stations.length:accepted.length>=q.members&&weight+1e-9>=q.weight);
  }).sort((a,b)=>a.t-b.t);
 }
 /** Reproduce arithmetic on already QC-accepted audit readings; this does not reimplement upstream QC. */
@@ -61,11 +81,13 @@ export async function collectWeatherIndexEvidence(cities,{now=Date.now(),fetchIm
    try{const r=await fetchImpl(url,{signal:AbortSignal.timeout(15000)});if(!r.ok)throw new Error(`HTTP ${r.status}`);packet[key]=await r.json();}
    catch(e){errors.push({source:'Kalshi-weather-index',city,kind:key,error:e.message});}
   }
+  try{packet.methodology=await indexMethodology(city,fetchImpl);}catch(e){errors.push({source:'Kalshi-weather-index-methodology',city,error:e.message});}
   packet.retrievedAt=new Date().toISOString();
   const current=packet.calibrations?.calibrations?.filter(c=>c.effective_at_ms<=now&&c.published_at_ms<=now).sort((a,b)=>b.effective_at_ms-a.effective_at_ms)[0];
   const expected=INDEX_CITIES[city].version,reported=/-temperature-v([0-9]+\.[0-9]+)/.exec(current?.config_version??'')?.[1]??null;
   const support=cell('index:'+city,'current-methodology-version',{version:expected},{for:[{source:`https://assets.kalshi.com/contract_terms/${INDEX_CITIES[city].terms}.pdf`,version:expected}],against:reported&&reported!==expected?[{source:packet.calibrationSource,version:reported,configVersion:current.config_version}]:[]});
-  packet.validation={expectedVersion:expected,reportedVersion:reported,configVersion:current?.config_version??null,compatible:Boolean(indexConfiguration(packet,city,now,now)),conflicted:Boolean(support.for.length&&support.against.length),address:address(support),cell:support};
+  const validationAt=Date.now();
+  packet.validation={at:new Date(validationAt).toISOString(),expectedVersion:expected,reportedVersion:reported,configVersion:current?.config_version??null,compatible:Boolean(indexConfiguration(packet,city,validationAt,validationAt)),conflicted:Boolean(support.for.length&&support.against.length),address:address(support),cell:support};
   if(!packet.validation.compatible)packet.blocker=reported&&reported!==expected?`contract configuration v${expected} conflicts with published configuration v${reported}`:'no usable published index configuration';
  }));
  return {cities:packets,errors};
@@ -89,6 +111,20 @@ function interpolate(rows,t,allowBackfill=false){
 export function stationTemperatureDistribution(e,station,provider,target,now){
  const c=curve(e,station,provider,now),r=c&&interpolate(c.rows,target);return r?{meanF:r.mean,scaleF:r.scale,nu:5,source:c.source,issuedAt:c.issued}:null;
 }
+/** Push the empirical joint scenarios through the published full-station index arithmetic. */
+export function jointEcmwfIndexDistribution(city,e,target,now){
+ const packet=e.indices?.[city],config=indexConfiguration(packet,city,target,now),ensemble=e.ecmwfEnsemble;
+ if(!config||!packet.methodology||!Number.isFinite(Date.parse(packet.retrievedAt))||Date.parse(packet.retrievedAt)>now||Date.parse(packet.methodology.decodedAt)>now||target-now<5*MINUTE||target-now>24*HOUR)return null;
+ const inputs=config.stations.map(s=>({config:s,station:s.station_id.slice(0,4),distribution:ecmwfStationDistributions(ensemble,s.station_id.slice(0,4),{now}).find(r=>Date.parse(r.validTime)===target)}));
+ if(inputs.some(s=>!s.distribution))return null;
+ const reference=inputs[0].distribution;
+ if(inputs.some(s=>s.distribution.memberFieldSha256.some((id,i)=>id!==reference.memberFieldSha256[i])))return null;
+ const pointsF=reference.empirical.members.map((member,i)=>inputs.reduce((sum,s)=>sum+s.config.weight*(s.distribution.empirical.pointsF[i]+1.8*(config.city_reference_c-s.config.offset_c)),0));
+ const meanF=pointsF.reduce((a,x)=>a+x,0)/pointsF.length,varianceF2=pointsF.reduce((a,x)=>a+(x-meanF)**2,0)/pointsF.length;
+ const empirical={kind:'member-aligned-city-index-proxy-v1',pointsF,members:[...reference.empirical.members]};
+ const details={mean:meanF,scale:Math.max(.001,Math.sqrt(varianceF2*3/5)),nu:5,empirical,configVersion:config.config_version,configSource:packet.calibrationSource,methodologySha256:packet.methodology.sha256,targetTime:new Date(target).toISOString(),sourceRuntime:ensemble.runtime,sourceAvailableAt:ensemble.availableAt,memberFieldSha256:reference.memberFieldSha256,stationForecasts:inputs.map(s=>({station:s.config.station_id,weight:s.config.weight,offsetC:s.config.offset_c,meanF:s.distribution.meanF,scaleF:s.distribution.scaleF,source:ensemble.sourceUrl,issuedAt:ensemble.runtime})),uncertainty:'same-member spatial dependence retained; conditional on all configured station sensors passing QC at this target minute; grid-to-1-minute sensor discrepancy, degraded/unavailable reporting and 60-minute settlement fallback are unmodeled; local calibration and executable alpha unproven'};
+ return {model:'kalshi-index-aifs-joint-v1',family:'ecmwf-aifs',meanF,scaleF:details.scale,nu:5,empirical,details,source:ensemble.sourceUrl,issuedAt:ensemble.runtime,tradeEligible:false};
+}
 export function indexDistributions(city,e,target,now){
  const packet=e.indices?.[city],c=indexConfiguration(packet,city,target,now);if(!c||target<=now||target-now>24*HOUR)return [];
  const anchor=canonicalIndexPoints(packet,city,now).filter(p=>now-p.t<=20*MINUTE).at(-1),out=[];
@@ -106,21 +142,25 @@ export function indexDistributions(city,e,target,now){
    out.push({model:model+'/recent-innovation-v1',meanF:shifted,scaleF:scale,nu:5,source:packet.indexSource,details:{...details,mean:shifted,baseMeanF:mean,anchorValueF:anchor.v,anchorTime:new Date(anchor.t).toISOString(),anchorStatus:anchor.status,anchorSource:packet.indexSource,anchorBackfilledForecast:reference.some(r=>r.backfilled),innovationF:innovation,innovationWeight:decay,status:'forward experiment; three-hour decay is uncalibrated; spread retained'}});
   }
  }
+ const joint=jointEcmwfIndexDistribution(city,e,target,now);if(joint)out.push(joint);
  for(const innovative of [false,true]){
-  const candidates=out.filter(r=>r.model.endsWith('/recent-innovation-v1')===innovative).map(r=>{const provider=/kalshi-index-(lamp|nbh|nbm|nws)-/.exec(r.model)?.[1];return {...r,family:provider==='nbh'?'nbm':provider,priority:provider==='nbh'?1:0,issuedAt:r.details.stationForecasts?.reduce((a,c)=>a<c.issuedAt?c.issuedAt:a,'')};});
+  const candidates=out.filter(r=>r.model.endsWith('/recent-innovation-v1')===innovative).map(r=>{const provider=/kalshi-index-(lamp|nbh|nbm|nws|aifs)-/.exec(r.model)?.[1];return {...r,family:provider==='nbh'?'nbm':provider==='aifs'?'ecmwf-aifs':provider,priority:provider==='nbh'?1:0,issuedAt:r.details.stationForecasts?.reduce((a,c)=>a<c.issuedAt?c.issuedAt:a,'')};});
   const pool=makeTemperaturePool(candidates);if(!pool)continue;
-  out.push({...pool,model:'kalshi-index-family-pool-v1'+(innovative?'/recent-innovation-v1':''),source:packet.calibrationSource,details:{...pool,mean:pool.meanF,scale:pool.scaleF,configVersion:c.config_version,configSource:packet.calibrationSource,stationForecasts:c.stations.map(s=>({station:s.station_id,weight:s.weight})),targetTime:new Date(target).toISOString(),status:'prospective ensemble experiment; physical calibration and market advantage unproven'}});
+  out.push({...pool,model:(candidates.some(c=>c.family==='ecmwf-aifs')?'kalshi-index-family-pool-with-aifs-v2':'kalshi-index-family-pool-v1')+(innovative?'/recent-innovation-v1':''),source:packet.calibrationSource,details:{...pool,mean:pool.meanF,scale:pool.scaleF,configVersion:c.config_version,configSource:packet.calibrationSource,stationForecasts:c.stations.map(s=>({station:s.station_id,weight:s.weight})),targetTime:new Date(target).toISOString(),status:'prospective ensemble experiment; physical calibration and market advantage unproven'}});
  }
  return out;
 }
-/** Published 0.01F rounding, preserving strict greater/less comparisons. Daily integer rounding is distinct. */
-export function indexBracketProbability(m,distribution){
- const cdf=x=>temperatureCdf(distribution,x),cent=v=>Math.round(v*100);
- if(m.strike_type==='greater'&&Number.isFinite(m.floor_strike))return 1-cdf((cent(m.floor_strike)+.5)/100);
- if(m.strike_type==='less'&&Number.isFinite(m.cap_strike))return cdf((cent(m.cap_strike)-.5)/100);
- if(m.strike_type==='between'&&Number.isFinite(m.floor_strike)&&Number.isFinite(m.cap_strike)&&m.floor_strike<=m.cap_strike)return cdf((cent(m.cap_strike)+.5)/100)-cdf((cent(m.floor_strike)-.5)/100);
- return null;
+/** Half-cent tie behavior is not specified by the certified documents: retain its probability bounds. */
+export function indexBracketProbabilityBounds(m,distribution){
+ const cdf=(x,left=false)=>temperatureCdf(distribution,x,{left}),cent=v=>Math.round(v*100),precise=v=>Number.isFinite(v)&&Math.abs(v-cent(v)/100)<1e-9;
+ let lower,upper;
+ if(m.strike_type==='greater'&&precise(m.floor_strike)){const b=(cent(m.floor_strike)+.5)/100;lower=1-cdf(b);upper=1-cdf(b,true);}
+ else if(m.strike_type==='less'&&precise(m.cap_strike)){const b=(cent(m.cap_strike)-.5)/100;lower=cdf(b,true);upper=cdf(b);}
+ else if(m.strike_type==='between'&&precise(m.floor_strike)&&precise(m.cap_strike)&&m.floor_strike<=m.cap_strike){const l=(cent(m.floor_strike)-.5)/100,h=(cent(m.cap_strike)+.5)/100;lower=cdf(h,true)-cdf(l);upper=cdf(h)-cdf(l,true);}
+ else return null;
+ return {lower:Math.max(0,Math.min(1,lower)),upper:Math.max(0,Math.min(1,upper)),precisionF:.01,roundingTieRule:'certified nearest 0.01F; exact half-cent tie behavior unspecified'};
 }
+export function indexBracketProbability(m,distribution){const bounds=indexBracketProbabilityBounds(m,distribution);return bounds&&bounds.upper-bounds.lower<1e-12?bounds.lower:null;}
 export function priceWeatherIndex(c,e,now){
  const b=c.binding;if(b?.kind!=='index-at')return [];
  const target=Date.parse(b.targetTime),h=(target-now)/HOUR,horizon=h<=3?'0-3h':h<=6?'3-6h':h<=12?'6-12h':'12-24h';
@@ -130,5 +170,12 @@ export function priceWeatherIndex(c,e,now){
   const adjusted=postprocessTemperature(r,p);
   return [r,{...adjusted,model:r.model+'/station-postprocess-v1',details:{...r.details,mean:adjusted.meanF,scale:adjusted.scaleF,meanF:adjusted.meanF,scaleF:adjusted.scaleF,...(adjusted.mixture?{mixture:adjusted.mixture}:{}),postprocessing:{...p,baseModel:r.model}}}];
  });
- return distributions.flatMap(r=>{const p=indexBracketProbability(c,r);return Number.isFinite(p)?[{id:r.model,p,details:r.details}]:[];});
+ if(Number.isFinite(Date.parse(e.science?.at))&&Date.parse(e.science.at)<=now){
+  for(const r of e.science.forecasts??[]){
+   if(!r.model?.endsWith('/paired-family-ewa-v1')||r.station!==b.station||Date.parse(r.validTime)!==target||r.horizon!==horizon||!Number.isFinite(Date.parse(r.availableAt))||Date.parse(r.availableAt)>now||!Number.isFinite(Date.parse(r.learning?.fitAvailableAt))||Date.parse(r.learning.fitAvailableAt)>Date.parse(r.availableAt))continue;
+   const base=distributions.find(d=>d.model===r.model.slice(0,-'/paired-family-ewa-v1'.length)&&d.composition===r.composition&&d.details?.configVersion===r.details?.configVersion);if(!base)continue;
+   distributions.push({...r,details:{...r.details,learning:r.learning,frozenScienceAvailableAt:r.availableAt,tradeEligible:false}});
+  }
+ }
+ return distributions.flatMap(r=>{const p=indexBracketProbability(c,r);return Number.isFinite(p)?[{id:r.model,p,details:{...r.details,probabilityBounds:indexBracketProbabilityBounds(c,r)}}]:[];});
 }

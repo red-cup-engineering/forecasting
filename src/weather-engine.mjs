@@ -1,10 +1,11 @@
+import {collectEcmwfEnsemble} from './weather-ecmwf-ensemble.mjs';
 import {collectRelationalWeatherNowcast} from './weather-relational-nowcast.mjs';
 import {collectWeatherStrategyResearch} from './weather-strategy-research.mjs';
 import {collectRelationalTemperatureScience} from './weather-relational-temperature.mjs';
 import {deriveDailyTemperatureExtremes} from './weather-temperature-extremes.mjs';
 import {INDEX_CITIES} from './weather-index.mjs';
 import { binarySettlement } from '../../../src/market-facts.mjs';
-import {randomUUID} from 'node:crypto';
+import {randomUUID,createHash} from 'node:crypto';
 import {updateStationScience,readStationScience,stationPointForecasts} from './station-weather-science.mjs';
 import { readFile, writeFile, mkdir, rename, readdir, appendFile, rm, stat, link } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
@@ -107,6 +108,14 @@ export async function weatherRelationalNowcast({region='nyc',root=weatherRoot(),
  const packet=await collectRelationalWeatherNowcast({region,cacheDir:join(root,'nbm','relational'),now,fetchImpl}),evidence={at:packet.at,stations:[],local:{},observations:{},errors:[],relational:{regions:[packet]}};
  const evidenceId=await archiveWeatherEvidence(evidence,root);return {at:packet.at,region,evidenceId,source:packet.source,trainingId:packet.training.id,selection:packet.training.selection,gaps:packet.gaps,science:evidence.science,orderEffect:false};
 }
+/** Independent operational AI ensemble, registered in the same prospective physical scorer. */
+export async function weatherEcmwfEvidence({stations,validCount=1,root=weatherRoot(),now=Date.now(),fetchImpl=fetch,python}={}){
+ if(!Array.isArray(stations)||stations.length<1||stations.length>16)throw new TypeError('provide 1..16 stations');
+ const packet=await collectEcmwfEnsemble(stations,{cacheDir:join(root,'ecmwf'),validCount,now,fetchImpl,python}),evidence={at:packet.collectedAt,stations,local:{},observations:{},errors:[],ecmwfEnsemble:packet};
+ const evidenceId=await archiveWeatherEvidence(evidence,root);
+ const {indices,fields,stationMetadata,...summary}=packet;
+ return {evidenceId,...summary,fieldCount:fields.length,indexCount:indices.length,stationMetadata:stationMetadata.map(({source,...r})=>({...r,metadataSource:source.url})),science:{at:evidence.science.at,status:evidence.science.status,forecasted:evidence.science.forecasted,scored:evidence.science.scored,forecasts:evidence.science.forecasts},orderEffect:false};
+}
 export function weatherStationSkill({root=weatherRoot(),station}={}){return readStationScience({root:join(root,'station-science'),station});}
 export async function weatherStationEvidence({stations,root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
   const evidence=await collectStationWeatherEvidence(stations,{cacheDir:join(root,'nbm'),now,fetchImpl});
@@ -120,11 +129,16 @@ export async function weatherIndexEvidence({cities,root=weatherRoot(),now=Date.n
  const evidence=await collectWeatherEvidence(contracts,{cacheDir:join(root,'nbm'),now,fetchImpl});
  const evidenceId=await archiveWeatherEvidence(evidence,root);return {evidenceId,...evidence,orderEffect:false};
 }
-export async function weatherEvidence({root=weatherRoot(),evidenceId,station}={}) {
+export async function weatherEvidence({root=weatherRoot(),evidenceId,station,rawFieldSha256}={}) {
   if(!/^[a-f0-9]{64}$/.test(evidenceId??''))throw new TypeError('content-addressed evidenceId required');
   const e=JSON.parse(gunzipSync(await readFile(join(root,'evidence',`${evidenceId}.json.gz`))));
+  if(rawFieldSha256!==undefined){
+   if(!/^[a-f0-9]{64}$/.test(rawFieldSha256)||!e.ecmwfEnsemble?.fields?.some(r=>r.sha256===rawFieldSha256))throw new TypeError('field must belong to this archived ECMWF evidence');
+   const bytes=await readFile(join(root,'ecmwf','raw',rawFieldSha256));if(createHash('sha256').update(bytes).digest('hex')!==rawFieldSha256)throw new Error('immutable field hash mismatch');
+   return {evidenceId,sha256:rawFieldSha256,kind:'GRIB2',bytes:bytes.length,base64:bytes.toString('base64')};
+  }
   if(station?.startsWith('index:'))return {at:e.at,station,sourceEvidenceId:e.sourceEvidenceId,index:e.indices?.[station.slice(6)]??null,science:e.science?{...e.science,metrics:e.science.metrics?.filter(r=>r.station===station),comparisons:e.science.comparisons?.filter(r=>r.station===station),parameters:Object.fromEntries(Object.entries(e.science.parameters??{}).filter(([k])=>k.startsWith(station+'/'))),forecasts:e.science.forecasts?.filter(r=>r.station===station),outcomes:e.science.outcomes?.filter(r=>r.forecast.station===station)}:null};
-  return station?{at:e.at,station,sourceEvidenceId:e.sourceEvidenceId,dailyExtremes:e.dailyExtremes?{forecasts:e.dailyExtremes.forecasts.filter(r=>r.station===station),gaps:e.dailyExtremes.gaps.filter(r=>r.station===station)}:null,science:e.science?{...e.science,metrics:e.science.metrics?.filter(r=>r.station===station),comparisons:e.science.comparisons?.filter(r=>r.station===station),parameters:Object.fromEntries(Object.entries(e.science.parameters??{}).filter(([k])=>k.startsWith(station+'/'))),forecasts:e.science.forecasts?.filter(r=>r.station===station),outcomes:e.science.outcomes?.filter(r=>r.forecast.station===station)}:null,lamp:e.lamp?{runtime:e.lamp.runtime,source:e.lamp.source,extendedSource:e.lamp.extendedSource,station:e.lamp.stations[station]}:null,guidance:e.guidance?.stations[station],hourlyGuidance:e.hourlyGuidance?{runtime:e.hourlyGuidance.runtime,source:e.hourlyGuidance.source,station:e.hourlyGuidance.stations[station]}:null,quantiles:e.quantiles?{runtime:e.quantiles.runtime,source:e.quantiles.source,station:e.quantiles.stations[station]}:null,settlementReports:Object.fromEntries(Object.entries(e.settlement?.daily??{}).map(([date,r])=>[date,{source:r.source,results:r.data?.results?.filter(x=>x.station?.icao===station)}])),local:e.local[station],observations:Object.fromEntries(Object.entries(e.observations).filter(([key])=>key.startsWith(station+'/'))),errors:e.errors.filter(r=>!r.station||r.station===station)}:e;
+  return station?{at:e.at,station,ecmwfEnsemble:e.ecmwfEnsemble?{runtime:e.ecmwfEnsemble.runtime,availableAt:e.ecmwfEnsemble.availableAt,projection:e.ecmwfEnsemble.projection,station:e.ecmwfEnsemble.stations[station],fields:e.ecmwfEnsemble.fields,indices:e.ecmwfEnsemble.indices}:null,sourceEvidenceId:e.sourceEvidenceId,dailyExtremes:e.dailyExtremes?{forecasts:e.dailyExtremes.forecasts.filter(r=>r.station===station),gaps:e.dailyExtremes.gaps.filter(r=>r.station===station)}:null,science:e.science?{...e.science,metrics:e.science.metrics?.filter(r=>r.station===station),comparisons:e.science.comparisons?.filter(r=>r.station===station),parameters:Object.fromEntries(Object.entries(e.science.parameters??{}).filter(([k])=>k.startsWith(station+'/'))),forecasts:e.science.forecasts?.filter(r=>r.station===station),outcomes:e.science.outcomes?.filter(r=>r.forecast.station===station)}:null,lamp:e.lamp?{runtime:e.lamp.runtime,source:e.lamp.source,extendedSource:e.lamp.extendedSource,station:e.lamp.stations[station]}:null,guidance:e.guidance?.stations[station],hourlyGuidance:e.hourlyGuidance?{runtime:e.hourlyGuidance.runtime,source:e.hourlyGuidance.source,station:e.hourlyGuidance.stations[station]}:null,quantiles:e.quantiles?{runtime:e.quantiles.runtime,source:e.quantiles.source,station:e.quantiles.stations[station]}:null,settlementReports:Object.fromEntries(Object.entries(e.settlement?.daily??{}).map(([date,r])=>[date,{source:r.source,results:r.data?.results?.filter(x=>x.station?.icao===station)}])),local:e.local[station],observations:Object.fromEntries(Object.entries(e.observations).filter(([key])=>key.startsWith(station+'/'))),errors:e.errors.filter(r=>!r.station||r.station===station)}:e;
 }
 export async function weatherStatus({root=weatherRoot()}={}) {
   const result=await read(join(root,'latest.json'),{status:'no weather cycle recorded',orderEffect:false});
@@ -152,9 +166,9 @@ async function* resolvedRows(root){
 async function gradeHistory(root){
   // Keep only the earliest timestamp per contract/horizon/model; never retain full history objects.
   const first=new Map(),key=(r,m)=>`${r.ticker}/${r.stage}/${r.ruleKey}/${m.id}`;
-  for await(const r of resolvedRows(root))if(r.settlementEvidenceVersion===1&&r.settlement&&Number.isFinite(Date.parse(r.at))&&Date.parse(r.at)<Date.parse(r.settlement.settledAt))for(const m of r.models){const k=key(r,m),at=first.get(k);if(at===undefined||r.at.localeCompare(at)<0)first.set(k,r.at);}
+  for await(const r of resolvedRows(root))for(const m of r.models){const k=key(r,m),at=first.get(k);if(at===undefined||r.at.localeCompare(at)<0)first.set(k,r.at);}
   const accumulator=createModelGradeAccumulator();
-  for await(const r of resolvedRows(root))if(r.settlementEvidenceVersion===1&&r.settlement&&Number.isFinite(Date.parse(r.at))&&Date.parse(r.at)<Date.parse(r.settlement.settledAt))for(const m of r.models){const k=key(r,m);if(first.get(k)!==r.at)continue;first.delete(k);accumulator.add({...r,models:[m]});}
+  for await(const r of resolvedRows(root))for(const m of r.models){const k=key(r,m);if(first.get(k)!==r.at)continue;first.delete(k);accumulator.add({...r,models:[m]});}
   return accumulator.report();
 }
 async function scorePending(root,client,now) {
