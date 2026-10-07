@@ -66,3 +66,23 @@ test('rigidityMaker quotes the product of asks for a pinned parlay and passes on
   const q = playStrategy(bad, rigidityMaker());
   assert.equal(q.moves.length, 3); assert.equal(q.position.quotes.b, undefined);
 });
+
+test('exposure nerve: a second combo on the same two games closes a loop; forest admission passes it', async () => {
+  const { exposureNerve, forestAdmission, comboArena } = await import('../src/combo-arena.mjs');
+  const a = { id: 'a', legs: [{ ticker: 'KXNHLGAME-26OCT10BOSNYR-BOS' }, { ticker: 'KXNHLGAME-26OCT10TORMTL-MTL' }] };
+  const b = { id: 'b', legs: [{ ticker: 'KXNHLTOTAL-26OCT10BOSNYR-6' }, { ticker: 'KXNHLGAME-26OCT10TORMTL-TOR' }] };
+  const c = { id: 'c', legs: [{ ticker: 'KXNHLGAME-26OCT10BOSNYR-NYR' }, { ticker: 'KXNHLGAME-26OCT10DETCHI-DET' }] };
+  assert.equal(exposureNerve([a]).h1, 0);
+  assert.equal(exposureNerve([a, b]).h1, 1, 'two combos sharing two games: one loop');
+  assert.equal(exposureNerve([a, c]).h1, 0, 'sharing one game keeps a forest');
+  const always = (position, rfq) => ({ kind: 'quote', rfqId: rfq.id, price: 5000 });
+  const admit = forestAdmission(always);
+  let pos = comboArena.initialPosition();
+  const step = (m) => { pos = comboArena.extend(pos, m).state; };
+  step({ kind: 'rfq', id: 'a', ticker: 'KXMVE-A', legs: a.legs.map((l) => ({ ...l, side: 'yes' })), at: 1 });
+  step(admit(pos, { id: 'a', ...pos.rfqs.a }));
+  step({ kind: 'rfq', id: 'b', ticker: 'KXMVE-B', legs: b.legs.map((l) => ({ ...l, side: 'yes' })), at: 2 });
+  assert.equal(admit(pos, { id: 'b', ...pos.rfqs.b }), null);
+  step({ kind: 'rfq', id: 'c', ticker: 'KXMVE-C', legs: c.legs.map((l) => ({ ...l, side: 'yes' })), at: 3 });
+  assert.ok(admit(pos, { id: 'c', ...pos.rfqs.c }));
+});
