@@ -1,8 +1,9 @@
+import {latestLampGuidance} from './lamp-station-guidance.mjs';
 import { latestStationGuidance, guidanceForExtreme } from './nbm-station-guidance.mjs';
 import { NWS_API, NWS_USER_AGENT, climateDayStart, observedExtremes, activeTemperatureHazards } from './station-observations.mjs';
 import { TEMPERATURE_MARKETS } from './temperature-market-model.mjs';
 import { forecastScale, bracketProbability } from './temperature-distribution.mjs';
-import { priceRainMarket } from './rain-market-model.mjs';
+import { priceRainMarket,priceRainPoolMarket } from './rain-market-model.mjs';
 import {climateReportEvidence} from './weather-settlement-source.mjs';
 import {latestStationQuantiles,priceStationQuantiles} from './weather-quantiles.mjs';
 import { mapLimit } from './weather-universe.mjs';
@@ -27,9 +28,10 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
   });
   if(new Set(normalized.map(r=>r.station)).size!==normalized.length)throw new TypeError('combine target dates into one request per station');
   const stations=normalized.map(r=>r.station),errors=[];
-  let guidance=null,quantiles=null;
+  let guidance=null,quantiles=null,lamp=null;
   try{guidance=await latestStationGuidance({stations,cacheDir,now},{fetchImpl});}catch(e){errors.push({source:'NBM',error:e.message});}
   try{quantiles=await latestStationQuantiles({stations,cacheDir,now,fetchImpl});}catch(e){errors.push({source:'NBM-QMD',error:e.message});}
+  try{lamp=await latestLampGuidance({stations,cacheDir,now,fetchImpl});for(const station of lamp.missingStations??[])errors.push({station,source:'LAMP',error:'no complete station block in the selected run'});}catch(e){errors.push({source:'LAMP',error:e.message});}
   const settlement=await climateReportEvidence({dates:normalized.flatMap(r=>r.targetDates),now,fetchImpl});errors.push(...settlement.errors);
   const observations={},local={};
   await mapLimit(normalized,3,async b=>{
@@ -43,14 +45,19 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
       const alerts=await activeTemperatureHazards({station},{fetchImpl});
       local[station]={station,latitude:lat,longitude:lon,hourlyUrl,updated:hourly.properties.updateTime??hourly.properties.updated,periods:hourly.properties.periods,alerts};
     }catch(e){errors.push({station,source:'NWS-hourly/alerts',error:e.message});}
-    for(const date of b.targetDates) {
+    // Physical verification needs today's observations even when every open contract is for tomorrow.
+    const fmt=new Intl.DateTimeFormat('en-CA',{timeZone:b.timeZone,year:'numeric',month:'2-digit',day:'2-digit'});
+    let today=fmt.format(new Date(now));if(climateDayStart(today,b.timeZone).getTime()>now)today=new Date(Date.parse(today+'T00:00:00Z')-86400000).toISOString().slice(0,10);
+    const dates=new Set([...b.targetDates,today]);
+    if(now-climateDayStart(today,b.timeZone).getTime()<3600000)dates.add(new Date(Date.parse(today+'T00:00:00Z')-86400000).toISOString().slice(0,10));
+    for(const date of dates) {
       const start=climateDayStart(date,b.timeZone).getTime();
       if(now<start)continue;
       try{observations[`${station}/${date}`]=await observedExtremes({station,date,timeZone:b.timeZone,now:Math.min(now,start+86400000)},{fetchImpl});}
       catch(e){errors.push({station,date,source:'NWS-observations',error:e.message});}
     }
   });
-  return {at:new Date(now).toISOString(),stations:normalized,guidance,quantiles,settlement,local,observations,errors};
+  return {at:new Date(now).toISOString(),stations:normalized,guidance,quantiles,lamp,settlement,local,observations,errors};
 }
 export async function collectWeatherEvidence(contracts,options={}) {
   const requests=new Map();
@@ -63,7 +70,10 @@ export function weatherEstimates(c,e,now) {
   if(b.kind==='rain') {
     if(!e.guidance)return [];
     const r=priceRainMarket(c,{guidance:e.guidance,now});
-    return r.priced?[{id:'nbm-rain-logistic-2026-10-04',p:r.probability,details:r}]:[];
+    const out=r.priced?[{id:'nbm-rain-logistic-2026-10-04',p:r.probability,details:r}]:[];
+    const a=Number(c.yes_ask_dollars),bid=Number(c.yes_bid_dollars);
+    const pooled=priceRainPoolMarket(c,{guidance:e.guidance,marketProbability:a>bid&&a<=1&&bid>=0?(a+bid)/2:null,now});if(pooled)out.push(pooled);
+    return out;
   }
   const bracket={strikeType:c.strike_type,floorStrike:c.floor_strike,capStrike:c.cap_strike};
   if(!['less','greater','between'].includes(bracket.strikeType))return [];
@@ -88,7 +98,32 @@ export function weatherEstimates(c,e,now) {
       out.push({id:`nws-hourly-extreme-${b.kind}-v1`,p:bracketProbability(bracket,{mean,scale,nu:5}),details:{mean,scale,nu:5,forecastSource:l.hourlyUrl,proxy:b.proxy}});
     }
   }
+  out.push(...lampDailyEstimates(c,e,now));
   // Observations and hazards remain witnesses; proxy observations never force a TWC outcome to zero.
+  return out;
+}
+/** Hourly station guidance gives a competing daily-extreme proxy. Its uncertainty is a local experiment. */
+export function lampDailyEstimates(c,e,now){
+  const b=c.binding,lamp=e.lamp;if(!b||!['high','low'].includes(b.kind)||!lamp||now<Date.parse(lamp.runtime)||now-Date.parse(lamp.runtime)>3*3600000)return [];
+  const start=climateDayStart(b.targetDate,b.timeZone).getTime(),end=start+86400000;
+  const obs=e.observations[`${b.station}/${b.targetDate}`],rows=(lamp.stations[b.station]?.rows??[]).filter(r=>Number.isFinite(r.temperatureF)&&Date.parse(r.validTime)>=Math.max(start,now)&&Date.parse(r.validTime)<end);
+  if(!rows.length||Date.parse(rows.at(-1).validTime)<end-3600000||now>=start&&!obs?.count||now<start&&Date.parse(rows[0].validTime)>start)return [];
+  const first=now<start?start:Math.ceil(now/3600000)*3600000;
+  for(let t=first;t<end;t+=3600000)if(!rows.some(r=>Date.parse(r.validTime)===t))return [];
+  const bracket={strikeType:c.strike_type,floorStrike:c.floor_strike,capStrike:c.cap_strike},out=[];
+  for(const calibrated of [false,true]){
+    let adjusted=0;const scales=[2.5];
+    const values=rows.map(r=>{
+      if(!calibrated)return r.temperatureF;
+      const h=(Date.parse(r.validTime)-now)/3600000,horizon=h<=3?'0-3h':h<=6?'3-6h':h<=12?'6-12h':h<=24?'12-24h':'24-48h';
+      const p=e.science?.parameters?.[`${b.station}/lamp-hourly-v2.7-v1/${horizon}`];
+      if(!p?.ready)return r.temperatureF;adjusted++;scales.push(2.5*p.scaleMultiplier);return r.temperatureF+p.biasF;
+    });
+    if(calibrated&&!adjusted)continue;
+    if(obs?.count)values.push(b.kind==='high'?obs.maxF:obs.minF);
+    const mean=b.kind==='high'?Math.max(...values):Math.min(...values),scale=Math.max(...scales),id=calibrated?`lamp-postprocessed-extreme-${b.kind}-v1`:`lamp-hourly-extreme-${b.kind}-v1`;
+    out.push({id,p:bracketProbability(bracket,{mean,scale,nu:5}),details:{mean,scale,nu:5,runtime:lamp.runtime,source:lamp.source,extendedSource:lamp.extendedSource,forecastHours:rows.length,adjustedHours:adjusted,proxy:b.proxy,uncertainty:'experimental hourly-to-daily extreme approximation; not LAMP probability guidance',observationSource:obs?.source??null}});
+  }
   return out;
 }
 export function forecastCell(c,models) {

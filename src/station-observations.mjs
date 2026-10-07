@@ -40,25 +40,34 @@ export function climateDayStart(date, timeZone) {
 export async function observedExtremes({ station, date, timeZone, now = Date.now() }, { fetchImpl = fetch, baseUrl = NWS_API, userAgent = NWS_USER_AGENT } = {}) {
   const from = climateDayStart(date, timeZone);
   const until = new Date(Math.min(new Date(now).getTime(), from.getTime() + 24 * 3600_000));
-  const empty = { station, date, from: from.toISOString(), count: 0, maxF: null, minF: null, floor: null, ceiling: null, latest: null };
+  const empty = { station, date, from: from.toISOString(), count: 0, maxF: null, minF: null, floor: null, ceiling: null, latest: null, readings: [], source: null };
   if (until <= from) return empty;
   const url = new URL(`${baseUrl}/stations/${station}/observations`);
   url.searchParams.set('start', from.toISOString());
   url.searchParams.set('end', until.toISOString());
-  const res = await fetchImpl(url, { headers: { 'user-agent': userAgent, accept: 'application/geo+json' }, signal: AbortSignal.timeout(30_000) });
-  if (!res.ok) throw new Error(`station-observations: GET ${url} answered ${res.status}`);
-  const temps = [];
-  let latest = null;
-  for (const feature of (await res.json())?.features ?? []) {
-    const c = feature?.properties?.temperature?.value;
-    if (typeof c !== 'number' || !Number.isFinite(c)) continue;
-    temps.push(c * 9 / 5 + 32);
-    const at = feature.properties.timestamp;
-    if (!latest || at > latest) latest = at;
+  url.searchParams.set('limit','500');
+  const readings=new Map(),visited=new Set();let next=url.href;
+  while(next){
+    const pageUrl=new URL(next,url);if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname||visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');
+    visited.add(pageUrl.href);
+    const res=await fetchImpl(pageUrl,{headers:{'user-agent':userAgent,accept:'application/geo+json'},signal:AbortSignal.timeout(30000)});
+    if(!res.ok)throw new Error(`station-observations: GET ${pageUrl} answered ${res.status}`);
+    const page=await res.json();next=page.pagination?.next??null;
+    for(const feature of page.features??[]) {
+    const p=feature?.properties,temperature=p?.temperature,at=p?.timestamp,epoch=Date.parse(at);
+    if(!Number.isFinite(epoch)||epoch<from.getTime()||epoch>until.getTime()||epoch>=from.getTime()+86400000||typeof temperature?.value!=='number'||!Number.isFinite(temperature.value))continue;
+    const unit=temperature.unitCode??'wmoUnit:degC';
+    if(!['wmoUnit:degC','wmoUnit:degF'].includes(unit))continue;
+    const temperatureF=unit==='wmoUnit:degC'?temperature.value*9/5+32:temperature.value;
+    if(temperatureF< -150||temperatureF>180)continue;
+    const row={at:new Date(epoch).toISOString(),temperatureF,qualityControl:temperature.qualityControl??null};
+    const old=readings.get(row.at);if(!old||row.qualityControl==='qc:V')readings.set(row.at,row);
   }
-  if (temps.length === 0) return empty;
-  const maxF = Math.max(...temps), minF = Math.min(...temps);
-  return { station, date, from: from.toISOString(), count: temps.length, maxF, minF, floor: Math.floor(maxF) - 1, ceiling: Math.ceil(minF) + 1, latest };
+  }
+  const trace=[...readings.values()].sort((a,b)=>a.at.localeCompare(b.at));
+  if(!trace.length)return {...empty,source:url.href};
+  const temps=trace.map(r=>r.temperatureF),maxF=Math.max(...temps),minF=Math.min(...temps);
+  return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,latest:trace.at(-1).at,readings:trace,source:url.href};
 }
 
 /**

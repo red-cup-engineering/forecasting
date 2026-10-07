@@ -1,3 +1,4 @@
+import {updateStationScience,readStationScience,stationPointForecasts} from './station-weather-science.mjs';
 import { readFile, writeFile, mkdir, rename, readdir, appendFile, rm, stat } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { createInterface } from 'node:readline';
@@ -67,16 +68,24 @@ export async function weatherCashBudget({client=createKalshiClient(),exchangeInd
   }
   return {capitalUsd,encumberedUsd:Math.ceil(reserved*100-1e-8)/100,exchangeIndex,observedAt:new Date().toISOString(),source:'weather-shard cash minus gross resting-order commitments (conservative)',orderEffect:false};
 }
+async function archiveWeatherEvidence(evidence,root) {
+  await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
+  const sourceEvidenceId=digest(evidence);await writeFile(join(root,'evidence',`${sourceEvidenceId}.json.gz`),gzipSync(JSON.stringify(evidence)),{mode:0o600});
+  try{evidence.science=await locked(join(root,'station-science'),()=>updateStationScience(evidence,{root:join(root,'station-science'),now:Date.now(),sourceEvidenceId}));}
+  catch(e){if(e.code!=='WEATHER_CYCLE_RUNNING')throw e;const report=await readStationScience({root:join(root,'station-science')});evidence.science={...report,status:'another station-science update is running',forecasts:stationPointForecasts(evidence,{parameters:report.parameters}),outcomes:[]};}
+  evidence.sourceEvidenceId=sourceEvidenceId;
+  const evidenceId=digest(evidence);await writeFile(join(root,'evidence',`${evidenceId}.json.gz`),gzipSync(JSON.stringify(evidence)),{mode:0o600});return evidenceId;
+}
+export function weatherStationSkill({root=weatherRoot(),station}={}){return readStationScience({root:join(root,'station-science'),station});}
 export async function weatherStationEvidence({stations,root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
   const evidence=await collectStationWeatherEvidence(stations,{cacheDir:join(root,'nbm'),now,fetchImpl});
-  const evidenceId=digest(evidence);await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
-  await writeFile(join(root,'evidence',`${evidenceId}.json.gz`),gzipSync(JSON.stringify(evidence)),{mode:0o600});
+  const evidenceId=await archiveWeatherEvidence(evidence,root);
   return {evidenceId,...evidence,orderEffect:false};
 }
 export async function weatherEvidence({root=weatherRoot(),evidenceId,station}={}) {
   if(!/^[a-f0-9]{64}$/.test(evidenceId??''))throw new TypeError('content-addressed evidenceId required');
   const e=JSON.parse(gunzipSync(await readFile(join(root,'evidence',`${evidenceId}.json.gz`))));
-  return station?{at:e.at,station,guidance:e.guidance?.stations[station],quantiles:e.quantiles?{runtime:e.quantiles.runtime,source:e.quantiles.source,station:e.quantiles.stations[station]}:null,settlementReports:Object.fromEntries(Object.entries(e.settlement?.daily??{}).map(([date,r])=>[date,{source:r.source,results:r.data?.results?.filter(x=>x.station?.icao===station)}])),local:e.local[station],observations:Object.fromEntries(Object.entries(e.observations).filter(([key])=>key.startsWith(station+'/'))),errors:e.errors.filter(r=>!r.station||r.station===station)}:e;
+  return station?{at:e.at,station,sourceEvidenceId:e.sourceEvidenceId,science:e.science?{...e.science,metrics:e.science.metrics?.filter(r=>r.station===station),parameters:Object.fromEntries(Object.entries(e.science.parameters??{}).filter(([k])=>k.startsWith(station+'/'))),forecasts:e.science.forecasts?.filter(r=>r.station===station),outcomes:e.science.outcomes?.filter(r=>r.forecast.station===station)}:null,lamp:e.lamp?{runtime:e.lamp.runtime,source:e.lamp.source,extendedSource:e.lamp.extendedSource,station:e.lamp.stations[station]}:null,guidance:e.guidance?.stations[station],quantiles:e.quantiles?{runtime:e.quantiles.runtime,source:e.quantiles.source,station:e.quantiles.stations[station]}:null,settlementReports:Object.fromEntries(Object.entries(e.settlement?.daily??{}).map(([date,r])=>[date,{source:r.source,results:r.data?.results?.filter(x=>x.station?.icao===station)}])),local:e.local[station],observations:Object.fromEntries(Object.entries(e.observations).filter(([key])=>key.startsWith(station+'/'))),errors:e.errors.filter(r=>!r.station||r.station===station)}:e;
 }
 export async function weatherStatus({root=weatherRoot()}={}) {
   const result=await read(join(root,'latest.json'),{status:'no weather cycle recorded',orderEffect:false});
@@ -219,7 +228,7 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
     const scoring=await scorePending(root,client,now);
     const universe=await discoverWeather(client);
     const evidence=await collectWeatherEvidence(universe.markets,{cacheDir:join(root,'nbm'),now,fetchImpl});
-    await mkdir(join(root,'evidence'),{recursive:true});const evidenceId=digest(evidence);await writeFile(join(root,'evidence',`${evidenceId}.json.gz`),gzipSync(JSON.stringify(evidence)),{mode:0o600});
+    const evidenceId=await archiveWeatherEvidence(evidence,root);
     const quoteTimes=new Map(),freshQuotes=new Map();
     const quoted=universe.markets;
     for(let i=0;i<quoted.length;i+=100){
@@ -248,7 +257,8 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
     await atomic(join(root,'pending.json'),pending);
     const families={};for(const c of contracts){families[c.family]??={markets:0,modelled:0,volume24h:0};families[c.family].markets++;families[c.family].volume24h+=Number(c.volume_24h_fp??0);if(rows.find(r=>r.ticker===c.ticker)?.models.length)families[c.family].modelled++;}
     const research=Object.entries(families).filter(([_,v])=>v.modelled<v.markets).sort((a,b)=>b[1].volume24h-a[1].volume24h).map(([family,v])=>({family,...v,nextEffect:family==='hourly-temperature'?'bind official station/time and score short-horizon observation-conditioned forecasts':family==='precipitation'?'bind interval totals; validate probabilistic accumulation forecasts':family==='tropical'?'bind NHC event definitions and calibrate track/intensity ensembles':family==='snow'?'bind reporting station and validate snow accumulation ensembles':'bind settlement transformation and submit versioned forecasts'}));
-    const result={at:new Date().toISOString(),collectionStartedAt:new Date(now).toISOString(),complete:universe.complete,series:universe.series,marketCount:contracts.length,modelled:rows.filter(r=>r.models.length).length,families,errors:[...universe.errors,...evidence.errors],scoring:{settled:scoring.settled,pending:Object.keys(pending).length,errors:scoring.errors},grades:scoring.grades,forecasts:rows,contracts,opportunities,research,allocation:allocateWeather(opportunities.filter(o=>Date.parse(o.quoteExpiresAt)>Date.now()),{capitalUsd,encumberedUsd}),orderEffect:false};
+    const {forecasts:physicalForecasts,outcomes:physicalOutcomes,...science}=evidence.science??{};
+    const result={science,at:new Date().toISOString(),collectionStartedAt:new Date(now).toISOString(),complete:universe.complete,series:universe.series,marketCount:contracts.length,modelled:rows.filter(r=>r.models.length).length,families,errors:[...universe.errors,...evidence.errors],scoring:{settled:scoring.settled,pending:Object.keys(pending).length,errors:scoring.errors},grades:scoring.grades,forecasts:rows,contracts,opportunities,research,allocation:allocateWeather(opportunities.filter(o=>Date.parse(o.quoteExpiresAt)>Date.now()),{capitalUsd,encumberedUsd}),orderEffect:false};
     await atomic(join(root,'latest.json'),result);return result;
   });
 }

@@ -1,3 +1,4 @@
+import {poolProbabilities} from './probability-calibration.mjs';
 /**
  * The house's price for one Kalshi daily-rain market (series KXRAIN): "total
  * precipitation at CLIxxx strictly greater than 0 inches" for a local day.
@@ -117,4 +118,16 @@ export function priceRainMarket(market, { guidance, maxGuidanceAgeHours = 8, now
     priced: true, probability: rainProbability(pany, stage), pany, stage, station: city.station, cli: city.cli, region: city.region, city: city.name, targetDate,
     periods, p06, runtime: station.runtime ?? guidance.runtime, leadHours: (Date.parse(`${targetDate}T12:00:00Z`) - Date.parse(guidance.runtime)) / 3600_000, ageHours,
   };
+}
+
+/** Supplementary forward experiment from the chronological daily-rain research. Never alters the frozen lane. */
+export function rainMarketPoolProbability(weatherP,marketP){
+  if(![weatherP,marketP].every(p=>Number.isFinite(p)&&p>=0&&p<=1))throw new TypeError('finite weather and market probabilities required');
+  return poolProbabilities([weatherP,marketP].map(p=>Math.min(1-RAIN_MARKETS.eps,Math.max(RAIN_MARKETS.eps,p))),{method:'trimmed-logit-mean'});
+}
+export function priceRainPoolMarket(market,{guidance,marketProbability,now=Date.now()}={}){
+  if(!guidance||!Number.isFinite(Date.parse(guidance.runtime))||now<Date.parse(guidance.runtime)||!Number.isFinite(marketProbability)||marketProbability<=0||marketProbability>=1)return null;
+  let raw=priceRainMarket(market,{guidance,now});
+  if(!raw.priced)return null;
+  return {id:'nbm-market-rain-logit-pool-v1',p:rainMarketPoolProbability(raw.probability,marketProbability),details:{weatherProbability:raw.probability,marketProbability,stage:raw.stage,runtime:raw.runtime,p06:raw.p06,pooling:'equal log-odds with 0.001 endpoint clamp',research:'2026-10-04-weather-coverage',status:'forward experiment; historical pool selection was retrospective'}};
 }
