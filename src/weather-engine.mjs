@@ -1,15 +1,16 @@
+import { binarySettlement } from '../../../src/market-facts.mjs';
+import {randomUUID} from 'node:crypto';
 import {updateStationScience,readStationScience,stationPointForecasts} from './station-weather-science.mjs';
-import { readFile, writeFile, mkdir, rename, readdir, appendFile, rm, stat } from 'node:fs/promises';
+import { readFile, writeFile, mkdir, rename, readdir, appendFile, rm, stat, link } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { createInterface } from 'node:readline';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { gzipSync, gunzipSync } from 'node:zlib';
-import { binarySettlement } from '../../../src/market-facts.mjs';
 import { createKalshiClient } from '../../../src/client.mjs';
 import { digest, discoverWeather, weatherRuleKey, mapLimit } from './weather-universe.mjs';
 import { collectWeatherEvidence, collectStationWeatherEvidence, weatherEstimates, forecastCell } from './weather-evidence.mjs';
-import { gradeModels, probabilityBand, allocateWeather } from './weather-learning.mjs';
+import { createModelGradeAccumulator, probabilityBand, allocateWeather } from './weather-learning.mjs';
 import {sourceReport} from './weather-settlement-source.mjs';
 import { bracketSettlesYes } from './temperature-distribution.mjs';
 
@@ -68,13 +69,18 @@ export async function weatherCashBudget({client=createKalshiClient(),exchangeInd
   }
   return {capitalUsd,encumberedUsd:Math.ceil(reserved*100-1e-8)/100,exchangeIndex,observedAt:new Date().toISOString(),source:'weather-shard cash minus gross resting-order commitments (conservative)',orderEffect:false};
 }
+async function archivePacket(path,evidence){
+  const tmp=`${path}.${process.pid}.${randomUUID()}.tmp`;
+  try{await writeFile(tmp,gzipSync(JSON.stringify(evidence)),{mode:0o600,flag:'wx'});try{await link(tmp,path);}catch(e){if(e.code!=='EEXIST')throw e;}}
+  finally{await rm(tmp,{force:true});}
+}
 async function archiveWeatherEvidence(evidence,root) {
   await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
-  const sourceEvidenceId=digest(evidence);await writeFile(join(root,'evidence',`${sourceEvidenceId}.json.gz`),gzipSync(JSON.stringify(evidence)),{mode:0o600});
+  const sourceEvidenceId=digest(evidence);await archivePacket(join(root,'evidence',`${sourceEvidenceId}.json.gz`),evidence);
   try{evidence.science=await locked(join(root,'station-science'),()=>updateStationScience(evidence,{root:join(root,'station-science'),now:Date.now(),sourceEvidenceId}));}
   catch(e){if(e.code!=='WEATHER_CYCLE_RUNNING')throw e;const report=await readStationScience({root:join(root,'station-science')});evidence.science={...report,status:'another station-science update is running',forecasts:stationPointForecasts(evidence,{parameters:report.parameters}),outcomes:[]};}
   evidence.sourceEvidenceId=sourceEvidenceId;
-  const evidenceId=digest(evidence);await writeFile(join(root,'evidence',`${evidenceId}.json.gz`),gzipSync(JSON.stringify(evidence)),{mode:0o600});return evidenceId;
+  const evidenceId=digest(evidence);await archivePacket(join(root,'evidence',`${evidenceId}.json.gz`),evidence);return evidenceId;
 }
 export function weatherStationSkill({root=weatherRoot(),station}={}){return readStationScience({root:join(root,'station-science'),station});}
 export async function weatherStationEvidence({stations,root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
@@ -106,11 +112,17 @@ export async function triggerWeatherCycle({root=weatherRoot()}={}) {
 
 function stage(c,now){const h=(Date.parse(c.close_time)-now)/3600000;return h<=6?'0-6h':h<=12?'6-12h':h<=24?'12-24h':h<=48?'24-48h':'48h+';}
 function mid(c){const a=Number(c.yes_ask_dollars),b=Number(c.yes_bid_dollars);return a>0&&a<=1&&b>=0&&b<a?(a+b)/2:null;}
-async function resolvedRows(root){
-  const out=[];
-  try{const lines=createInterface({input:createReadStream(join(root,'resolved.jsonl')),crlfDelay:Infinity});for await(const line of lines)if(line)out.push(JSON.parse(line));}
+async function* resolvedRows(root){
+  try{const lines=createInterface({input:createReadStream(join(root,'resolved.jsonl')),crlfDelay:Infinity});for await(const line of lines)if(line)yield JSON.parse(line);}
   catch(e){if(e.code!=='ENOENT')throw e;}
-  return out;
+}
+async function gradeHistory(root){
+  // Keep only the earliest timestamp per contract/horizon/model; never retain full history objects.
+  const first=new Map(),key=(r,m)=>`${r.ticker}/${r.stage}/${r.ruleKey}/${m.id}`;
+  for await(const r of resolvedRows(root))if(r.settlementEvidenceVersion===1&&r.settlement&&Number.isFinite(Date.parse(r.at))&&Date.parse(r.at)<Date.parse(r.settlement.settledAt))for(const m of r.models){const k=key(r,m),at=first.get(k);if(at===undefined||r.at.localeCompare(at)<0)first.set(k,r.at);}
+  const accumulator=createModelGradeAccumulator();
+  for await(const r of resolvedRows(root))if(r.settlementEvidenceVersion===1&&r.settlement&&Number.isFinite(Date.parse(r.at))&&Date.parse(r.at)<Date.parse(r.settlement.settledAt))for(const m of r.models){const k=key(r,m);if(first.get(k)!==r.at)continue;first.delete(k);accumulator.add({...r,models:[m]});}
+  return accumulator.report();
 }
 async function scorePending(root,client,now) {
   const pending=await read(join(root,'pending.json'),{}),settled=[];const errors=[];
@@ -134,15 +146,11 @@ async function scorePending(root,client,now) {
 
   // A per-record immutable score file makes recovery after interruption idempotent.
   await mkdir(join(root,'scores'),{recursive:true});
-  const known=new Set((await resolvedRows(root)).map(r=>r.id));
+  const known=new Set();for await(const r of resolvedRows(root))known.add(r.id);
   for(const r of settled){try{await writeFile(join(root,'scores',`${r.id}.json`),JSON.stringify(r)+'\n',{flag:'wx',mode:0o600});}catch(e){if(e.code!=='EEXIST')throw e;}}
   for(const file of await readdir(join(root,'scores'))){const r=await read(join(root,'scores',file));if(!known.has(r.id)){await appendFile(join(root,'resolved.jsonl'),JSON.stringify(r)+'\n',{mode:0o600});known.add(r.id);}}
   await atomic(join(root,'pending.json'),pending);
-  const rs=await resolvedRows(root);
-  // First pre-settlement forecast per ticker, stage and model version. No repeated-look sample inflation.
-  const first=new Map();
-  for(const r of rs.filter(r=>r.settlementEvidenceVersion===1&&r.settlement&&Number.isFinite(Date.parse(r.at))&&Date.parse(r.at)<Date.parse(r.settlement.settledAt)).sort((a,b)=>a.at.localeCompare(b.at)))for(const m of r.models){const key=`${r.ticker}/${r.stage}/${r.ruleKey}/${m.id}`;if(!first.has(key))first.set(key,{...r,models:[m]});}
-  const grades=gradeModels([...first.values()]);await atomic(join(root,'grades.json'),grades);
+  const grades=await gradeHistory(root);await atomic(join(root,'grades.json'),grades);
   return {settled:settled.length,pending:Object.keys(pending).length,errors,grades};
 }
 export async function scoreWeather({root=weatherRoot(),client=weatherClient(),now=Date.now()}={}) {

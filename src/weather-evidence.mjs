@@ -2,7 +2,7 @@ import {latestLampGuidance} from './lamp-station-guidance.mjs';
 import { latestStationGuidance, guidanceForExtreme } from './nbm-station-guidance.mjs';
 import { NWS_API, NWS_USER_AGENT, climateDayStart, observedExtremes, activeTemperatureHazards } from './station-observations.mjs';
 import { TEMPERATURE_MARKETS } from './temperature-market-model.mjs';
-import { forecastScale, bracketProbability } from './temperature-distribution.mjs';
+import { forecastScale, bracketProbability, studentTCdf } from './temperature-distribution.mjs';
 import { priceRainMarket,priceRainPoolMarket } from './rain-market-model.mjs';
 import {climateReportEvidence} from './weather-settlement-source.mjs';
 import {latestStationQuantiles,priceStationQuantiles} from './weather-quantiles.mjs';
@@ -42,9 +42,9 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
       const point=await nws(`${NWS_API}/points/${lat.toFixed(4)},${lon.toFixed(4)}`,fetchImpl);
       const hourlyUrl=point.properties.forecastHourly;
       const hourly=await nws(hourlyUrl,fetchImpl);
-      const alerts=await activeTemperatureHazards({station},{fetchImpl});
-      local[station]={station,latitude:lat,longitude:lon,hourlyUrl,updated:hourly.properties.updateTime??hourly.properties.updated,periods:hourly.properties.periods,alerts};
-    }catch(e){errors.push({station,source:'NWS-hourly/alerts',error:e.message});}
+      local[station]={station,latitude:lat,longitude:lon,hourlyUrl,updated:hourly.properties.updateTime??hourly.properties.updated,periods:hourly.properties.periods,alerts:null};
+    }catch(e){errors.push({station,source:'NWS-hourly',error:e.message});}
+    try{const alerts=await activeTemperatureHazards({station},{fetchImpl});if(local[station])local[station].alerts=alerts;}catch(e){errors.push({station,source:'NWS-alerts',error:e.message});}
     // Physical verification needs today's observations even when every open contract is for tomorrow.
     const fmt=new Intl.DateTimeFormat('en-CA',{timeZone:b.timeZone,year:'numeric',month:'2-digit',day:'2-digit'});
     let today=fmt.format(new Date(now));if(climateDayStart(today,b.timeZone).getTime()>now)today=new Date(Date.parse(today+'T00:00:00Z')-86400000).toISOString().slice(0,10);
@@ -99,6 +99,7 @@ export function weatherEstimates(c,e,now) {
     }
   }
   out.push(...lampDailyEstimates(c,e,now));
+  out.push(...softObservationEstimates(c,e,out));
   // Observations and hazards remain witnesses; proxy observations never force a TWC outcome to zero.
   return out;
 }
@@ -106,23 +107,48 @@ export function weatherEstimates(c,e,now) {
 export function lampDailyEstimates(c,e,now){
   const b=c.binding,lamp=e.lamp;if(!b||!['high','low'].includes(b.kind)||!lamp||now<Date.parse(lamp.runtime)||now-Date.parse(lamp.runtime)>3*3600000)return [];
   const start=climateDayStart(b.targetDate,b.timeZone).getTime(),end=start+86400000;
-  const obs=e.observations[`${b.station}/${b.targetDate}`],rows=(lamp.stations[b.station]?.rows??[]).filter(r=>Number.isFinite(r.temperatureF)&&Date.parse(r.validTime)>=Math.max(start,now)&&Date.parse(r.validTime)<end);
-  if(!rows.length||Date.parse(rows.at(-1).validTime)<end-3600000||now>=start&&!obs?.count||now<start&&Date.parse(rows[0].validTime)>start)return [];
-  const first=now<start?start:Math.ceil(now/3600000)*3600000;
-  for(let t=first;t<end;t+=3600000)if(!rows.some(r=>Date.parse(r.validTime)===t))return [];
+  const obs=e.observations[`${b.station}/${b.targetDate}`],first=Math.max(start,now);
+  if(first>=end||now>=start&&!obs?.count)return [];
+  const all=new Map((lamp.stations[b.station]?.rows??[]).filter(r=>Number.isFinite(r.temperatureF)).map(r=>[Date.parse(r.validTime),r]));
+  const rows=[];for(let t=Math.ceil(first/3600000)*3600000;t<=Math.ceil(end/3600000)*3600000;t+=3600000){const r=all.get(t);if(!r)return [];rows.push(r);}
+  // Join the latest real temperature to future guidance when the fresh bulletin starts next hour.
+  const anchor=now>=start?(obs?.readings??[]).filter(r=>Date.parse(r.at)<=first&&first-Date.parse(r.at)<=30*60000&&Number.isFinite(r.temperatureF)).sort((a,b)=>b.at.localeCompare(a.at))[0]:null;
+  if(anchor){while(rows.length&&Date.parse(rows[0].validTime)<=Date.parse(anchor.at))rows.shift();rows.unshift({validTime:anchor.at,temperatureF:anchor.temperatureF,observedAnchor:true});}
+  else if(Math.floor(first/3600000)*3600000<first&&all.has(Math.floor(first/3600000)*3600000))rows.unshift(all.get(Math.floor(first/3600000)*3600000));
+  else if(Date.parse(rows[0].validTime)>first)rows.unshift({validTime:new Date(first).toISOString(),temperatureF:rows[0].temperatureF,constantBackfill:true});
+  const interpolate=(t,values)=>{if(values.has(t))return values.get(t);for(let i=0;i<rows.length-1;i++){const lo=Date.parse(rows[i].validTime),hi=Date.parse(rows[i+1].validTime);if(lo<=t&&t<=hi)return values.get(lo)+(values.get(hi)-values.get(lo))*(t-lo)/(hi-lo);}return NaN;};
   const bracket={strikeType:c.strike_type,floorStrike:c.floor_strike,capStrike:c.cap_strike},out=[];
   for(const calibrated of [false,true]){
     let adjusted=0;const scales=[2.5];
-    const values=rows.map(r=>{
-      if(!calibrated)return r.temperatureF;
+    const pointValues=rows.map(r=>{
+      if(!calibrated||r.observedAnchor)return r.temperatureF;
       const h=(Date.parse(r.validTime)-now)/3600000,horizon=h<=3?'0-3h':h<=6?'3-6h':h<=12?'6-12h':h<=24?'12-24h':'24-48h';
       const p=e.science?.parameters?.[`${b.station}/lamp-hourly-v2.7-v1/${horizon}`];
       if(!p?.ready)return r.temperatureF;adjusted++;scales.push(2.5*p.scaleMultiplier);return r.temperatureF+p.biasF;
     });
     if(calibrated&&!adjusted)continue;
+    const byTime=new Map(rows.map((r,i)=>[Date.parse(r.validTime),pointValues[i]]));
+    const values=[interpolate(first,byTime),interpolate(end-1,byTime),...rows.map((r,i)=>({t:Date.parse(r.validTime),value:pointValues[i]})).filter(r=>r.t>first&&r.t<end).map(r=>r.value)];
     if(obs?.count)values.push(b.kind==='high'?obs.maxF:obs.minF);
-    const mean=b.kind==='high'?Math.max(...values):Math.min(...values),scale=Math.max(...scales),id=calibrated?`lamp-postprocessed-extreme-${b.kind}-v1`:`lamp-hourly-extreme-${b.kind}-v1`;
-    out.push({id,p:bracketProbability(bracket,{mean,scale,nu:5}),details:{mean,scale,nu:5,runtime:lamp.runtime,source:lamp.source,extendedSource:lamp.extendedSource,forecastHours:rows.length,adjustedHours:adjusted,proxy:b.proxy,uncertainty:'experimental hourly-to-daily extreme approximation; not LAMP probability guidance',observationSource:obs?.source??null}});
+    const mean=b.kind==='high'?Math.max(...values):Math.min(...values),scale=Math.max(...scales),id=calibrated?`lamp-postprocessed-extreme-${b.kind}-v2`:`lamp-hourly-extreme-${b.kind}-v2`;
+    out.push({id,p:bracketProbability(bracket,{mean,scale,nu:5}),details:{mean,scale,nu:5,runtime:lamp.runtime,source:lamp.source,extendedSource:lamp.extendedSource,forecastHours:rows.filter(r=>!r.observedAnchor&&!r.constantBackfill).length,trajectoryPoints:rows.length,boundaryMethod:rows[0].observedAnchor?'latest NWS reading joined to future LAMP':rows[0].constantBackfill?'first future LAMP temperature held constant back to now':'LAMP point interpolation',adjustedHours:adjusted,proxy:b.proxy,uncertainty:'experimental piecewise-linear hourly-to-daily extreme approximation; not LAMP probability guidance',observationSource:obs?.source??null}});
+  }
+  return out;
+}
+/** Recover the existing bounded-temperature model with an explicit, uncalibrated proxy-failure mixture. */
+export function softObservationEstimates(c,e,models){
+  const b=c.binding,obs=b&&e.observations[`${b.station}/${b.targetDate}`];
+  if(!b||!['high','low'].includes(b.kind)||!obs||obs.count<3)return [];
+  const observedFloor=b.kind==='high'&&Number.isFinite(obs.floor)?obs.floor:-Infinity;
+  const observedCeiling=b.kind==='low'&&Number.isFinite(obs.ceiling)?obs.ceiling:Infinity;
+  if(!Number.isFinite(observedFloor)&&!Number.isFinite(observedCeiling))return [];
+  const bracket={strikeType:c.strike_type,floorStrike:c.floor_strike,capStrike:c.cap_strike},proxyFailureProbability=.01,out=[];
+  for(const m of models){
+    const {mean,scale,nu}=m.details??{};if(![mean,scale,nu,m.p].every(Number.isFinite)||scale<=0||nu<=0)continue;
+    const mass=studentTCdf((observedCeiling+.5-mean)/scale,nu)-studentTCdf((observedFloor-.5-mean)/scale,nu);
+    if(mass<=1e-12)continue;
+    const conditioned=bracketProbability(bracket,{mean,scale,nu,observedFloor,observedCeiling});
+    out.push({id:m.id+'/observation-proxy-mixture-v1',p:(1-proxyFailureProbability)*conditioned+proxyFailureProbability*m.p,details:{...m.details,baseModel:m.id,conditionedProbability:conditioned,proxyFailureProbability,observedFloor:Number.isFinite(observedFloor)?observedFloor:null,observedCeiling:Number.isFinite(observedCeiling)?observedCeiling:null,observationSource:obs.source,observationLatest:obs.latest,observationCount:obs.count,observationMethod:'existing one-degree-loose observation bound, mixed with unconditioned model',status:'forward experiment; 1% source-disagreement prior is uncalibrated'}});
   }
   return out;
 }
