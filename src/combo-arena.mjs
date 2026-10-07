@@ -129,3 +129,41 @@ export function playStrategy(tape, strategy, seed) {
   }
   return { moves, position, positionHash: hashPosition(comboArena.serialize(position)) };
 }
+
+/**
+ * The coordination nerve of a book (Obsmetrologia Cohomology/CoordinationCohomology): a bipartite graph
+ * whose vertices are the combos in the book and the games their legs settle on (games, not leg markets,
+ * since a game is the unit outcomes are correlated through; a crypto window is one game), one edge per
+ * (combo, game). Its cycle rank H1 = |E| - |V| + |C| counts the independent correlation loops the book's
+ * hedges must satisfy together (`h1rank_is_coordination_cost`); H1 = 0 exactly when the nerve is a forest
+ * (`h1_vanishes_iff_forest`), when each game hedges alone and fills compose in any order.
+ * @param {{id: string, legs: {ticker: string}[]}[]} combos
+ */
+export function exposureNerve(combos) {
+  const parent = new Map();
+  const find = (x) => { let r = x; while (parent.get(r) !== r) r = parent.get(r); let y = x; while (parent.get(y) !== r) { const n = parent.get(y); parent.set(y, r); y = n; } return r; };
+  const add = (x) => { if (!parent.has(x)) parent.set(x, x); };
+  let edges = 0;
+  for (const c of combos) {
+    const v = `combo:${c.id}`; add(v);
+    for (const game of new Set(c.legs.map((l) => legMeta(l.ticker).game))) {
+      const g = `game:${game}`; add(g); edges += 1;
+      const a = find(v); const b = find(g); if (a !== b) parent.set(a, b);
+    }
+  }
+  const components = new Set([...parent.keys()].map(find)).size;
+  return { vertices: parent.size, edges, components, h1: edges - parent.size + components };
+}
+
+/** The open rfqs a position holds our quote on: the book a new quote joins. */
+const quotedBook = (position) => Object.keys(position.quotes).filter((id) => position.rfqs[id]?.status === 'open').map((id) => ({ id, legs: position.rfqs[id].legs }));
+
+/**
+ * Frame 5 (coordination-free admission): wrap a strategy so it quotes only when the quote keeps the
+ * book's nerve at most `maxH1` cycles, i.e. a forest by default. A refused rfq is passed, not quoted.
+ */
+export const forestAdmission = (strategy, { maxH1 = 0 } = {}) => (position, rfq) => {
+  const move = strategy(position, rfq);
+  if (!move) return null;
+  return exposureNerve([...quotedBook(position), { id: rfq.id, legs: rfq.legs }]).h1 <= maxH1 ? move : null;
+};
