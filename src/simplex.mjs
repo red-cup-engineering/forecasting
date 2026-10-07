@@ -5,7 +5,10 @@
  * falling back to Bland's rule once degenerate pivots stall.
  *
  * @param {{c: number[], rows: {a: Array<[number, number]>|number[], op: '<='|'>='|'=', b: number}[], maxIter?: number}} lp
- * @returns {{status: 'optimal'|'infeasible'|'unbounded'|'iteration-limit', objective: number|null, x: number[]|null}}
+ * The dual `y` (one price per row, in the row's own orientation) is read off the final tableau:
+ * at an optimum it satisfies A^T y >= c and b.y = objective, so it is the certificate of the bound.
+ *
+ * @returns {{status: 'optimal'|'infeasible'|'unbounded'|'iteration-limit', objective: number|null, x: number[]|null, y?: number[]}}
  */
 export function solveLP({ c, rows, maxIter = 40000 }) {
   const n = c.length;
@@ -16,8 +19,9 @@ export function solveLP({ c, rows, maxIter = 40000 }) {
     if (r.a.length && Array.isArray(r.a[0])) for (const [j, v] of r.a) dense[j] += v;
     else r.a.forEach((v, j) => { dense[j] = v; });
     let { op, b } = r;
+    const flip = b < 0 ? -1 : 1;
     if (b < 0) { for (let j = 0; j < n; j += 1) dense[j] = -dense[j]; b = -b; op = op === '<=' ? '>=' : op === '>=' ? '<=' : '='; }
-    return { dense, op, b };
+    return { dense, op, b, flip };
   });
   const nSlack = norm.filter((r) => r.op !== '=').length;
   const nArt = norm.filter((r) => r.op !== '<=').length;
@@ -27,12 +31,13 @@ export function solveLP({ c, rows, maxIter = 40000 }) {
   let s = n;
   let a = n + nSlack;
   const artStart = a;
+  const dualCol = new Int32Array(m);
   norm.forEach((r, i) => {
     T[i].set(r.dense, 0);
     T[i][cols] = r.b;
-    if (r.op === '<=') { T[i][s] = 1; basis[i] = s; s += 1; }
-    else if (r.op === '>=') { T[i][s] = -1; s += 1; T[i][a] = 1; basis[i] = a; a += 1; }
-    else { T[i][a] = 1; basis[i] = a; a += 1; }
+    if (r.op === '<=') { T[i][s] = 1; basis[i] = s; dualCol[i] = s; s += 1; }
+    else if (r.op === '>=') { T[i][s] = -1; dualCol[i] = s; s += 1; T[i][a] = 1; basis[i] = a; a += 1; }
+    else { T[i][a] = 1; basis[i] = a; dualCol[i] = a; a += 1; }
   });
 
   const run = (obj, allowed) => {
@@ -105,5 +110,7 @@ export function solveLP({ c, rows, maxIter = 40000 }) {
   for (let i = 0; i < m; i += 1) if (basis[i] < n) x[basis[i]] = T[i][cols];
   let objective = 0;
   for (let j = 0; j < n; j += 1) objective += c[j] * x[j];
-  return { status: 'optimal', objective, x };
+  // reduced cost of a row's own column is -y (its +e_i column) or +y (the >= surplus column, -e_i)
+  const y = norm.map((r, i) => r.flip * (r.op === '>=' ? r2.z[dualCol[i]] : -r2.z[dualCol[i]]));
+  return { status: 'optimal', objective, x, y };
 }
