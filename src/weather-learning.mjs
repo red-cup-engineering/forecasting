@@ -40,7 +40,9 @@ export function gradeModels(resolved,options={}){const accumulator=createModelGr
 export function probabilityBand(contract, model, grades) {
   const g=grades[`${contract.family}/${contract.source}/${contract.station}/${contract.ruleKey}/${contract.stage}/${model.id}`];
   const b=g?.bins[Math.min(9,Math.floor(model.p*10))];
-  return {low:b?.low??0, high:b?.high??1,admitted:Boolean(g?.admitted)&&Boolean(b?.n>=30),grade:g??null};
+  const structural=model.details?.structuralProbabilityBounds;
+  const valid=!structural||(Number.isFinite(structural.low)&&Number.isFinite(structural.high)&&structural.low>=0&&structural.high<=1&&structural.low<=model.p&&structural.high>=model.p);
+  return {low:valid?Math.min(b?.low??0,structural?.low??1):0, high:valid?Math.max(b?.high??1,structural?.high??0):1,admitted:valid&&Boolean(g?.admitted)&&Boolean(b?.n>=30),grade:g??null,...(structural?{structuralProbabilityBounds:structural}: {})};
 }
 /** Cash is a consumable resource. Allocate it once, with same-event and same-date exposure limits. */
 export function allocateWeather(rows, {capitalUsd=0,encumberedUsd=0,kellyShare=0.25,maxEventShare=0.1,maxDateShare=0.5}={}) {

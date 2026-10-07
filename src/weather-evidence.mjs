@@ -1,3 +1,4 @@
+import {priceDailyTemperatureExtreme} from './weather-temperature-extremes.mjs';
 import {makeBracketProbabilityPool} from './weather-ensemble.mjs';
 import {INDEX_CITIES,indexConfiguration,collectWeatherIndexEvidence,priceWeatherIndex} from './weather-index.mjs';
 import {latestHourlyGuidance} from './nbm-hourly-guidance.mjs';
@@ -108,6 +109,7 @@ export function weatherEstimates(c,e,now) {
     }
   }
   out.push(...lampDailyEstimates(c,e,now));
+  const hourlyExtreme=priceDailyTemperatureExtreme(c,e,now);if(hourlyExtreme)out.push(hourlyExtreme);
   const candidates=out.flatMap(r=>{
     const family=r.id===`nbm-qmd-${b.kind}-v5-v1`||r.id===`nbm-t-${b.kind}-2026-10-02`?'nbm':r.id===`nws-hourly-extreme-${b.kind}-v1`?'nws':r.id===`lamp-hourly-extreme-${b.kind}-v2`?'lamp':null;
     return family?[{...r,family,priority:r.id.startsWith('nbm-qmd-')?1:0}]:[];
