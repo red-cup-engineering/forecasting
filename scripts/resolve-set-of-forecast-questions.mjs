@@ -61,13 +61,13 @@ async function resolveKalshiWeatherQuestions(questions, seriesTicker, now, fetch
     if (!observation) {
       return openResolution(question.id, `no settled Kalshi market found for ${question.id} in series ${seriesTicker} as of ${now}`);
     }
-    if (observation.result !== "yes" && observation.result !== "no") {
+    if (!observation.settlement) {
       return openResolution(question.id, `kalshi market ${observation.ticker} carries no definitive yes/no result yet`);
     }
     return resolvedResolution(
       question.id,
-      observation.result === "yes" ? 1 : 0,
-      { sourceUrl: `https://api.elections.kalshi.com/trade-api/v2/markets/${observation.ticker}`, fetchedAt: now, rawValue: observation.result },
+      observation.settlement.outcome,
+      { sourceUrl: `https://api.elections.kalshi.com/trade-api/v2/markets/${observation.ticker}`, fetchedAt: now, rawValue: observation.result, settledAt: observation.settlement.settledAt },
       now,
     );
   });

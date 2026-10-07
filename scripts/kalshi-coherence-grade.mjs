@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 // Grade the shadow log at settlement: per distinct would-take portfolio (by signature), realized P&L from the
 // markets' results vs guaranteed profit, with persistence (scans seen, first/last seen).
+import { binarySettlement } from '../../../src/market-facts.mjs';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { BASE } from '../src/coherence-scan.mjs';
@@ -30,7 +31,7 @@ for (const g of bySig.values()) {
   for (const l of p.legs) {
     if (l.venue !== 'kalshi') { gradable = false; continue; }
     const m = await result(l.ticker);
-    if (!m || (m.result !== 'yes' && m.result !== 'no')) { settled = false; continue; }
+    if (!binarySettlement(m) || Number(m.notional_value_dollars)!==1) { settled = false; continue; }
     const win = l.side === 'yes' ? m.result === 'yes' : m.result === 'no';
     pnl += l.qty * ((win ? 1 : 0) - l.price);
   }

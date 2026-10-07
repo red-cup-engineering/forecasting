@@ -4,6 +4,7 @@ import { createInterface } from 'node:readline';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { gzipSync, gunzipSync } from 'node:zlib';
+import { binarySettlement } from '../../../src/market-facts.mjs';
 import { createKalshiClient } from '../../../src/client.mjs';
 import { digest, discoverWeather, weatherRuleKey, mapLimit } from './weather-universe.mjs';
 import { collectWeatherEvidence, collectStationWeatherEvidence, weatherEstimates, forecastCell } from './weather-evidence.mjs';
@@ -114,8 +115,12 @@ async function scorePending(root,client,now) {
   } else await mapLimit(tickers,3,async ticker=>{try{markets.set(ticker,await client.getMarket(ticker));}catch(e){errors.push({ticker,error:e.message});}});
   for(const [id,r] of Object.entries(pending)){
     const m=markets.get(r.ticker);
-    if(m?.status!=='settled'||!['yes','no'].includes(m.result))continue;
-    settled.push({...r,id,outcome:m.result==='yes'?1:0,scoredAt:new Date(now).toISOString(),venueResult:m.result,settledAt:m.settlement_ts??m.expiration_time});delete pending[id];
+    const settlement=binarySettlement(m);
+    if(!settlement||Date.parse(settlement.settledAt)>now)continue;
+    const rulesHash=digest({primary:m.rules_primary,secondary:m.rules_secondary});
+    if(!r.rulesHash||r.rulesHash!==rulesHash){errors.push({id,ticker:r.ticker,error:'settlement rules do not match the issued forecast'});continue;}
+    if(!Number.isFinite(Date.parse(r.at))||Date.parse(r.at)>=Date.parse(settlement.settledAt)){errors.push({id,ticker:r.ticker,error:'forecast was not issued before definitive settlement'});continue;}
+    settled.push({...r,id,outcome:settlement.outcome,scoredAt:new Date(now).toISOString(),venueResult:settlement.result,settledAt:settlement.settledAt,settlement,settlementEvidenceVersion:1});delete pending[id];
   }
 
   // A per-record immutable score file makes recovery after interruption idempotent.
@@ -127,7 +132,7 @@ async function scorePending(root,client,now) {
   const rs=await resolvedRows(root);
   // First pre-settlement forecast per ticker, stage and model version. No repeated-look sample inflation.
   const first=new Map();
-  for(const r of rs.sort((a,b)=>a.at.localeCompare(b.at)))for(const m of r.models){const key=`${r.ticker}/${r.stage}/${r.ruleKey}/${m.id}`;if(!first.has(key))first.set(key,{...r,models:[m]});}
+  for(const r of rs.filter(r=>r.settlementEvidenceVersion===1&&r.settlement&&Number.isFinite(Date.parse(r.at))&&Date.parse(r.at)<Date.parse(r.settlement.settledAt)).sort((a,b)=>a.at.localeCompare(b.at)))for(const m of r.models){const key=`${r.ticker}/${r.stage}/${r.ruleKey}/${m.id}`;if(!first.has(key))first.set(key,{...r,models:[m]});}
   const grades=gradeModels([...first.values()]);await atomic(join(root,'grades.json'),grades);
   return {settled:settled.length,pending:Object.keys(pending).length,errors,grades};
 }
