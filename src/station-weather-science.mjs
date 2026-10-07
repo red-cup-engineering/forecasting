@@ -1,3 +1,4 @@
+import {relationalTemperaturePanel,RELATIONAL_REGIONS} from './weather-relational-temperature.mjs';
 import {INDEX_CITIES,indexDistributions,canonicalIndexPoints,stationTemperatureDistribution} from './weather-index.mjs';
 /** Prequential station verification and regularized local postprocessing, independent of markets. */
 import {readFile,writeFile,mkdir,rename} from 'node:fs/promises';
@@ -12,7 +13,7 @@ export function temperatureCrps(meanF,scaleF,observedF){return temperatureDistri
 const read=async(path,fallback)=>{try{return JSON.parse(await readFile(path,'utf8'));}catch(e){if(e.code==='ENOENT')return fallback;throw e;}};
 async function atomic(path,value){const tmp=path+'.'+process.pid+'.tmp';await writeFile(tmp,JSON.stringify(value)+'\n',{mode:0o600});await rename(tmp,path);}
 function fit(history){
- const groups={};for(const day of Object.values(history)){(groups[day.key]??=[]).push(day);}
+ const groups={};for(const day of Object.values(history)){if(day.verification==='routine-report-bin')continue;(groups[day.key]??=[]).push(day);}
  const out={};
  for(const [k,days] of Object.entries(groups)){
   const n=days.length,bias=days.reduce((s,d)=>s+d.errorSum/d.n,0)/(n+10);
@@ -22,11 +23,11 @@ function fit(history){
  return out;
 }
 export function stationScienceReport(state,{station}={}){
- const groups={};for(const d of Object.values(state.history??{})){if(station&&d.station!==station)continue;const r=groups[d.key]??={station:d.station,model:d.model,horizon:d.horizon,truth:d.truth??'NWS station observations',n:0,dates:0,errorSum:0,error2Sum:0,absSum:0,crpsSum:0,covered90:0,diagnosticSamples:0,pitSum:0,pit2Sum:0,pitBins:Array(10).fill(0)};r.n+=d.n;r.dates++;for(const f of ['errorSum','error2Sum','absSum','crpsSum','covered90'])r[f]+=d[f];r.diagnosticSamples+=d.diagnosticSamples??0;r.pitSum+=d.pitSum??0;r.pit2Sum+=d.pit2Sum??0;for(let i=0;i<10;i++)r.pitBins[i]+=d.pitBins?.[i]??0;}
- const metrics=Object.values(groups).map(r=>({station:r.station,model:r.model,horizon:r.horizon,truth:r.truth,samples:r.n,dates:r.dates,biasF:r.errorSum/r.n,maeF:r.absSum/r.n,rmseF:Math.sqrt(r.error2Sum/r.n),crpsF:r.crpsSum/r.n,coverage90:r.covered90/r.n,pit:r.diagnosticSamples?{samples:r.diagnosticSamples,mean:r.pitSum/r.diagnosticSamples,variance:r.pit2Sum/r.diagnosticSamples-(r.pitSum/r.diagnosticSamples)**2,bins:r.pitBins,idealMean:.5,idealVariance:1/12,note:'continuous-CDF PIT; correlated hours are not independent calibration trials'}:null}));
+ const groups={};for(const d of Object.values(state.history??{})){if(station&&d.station!==station)continue;const r=groups[d.key]??={station:d.station,model:d.model,horizon:d.horizon,truth:d.truth??'NWS station observations',verification:d.verification,n:0,dates:0,errorSum:0,error2Sum:0,absSum:0,crpsSum:0,covered90:0,diagnosticSamples:0,pitSum:0,pit2Sum:0,pitBins:Array(10).fill(0)};r.n+=d.n;r.dates++;for(const f of ['errorSum','error2Sum','absSum','crpsSum','covered90'])r[f]+=d[f];r.diagnosticSamples+=d.diagnosticSamples??0;r.pitSum+=d.pitSum??0;r.pit2Sum+=d.pit2Sum??0;for(let i=0;i<10;i++)r.pitBins[i]+=d.pitBins?.[i]??0;}
+ const metrics=Object.values(groups).map(r=>({station:r.station,model:r.model,horizon:r.horizon,truth:r.truth,...(r.verification===undefined?{}:{verification:r.verification}),samples:r.n,dates:r.dates,biasF:r.errorSum/r.n,maeF:r.absSum/r.n,rmseF:Math.sqrt(r.error2Sum/r.n),crpsF:r.crpsSum/r.n,coverage90:r.covered90/r.n,pit:r.diagnosticSamples?{samples:r.diagnosticSamples,mean:r.pitSum/r.diagnosticSamples,variance:r.pit2Sum/r.diagnosticSamples-(r.pitSum/r.diagnosticSamples)**2,bins:r.pitBins,idealMean:.5,idealVariance:1/12,note:r.verification==='routine-report-bin'?'seeded randomized PIT for empirical atoms; continuous CDF for guidance comparators; correlated hours are not independent calibration trials':'continuous-CDF PIT; correlated hours are not independent calibration trials'}:null}));
  const pairs={};for(const d of Object.values(state.comparisons??{})){if(station&&d.station!==station)continue;(pairs[d.key]??=[]).push(d);}
  const comparisons=Object.values(pairs).map(days=>{const means=days.map(d=>d.gainSum/d.n),n=means.length,mean=means.reduce((s,x)=>s+x,0)/n,se=n>1?Math.sqrt(means.reduce((s,x)=>s+(x-mean)**2,0)/(n*(n-1))):null;const {key,date,n:count,gainSum,...metadata}=days[0];return {...metadata,dates:n,samples:days.reduce((s,d)=>s+d.n,0),meanCrpsGainF:mean,lower95:n>=30?mean-1.96*se:null,upper95:n>=30?mean+1.96*se:null,supportedPhysicalGain:n>=30&&mean-1.96*se>0,method:'component and pool frozen together and scored on identical outcomes; equal day means; approximate date-cluster interval after 30 dates; no market-edge inference'};});
- return {at:state.at??null,truth:'NWS station observations and canonical Kalshi city-index observations; separate from venue binary settlement',scoring:'first available forecast per location/valid hour/model/lead cohort; NWS nearest hour within 15 minutes; city index latest canonical minute at/before target within 60 minutes; 41-point quadrature per component; weighted mixture CRPS',metrics,comparisons,pending:Object.values(state.pending??{}).filter(r=>!station||r.station===station).length,parameters:Object.fromEntries(Object.entries(state.parameters??{}).filter(([k])=>!station||k.startsWith(station+'/'))),missingOutcomes:state.missingOutcomes??0};
+ return {at:state.at??null,truth:'NWS station observations, canonical Kalshi city-index observations and IEM routine-report bins; separate carriers and venue binary settlement',scoring:'first available forecast per location/valid hour/model/lead cohort; NWS nearest hour within 15 minutes; city index latest canonical minute at/before target within 60 minutes; routine bins use the last uncontradicted report within 20 minutes before the boundary; exact empirical-atom CRPS and 41-point Student-t quadrature; weighted mixture CRPS',metrics,comparisons,pending:Object.values(state.pending??{}).filter(r=>!station||r.station===station).length,parameters:Object.fromEntries(Object.entries(state.parameters??{}).filter(([k])=>!station||k.startsWith(station+'/'))),missingOutcomes:state.missingOutcomes??0};
 }
 export function stationPointForecasts(evidence,{now=Date.now(),parameters={}}={}){
  const out=[];
@@ -59,6 +60,15 @@ export function stationPointForecasts(evidence,{now=Date.now(),parameters={}}={}
    const p=parameters[key(base)];if(p?.ready)out.push({...postprocessTemperature(base,p),model:base.model+'/station-postprocess-v1',postprocessing:{...p,trainedThrough:new Date(now).toISOString(),baseModel:base.model}});
   }
  }
+ for(const packet of evidence.relational?.regions??[]){
+  const accepted=(packet.forecasts??[]).filter(r=>r.verification==='routine-report-bin'&&Date.parse(r.availableAt)<=now&&Date.parse(r.earliestTargetObservationAt)>now&&Date.parse(r.calibrationLabelBefore)<=Date.parse(r.fitAvailableAt)&&Date.parse(r.fitAvailableAt)<=Date.parse(r.availableAt));
+  for(const r of accepted){
+   if(r.model==='relational-live/recursive-generator/v1'){
+    const comparators=out.filter(c=>c.station===r.station&&Date.parse(c.validTime)===Date.parse(r.validTime)&&['lamp-hourly-v2.7-v1','nbm-nbh-hourly-v5-v1','nws-grid-hourly-v1'].includes(c.model)).map(c=>({...c,model:c.model+'/routine-bin-comparator-v1',validTime:r.validTime,horizon:'routine-next-bin',verification:r.verification,truth:r.truth,date:r.date,earliestTargetObservationAt:r.earliestTargetObservationAt,tradeEligible:false,approximation:'guidance valid at UTC boundary evaluated against routine report up to 20 minutes earlier'}));
+    out.push(...comparators,{...r,comparators:[...(r.comparators??[]),...comparators]});
+   }else out.push(r);
+  }
+ }
  return out;
 }
 /** Caller holds the station-science lock. Scores known forecasts BEFORE fitting or recording future forecasts. */
@@ -72,16 +82,22 @@ export async function updateStationScience(evidence,{root,now=Date.now(),sourceE
   for(const point of canonicalIndexPoints(packet,city,now)){const at=new Date(point.t).toISOString();traces.get(station).set(at,{at,temperatureF:point.v,status:point.status,contributors:point.contributors,source:packet.indexSource,receiptBasis:point.receipt_basis??'audited local receipt'});}
  }
  const readings=new Map([...traces].map(([s,rows])=>[s,[...rows.values()].sort((a,b)=>a.at.localeCompare(b.at))]));
+ const routines=new Map();
+ for(const packet of evidence.relational?.regions??[])for(const p of relationalTemperaturePanel(packet.reading,{stations:RELATIONAL_REGIONS[packet.region]})){
+  if(p.at>now)continue;
+  for(const [station,r] of Object.entries(p.stations)){if(packet.reading.conflicts.some(c=>c.witnesses.some(w=>w.station===station&&Math.ceil(Date.parse(w.observedAt)/3600000)*3600000===p.at&&p.at-Date.parse(w.observedAt)<=20*60000)))continue;
+   routines.set('K'+station+'/'+p.at,{at:r.observedAt,temperatureF:r.rawTemperatureF,source:packet.source.url,sourceId:packet.source.sha256,availableAt:packet.source.availableAt,binAt:new Date(p.at).toISOString(),witnesses:r.witnesses});}
+ }
  let scored=0,forecasted=0;const outcomes=[];state.comparisons??={};
  for(const [id,r] of Object.entries(state.pending)){
-  const valid=Date.parse(r.validTime);if(valid+15*60000>now)continue;
-  const obs=r.verification==='kalshi-index'?(readings.get(r.station)??[]).filter(o=>Date.parse(o.at)<=valid&&Date.parse(o.at)>=valid-60*60000).sort((a,b)=>b.at.localeCompare(a.at))[0]:(readings.get(r.station)??[]).filter(o=>Math.abs(Date.parse(o.at)-valid)<=15*60000&&Date.parse(o.at)<=now&&Date.parse(o.at)>Date.parse(r.availableAt)).sort((a,b)=>Math.abs(Date.parse(a.at)-valid)-Math.abs(Date.parse(b.at)-valid)||b.at.localeCompare(a.at))[0];
-  if(!obs){if(now-valid>72*3600000){delete state.pending[id];state.missingOutcomes++;}continue;}
+  const valid=Date.parse(r.validTime);if(valid+(r.verification==='routine-report-bin'?0:15*60000)>now)continue;
+  const obs=r.verification==='routine-report-bin'?routines.get(r.station+'/'+valid):r.verification==='kalshi-index'?(readings.get(r.station)??[]).filter(o=>Date.parse(o.at)<=valid&&Date.parse(o.at)>=valid-60*60000).sort((a,b)=>b.at.localeCompare(a.at))[0]:(readings.get(r.station)??[]).filter(o=>Math.abs(Date.parse(o.at)-valid)<=15*60000&&Date.parse(o.at)<=now&&Date.parse(o.at)>Date.parse(r.availableAt)).sort((a,b)=>Math.abs(Date.parse(a.at)-valid)-Math.abs(Date.parse(b.at)-valid)||b.at.localeCompare(a.at))[0];
+  if(!obs||r.verification==='routine-report-bin'&&(Date.parse(obs.at)<=Date.parse(r.availableAt)||Date.parse(obs.availableAt)<Date.parse(obs.at))){if(now-valid>72*3600000){delete state.pending[id];state.missingOutcomes++;}continue;}
   const error=obs.temperatureF-r.meanF,k=key(r),dk=k+'/'+r.date;
-  const d=state.history[dk]??={key:k,station:r.station,model:r.model,horizon:r.horizon,date:r.date,truth:r.truth??'NWS station observations',n:0,errorSum:0,error2Sum:0,z2Sum:0,absSum:0,crpsSum:0,covered90:0};
-  const diagnostics=temperatureDiagnostics(r,obs.temperatureF),crps=diagnostics.crpsF;d.n++;d.errorSum+=error;d.error2Sum+=error*error;d.z2Sum+=(error/r.scaleF)**2;d.absSum+=Math.abs(error);d.crpsSum+=crps;d.covered90+=diagnostics.covered90?1:0;
+  const d=state.history[dk]??={key:k,station:r.station,model:r.model,horizon:r.horizon,date:r.date,truth:r.truth??'NWS station observations',verification:r.verification,n:0,errorSum:0,error2Sum:0,z2Sum:0,absSum:0,crpsSum:0,covered90:0};
+  const diagnostics=temperatureDiagnostics(r,obs.temperatureF,{tieUniform:parseInt(hash({id,pitSeed:'pre-outcome-pit-v1'}).slice(0,8),16)/4294967296}),crps=diagnostics.crpsF;d.n++;d.errorSum+=error;d.error2Sum+=error*error;d.z2Sum+=(error/r.scaleF)**2;d.absSum+=Math.abs(error);d.crpsSum+=crps;d.covered90+=diagnostics.covered90?1:0;
   d.diagnosticSamples=(d.diagnosticSamples??0)+1;d.pitSum=(d.pitSum??0)+diagnostics.pit;d.pit2Sum=(d.pit2Sum??0)+diagnostics.pit**2;d.pitBins??=Array(10).fill(0);d.pitBins[Math.min(9,Math.floor(diagnostics.pit*10))]++;
-  for(const component of r.mixture?.components??[]){
+  for(const component of new Map([...(r.mixture?.components??[]),...(r.comparators??[])].map(c=>[c.model,c])).values()){
    const pairKey=hash({station:r.station,pool:r.model,component:component.model,horizon:r.horizon,composition:r.composition,truth:r.truth??'NWS station observations'}),dayKey=pairKey+'/'+r.date;
    const paired=state.comparisons[dayKey]??={key:pairKey,station:r.station,pool:r.model,component:component.model,family:component.family,horizon:r.horizon,composition:r.composition,truth:r.truth??'NWS station observations',date:r.date,n:0,gainSum:0};
    paired.n++;paired.gainSum+=temperatureDistributionCrps({...component,weight:1},obs.temperatureF)-crps;

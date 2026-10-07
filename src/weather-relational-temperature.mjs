@@ -32,7 +32,7 @@ export function relationalTemperaturePanel(reading,{stations}={}){
  for(const r of reading.accepted){const t=Date.parse(r.observedAt),boundary=Math.ceil(t/HOUR)*HOUR;if(boundary-t>20*60000)continue;let p=panel.get(boundary);if(!p)panel.set(boundary,p={});if(!p[r.station]||Date.parse(p[r.station].observedAt)<t)p[r.station]=r;}
  return [...panel].sort((a,b)=>a[0]-b[0]).map(([t,p])=>({at:t,complete:stations.every(s=>p[s]),stations:p}));
 }
-function features(panel,t,target,stations,relational,peerFeatures='both'){
+export function relationalTemperatureFeatures(panel,t,target,stations,relational,peerFeatures='both'){
  const a=panel.get(t),b=panel.get(t-HOUR),c=panel.get(t-2*HOUR);if(!a||!b||!c)return null;
  const required=relational?stations:[target];if(!required.every(s=>a[s]&&b[s]&&c[s]))return null;
  const T=(p,s)=>p[s].temperatureC,theta=2*Math.PI*(t/HOUR%24)/24;
@@ -73,6 +73,20 @@ function interval(days){
  for(let k=0;k<1000;k++){const xs=[];while(xs.length<days.length){const start=Math.floor(random()*(days.length-block+1));xs.push(...days.slice(start,start+block));}samples.push(mean(xs.slice(0,days.length)));}
  samples.sort((a,b)=>a-b);return {lower95C:samples[25],upper95C:samples[974],blockDays:block,replicates:1000,method:'exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim'};
 }
+function relationalModels(train,cal,{ridge=10}={}){
+ const models={persistence:{residualLaw:empiricalResidualLaw(cal.map(r=>r.y)),radius90C:quantile(cal.map(r=>Math.abs(r.y)),.9)}};
+ for(const mode of ['own','relational']){const m=fitRelationalTemperature(train.map(r=>({x:r[mode],y:r.y})),{ridge:mode==='relational'?ridge:10}),residuals=cal.map(r=>r.y-predictRelationalTemperature(m,r[mode]));models[mode]={...m,residualLaw:empiricalResidualLaw(residuals),radius90C:quantile(residuals.map(Math.abs),.9)};}
+ return models;
+}
+/** Freeze a prospective learner on labels strictly before a specified day. */
+export function fitRelationalTemperatureForIssuance(reading,{stations,before,ridge=10,peerFeatures='both',trainingDays=60,calibrationDays=14}={}){
+ const day=Date.parse(before);if(!Number.isFinite(day)||day%DAY||!Number.isFinite(ridge)||ridge<=0||ridge>1000||!['both','gradients','increments','none'].includes(peerFeatures)||trainingDays!==60||calibrationDays!==14)throw new TypeError('UTC-day cutoff and bounded prospective specification required');
+ const panel=new Map(relationalTemperaturePanel(reading,{stations}).map(p=>[p.at,p.stations])),fits=[];
+ for(const station of stations){const past=[];for(const [t] of panel){if(t+HOUR>=day||t+HOUR<day-trainingDays*DAY)continue;const own=relationalTemperatureFeatures(panel,t,station,stations,false),rel=relationalTemperatureFeatures(panel,t,station,stations,true,peerFeatures),truth=panel.get(t+HOUR)?.[station];if(own&&rel&&truth)past.push({own:own.x,relational:rel.x,y:truth.temperatureC-own.anchorC,targetAt:t+HOUR});}
+ const train=past.filter(r=>r.targetAt<day-calibrationDays*DAY),cal=past.filter(r=>r.targetAt>=day-calibrationDays*DAY);if(train.length<72||cal.length<48)continue;
+ fits.push({station,trainingLabelBefore:iso(day-calibrationDays*DAY),calibrationLabelBefore:iso(day),trainingExamples:train.length,calibrationExamples:cal.length,models:relationalModels(train,cal,{ridge})});}
+ return fits;
+}
 /** Refit once per held-out day; every training/calibration label is strictly earlier.
  * All comparators use exactly the same complete cases and past-only fitting scope. */
 export function replayRelationalTemperature(reading,{stations,trainingDays=60,calibrationDays=14,includePredictions=false,includeFits=false,ridge=10,peerFeatures='both'}={}){
@@ -80,12 +94,12 @@ export function replayRelationalTemperature(reading,{stations,trainingDays=60,ca
  if(!Number.isInteger(trainingDays)||trainingDays<30||!Number.isInteger(calibrationDays)||calibrationDays<7||calibrationDays>=trainingDays)throw new TypeError('bounded chronological train/calibration scopes required');
  const points=relationalTemperaturePanel(reading,{stations}),panel=new Map(points.map(p=>[p.at,p.stations]));if(!points.length)throw new Error('no comparable reporting bins');
  const rows=new Map(stations.map(s=>[s,[]]));
- for(const {at:t} of points)for(const station of stations){const own=features(panel,t,station,stations,false),rel=features(panel,t,station,stations,true,peerFeatures),truth=panel.get(t+HOUR)?.[station];if(!own||!rel||!truth)continue;rows.get(station).push({at:t,targetAt:t+HOUR,anchorC:own.anchorC,y:truth.temperatureC-own.anchorC,own:own.x,relational:rel.x,truth,inputs:rel});}
+ for(const {at:t} of points)for(const station of stations){const own=relationalTemperatureFeatures(panel,t,station,stations,false),rel=relationalTemperatureFeatures(panel,t,station,stations,true,peerFeatures),truth=panel.get(t+HOUR)?.[station];if(!own||!rel||!truth)continue;rows.get(station).push({at:t,targetAt:t+HOUR,anchorC:own.anchorC,y:truth.temperatureC-own.anchorC,own:own.x,relational:rel.x,truth,inputs:rel});}
  const start=Math.ceil((points[0].at+trainingDays*DAY)/DAY)*DAY,last=points.at(-1).at,predictions=[],frozen=[];
  for(let day=start;day<=last;day+=DAY)for(const station of stations){
   const candidates=rows.get(station),past=candidates.filter(r=>r.targetAt<day&&r.targetAt>=day-trainingDays*DAY),train=past.filter(r=>r.targetAt<day-calibrationDays*DAY),cal=past.filter(r=>r.targetAt>=day-calibrationDays*DAY),test=candidates.filter(r=>r.at>=day&&r.at<day+DAY);
   if(train.length<72||cal.length<48||!test.length)continue;
-  const models={persistence:{residualLaw:empiricalResidualLaw(cal.map(r=>r.y)),radius90C:quantile(cal.map(r=>Math.abs(r.y)),.9)}};for(const mode of ['own','relational']){const m=fitRelationalTemperature(train.map(r=>({x:r[mode],y:r.y})),{ridge:mode==='relational'?ridge:10}),residuals=cal.map(r=>r.y-predictRelationalTemperature(m,r[mode]));models[mode]={...m,residualLaw:empiricalResidualLaw(residuals),radius90C:quantile(residuals.map(Math.abs),.9)};}
+  const models=relationalModels(train,cal,{ridge});
   frozen.push({station,issuedAt:iso(day),trainingLabelBefore:iso(day-calibrationDays*DAY),calibrationLabelBefore:iso(day),trainingExamples:train.length,calibrationExamples:cal.length,models});
   for(const r of test){const values={persistence:0,own:predictRelationalTemperature(models.own,r.own),relational:predictRelationalTemperature(models.relational,r.relational)};
    predictions.push({station,issuedAt:iso(r.at),validTime:iso(r.targetAt),date:iso(r.at).slice(0,10),fitBefore:iso(day),retrospective:true,anchorC:r.anchorC,truthC:r.anchorC+r.y,predictionsC:Object.fromEntries(Object.entries(values).map(([k,v])=>[k,r.anchorC+v])),absoluteErrorsC:Object.fromEntries(Object.entries(values).map(([k,v])=>[k,Math.abs(v-r.y)])),errorsC:Object.fromEntries(Object.entries(values).map(([k,v])=>[k,v-r.y])),crpsC:Object.fromEntries(Object.keys(values).map(k=>[k,empiricalResidualCrps(models[k].residualLaw,r.y-values[k])])),covered90:Object.fromEntries(Object.keys(values).map(k=>[k,Math.abs(values[k]-r.y)<=models[k].radius90C])),inputLastObservedAt:iso(r.inputs.lastObservedAt),witnesses:r.inputs.witnesses,truthWitnesses:r.truth.witnesses});

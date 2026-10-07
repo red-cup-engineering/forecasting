@@ -1,3 +1,4 @@
+import {collectRelationalWeatherNowcast} from './weather-relational-nowcast.mjs';
 import {collectWeatherStrategyResearch} from './weather-strategy-research.mjs';
 import {collectRelationalTemperatureScience} from './weather-relational-temperature.mjs';
 import {deriveDailyTemperatureExtremes} from './weather-temperature-extremes.mjs';
@@ -101,6 +102,10 @@ export async function weatherStrategyResearch({region='nyc',root=weatherRoot(),n
  const evidenceId=digest(packet);await archivePacket(join(root,'evidence',`${evidenceId}.json.gz`),packet);
  const {rawSource,...report}=packet;
  return {...report,evidenceId,study:{...packet.study,generatedLearners:packet.study.generatedLearners.map(({lastFrozenFits,...learner})=>learner),game:{arena:packet.study.game.arena,semantics:packet.study.game.semantics,scope:packet.study.game.scope,admittedPlayCount:packet.study.game.strategy.plays.length}}};
+}
+export async function weatherRelationalNowcast({region='nyc',root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}){
+ const packet=await collectRelationalWeatherNowcast({region,cacheDir:join(root,'nbm','relational'),now,fetchImpl}),evidence={at:packet.at,stations:[],local:{},observations:{},errors:[],relational:{regions:[packet]}};
+ const evidenceId=await archiveWeatherEvidence(evidence,root);return {at:packet.at,region,evidenceId,source:packet.source,trainingId:packet.training.id,selection:packet.training.selection,gaps:packet.gaps,science:evidence.science,orderEffect:false};
 }
 export function weatherStationSkill({root=weatherRoot(),station}={}){return readStationScience({root:join(root,'station-science'),station});}
 export async function weatherStationEvidence({stations,root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
