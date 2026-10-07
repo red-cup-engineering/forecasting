@@ -1,3 +1,5 @@
+import {INDEX_CITIES,indexConfiguration,collectWeatherIndexEvidence,priceWeatherIndex} from './weather-index.mjs';
+import {latestHourlyGuidance} from './nbm-hourly-guidance.mjs';
 import {latestLampGuidance} from './lamp-station-guidance.mjs';
 import { latestStationGuidance, guidanceForExtreme } from './nbm-station-guidance.mjs';
 import { NWS_API, NWS_USER_AGENT, climateDayStart, observedExtremes, activeTemperatureHazards } from './station-observations.mjs';
@@ -28,8 +30,9 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
   });
   if(new Set(normalized.map(r=>r.station)).size!==normalized.length)throw new TypeError('combine target dates into one request per station');
   const stations=normalized.map(r=>r.station),errors=[];
-  let guidance=null,quantiles=null,lamp=null;
+  let guidance=null,quantiles=null,lamp=null,hourlyGuidance=null;
   try{guidance=await latestStationGuidance({stations,cacheDir,now},{fetchImpl});}catch(e){errors.push({source:'NBM',error:e.message});}
+  try{hourlyGuidance=await latestHourlyGuidance({stations,cacheDir,now},{fetchImpl});for(const station of hourlyGuidance.missingStations??[])if(stations.includes(station))errors.push({station,source:'NBM-NBH',error:'no complete hourly block in selected run'});}catch(e){errors.push({source:'NBM-NBH',error:e.message});}
   try{quantiles=await latestStationQuantiles({stations,cacheDir,now,fetchImpl});}catch(e){errors.push({source:'NBM-QMD',error:e.message});}
   try{lamp=await latestLampGuidance({stations,cacheDir,now,fetchImpl});for(const station of lamp.missingStations??[])errors.push({station,source:'LAMP',error:'no complete station block in the selected run'});}catch(e){errors.push({source:'LAMP',error:e.message});}
   const settlement=await climateReportEvidence({dates:normalized.flatMap(r=>r.targetDates),now,fetchImpl});errors.push(...settlement.errors);
@@ -57,16 +60,20 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
       catch(e){errors.push({station,date,source:'NWS-observations',error:e.message});}
     }
   });
-  return {at:new Date(now).toISOString(),stations:normalized,guidance,quantiles,lamp,settlement,local,observations,errors};
+  return {at:new Date(now).toISOString(),stations:normalized,guidance,hourlyGuidance,quantiles,lamp,settlement,local,observations,errors};
 }
 export async function collectWeatherEvidence(contracts,options={}) {
-  const requests=new Map();
-  for(const c of contracts)if(c.binding){const b=c.binding;if(!requests.has(b.station))requests.set(b.station,{station:b.station,timeZone:b.timeZone,targetDates:[]});const r=requests.get(b.station);if(!r.targetDates.includes(b.targetDate))r.targetDates.push(b.targetDate);}
-  if(!requests.size)return {at:new Date(options.now??Date.now()).toISOString(),stations:[],guidance:null,quantiles:null,settlement:null,local:{},observations:{},errors:[]};
-  return collectStationWeatherEvidence([...requests.values()],{...options,marketCollection:true});
+  const requests=new Map(),now=options.now??Date.now(),cities=[...new Set(contracts.filter(c=>c.binding?.kind==='index-at').map(c=>c.binding.city))];
+  const indexEvidence=cities.length?await collectWeatherIndexEvidence(cities,{now,fetchImpl:options.fetchImpl}):{cities:{},errors:[]};
+  function request(station,timeZone,targetDate){if(!requests.has(station))requests.set(station,{station,timeZone,targetDates:[]});const r=requests.get(station);if(!r.targetDates.includes(targetDate))r.targetDates.push(targetDate);}
+  for(const c of contracts)if(c.binding&&c.binding.kind!=='index-at'){const b=c.binding;request(b.station,b.timeZone,b.targetDate);}
+  for(const city of cities){const cfg=indexConfiguration(indexEvidence.cities[city],city,now,now);if(!cfg)continue;const dates=[...new Set(contracts.filter(c=>c.binding?.city===city).map(c=>c.binding.targetDate))];for(const member of cfg.stations)for(const date of dates)request(member.station_id.slice(0,4),INDEX_CITIES[city].timeZone,date);}
+  const evidence=requests.size?await collectStationWeatherEvidence([...requests.values()],{...options,now,marketCollection:true}):{at:new Date(now).toISOString(),stations:[],guidance:null,quantiles:null,settlement:null,local:{},observations:{},errors:[]};
+  evidence.indices=indexEvidence.cities;evidence.errors.push(...indexEvidence.errors);return evidence;
 }
 export function weatherEstimates(c,e,now) {
   const b=c.binding;if(!b)return [];
+  if(b.kind==='index-at')return priceWeatherIndex(c,e,now);
   if(b.kind==='rain') {
     if(!e.guidance)return [];
     const r=priceRainMarket(c,{guidance:e.guidance,now});

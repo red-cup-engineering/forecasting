@@ -86,9 +86,11 @@ export async function latestStationGuidance({ stations, now = Date.now(), cacheD
   for (let back = 0; back <= lookbackHours; back += 1) {
     const runtime = new Date(hour - back * 3600_000).toISOString();
     const cached = join(cacheDir, `nbs-${runtime.slice(0, 13)}.json`);
+    let prior;
     try {
       const doc = JSON.parse(await readFile(cached, 'utf8'));
-      if (stations.every((station) => doc.stations[station])) return doc;
+      if(doc.runtime===runtime)prior=doc;
+      if (doc.runtime===runtime&&stations.every((station) => doc.stations[station])) return doc;
     } catch (error) {
       if (error.code !== 'ENOENT' && !(error instanceof SyntaxError)) throw error;
     }
@@ -97,7 +99,7 @@ export async function latestStationGuidance({ stations, now = Date.now(), cacheD
     if (res.status === 404 || res.status === 403) continue;
     if (!res.ok) throw new Error(`nbm-station-guidance: GET ${source} answered ${res.status}`);
     const parsed = parseNbsBulletin(await res.text(), stations);
-    const doc = { runtime, source, stations: Object.fromEntries(parsed) };
+    const doc = { runtime, source, stations: {...prior?.stations,...Object.fromEntries(parsed)} };
     const temporary = `${cached}.${process.pid}.tmp`;
     await writeFile(temporary, JSON.stringify(doc));
     await rename(temporary, cached);

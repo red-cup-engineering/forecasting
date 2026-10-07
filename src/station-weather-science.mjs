@@ -1,3 +1,4 @@
+import {INDEX_CITIES,indexDistributions,canonicalIndexPoints} from './weather-index.mjs';
 /** Prequential station verification and regularized local postprocessing, independent of markets. */
 import {readFile,writeFile,mkdir,rename} from 'node:fs/promises';
 import {join} from 'node:path';
@@ -20,14 +21,14 @@ function fit(history){
  for(const [k,days] of Object.entries(groups)){
   const n=days.length,bias=days.reduce((s,d)=>s+d.errorSum/d.n,0)/(n+10);
   const standardized=days.reduce((s,d)=>s+d.z2Sum/d.n,0)/n;
-  out[k]={dates:n,samples:days.reduce((s,d)=>s+d.n,0),biasF:Math.max(-5,Math.min(5,bias)),scaleMultiplier:Math.max(1,Math.sqrt(standardized*3/5)),ready:n>=7,method:'date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens',truth:'NWS station observations'};
+  out[k]={dates:n,samples:days.reduce((s,d)=>s+d.n,0),biasF:Math.max(-5,Math.min(5,bias)),scaleMultiplier:Math.max(1,Math.sqrt(standardized*3/5)),ready:n>=7,method:'date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens',truth:days[0].truth??'NWS station observations'};
  }
  return out;
 }
 export function stationScienceReport(state,{station}={}){
- const groups={};for(const d of Object.values(state.history??{})){if(station&&d.station!==station)continue;const r=groups[d.key]??={station:d.station,model:d.model,horizon:d.horizon,n:0,dates:0,errorSum:0,error2Sum:0,absSum:0,crpsSum:0,covered90:0};r.n+=d.n;r.dates++;for(const f of ['errorSum','error2Sum','absSum','crpsSum','covered90'])r[f]+=d[f];}
- const metrics=Object.values(groups).map(r=>({station:r.station,model:r.model,horizon:r.horizon,samples:r.n,dates:r.dates,biasF:r.errorSum/r.n,maeF:r.absSum/r.n,rmseF:Math.sqrt(r.error2Sum/r.n),crpsF:r.crpsSum/r.n,coverage90:r.covered90/r.n}));
- return {at:state.at??null,truth:'NWS station observations; separate from venue settlement',scoring:'first available forecast per station/valid hour/model/lead cohort; observed temperature nearest valid hour within 15 minutes; 41-point quadrature CRPS',metrics,pending:Object.values(state.pending??{}).filter(r=>!station||r.station===station).length,parameters:Object.fromEntries(Object.entries(state.parameters??{}).filter(([k])=>!station||k.startsWith(station+'/'))),missingOutcomes:state.missingOutcomes??0};
+ const groups={};for(const d of Object.values(state.history??{})){if(station&&d.station!==station)continue;const r=groups[d.key]??={station:d.station,model:d.model,horizon:d.horizon,truth:d.truth??'NWS station observations',n:0,dates:0,errorSum:0,error2Sum:0,absSum:0,crpsSum:0,covered90:0};r.n+=d.n;r.dates++;for(const f of ['errorSum','error2Sum','absSum','crpsSum','covered90'])r[f]+=d[f];}
+ const metrics=Object.values(groups).map(r=>({station:r.station,model:r.model,horizon:r.horizon,truth:r.truth,samples:r.n,dates:r.dates,biasF:r.errorSum/r.n,maeF:r.absSum/r.n,rmseF:Math.sqrt(r.error2Sum/r.n),crpsF:r.crpsSum/r.n,coverage90:r.covered90/r.n}));
+ return {at:state.at??null,truth:'NWS station observations and canonical Kalshi city-index observations; separate from venue binary settlement',scoring:'first available forecast per location/valid hour/model/lead cohort; NWS nearest hour within 15 minutes; city index latest canonical minute at/before target within 60 minutes; 41-point quadrature CRPS',metrics,pending:Object.values(state.pending??{}).filter(r=>!station||r.station===station).length,parameters:Object.fromEntries(Object.entries(state.parameters??{}).filter(([k])=>!station||k.startsWith(station+'/'))),missingOutcomes:state.missingOutcomes??0};
 }
 export function stationPointForecasts(evidence,{now=Date.now(),parameters={}}={}){
  const out=[];
@@ -37,6 +38,8 @@ export function stationPointForecasts(evidence,{now=Date.now(),parameters={}}={}
   if(l&&now-Date.parse(l.updated)>=0&&now-Date.parse(l.updated)<=8*3600000)for(const p of l.periods??[])if(['C','F'].includes(p.temperatureUnit)&&Number.isFinite(p.temperature))inputs.push({model:'nws-grid-hourly-v1',validTime:p.startTime,meanF:p.temperatureUnit==='C'?p.temperature*9/5+32:p.temperature,scaleF:2.5,source:l.hourlyUrl,issuedAt:l.updated,uncertainty:'experimental 2.5F Student-t scale, not an NWS probability product'});
   const nbm=evidence.guidance;
   if(nbm&&now-Date.parse(nbm.runtime)>=0&&now-Date.parse(nbm.runtime)<=8*3600000)for(const r of nbm.stations[station]?.rows??[])if(Number.isFinite(r.tmp))inputs.push({model:'nbm-hourly-v5-v1',validTime:r.ftime,meanF:r.tmp,scaleF:Number.isFinite(r.tsd)?Math.max(1,r.tsd*Math.sqrt(3/5)):2.5,source:nbm.source,issuedAt:nbm.runtime,uncertainty:Number.isFinite(r.tsd)?'NBM TSD converted to Student-t scale; 1F floor':'experimental 2.5F Student-t scale; NBM TSD absent'});
+  const nbh=evidence.hourlyGuidance;
+  if(nbh&&now-Date.parse(nbh.runtime)>=0&&now-Date.parse(nbh.runtime)<=3*3600000)for(const r of nbh.stations[station]?.rows??[])if(Number.isFinite(r.tmp))inputs.push({model:'nbm-nbh-hourly-v5-v1',validTime:r.ftime,meanF:r.tmp,scaleF:Number.isFinite(r.tsd)?Math.max(1,r.tsd*Math.sqrt(3/5)):2.5,source:nbh.source,issuedAt:nbh.runtime,uncertainty:Number.isFinite(r.tsd)?'NBH TSD converted to Student-t scale; 1F floor':'experimental 2.5F Student-t scale; NBH TSD absent'});
   const lamp=evidence.lamp;
   if(lamp&&now-Date.parse(lamp.runtime)>=0&&now-Date.parse(lamp.runtime)<=3*3600000)for(const r of lamp.stations[station]?.rows??[])if(Number.isFinite(r.temperatureF))inputs.push({model:'lamp-hourly-v2.7-v1',validTime:r.validTime,meanF:r.temperatureF,scaleF:2.5,source:r.leadHours>25?lamp.extendedSource:lamp.source,issuedAt:lamp.runtime,uncertainty:'experimental 2.5F Student-t scale; LAMP temperature is deterministic'});
   for(const r of inputs){
@@ -44,6 +47,14 @@ export function stationPointForecasts(evidence,{now=Date.now(),parameters={}}={}
    const dateParts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:request.timeZone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(r.validTime)).map(p=>[p.type,p.value]));
    const base={...r,station,leadHours,horizon:cohort(leadHours),availableAt:new Date(now).toISOString(),date:`${dateParts.year}-${dateParts.month}-${dateParts.day}`,nu:5};out.push(base);
    const parameter=parameters[key(base)];if(parameter?.ready)out.push({...base,model:base.model+'/station-postprocess-v1',meanF:base.meanF+parameter.biasF,scaleF:base.scaleF*parameter.scaleMultiplier,postprocessing:{...parameter,trainedThrough:new Date(now).toISOString(),baseModel:base.model}});
+  }
+ }
+ for(const city of Object.keys(evidence.indices??{})){
+  const zone=INDEX_CITIES[city]?.timeZone;if(!zone)continue;
+  for(let valid=Math.ceil((now+5*60000)/3600000)*3600000;valid<=now+24*3600000;valid+=3600000)for(const r of indexDistributions(city,evidence,valid,now)){
+   const parts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:zone,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(valid)).map(p=>[p.type,p.value]));
+   const base={...r,station:'index:'+city,validTime:new Date(valid).toISOString(),availableAt:new Date(now).toISOString(),date:`${parts.year}-${parts.month}-${parts.day}`,leadHours:(valid-now)/3600000,horizon:cohort((valid-now)/3600000),verification:'kalshi-index',truth:'canonical Kalshi city weather index'};out.push(base);
+   const p=parameters[key(base)];if(p?.ready)out.push({...base,model:base.model+'/station-postprocess-v1',meanF:base.meanF+p.biasF,scaleF:base.scaleF*p.scaleMultiplier,postprocessing:{...p,trainedThrough:new Date(now).toISOString(),baseModel:base.model}});
   }
  }
  return out;
@@ -54,14 +65,18 @@ export async function updateStationScience(evidence,{root,now=Date.now(),sourceE
  const state=await read(file,{pending:{},history:{},missingOutcomes:0});
  const traces=new Map();
  for(const e of Object.values(evidence.observations??{}))for(const r of e.readings??[]){if(!traces.has(e.station))traces.set(e.station,new Map());traces.get(e.station).set(r.at,{...r,source:e.source});}
+ for(const [city,packet] of Object.entries(evidence.indices??{})){
+  const station='index:'+city;if(!traces.has(station))traces.set(station,new Map());
+  for(const point of canonicalIndexPoints(packet,city,now)){const at=new Date(point.t).toISOString();traces.get(station).set(at,{at,temperatureF:point.v,status:point.status,contributors:point.contributors,source:packet.indexSource,receiptBasis:point.receipt_basis??'audited local receipt'});}
+ }
  const readings=new Map([...traces].map(([s,rows])=>[s,[...rows.values()].sort((a,b)=>a.at.localeCompare(b.at))]));
  let scored=0,forecasted=0;const outcomes=[];
  for(const [id,r] of Object.entries(state.pending)){
   const valid=Date.parse(r.validTime);if(valid+15*60000>now)continue;
-  const obs=(readings.get(r.station)??[]).filter(o=>Math.abs(Date.parse(o.at)-valid)<=15*60000&&Date.parse(o.at)<=now&&Date.parse(o.at)>Date.parse(r.availableAt)).sort((a,b)=>Math.abs(Date.parse(a.at)-valid)-Math.abs(Date.parse(b.at)-valid)||b.at.localeCompare(a.at))[0];
+  const obs=r.verification==='kalshi-index'?(readings.get(r.station)??[]).filter(o=>Date.parse(o.at)<=valid&&Date.parse(o.at)>=valid-60*60000).sort((a,b)=>b.at.localeCompare(a.at))[0]:(readings.get(r.station)??[]).filter(o=>Math.abs(Date.parse(o.at)-valid)<=15*60000&&Date.parse(o.at)<=now&&Date.parse(o.at)>Date.parse(r.availableAt)).sort((a,b)=>Math.abs(Date.parse(a.at)-valid)-Math.abs(Date.parse(b.at)-valid)||b.at.localeCompare(a.at))[0];
   if(!obs){if(now-valid>72*3600000){delete state.pending[id];state.missingOutcomes++;}continue;}
   const error=obs.temperatureF-r.meanF,k=key(r),dk=k+'/'+r.date;
-  const d=state.history[dk]??={key:k,station:r.station,model:r.model,horizon:r.horizon,date:r.date,n:0,errorSum:0,error2Sum:0,z2Sum:0,absSum:0,crpsSum:0,covered90:0};
+  const d=state.history[dk]??={key:k,station:r.station,model:r.model,horizon:r.horizon,date:r.date,truth:r.truth??'NWS station observations',n:0,errorSum:0,error2Sum:0,z2Sum:0,absSum:0,crpsSum:0,covered90:0};
   const crps=temperatureCrps(r.meanF,r.scaleF,obs.temperatureF);d.n++;d.errorSum+=error;d.error2Sum+=error*error;d.z2Sum+=(error/r.scaleF)**2;d.absSum+=Math.abs(error);d.crpsSum+=crps;d.covered90+=Math.abs(error)<=t90*r.scaleF?1:0;
   outcomes.push({id,forecast:r,observation:obs,errorF:error,crpsF:crps,sourceEvidenceId});delete state.pending[id];scored++;
  }

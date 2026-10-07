@@ -1,3 +1,4 @@
+import {INDEX_CITIES} from './weather-index.mjs';
 import { binarySettlement } from '../../../src/market-facts.mjs';
 import {randomUUID} from 'node:crypto';
 import {updateStationScience,readStationScience,stationPointForecasts} from './station-weather-science.mjs';
@@ -88,10 +89,18 @@ export async function weatherStationEvidence({stations,root=weatherRoot(),now=Da
   const evidenceId=await archiveWeatherEvidence(evidence,root);
   return {evidenceId,...evidence,orderEffect:false};
 }
+/** Public city index and station science, without requiring any market listing. */
+export async function weatherIndexEvidence({cities,root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}){
+ if(!Array.isArray(cities)||cities.length<1||cities.length>4||cities.some(c=>!Object.hasOwn(INDEX_CITIES,c)))throw new TypeError('provide 1..4 known city indices');
+ const contracts=[...new Set(cities)].map(city=>{const z=INDEX_CITIES[city].timeZone,parts=Object.fromEntries(new Intl.DateTimeFormat('en-CA',{timeZone:z,year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date(now)).map(p=>[p.type,p.value]));return {binding:{kind:'index-at',city,timeZone:z,targetDate:`${parts.year}-${parts.month}-${parts.day}`}};});
+ const evidence=await collectWeatherEvidence(contracts,{cacheDir:join(root,'nbm'),now,fetchImpl});
+ const evidenceId=await archiveWeatherEvidence(evidence,root);return {evidenceId,...evidence,orderEffect:false};
+}
 export async function weatherEvidence({root=weatherRoot(),evidenceId,station}={}) {
   if(!/^[a-f0-9]{64}$/.test(evidenceId??''))throw new TypeError('content-addressed evidenceId required');
   const e=JSON.parse(gunzipSync(await readFile(join(root,'evidence',`${evidenceId}.json.gz`))));
-  return station?{at:e.at,station,sourceEvidenceId:e.sourceEvidenceId,science:e.science?{...e.science,metrics:e.science.metrics?.filter(r=>r.station===station),parameters:Object.fromEntries(Object.entries(e.science.parameters??{}).filter(([k])=>k.startsWith(station+'/'))),forecasts:e.science.forecasts?.filter(r=>r.station===station),outcomes:e.science.outcomes?.filter(r=>r.forecast.station===station)}:null,lamp:e.lamp?{runtime:e.lamp.runtime,source:e.lamp.source,extendedSource:e.lamp.extendedSource,station:e.lamp.stations[station]}:null,guidance:e.guidance?.stations[station],quantiles:e.quantiles?{runtime:e.quantiles.runtime,source:e.quantiles.source,station:e.quantiles.stations[station]}:null,settlementReports:Object.fromEntries(Object.entries(e.settlement?.daily??{}).map(([date,r])=>[date,{source:r.source,results:r.data?.results?.filter(x=>x.station?.icao===station)}])),local:e.local[station],observations:Object.fromEntries(Object.entries(e.observations).filter(([key])=>key.startsWith(station+'/'))),errors:e.errors.filter(r=>!r.station||r.station===station)}:e;
+  if(station?.startsWith('index:'))return {at:e.at,station,sourceEvidenceId:e.sourceEvidenceId,index:e.indices?.[station.slice(6)]??null,science:e.science?{...e.science,metrics:e.science.metrics?.filter(r=>r.station===station),parameters:Object.fromEntries(Object.entries(e.science.parameters??{}).filter(([k])=>k.startsWith(station+'/'))),forecasts:e.science.forecasts?.filter(r=>r.station===station),outcomes:e.science.outcomes?.filter(r=>r.forecast.station===station)}:null};
+  return station?{at:e.at,station,sourceEvidenceId:e.sourceEvidenceId,science:e.science?{...e.science,metrics:e.science.metrics?.filter(r=>r.station===station),parameters:Object.fromEntries(Object.entries(e.science.parameters??{}).filter(([k])=>k.startsWith(station+'/'))),forecasts:e.science.forecasts?.filter(r=>r.station===station),outcomes:e.science.outcomes?.filter(r=>r.forecast.station===station)}:null,lamp:e.lamp?{runtime:e.lamp.runtime,source:e.lamp.source,extendedSource:e.lamp.extendedSource,station:e.lamp.stations[station]}:null,guidance:e.guidance?.stations[station],hourlyGuidance:e.hourlyGuidance?{runtime:e.hourlyGuidance.runtime,source:e.hourlyGuidance.source,station:e.hourlyGuidance.stations[station]}:null,quantiles:e.quantiles?{runtime:e.quantiles.runtime,source:e.quantiles.source,station:e.quantiles.stations[station]}:null,settlementReports:Object.fromEntries(Object.entries(e.settlement?.daily??{}).map(([date,r])=>[date,{source:r.source,results:r.data?.results?.filter(x=>x.station?.icao===station)}])),local:e.local[station],observations:Object.fromEntries(Object.entries(e.observations).filter(([key])=>key.startsWith(station+'/'))),errors:e.errors.filter(r=>!r.station||r.station===station)}:e;
 }
 export async function weatherStatus({root=weatherRoot()}={}) {
   const result=await read(join(root,'latest.json'),{status:'no weather cycle recorded',orderEffect:false});
@@ -194,6 +203,9 @@ async function quoteWeatherContract(c,models,evidence,client) {
   const qualified=models.filter(m=>m.band.admitted&&(!m.details?.validUntil||Date.parse(m.details.validUntil)>Date.now()));
   if(!qualified.length)return [];
   const lo=Math.min(...qualified.map(m=>Math.min(m.p,m.band.low))),hi=Math.max(...qualified.map(m=>Math.max(m.p,m.band.high)));
+  if(c.family==='hourly-temperature'&&c.binding){
+    for(const row of qualified.flatMap(m=>m.details?.stationForecasts??[])){const hazards=evidence.local[row.station.slice(0,4)]?.alerts;if(!hazards||hazards.warm.length||hazards.cold.length)return [];}
+  }
   if(c.family==='daily-temperature'&&c.binding){
     const hazards=evidence.local[c.binding.station]?.alerts;
     if(!hazards||hazards.warm.length||hazards.cold.length)return [];
@@ -235,7 +247,7 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
   return locked(root,async()=>{
     const scoring=await scorePending(root,client,now);
     const universe=await discoverWeather(client);
-    const evidence=await collectWeatherEvidence(universe.markets,{cacheDir:join(root,'nbm'),now,fetchImpl});
+    const evidence=await collectWeatherEvidence(universe.markets,{cacheDir:join(root,'nbm'),now:Date.now(),fetchImpl});
     const evidenceId=await archiveWeatherEvidence(evidence,root);
     const quoteTimes=new Map(),freshQuotes=new Map();
     const quoted=universe.markets;
@@ -246,6 +258,7 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
     }
     const decisionNow=Date.now();
     const contracts=universe.markets.map(c=>{const fresh=freshQuotes.get(c.ticker);if(!fresh)return c;const changed=digest({primary:c.rules_primary,secondary:c.rules_secondary})!==digest({primary:fresh.rules_primary,secondary:fresh.rules_secondary});return {...c,...fresh,...(changed?{ruleKey:weatherRuleKey(fresh,c.seriesTicker,c.source,c.stationRule),binding:null,blocker:'rules changed during collection; rebind next cycle'}:{})};}).map(c=>({...c,rulesHash:digest({primary:c.rules_primary,secondary:c.rules_secondary})}));
+    for(const c of contracts)if(c.binding?.kind==='index-at'&&evidence.indices?.[c.binding.city]?.blocker)c.blocker=evidence.indices[c.binding.city].blocker;
     const ex=await experiments(root,contracts,decisionNow),pending=await read(join(root,'pending.json'),{}),rows=[],opportunities=[];
     await mapLimit(contracts,3,async c=>{
       const s=stage(c,decisionNow),models=weatherEstimates(c,evidence,decisionNow);

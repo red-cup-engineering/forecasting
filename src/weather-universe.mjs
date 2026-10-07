@@ -1,3 +1,4 @@
+import {weatherIndexBinding} from './weather-index.mjs';
 import { createHash } from 'node:crypto';
 import { temperatureSeries, eventDate } from './temperature-market-model.mjs';
 import { rainCityCode, rainCity } from './rain-market-model.mjs';
@@ -33,8 +34,9 @@ export function weatherContract(market, series) {
   } else if (series.ticker === 'KXRAIN') {
     family = 'daily-rain'; const city = rainCity(rainCityCode(market.ticker));
     if (city && date && stationRule === city.cli && source === 'twc' && /strictly greater than 0 inches/i.test(rules)) binding = {...city, timeZone:city.zone, targetDate:date, source, kind:'rain', climateReport:city.cli, proxy:true};
-  } else if (series.frequency === 'hourly' && family === 'temperature') family = 'hourly-temperature';
-  const ruleKey = weatherRuleKey(market,series.ticker,source,stationRule);
+  } else if (series.frequency === 'hourly' && family === 'temperature') {family = 'hourly-temperature';binding=weatherIndexBinding(market,series);}
+  const baseRuleKey = weatherRuleKey(market,series.ticker,source,stationRule);
+  const ruleKey=binding?.kind==='index-at'?digest({baseRuleKey,methodology:binding.methodologyUrl,revision:binding.seriesRevision}):baseRuleKey;
   return {...market, seriesTicker:series.ticker, feeType:series.fee_type, feeMultiplier:series.fee_multiplier, family, source, stationRule, binding, ruleKey,
     blocker: binding ? null : !source ? 'settlement source is not bound' : `${family}: station, measurement window and validated model need binding`};
 }

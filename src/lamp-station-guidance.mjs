@@ -28,7 +28,8 @@ export async function latestLampGuidance({stations,cacheDir,now=Date.now(),fetch
  await mkdir(cacheDir,{recursive:true});const nominal=Math.floor(now/3600000)*3600000+30*60000;
  for(let back=nominal>now?1:0;back<=lookbackHours;back++){
   const run=new Date(nominal-back*3600000),runtime=run.toISOString(),file=join(cacheDir,`lamp-${runtime.slice(0,16).replaceAll(':','')}.json`);
-  try{const c=JSON.parse(await readFile(file,'utf8'));if(stations.every(s=>c.stations[s]||c.missingStations?.includes(s)))return c;}catch(e){if(e.code!=='ENOENT'&&!(e instanceof SyntaxError))throw e;}
+  let prior;
+  try{const c=JSON.parse(await readFile(file,'utf8'));if(c.runtime===runtime)prior=c;if(c.runtime===runtime&&stations.every(s=>c.stations[s]||c.missingStations?.includes(s)))return {...c,missingStations:stations.filter(s=>!c.stations[s])};}catch(e){if(e.code!=='ENOENT'&&!(e instanceof SyntaxError))throw e;}
   const date=runtime.slice(0,10).replaceAll('-',''),hh=runtime.slice(11,13),source=`${BASE}/lmp.${date}/lmp.t${hh}30z.lavtxt.ascii`;
   let r;try{r=await fetchImpl(source,{signal:AbortSignal.timeout(20000)});}catch(e){if(back===lookbackHours)throw e;continue;}
   if([403,404].includes(r.status))continue;if(!r.ok)throw new Error(`LAMP ${r.status}: ${source}`);
@@ -37,10 +38,10 @@ export async function latestLampGuidance({stations,cacheDir,now=Date.now(),fetch
   if(!Object.keys(parsed).length)continue;
   const extendedSource=source.replace('lavtxt.ascii','lavtxt_ext.ascii');let extendedAvailable=false;
   try{const ext=await fetchImpl(extendedSource,{signal:AbortSignal.timeout(20000)});if(ext.ok){const extra=parseLampBulletin(await ext.text(),stations,{extended:true});for(const [s,b] of Object.entries(extra))if(parsed[s]&&parsed[s].runtime===b.runtime&&b.rows.length===13){parsed[s].rows.push(...b.rows);extendedAvailable=true;}}}catch{}
-  const record={runtime,source,extendedSource,extendedAvailable,stations:parsed,missingStations:stations.filter(s=>!parsed[s])};
+  const record={runtime,source,extendedSource,extendedAvailable,stations:{...prior?.stations,...parsed},missingStations:[...new Set([...(prior?.missingStations??[]),...stations.filter(s=>!parsed[s])])].filter(s=>!parsed[s]&&!prior?.stations?.[s])};
   const tmp=file+'.'+process.pid+'.tmp';await writeFile(tmp,JSON.stringify(record));await rename(tmp,file);
   const files=(await readdir(cacheDir)).filter(n=>n.startsWith('lamp-')&&n.endsWith('.json')).sort();for(const stale of files.slice(0,Math.max(0,files.length-6)))await unlink(join(cacheDir,stale)).catch(()=>{});
-  return record;
+  return {...record,missingStations:stations.filter(s=>!record.stations[s])};
  }
  throw new Error('no LAMP station bulletin in the previous three hours');
 }
