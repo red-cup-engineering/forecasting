@@ -8,6 +8,7 @@ import { createKalshiClient } from '../../../src/client.mjs';
 import { digest, discoverWeather, mapLimit } from './weather-universe.mjs';
 import { collectWeatherEvidence, weatherEstimates, forecastCell } from './weather-evidence.mjs';
 import { gradeModels, probabilityBand, allocateWeather } from './weather-learning.mjs';
+import {sourceReport} from './weather-settlement-source.mjs';
 import { bracketSettlesYes } from './temperature-distribution.mjs';
 
 export const weatherRoot=(env=process.env)=>env.KALSHI_WEATHER_STATE_DIR??join(homedir(),'.local/state/561-group/settlements/kalshi-services-section/weather');
@@ -54,8 +55,21 @@ export async function weatherEvidence({root=weatherRoot(),evidenceId,station}={}
   return station?{at:e.at,station,guidance:e.guidance?.stations[station],local:e.local[station],observations:Object.fromEntries(Object.entries(e.observations).filter(([key])=>key.startsWith(station+'/'))),errors:e.errors.filter(r=>r.station===station)}:e;
 }
 export async function weatherStatus({root=weatherRoot()}={}) {
-  return await read(join(root,'latest.json'),{status:'no weather cycle recorded',orderEffect:false});
+  const result=await read(join(root,'latest.json'),{status:'no weather cycle recorded',orderEffect:false});
+  let running=null;const lock=await read(join(root,'cycle.lock'),null);
+  if(lock&&await processStart(lock.pid)===lock.start)running={startedAt:new Date(lock.at).toISOString()};
+  return {...result,running,lastFailure:await read(join(root,'last-failure.json'),null)};
 }
+export async function triggerWeatherCycle({root=weatherRoot()}={}) {
+  const state=await weatherStatus({root});
+  if(state.running)return {status:'already-running',...state.running,orderEffect:false};
+  const startedAt=new Date().toISOString();
+  runWeatherCycle({root}).then(()=>rm(join(root,'last-failure.json'),{force:true}),async e=>{
+    await mkdir(root,{recursive:true});await atomic(join(root,'last-failure.json'),{startedAt,failedAt:new Date().toISOString(),reason:e.message});
+  }).catch(()=>{});
+  return {status:'started',startedAt,readResultWith:'weather_status',orderEffect:false};
+}
+
 function stage(c,now){const h=(Date.parse(c.close_time)-now)/3600000;return h<=6?'0-6h':h<=12?'6-12h':h<=24?'12-24h':h<=48?'24-48h':'48h+';}
 function mid(c){const a=Number(c.yes_ask_dollars),b=Number(c.yes_bid_dollars);return a>0&&a<=1&&b>=0&&b<a?(a+b)/2:null;}
 async function resolvedRows(root){
@@ -67,15 +81,19 @@ async function resolvedRows(root){
 async function scorePending(root,client,now) {
   const pending=await read(join(root,'pending.json'),{}),settled=[];const errors=[];
   // Query each market once. Rain can settle before close; do not wait for the nominal close time.
-  await mapLimit([...new Set(Object.values(pending).map(r=>r.ticker))],3,async ticker=>{
-    try{
-      const m=await client.getMarket(ticker);
-      if(m.status!=='settled'||!['yes','no'].includes(m.result))return;
-      for(const [id,r] of Object.entries(pending))if(r.ticker===ticker){
-        settled.push({...r,id,outcome:m.result==='yes'?1:0,scoredAt:new Date(now).toISOString(),venueResult:m.result,settledAt:m.settlement_ts??m.expiration_time});delete pending[id];
-      }
-    }catch(e){errors.push({ticker,error:e.message});}
-  });
+  const tickers=[...new Set(Object.values(pending).map(r=>r.ticker))],markets=new Map();
+  if(client.getMarkets){
+    for(let i=0;i<tickers.length;i+=100){
+      try{for(const m of await client.getMarkets({tickers:tickers.slice(i,i+100).join(',')}))markets.set(m.ticker,m);}
+      catch(e){errors.push({batch:i,error:e.message});}
+    }
+  } else await mapLimit(tickers,3,async ticker=>{try{markets.set(ticker,await client.getMarket(ticker));}catch(e){errors.push({ticker,error:e.message});}});
+  for(const [id,r] of Object.entries(pending)){
+    const m=markets.get(r.ticker);
+    if(m?.status!=='settled'||!['yes','no'].includes(m.result))continue;
+    settled.push({...r,id,outcome:m.result==='yes'?1:0,scoredAt:new Date(now).toISOString(),venueResult:m.result,settledAt:m.settlement_ts??m.expiration_time});delete pending[id];
+  }
+
   // A per-record immutable score file makes recovery after interruption idempotent.
   await mkdir(join(root,'scores'),{recursive:true});
   const known=new Set((await resolvedRows(root)).map(r=>r.id));
@@ -104,7 +122,11 @@ export async function admitWeatherModel(input,{root=weatherRoot(),now=Date.now()
   if(!Array.isArray(forecasts)||!Array.isArray(ensembles)||forecasts.length+ensembles.length<1||forecasts.length+ensembles.length>2000)throw new TypeError('provide 1..2000 forecasts or station ensembles');
   for(const r of forecasts){const c=contracts.get(r.ticker);if(!c||Date.parse(c.close_time)<=now||r.rulesHash!==c.rulesHash||typeof r.probability!=='number'||!Number.isFinite(r.probability)||r.probability<0||r.probability>1)throw new TypeError('forecast must name a current contract, exact rulesHash and unit probability');}
   if(ensembles.reduce((n,r)=>n+(r.samples?.length??0),0)>100000)throw new TypeError('experiment exceeds 100000 ensemble samples');
-  for(const r of ensembles){if(!['high','low'].includes(r.kind)||r.unit!=='F'||!/^K[A-Z0-9]{3}$/.test(r.station)||!/^\d{4}-\d{2}-\d{2}$/.test(r.targetDate)||!Array.isArray(r.samples)||r.samples.length<10||r.samples.length>10000||r.samples.some(v=>!Number.isFinite(v)||v< -150||v>180))throw new TypeError('station ensemble must carry 10..10000 daily extreme samples in Fahrenheit');}
+  for(const r of ensembles){if(!['high','low'].includes(r.kind)||r.unit!=='F'||!/^[A-Z0-9]{4}$/.test(r.station)||!/^\d{4}-\d{2}-\d{2}$/.test(r.targetDate)||!Array.isArray(r.samples)||r.samples.length<10||r.samples.length>10000||r.samples.some(v=>!Number.isFinite(v)||v< -150||v>180))throw new TypeError('station ensemble must carry 10..10000 daily extreme samples in Fahrenheit');}
+  await mkdir(join(root,'model-identities'),{recursive:true,mode:0o700});
+  const identity={model:input.model,version:input.version,sourceUrl:input.sourceUrl};
+  const identityFile=join(root,'model-identities',digest({model:input.model,version:input.version})+'.json');
+  try{await writeFile(identityFile,JSON.stringify(identity),{flag:'wx',mode:0o600});}catch(e){if(e.code!=='EEXIST')throw e;if(digest(await read(identityFile))!==digest(identity))throw new TypeError('model version source identity changed; use a new version');}
   const record={...input,receivedAt:new Date(now).toISOString()};const id=digest(record);
   await mkdir(join(root,'models'),{recursive:true,mode:0o700});await atomic(join(root,'models',`${id}.json`),record);
   return {id,model:`${input.model}@${input.version}`,receivedAt:record.receivedAt,forecasts:forecasts.length,ensembles:ensembles.length,orderEffect:false};
@@ -135,14 +157,14 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
       catch(e){evidence.errors.push({source:'fresh-market-quotes',error:e.message});}
     }
     const decisionNow=Date.now();
-    const contracts=universe.markets.map(c=>freshQuotes.has(c.ticker)?{...c,...freshQuotes.get(c.ticker)}:c).map(c=>({...c,rulesHash:digest({primary:c.rules_primary,secondary:c.rules_secondary})}));
+    const contracts=universe.markets.map(c=>{const fresh=freshQuotes.get(c.ticker);if(!fresh)return c;const changed=digest({primary:c.rules_primary,secondary:c.rules_secondary})!==digest({primary:fresh.rules_primary,secondary:fresh.rules_secondary});return {...c,...fresh,...(changed?{binding:null,blocker:'rules changed during collection; rebind next cycle'}:{})};}).map(c=>({...c,rulesHash:digest({primary:c.rules_primary,secondary:c.rules_secondary})}));
     const ex=await experiments(root,contracts,now),pending=await read(join(root,'pending.json'),{}),rows=[],opportunities=[];
     await mapLimit(contracts,3,async c=>{
       const s=stage(c,decisionNow),models=weatherEstimates(c,evidence,decisionNow);
       models.push(...(ex.get(c.ticker)?.values()??[]));
       const midpoint=quoteTimes.has(c.ticker)?mid(c):null,b=c.binding,modelBands=models.map(m=>({...m,band:probabilityBand({...c,station:b?.station??null,stage:s},m,scoring.grades)}));
       const support=forecastCell(c,models);
-      const row={ticker:c.ticker,eventTicker:c.event_ticker,title:c.title,family:c.family,source:c.source,stage:s,targetDate:b?.targetDate??null,closeTime:c.close_time,ruleKey:c.ruleKey,rulesHash:c.rulesHash,station:b?.station??null,mid:midpoint,marketObservedAt:quoteTimes.get(c.ticker)??null,models:modelBands,evidenceId,...support,blocker:c.blocker};
+      const row={ticker:c.ticker,eventTicker:c.event_ticker,title:c.title,family:c.family,source:c.source,stage:s,targetDate:b?.targetDate??null,closeTime:c.close_time,ruleKey:c.ruleKey,rulesHash:c.rulesHash,station:b?.station??null,mid:midpoint,marketObservedAt:quoteTimes.get(c.ticker)??null,models:modelBands,evidenceId,settlementReport:sourceReport(c,evidence.settlement),...support,blocker:c.blocker};
       rows.push(row);
       if(models.length&&midpoint!==null&&c.status==='active'&&Date.parse(c.close_time)>Date.now()){
         const forecast={at:new Date().toISOString(),...row,models:models.map(m=>({id:m.id,p:m.p,details:m.details}))};

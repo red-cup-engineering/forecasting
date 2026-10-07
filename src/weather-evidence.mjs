@@ -3,6 +3,7 @@ import { NWS_API, NWS_USER_AGENT, climateDayStart, observedExtremes, activeTempe
 import { TEMPERATURE_MARKETS } from './temperature-market-model.mjs';
 import { forecastScale, bracketProbability } from './temperature-distribution.mjs';
 import { priceRainMarket } from './rain-market-model.mjs';
+import {settlementWeatherEvidence} from './weather-settlement-source.mjs';
 import {latestStationQuantiles,priceStationQuantiles} from './weather-quantiles.mjs';
 import { mapLimit } from './weather-universe.mjs';
 import { cell, merge, address } from '@red-cup-engineering/signcell/cell';
@@ -18,6 +19,7 @@ export async function collectWeatherEvidence(contracts,{cacheDir,now=Date.now(),
   let guidance=null;
   try{guidance=await latestStationGuidance({stations,cacheDir,now},{fetchImpl});}catch(e){errors.push({source:'NBM',error:e.message});}
   let quantiles=null;try{quantiles=await latestStationQuantiles({stations,cacheDir,now,fetchImpl});}catch(e){errors.push({source:'NBM-QMD',error:e.message});}
+  const settlement=await settlementWeatherEvidence(contracts,{now,fetchImpl});errors.push(...settlement.errors);
   const observations={},local={};
   await mapLimit(stations,3,async station=>{
     const contractsHere=contracts.filter(c=>c.binding?.station===station);
@@ -29,7 +31,7 @@ export async function collectWeatherEvidence(contracts,{cacheDir,now=Date.now(),
       const hourlyUrl=point.properties.forecastHourly;
       const hourly=await nws(hourlyUrl,fetchImpl);
       const alerts=await activeTemperatureHazards({station},{fetchImpl});
-      local[station]={station,latitude:lat,longitude:lon,hourlyUrl,updated:hourly.properties.updated,periods:hourly.properties.periods,alerts};
+      local[station]={station,latitude:lat,longitude:lon,hourlyUrl,updated:hourly.properties.updateTime ?? hourly.properties.updated,periods:hourly.properties.periods,alerts};
     }catch(e){errors.push({station,source:'NWS-hourly/alerts',error:e.message});}
     for(const date of new Set(contractsHere.map(c=>c.binding.targetDate))) {
       if(now<Date.parse(climateDayStart(date,b.timeZone)) || now>Date.parse(climateDayStart(date,b.timeZone))+86400000)continue;
@@ -37,7 +39,7 @@ export async function collectWeatherEvidence(contracts,{cacheDir,now=Date.now(),
       catch(e){errors.push({station,date,source:'NWS-observations',error:e.message});}
     }
   });
-  return {at:new Date(now).toISOString(),guidance,quantiles,local,observations,errors};
+  return {at:new Date(now).toISOString(),guidance,quantiles,settlement,local,observations,errors};
 }
 export function weatherEstimates(c,e,now) {
   const b=c.binding;if(!b)return [];
