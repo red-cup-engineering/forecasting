@@ -86,7 +86,7 @@ const stationPoints = new Map();
  */
 export async function activeTemperatureHazards({ station }, { fetchImpl = fetch, baseUrl = NWS_API, userAgent = NWS_USER_AGENT } = {}) {
   const get = async (url) => {
-    const response = await fetchImpl(url, { headers: { 'User-Agent': userAgent, Accept: 'application/geo+json' } });
+    const response = await fetchImpl(url, { headers: { 'User-Agent': userAgent, Accept: 'application/geo+json' }, signal: AbortSignal.timeout(10000) });
     if (!response.ok) throw new Error(`NWS ${url}: ${response.status}`);
     return response.json();
   };
