@@ -1,3 +1,4 @@
+import {collectRelationalTemperatureScience} from './weather-relational-temperature.mjs';
 import {deriveDailyTemperatureExtremes} from './weather-temperature-extremes.mjs';
 import {INDEX_CITIES} from './weather-index.mjs';
 import { binarySettlement } from '../../../src/market-facts.mjs';
@@ -84,6 +85,13 @@ async function archiveWeatherEvidence(evidence,root) {
   catch(e){if(e.code!=='WEATHER_CYCLE_RUNNING')throw e;const report=await readStationScience({root:join(root,'station-science')});evidence.science={...report,status:'another station-science update is running',forecasts:stationPointForecasts(evidence,{parameters:report.parameters}),outcomes:[]};}
   evidence.sourceEvidenceId=sourceEvidenceId;
   const evidenceId=digest(evidence);await archivePacket(join(root,'evidence',`${evidenceId}.json.gz`),evidence);return evidenceId;
+}
+/** Independent, empirical metrology experiment; raw archive retained by content address. */
+export async function weatherRelationalScience({region='nyc',root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
+ const packet=await collectRelationalTemperatureScience({region,now,fetchImpl});
+ await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
+ const evidenceId=digest(packet);await archivePacket(join(root,'evidence',`${evidenceId}.json.gz`),packet);
+ const {rawSource,...report}=packet;return {evidenceId,...report};
 }
 export function weatherStationSkill({root=weatherRoot(),station}={}){return readStationScience({root:join(root,'station-science'),station});}
 export async function weatherStationEvidence({stations,root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
