@@ -31,6 +31,8 @@
     "./weather-strategy-research": "./src/weather-strategy-research.mjs",
     "./weather-relational-nowcast": "./src/weather-relational-nowcast.mjs",
     "./forecast-surface": "./src/forecast-surface.mjs",
+    "./hypotheses": "./src/hypotheses/run.mjs",
+    "./hypotheses-admitted": "./src/hypotheses/admit.mjs",
     "./fees": "./src/fees.mjs"
   },
   "scripts": {
