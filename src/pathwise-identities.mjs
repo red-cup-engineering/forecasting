@@ -22,6 +22,7 @@ const clip01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
  *   `ladders`: groups of tickers ordered by ascending rung k, whose probabilities
  *   must be non-increasing (P(W>=k+1) <= P(W>=k)).
  */
+import { THETA, feePerContract, orderFee } from '../../../src/fees.mjs';
 export function identity(spec) {
   const { id, kind, markets, payoff } = spec;
   if (!id || typeof id !== 'string') throw new Error('identity: id required');
@@ -112,10 +113,9 @@ export function winConservationIdentity({ id, teams, maxTieGames, rule, note }) 
 // ---------------------------------------------------------------- pricing
 
 /** Kalshi taker fee for `qty` contracts at price p: theta*qty*p*(1-p); round 'cent' = ceil to the cent per order. */
-export function fee(p, qty = 1, { theta = 0.07, round = 'none' } = {}) {
-  const raw = theta * qty * p * (1 - p);
-  if (round === 'cent') return Math.ceil(raw * 100 - 1e-9) / 100;
-  return raw;
+export function fee(p, qty = 1, { theta = THETA, round = 'none' } = {}) {
+  if (round === 'cent' && Number.isInteger(qty)) return orderFee(qty, p, { multiplier: theta / THETA });
+  return feePerContract(p, { multiplier: theta / THETA }) * qty;
 }
 
 /** Mid of a {bid, ask, last?} book in dollars. A book with both sides empty (0 / 1) falls back to last, else 0.5. */
@@ -137,7 +137,7 @@ export function midOf(book) {
  * buyEdge = payoff.lo - cost ; sellEdge = proceeds - payoff.hi ; the *Point variants use the
  * no-exception constant. Positive edge = riskless profit at top-of-book, one lot per market.
  */
-export function priceIdentity(idn, books, { theta = 0.07, feeRound = 'none' } = {}) {
+export function priceIdentity(idn, books, { theta = THETA, feeRound = 'none' } = {}) {
   const fo = { theta, round: feeRound };
   let cost = 0, proceeds = 0, feeBuy = 0, feeSell = 0;
   let sumBids = 0, sumMids = 0, sumAsks = 0, shift = 0, missing = 0, spread = 0;

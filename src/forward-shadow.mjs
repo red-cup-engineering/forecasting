@@ -2,6 +2,7 @@
  * Shared pure pieces of the forward shadow tests (claims C1, deep-terminal): Kalshi taker fee, delete-one-group
  * jackknife, t statistic, verdict, append-only JSONL, paced public GET. Shadow only: nothing here can place an order.
  */
+import { orderFee as kalshiOrderFee } from '../../../src/fees.mjs';
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
@@ -14,10 +15,7 @@ export const stateDir = (name, env = process.env) => env.FORWARD_SHADOW_DIR
 export const num = (x) => { if (x === undefined || x === null || x === '') return null; const n = Number(x); return Number.isFinite(n) ? n : null; };
 
 /** Kalshi taker fee for one order: ceil_to_cent(0.07 x multiplier x C x P x (1 - P)). */
-export function orderFee(mult, p, count) {
-  const raw = 0.07 * mult * count * p * (1 - p);
-  return Math.ceil(Math.round(raw * 1e6) / 1e4) / 100; // round(raw*100, 4 dp) guards float fuzz, then ceil to the cent
-}
+export const orderFee = (mult, p, count) => kalshiOrderFee(count, p, { multiplier: mult });
 
 /** Mean of x with delete-one-group jackknife SE; items [{g, x}]. */
 export function jackknife(items) {

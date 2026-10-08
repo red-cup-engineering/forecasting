@@ -29,7 +29,8 @@
     "./weather-temperature-extremes": "./src/weather-temperature-extremes.mjs",
     "./weather-relational-temperature": "./src/weather-relational-temperature.mjs",
     "./weather-strategy-research": "./src/weather-strategy-research.mjs",
-    "./weather-relational-nowcast": "./src/weather-relational-nowcast.mjs"
+    "./weather-relational-nowcast": "./src/weather-relational-nowcast.mjs",
+    "./forecast-surface": "./src/forecast-surface.mjs"
   },
   "scripts": {
     "check": "node --check src/forecasting.mjs && node --check src/evidence-fusion.mjs && node --check scripts/ingest-forecasting-question.mjs && node --check scripts/fuse-forecast.mjs && node --check scripts/record-forecast.mjs && node --check scripts/score-forecast.mjs && node --check scripts/derive-calibration-record.mjs && node --check scripts/resolve-set-of-forecast-questions.mjs && node --check apps/forecasting-cli.mjs && node --check apps/forecast-weather-markets-cli.mjs && node --check apps/forecasting-daily-cycle.mjs",

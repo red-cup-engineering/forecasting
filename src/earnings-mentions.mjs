@@ -4,6 +4,7 @@
  * Knowledge before the event: every feature of a market uses only calls that started strictly earlier.
  */
 
+import { orderFee } from '../../../src/fees.mjs';
 export const isEarningsSeries = (t) => /^(KXEARNINGSMENTION|KXMENTIONEARN)/u.test(t);
 
 export const normWord = (w) => String(w ?? '').toLowerCase().replace(/\s+/gu, ' ').trim();
@@ -164,7 +165,7 @@ export const brier = (ps, ys) => ps.reduce((s, p, i) => s + (p - ys[i]) ** 2, 0)
 export const logLoss = (ps, ys) => ps.reduce((s, p, i) => { const q = Math.min(1 - 1e-6, Math.max(1e-6, p)); return s - (ys[i] ? Math.log(q) : Math.log(1 - q)); }, 0) / ps.length;
 
 /** Kalshi taker fee for an order of `count` contracts at price P (dollars): ceil_to_cent(0.07*count*P*(1-P)). */
-export const takerFee = (count, price) => Math.ceil(0.07 * count * price * (1 - price) * 100 - 1e-9) / 100;
+export const takerFee = (count, price) => orderFee(count, price);
 /** Fee per contract for orders of 10. */
 export const feePerContract = (price, lot = 10) => takerFee(lot, price) / lot;
 
