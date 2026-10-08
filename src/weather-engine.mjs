@@ -18,7 +18,7 @@ import { digest, discoverWeather, weatherRuleKey, mapLimit } from './weather-uni
 import { collectWeatherEvidence, collectStationWeatherEvidence, weatherEstimates, forecastCell } from './weather-evidence.mjs';
 import { createModelGradeAccumulator, probabilityBand, allocateWeather } from './weather-learning.mjs';
 import { fuseForecast } from './forecast-surface.mjs';
-import { orderFee } from '@red-cup-engineering/kalshi-services-section/fees';
+import { orderFee } from './fees.mjs';
 import {sourceReport} from './weather-settlement-source.mjs';
 import { bracketSettlesYes } from './temperature-distribution.mjs';
 
