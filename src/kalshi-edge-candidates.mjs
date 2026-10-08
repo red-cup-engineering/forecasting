@@ -9,7 +9,7 @@
 // one week of settled markets is a short window, so a candidate is a hypothesis to forward-test,
 // not a proven edge. The test half is chosen after seeing the data's time span, not the results.
 
-import { orderFeePerContract } from '../../../src/fees.mjs';
+import { orderFeePerContract } from '@red-cup-engineering/kalshi-services-section/fees';
 export const HORIZONS_HOURS = [1, 2, 6, 24];
 /** Price paid per contract, in whole cents, grouped into bands (inclusive). */
 export const PRICE_BUCKETS = [[1, 5], [6, 10], [11, 20], [21, 35], [36, 50], [51, 65], [66, 80], [81, 90], [91, 95], [96, 99]];

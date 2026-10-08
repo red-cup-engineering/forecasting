@@ -22,7 +22,7 @@ const clip01 = (x) => (x < 0 ? 0 : x > 1 ? 1 : x);
  *   `ladders`: groups of tickers ordered by ascending rung k, whose probabilities
  *   must be non-increasing (P(W>=k+1) <= P(W>=k)).
  */
-import { THETA, feePerContract, orderFee } from '../../../src/fees.mjs';
+import { THETA, feePerContract, orderFee } from '@red-cup-engineering/kalshi-services-section/fees';
 export function identity(spec) {
   const { id, kind, markets, payoff } = spec;
   if (!id || typeof id !== 'string') throw new Error('identity: id required');

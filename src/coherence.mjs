@@ -24,7 +24,7 @@
  *     markets: [{ id, venue, cells, bids: [{price,size}], asks: [{price,size}], theta }] }
  * Prices are dollars on the YES side; `asks` ascending, `bids` descending.
  */
-import { THETA, orderFee as kalshiOrderFee } from '../../../src/fees.mjs';
+import { THETA, orderFee as kalshiOrderFee } from '@red-cup-engineering/kalshi-services-section/fees';
 import { solveLP } from './simplex.mjs';
 
 export const KALSHI_THETA = THETA;
