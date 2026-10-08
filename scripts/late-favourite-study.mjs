@@ -105,14 +105,21 @@ async function cmdFetch(cache, only) {
         else { markets = (await listMarkets(get, series, set.lo, set.hi)).filter((m) => m.result === 'yes' || m.result === 'no').map((m) => ({ ticker: m.ticker, event: m.event_ticker, result: m.result, close: m.close_time })); writeFileSync(listF, JSON.stringify(markets)); }
         const done = new Set(existsSync(rowsF) ? readFileSync(rowsF, 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l).ticker) : []);
         console.error(series, name, markets.length, 'markets,', done.size, 'cached');
+        // Batch endpoint: up to 10000 requested candles per call (tickers x range minutes), so group markets by close time.
+        const todo = markets.filter((m) => !done.has(m.ticker)).map((m) => ({ ...m, ct: Math.floor(Date.parse(m.close) / 1000) })).sort((x, y) => x.ct - y.ct);
         let n = 0;
-        for (const m of markets) {
-          if (done.has(m.ticker)) continue;
-          const ct = Math.floor(Date.parse(m.close) / 1000);
-          let c = [];
-          try { c = (await get(`/series/${series}/markets/${m.ticker}/candlesticks`, { start_ts: ct - FETCH_BEFORE_CLOSE_S, end_ts: ct, period_interval: 1 })).candlesticks ?? []; } catch (e) { if (e.partial) throw e; console.error('skip', m.ticker, e.message); continue; }
-          appendFileSync(rowsF, JSON.stringify({ series, event: m.event, ticker: m.ticker, y: m.result === 'yes' ? 1 : 0, ct, c: compact(c) }) + '\n');
-          if (++n % 200 === 0) console.error(series, n, 'fetched');
+        while (todo.length) {
+          const group = [todo.shift()];
+          while (todo.length && (group.length + 1) * ((todo[0].ct - group[0].ct + FETCH_BEFORE_CLOSE_S) / 60 + 1) <= 9900 && group.length < 100) group.push(todo.shift());
+          const start = group[0].ct - FETCH_BEFORE_CLOSE_S, end = group[group.length - 1].ct;
+          let d;
+          try { d = await get('/markets/candlesticks', { market_tickers: group.map((m) => m.ticker).join(','), start_ts: start, end_ts: end, period_interval: 1 }); } catch (e) { if (e.partial) throw e; console.error('skip group', group[0].ticker, e.message); continue; }
+          const by = new Map((d.markets ?? []).map((x) => [x.market_ticker, x.candlesticks ?? []]));
+          for (const m of group) {
+            const c = (by.get(m.ticker) ?? []).filter((k) => k.end_period_ts >= m.ct - FETCH_BEFORE_CLOSE_S && k.end_period_ts <= m.ct);
+            appendFileSync(rowsF, JSON.stringify({ series, event: m.event, ticker: m.ticker, y: m.result === 'yes' ? 1 : 0, ct: m.ct, c: compact(c) }) + '\n');
+          }
+          n += group.length; console.error(series, n, 'fetched');
         }
       }
     }
@@ -180,7 +187,9 @@ function analyze(markets, mults) {
     const age = {};
     for (const [label, f] of [['stay<10m', (e) => e.stayAge < 10], ['stay10-60m', (e) => e.stayAge >= 10 && e.stayAge < 60], ['stay60-240m', (e) => e.stayAge >= 60 && e.stayAge < 240], ['stay>=240m(or censored)', (e) => e.stayAge >= 240]]) age[label] = stats(ent.filter(f), mults);
     const fill = ent.some((e) => e.vol0 != null) ? Object.fromEntries(SIZES.map((C) => [C, { minute: mean(ent.map((e) => (e.vol0 >= C ? 1 : 0))), plus5: mean(ent.map((e) => (e.vol0 + e.vol5 >= C ? 1 : 0))) }])) : null;
-    res[rule.id] = { rule, all: stats(ent, mults), bySeries, age, fill, kelly: Object.fromEntries(SIZES.map((C) => [C, kelly(ent, mults, C)])), entries: ent.length };
+    // Post-hoc (not pre-registered): one bet per game, i.e. only the earliest entry of each event is taken.
+    const firstOnly = [...ent.reduce((m, e) => { const o = m.get(e.event); if (!o || e.ts < o.ts) m.set(e.event, e); return m; }, new Map()).values()];
+    res[rule.id] = { rule, firstPerEvent: { stats: stats(firstOnly, mults), kelly: Object.fromEntries(SIZES.map((C) => [C, firstOnly.length ? kelly(firstOnly, mults, C) : null])) }, all: stats(ent, mults), bySeries, age, fill, kelly: Object.fromEntries(SIZES.map((C) => [C, kelly(ent, mults, C)])), entries: ent.length };
   }
   return res;
 }
