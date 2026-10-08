@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readingOfSides, sidesOfReading } from '@red-cup-engineering/computer-data-services-section/four';
+import { readingOfSides, sidesOfReading } from '@red-cup-engineering/computer-data-engineering-services-section/four';
 import { americanToProb, bookEntry, claimRow, columnScores, complement, consensus, coverEdge, crossVenueGap, decimalToProb, devig, feePerShare, intersect, kalshiFee, pointEntry, polymarketFee, readEntry } from '../src/venue-matrix.mjs';
 
 const near = (a, b, e = 1e-9) => assert.ok(Math.abs(a - b) < e, `${a} !~ ${b}`);
