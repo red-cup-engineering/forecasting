@@ -5,7 +5,7 @@
 // --max-wait-min per attempt gap, default 15 s: the carrier slot is free only ~10 s in every ~4 min, so poll densely) for up to --give-up-hours, so a single-slot subscription carrier (Antigravity) that
 // other node work holds back to back is waited for rather than dropped.
 //
-//   set -a; . ~/.config/561-group/bare-cedar-fog.561.group-mcp-client.env; set +a
+//   set -a; . "$CREDENTIALS_DIRECTORY/bare-cedar-fog.561.group-mcp-client.env"; set +a
 //   node scripts/metaculus-frontier-run.mjs --dir data/records/2026-10-04-metaculus-bot-shadow-backtest \
 //        --members gemini-antigravity --arms retrieval,no-retrieval [--give-up-hours 6]
 //
