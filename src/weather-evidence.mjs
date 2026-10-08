@@ -151,8 +151,10 @@ export function weatherEstimates(c,e,now) {
  *
  * The observation bound is structural: the report's high cannot fall under the station's one-degree-loose
  * floor (nor its low above the ceiling), so a bracket entirely on the far side is impossible and a
- * one-sided tail entirely on the near side is certain. A report read through a proxy (TWC) keeps a 1%
- * source-disagreement margin instead of an exact bound.
+ * one-sided tail entirely on the near side is certain. A report read through a proxy (TWC) keeps a
+ * source-disagreement margin instead of an exact bound: the posterior mean (0+1)/(240+2) = 0.4% from the
+ * dead-bracket meter, where the precise bound ruled out 430 brackets on 240 settled events (2026-10-02..06,
+ * 48 series) and none settled yes; the event is the unit, since a source error would hit a whole ladder.
  */
 /**
  * What the day's readings so far rule in or out for one bracket, exactly: the report's whole-degree high K is at
@@ -169,7 +171,7 @@ export function observedBracketBound({kind,proxy,bracket},obs,margin=OBSERVED_EX
   else{if(lo>=bound)structural={low:0,high:m};else if(lo===-Infinity&&hi>bound)structural={low:1-m,high:1};}
   return {structural,bound};
 }
-export const OBSERVED_EXTREME = Object.freeze({reportShiftF:0.5,reportScaleF:0.8,restScaleF:1.5,restScalePerHourF:0.1,restScaleMaxF:4,nu:5,maxObservationAgeMinutes:90,proxyMargin:0.01});
+export const OBSERVED_EXTREME = Object.freeze({reportShiftF:0.5,reportScaleF:0.8,restScaleF:1.5,restScalePerHourF:0.1,restScaleMaxF:4,nu:5,maxObservationAgeMinutes:90,proxyMargin:0.004});
 export function observedExtremeEstimates(c,e,now,model=OBSERVED_EXTREME){
   const b=c.binding;if(!b||!['high','low'].includes(b.kind)||!['less','greater','between'].includes(c.strike_type))return [];
   const obs=e.observations?.[`${b.station}/${b.targetDate}`];if(!obs?.count)return [];
