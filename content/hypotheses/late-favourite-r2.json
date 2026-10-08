@@ -1,0 +1,38 @@
+{
+  "id": "late-favourite-r2",
+  "title": "Late favourite R2: buy YES at ask in [0.90, 0.95) in the final hours",
+  "record": "data/records/2026-10-07-late-favourite/README.md",
+  "registeredAt": "2026-10-07T20:12:20-05:00",
+  "status": "killed",
+  "universe": {
+    "series": [
+      "KXNFLGAME",
+      "KXNCAAFGAME",
+      "KXMLBGAME"
+    ]
+  },
+  "entry": null,
+  "cluster": "event",
+  "fee": {
+    "theta": 0.07,
+    "multiplier": "series",
+    "count": 10,
+    "rounding": "cent-per-order"
+  },
+  "verdict": {
+    "minClusters": 30,
+    "k": 2
+  },
+  "killed": {
+    "at": "2026-10-08T01:12:20Z",
+    "reason": "Pre-registered criterion failed out of sample: negative net.",
+    "numbers": {
+      "oosR2NetCentsPerContractC100": -0.49,
+      "seCents": 0.68,
+      "oosR2rt": -0.78,
+      "seR2rtCents": 0.69,
+      "inSampleFirstQualifyingR2Cents": 0.23,
+      "inSampleSeCents": 1.08
+    }
+  }
+}

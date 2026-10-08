@@ -1,0 +1,35 @@
+{
+  "id": "deep-terminal-dt",
+  "title": "Deep-terminal favourites: buy the favourite at ask in [0.90, 0.985] when slack <= -2",
+  "record": "data/records/2026-10-07-inplay-regime/README.md#pre-registered-prospective-test-deep-terminal-favourites",
+  "registeredAt": "2026-10-08T04:10:07Z",
+  "status": "forward",
+  "universe": {
+    "series": [
+      "KXNFLGAME",
+      "KXNCAAFGAME",
+      "KXMLBGAME"
+    ]
+  },
+  "entry": null,
+  "evaluator": "deep-terminal",
+  "params": {
+    "askLo": 0.9,
+    "askHi": 0.985,
+    "maxSlack": -2,
+    "maxSpread": 0.1,
+    "collect": "live ESPN poll; first qualifying poll per game"
+  },
+  "cluster": "game",
+  "fee": {
+    "theta": 0.07,
+    "multiplier": "series",
+    "count": 1,
+    "rounding": "none"
+  },
+  "verdict": {
+    "minClusters": 60,
+    "k": 2
+  },
+  "notes": "Pre-registration commit 8530393. Fee unrounded per contract as in the study; multiplier is the event override when present."
+}

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Weather vs Kalshi sports totals.  Public read-only data, never an order.
 // Pre-registered rules and results: data/records/2026-10-07-weather-totals/README.md
-//   node weather-totals-study.mjs espn|kalshi|match|geocode|wx|candles|analyze [--cache DIR]
+//   node weather-totals-study.mjs espn|kalshi|match|geocode|wx|candles|analyze|rows [--cache DIR]
 // Pacing: Kalshi >= 450 ms, 429 -> wait 5-20 s, at most 5 consecutive then stop with partial results; other hosts >= 250 ms.
 import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
@@ -276,7 +276,8 @@ function cmdAnalyze() {
 }
 
 const arg = (n) => (argv.includes(n) ? argv[argv.indexOf(n) + 1] : null);
-const run = { espn: cmdEspn, kalshi: cmdKalshi, match: cmdMatch, geocode: cmdGeocode, wx: cmdWx, candles: cmdCandles, analyze: cmdAnalyze };
+function cmdRows() { for (const r of buildRows().rows) console.log(JSON.stringify(r)); } // one JSON row per game, for src/hypotheses/evaluators.mjs
+const run = { rows: cmdRows, espn: cmdEspn, kalshi: cmdKalshi, match: cmdMatch, geocode: cmdGeocode, wx: cmdWx, candles: cmdCandles, analyze: cmdAnalyze };
 if (import.meta.url === `file://${process.argv[1]}` && run[cmd]) {
   try { await run[cmd](); } catch (e) { if (e.partial) { console.error(e.message); process.exitCode = 3; } else throw e; }
 }
