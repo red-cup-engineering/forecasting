@@ -38,7 +38,6 @@
   "dependencies": {
     "@red-cup-engineering/metrologic": "workspace:*",
     "@red-cup-engineering/semiotic-eavt-services-section": "workspace:*",
-    "@red-cup-engineering/computer-data-engineering-services-section": "workspace:*",
     "@red-cup-engineering/computer-text-content-engineering-services-section": "workspace:*",
     "@red-cup-engineering/javascript-file-services-section": "workspace:*",
     "@red-cup-engineering/javascript-node-services-section": "workspace:*",
@@ -46,7 +45,8 @@
     "@red-cup-engineering/position-sizing-service": "workspace:*",
     "@red-cup-engineering/witness-journal-document-service": "workspace:*",
     "@red-cup-engineering/signcell": "workspace:*",
-    "@red-cup-engineering/signchain": "workspace:*"
+    "@red-cup-engineering/signchain": "workspace:*",
+    "@red-cup-engineering/computer-data-services-section": "workspace:*"
   },
   "engines": {
     "node": ">=22"

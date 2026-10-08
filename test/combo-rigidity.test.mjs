@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sidesOfReading } from '@red-cup-engineering/computer-data-engineering-services-section/four';
+import { sidesOfReading } from '@red-cup-engineering/computer-data-services-section/four';
 import { flexInterval, gameInterval, parlayInterval, priceReading, rigidity, scoreCells, scoreRegion, verifyHedge } from '../src/combo-rigidity.mjs';
 import { legMeta } from '../src/combo-pricer.mjs';
 
