@@ -21,7 +21,7 @@
  * backoff are the house client's (createKalshiClient, unsigned); a 429 that outlasts its 5 backoffs stops the
  * run with the caches saved (exit 3).
  */
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, appendFileSync, renameSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, appendFileSync, renameSync, openSync, writeSync, closeSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createKalshiClient } from '../../../src/client.mjs';
@@ -89,10 +89,9 @@ export const familyEvents = ({ prefix, game }) => FAMILY_KINDS.map((k) => `${pre
  * minute where any of its markets has a candle, holding every market's latest close up to `maxCarryS` old
  * (older books are dropped, so a window's books never masquerade as fresh in a later one). Sorted by t.
  */
-export function buildSnapshots(rows, { maxCarryS = 1800 } = {}) {
+export function* eachSnapshot(rows, { maxCarryS = 1800 } = {}) {
   const byEvent = new Map();
   for (const r of rows) (byEvent.get(r.event) ?? byEvent.set(r.event, []).get(r.event)).push(r);
-  const out = [];
   for (const [event, rs] of byEvent) {
     rs.sort((a, b) => a.ts - b.ts);
     const latest = new Map();
@@ -102,11 +101,21 @@ export function buildSnapshots(rows, { maxCarryS = 1800 } = {}) {
       const markets = [];
       for (const [ticker, c] of latest) if (ts - c.ts <= maxCarryS) markets.push({ ticker, bid: c.bid, ask: c.ask });
       markets.sort((a, b) => (a.ticker < b.ticker ? -1 : 1));
-      out.push({ k: 'ev', t: ts * 1000, event, markets });
+      yield { k: 'ev', t: ts * 1000, event, markets };
     }
   }
-  out.sort((a, b) => a.t - b.t || (a.event < b.event ? -1 : 1));
-  return out;
+}
+
+export function buildSnapshots(rows, opts) {
+  return [...eachSnapshot(rows, opts)].sort((a, b) => a.t - b.t || (a.event < b.event ? -1 : 1));
+}
+
+/** The same snapshots as globally sorted JSONL lines, held as strings so a weekend fits in memory. */
+export function snapshotLines(rows, opts) {
+  const keyed = [];
+  for (const s of eachSnapshot(rows, opts)) keyed.push([s.t, s.event, JSON.stringify(s)]);
+  keyed.sort((a, b) => a[0] - b[0] || (a[1] < b[1] ? -1 : 1));
+  return keyed.map((k) => k[2]);
 }
 
 /** An append-only JSONL cache keyed by `keyOf(row)`; tolerates a torn last line; later rows win. */
@@ -257,8 +266,10 @@ async function main() {
     writeFileSync(join(out, 'results.jsonl'), nd([...res].map(([ticker, result]) => ({ k: 'res', ticker, result }))));
     const candleRowsAll = readdirSync(join(cdir, 'candles')).filter((f) => f.endsWith('.json')).flatMap((f) => JSON.parse(readFileSync(join(cdir, 'candles', f), 'utf8')));
     const uniq = new Map(); for (const r of candleRowsAll) uniq.set(`${r.ticker}@${r.ts}`, r);
-    const snaps = buildSnapshots([...uniq.values()]);
-    writeFileSync(join(out, 'legs.jsonl'), nd(snaps));
+    const snaps = snapshotLines([...uniq.values()]);
+    const fd = openSync(join(out, 'legs.jsonl'), 'w');
+    for (let i = 0; i < snaps.length; i += 5000) writeSync(fd, `${snaps.slice(i, i + 5000).join('\n')}\n`);
+    closeSync(fd);
 
     const gamesOf = (t) => { const g = new Map(); for (const [m, , e] of combos.get(t).legs) { const k = legMeta(m, e).game; g.set(k, (g.get(k) ?? 0) + 1); } return g; };
     const cluster = (t) => [...gamesOf(t).values()].some((n) => n > 1);
