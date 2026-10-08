@@ -32,7 +32,7 @@
  * point is read through four.mjs; more quoted legs only shrink the interval, so verdicts only climb
  * the knowledge order as evidence arrives, in any order.
  */
-import { readingOfSides } from '@red-cup-engineering/computer-data-services-section/four';
+import { readingOfSides } from '@red-cup-engineering/computer-data-engineering-services-section/four';
 import { legMeta, teamSide } from './combo-pricer.mjs';
 import { solveLP } from './simplex.mjs';
 

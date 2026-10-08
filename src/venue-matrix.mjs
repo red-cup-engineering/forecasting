@@ -24,7 +24,7 @@
  * The per-share continuous form is used here; cent rounding is a per-order effect that vanishes at size.
  */
 import { THETA } from '@red-cup-engineering/kalshi-services-section/fees';
-import { readingOfSides, sidesOfReading } from '@red-cup-engineering/computer-data-services-section/four';
+import { readingOfSides, sidesOfReading } from '@red-cup-engineering/computer-data-engineering-services-section/four';
 
 const EPS = 1e-9;
 const num = (v) => { const n = typeof v === 'string' && v.trim() === '' ? NaN : Number(v); return Number.isFinite(n) ? n : null; };
