@@ -1,0 +1,119 @@
+{
+ "stateDir": "/home/emsenn/.local/state/561-group/settlements/forecasting-service/combo-backfill/2026-09-19_2026-09-21",
+ "maxAgeS": 900,
+ "priced": 284178,
+ "skipped": {
+  "noLegs": 0,
+  "stale": 25836,
+  "error": 0
+ },
+ "hinge": {
+  "pinned": {
+   "inside": {
+    "prints": 244067,
+    "settled": 243801,
+    "games": 1384,
+    "takerYes": 231098,
+    "makerPnlPerContract": 0.04339712470416364,
+    "seJackknifeByGame": 0.016784817394262984
+   },
+   "above": {
+    "prints": 34569,
+    "settled": 34539,
+    "games": 1281,
+    "takerYes": 33712,
+    "makerPnlPerContract": 0.018818014418483978,
+    "seJackknifeByGame": 0.023490837880344322
+   },
+   "below": {
+    "prints": 4540,
+    "settled": 4522,
+    "games": 572,
+    "takerYes": 2823,
+    "makerPnlPerContract": 0.03022823971693949,
+    "seJackknifeByGame": 0.04958087092847292
+   },
+   "incoherent legs": {
+    "prints": 1002,
+    "settled": 998,
+    "games": 317,
+    "takerYes": 863,
+    "makerPnlPerContract": 0.006669338677354678,
+    "seJackknifeByGame": 0.03679348129598507
+   }
+  },
+  "free": {
+   "inside": {
+    "prints": 280988,
+    "settled": 280713,
+    "games": 1430,
+    "takerYes": 266436,
+    "makerPnlPerContract": 0.040227614681184305,
+    "seJackknifeByGame": 0.01587568858963923
+   },
+   "below": {
+    "prints": 860,
+    "settled": 847,
+    "games": 194,
+    "takerYes": 388,
+    "makerPnlPerContract": 0.04620082644628107,
+    "seJackknifeByGame": 0.05792660282815864
+   },
+   "incoherent legs": {
+    "prints": 1002,
+    "settled": 998,
+    "games": 317,
+    "takerYes": 863,
+    "makerPnlPerContract": 0.006669338677354678,
+    "seJackknifeByGame": 0.03679348129598507
+   },
+   "above": {
+    "prints": 1328,
+    "settled": 1302,
+    "games": 324,
+    "takerYes": 809,
+    "makerPnlPerContract": 0.02716082949308757,
+    "seJackknifeByGame": 0.03198894796031959
+   }
+  }
+ },
+ "sameGame": {
+  "prints": 100830,
+  "widthTerciles": [
+   0.11930356555311245,
+   0.3413139999999997
+  ],
+  "byWidth": {
+   "narrow": {
+    "prints": 33611,
+    "settled": 33594,
+    "games": 1081,
+    "takerYes": 31098,
+    "makerPnlPerContract": 0.013620604869917022,
+    "seJackknifeByGame": 0.005064132614908209
+   },
+   "middle": {
+    "prints": 33610,
+    "settled": 33554,
+    "games": 741,
+    "takerYes": 32017,
+    "makerPnlPerContract": 0.029635289384275933,
+    "seJackknifeByGame": 0.01141448699311348
+   },
+   "wide": {
+    "prints": 33609,
+    "settled": 33426,
+    "games": 404,
+    "takerYes": 31517,
+    "makerPnlPerContract": 0.05287924669419156,
+    "seJackknifeByGame": 0.01023598190677799
+   }
+  },
+  "unpinnedClusterShare": 0.256748983437469
+ },
+ "aboveSuperHedge": {
+  "prints": 34569,
+  "medianExcess": 0.0008603380999999955,
+  "contracts": 68276013.28999652
+ }
+}
