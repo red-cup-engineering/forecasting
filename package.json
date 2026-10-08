@@ -33,7 +33,8 @@
     "./forecast-surface": "./src/forecast-surface.mjs",
     "./hypotheses": "./src/hypotheses/run.mjs",
     "./hypotheses-admitted": "./src/hypotheses/admit.mjs",
-    "./fees": "./src/fees.mjs"
+    "./fees": "./src/fees.mjs",
+    "./climate-report": "./src/climate-report.mjs"
   },
   "scripts": {
     "check": "node --check src/forecasting.mjs && node --check src/evidence-fusion.mjs && node --check scripts/ingest-forecasting-question.mjs && node --check scripts/fuse-forecast.mjs && node --check scripts/record-forecast.mjs && node --check scripts/score-forecast.mjs && node --check scripts/derive-calibration-record.mjs && node --check scripts/resolve-set-of-forecast-questions.mjs && node --check apps/forecasting-cli.mjs && node --check apps/forecast-weather-markets-cli.mjs && node --check apps/forecasting-daily-cycle.mjs",
