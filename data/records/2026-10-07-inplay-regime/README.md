@@ -143,3 +143,21 @@ The regime label does not sharpen the edge per trade; it makes the trades safer.
 - Deep terminal (slack <= -2): 48 trades (all MLB plus 2 football), 48 wins, net +0.0327 per contract (SE 0.0027, ROI 3.4%), the only cell with a clearly nonzero edge, but it is small (48 games, ask capped by the 0.985 band so the gain is bounded by about 0.035 per contract). The slack -1 terminal cell is +0.0128 (SE 0.0111).
 
 Use: keep the rule as a risk filter, restrict entries to terminal with slack <= -2 (or require slack <= -1 and accept 2.5% losses at 0.96), and do not expect state conditioning to lift the headline edge. The study ran on one month; the deep-terminal count needs more games before sizing.
+
+
+## Pre-registered prospective test: deep-terminal favourites (committed 2026-10-07, before any later game)
+
+The deep-terminal cell (slack <= -2: 48 trades, 48 wins, net +0.0327) was found by slicing the regime
+table, so it is a hypothesis, not evidence. It is tested forward only, on games after this commit.
+
+- **Rule DT:** for each NFL, NCAAF or MLB game in progress (ESPN live scoreboard/summary state), compute
+  `gameRegime` (src/game-regime.mjs) with the favourite as leader. When the regime is `terminal` with
+  slack <= -2 and the Kalshi winner market's favourite-side ask lies in [0.90, 0.985] (bid > 0, ask < 1,
+  spread <= 0.10, as in the study), buy the favourite at that ask. The favourite is the leading team and
+  must be the Kalshi side priced >= 0.5. One entry per game (first qualifying poll), hold to settlement.
+- **Fees:** Kalshi taker fee 0.07 x fee_multiplier x P x (1 - P) per contract, multiplier from
+  `GET /series/{ticker}` overridden by the event's `fee_multiplier_override`.
+- **Unit and errors:** one game is one cluster; standard errors are delete-one-game jackknife.
+- **Verdict criterion, fixed now:** after at least 60 new games with an entry, mean net P&L per contract
+  must be > 0 with t > 2. Otherwise the deep-terminal edge is dropped.
+- **Shadow only:** no order until the verdict passes and the desk's owner admits the lane.
