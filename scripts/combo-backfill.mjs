@@ -24,7 +24,7 @@
 import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, appendFileSync, renameSync, openSync, writeSync, closeSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { createKalshiClient } from '../../../src/client.mjs';
+import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
 import { isComboTicker, legMeta, mulberry32 } from '../src/combo-pricer.mjs';
 import { SPORTS } from '../src/sport-feeds.mjs';
 

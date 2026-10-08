@@ -10,7 +10,7 @@ export const resultsDir = join(recordDir, 'results');
 mkdirSync(dataDir, { recursive: true });
 mkdirSync(resultsDir, { recursive: true });
 
-export const clientPath = fileURLToPath(new URL('../../../../../../src/client.mjs', import.meta.url));
+export const clientPath = fileURLToPath(new URL('@red-cup-engineering/kalshi-services-section/client', import.meta.url));
 const { createKalshiClient } = await import(clientPath);
 export const makeClient = (opts) => createKalshiClient(opts);
 

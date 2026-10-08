@@ -23,7 +23,7 @@
 import { existsSync, mkdirSync, appendFileSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
-import { createKalshiClient } from '../../../src/client.mjs';
+import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
 import { correlationFromReturns } from '../src/crypto-joint.mjs';
 import { ASSETS, cryptoRfq, sampled, decide, nextPollAt, comboOutcome, score } from '../src/crypto-combo-shadow-core.mjs';
 

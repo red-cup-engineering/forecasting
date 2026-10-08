@@ -10,7 +10,7 @@
 // Pacing: >= 450 ms between requests; HTTP 429 -> wait 5-20 s, at most 5 consecutive, then stop with partial results.
 import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { createKalshiClient } from '../../../src/client.mjs';
+import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
 
 // ---------------------------------------------------------------- pre-registered rules (fixed before OOS was read)
 export const RULES = [

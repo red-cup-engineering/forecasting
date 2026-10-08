@@ -6,7 +6,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createKalshiClient } from '../../../src/client.mjs';
+import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
 import { parseTicker, impliedMedian, nearestRung, windowFeatures, olsCluster, tradePnl, meanSE } from '../src/venue-weather.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));

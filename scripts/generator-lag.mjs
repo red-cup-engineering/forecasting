@@ -19,7 +19,7 @@ import { appendFileSync, mkdirSync, readFileSync, existsSync, writeFileSync } fr
 import { join, dirname } from 'node:path';
 import { homedir } from 'node:os';
 import { fileURLToPath } from 'node:url';
-import { createKalshiClient, kalshiCredentials, authHeaders } from '../../../src/client.mjs';
+import { createKalshiClient, kalshiCredentials, authHeaders } from '@red-cup-engineering/kalshi-services-section/client';
 import { repriceLead, kalshiTeams } from '../src/generator-lag.mjs';
 
 const args = process.argv.slice(2); const cmd = args[0];

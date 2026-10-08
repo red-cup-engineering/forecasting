@@ -12,7 +12,7 @@
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { isDeepStrictEqual } from 'node:util';
-import { appendLogRows, feedRows, mark, packClosedLogs, unmark } from '../../../../src/seavt-log.mjs';
+import { appendLogRows, feedRows, mark, packClosedLogs, unmark } from '@red-cup-engineering/kalshi-services-section/seavt-log';
 
 export const FEED = 'hypotheses-observations';
 export const stateRoot = (env = process.env) => env.HYPOTHESES_STATE_DIR ?? join(env.HOME ?? homedir(), '.local', 'state', '561-group', 'settlements', 'forecasting-service', 'hypotheses');

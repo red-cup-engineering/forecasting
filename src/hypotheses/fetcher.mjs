@@ -3,7 +3,7 @@
  * section's one client (paced, 429 backoff); other hosts are paced here. When the budget is spent the fetcher
  * throws BudgetExhausted, which the sync steps catch and report as a partial run.
  */
-import { createKalshiClient } from '../../../../src/client.mjs';
+import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
 
 export class BudgetExhausted extends Error { constructor(limit) { super(`request budget ${limit} exhausted`); this.limit = limit; } }
 

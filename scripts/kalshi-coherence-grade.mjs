@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Grade the shadow log at settlement: per distinct would-take portfolio (by signature), realized P&L from the
 // markets' results vs guaranteed profit, with persistence (scans seen, first/last seen).
-import { binarySettlement } from '../../../src/market-facts.mjs';
+import { binarySettlement } from '@red-cup-engineering/kalshi-services-section/market-facts';
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { BASE } from '../src/coherence-scan.mjs';

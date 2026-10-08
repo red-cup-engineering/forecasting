@@ -5,7 +5,7 @@
 //   node scripts/earnings-mentions-collect.mjs [--cache DIR] [--max-series N] [--no-candles]
 import { mkdirSync, existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { createKalshiClient } from '../../../src/client.mjs';
+import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
 import { isEarningsSeries } from '../src/earnings-mentions.mjs';
 
 const args = process.argv.slice(2);

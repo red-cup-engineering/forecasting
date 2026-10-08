@@ -8,7 +8,7 @@
  */
 import { appendFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
-import { createKalshiClient } from '../../../src/client.mjs';
+import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
 import { stateRoot, loadSeen, recordSeen, appendRows, familyDir } from '../src/category-shadows/common.mjs';
 import { liveFetchers } from '../src/category-shadows/live-fetchers.mjs';
 import { gradeAll, readoutMarkdown } from '../src/category-shadows/grade.mjs';

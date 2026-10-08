@@ -1,5 +1,5 @@
 // Scoring and admission for the category shadows. Admission bars are fixed IN ADVANCE here and in the README; change them only by a dated amendment.
-import { binarySettlement } from '../../../../src/market-facts.mjs';
+import { binarySettlement } from '@red-cup-engineering/kalshi-services-section/market-facts';
 import { existsSync, readFileSync, appendFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { familyDir, readRows, round } from './common.mjs';
