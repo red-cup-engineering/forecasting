@@ -36,6 +36,11 @@ fp32 rounding, not by Monte Carlo noise. Cholesky, shrink and early exits stay o
 | `ort-dml-fp32/fp16` | `python.exe` + ONNX Runtime DirectML EP (Radeon), pip `--target` | fp32 / fp16 | K2 only (no inverse-CDF op in ONNX) |
 | `ort-npu-fp16` | same worker with `VitisAIExecutionProvider` (XDNA 2). Unavailable until Ryzen AI Software's ORT is installed | fp16 | K2 only |
 
+**Opt-in only:** the Windows backends run only with `COMPUTE_WINDOWS_INTEROP=1`.
+- Each interop launch allocates a Hyper-V socket ring, an order-7 contiguous kernel block.
+- Under load the WSL VM runs out of these blocks and interop wedges. On 2026-10-08 the VM died this way (`vmbus_alloc_ring` page allocation failures).
+- Turn them back on only behind a long-lived Windows-side worker started once per host.
+
 Windows-side files live in `%TEMP%\bcf-compute` (override `COMPUTE_WINDOWS_DIR`, a WSL path). Provision once, no admin:
 
 1. `wgpu/node_modules/webgpu`: copy `package.json`, `index.js`, `build/` and `dist/win32-x64/` of the npm `webgpu` package.

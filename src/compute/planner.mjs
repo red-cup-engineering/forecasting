@@ -15,9 +15,18 @@ export const DEFAULT_TOLERANCE = Object.freeze({ 'mvn-orthant': 1e-5, 'brier-gra
 const CALIBRATION = Object.freeze({ 'mvn-orthant': [48, 192], 'brier-grad': [64, 512] });
 export const defaultCachePath = (env = process.env) => env.COMPUTE_CALIBRATION ?? join(env.HOME ?? homedir(), '.cache', '561-group', 'compute-calibration.json');
 
-export function defaultBackends() {
+/**
+ * Backends that cross the WSL/Windows boundary (Windows-side Dawn and ONNX Runtime) are opt-in:
+ * COMPUTE_WINDOWS_INTEROP=1. Every interop launch allocates a Hyper-V socket ring (an order-7
+ * contiguous kernel block); under load the VM runs out of them, interop wedges, and on 2026-10-08
+ * the VM died this way (`vmbus_alloc_ring` page allocation failures). A long-lived Windows-side
+ * worker started once per host, not per process, is the shape that may turn them back on.
+ */
+export function defaultBackends(env = process.env) {
+  const local = [createCpuInline(), createCpuPool(), createWebgpuWsl()];
+  if (env.COMPUTE_WINDOWS_INTEROP !== '1') return local;
   return [
-    createCpuInline(), createCpuPool(), createWebgpuWsl(), createWebgpuWindows(),
+    ...local, createWebgpuWindows(),
     createWindowsOrt({ id: 'ort-dml-fp32', provider: 'DmlExecutionProvider', dtype: 'fp32', device: 'gpu' }),
     createWindowsOrt({ id: 'ort-dml-fp16', provider: 'DmlExecutionProvider', dtype: 'fp16', device: 'gpu' }),
     createWindowsOrt({ id: 'ort-npu-fp16', provider: 'VitisAIExecutionProvider', dtype: 'fp16', device: 'npu' }),
