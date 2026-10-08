@@ -24,7 +24,7 @@ const combos = new Map(); // ticker -> legs [{ticker, asset, side, w}]
 await lines('rfqs.jsonl', (l) => l.startsWith('{"k":"rfq"') && l.includes('15M-'), (r) => {
   if (combos.has(r.ticker) || !r.legs?.length || !r.legs.every(([t]) => is15M(t))) return;
   const legs = r.legs.map(([t, side]) => ({ ticker: t, side, w: windowOf(t) }));
-  if (legs.some((l) => !l.w) || new Set(legs.map((l) => l.w.closeMs)).size !== 1 || new Set(legs.map((l) => l.w.asset)).size !== legs.length) return;
+  if (legs.some((l) => !l.w || !(l.w.asset in spot)) || new Set(legs.map((l) => l.w.closeMs)).size !== 1 || new Set(legs.map((l) => l.w.asset)).size !== legs.length) return;
   combos.set(r.ticker, legs.map((l) => ({ ...l, asset: l.w.asset })));
 });
 const legRes = new Map(); const comboRes = new Map();
@@ -50,7 +50,11 @@ const spotState = (asset, w, tMs) => {
   return { S_t: ref, ref, minutesLeft: WINDOW_MIN, refKnown: false };
 };
 const rhoCache = new Map();
-const rhoAt = (tMs) => { const k = Math.floor(tMs / 60000) * 60000; if (!rhoCache.has(k)) rhoCache.set(k, correlationFromReturns(bars, k, 1440)); return rhoCache.get(k); };
+// RHO_H=15: estimate rho on non-overlapping 15-minute returns (Epps check). The estimator wants consecutive
+// 1-minute bars, so 15-minute closes are re-stamped onto a compressed clock (one synthetic minute per 15).
+const H = +(process.env.RHO_H ?? 1);
+const barsH = H === 1 ? bars : Object.fromEntries(Object.entries(bars).map(([a, bs]) => [a, bs.filter((b) => b[0] % (H * 60000) === 0).map((b) => [b[0] / H, ...b.slice(1)])]));
+const rhoAt = (tMs) => { const k = Math.floor(tMs / 60000) * 60000; if (!rhoCache.has(k)) { const r = correlationFromReturns(barsH, H === 1 ? k : Math.floor(k / (H * 60000)) * 60000, H === 1 ? 1440 : 2880); if (H !== 1) { const r1 = correlationFromReturns(bars, k, 1440); rhoCache.set(k, { ...r1, rho: r.rho }); } else rhoCache.set(k, r); } return rhoCache.get(k); };
 const lastBefore = (arr, t) => { let lo = 0; let hi = arr.length; while (lo < hi) { const m = (lo + hi) >> 1; if (arr[m].t <= t) lo = m + 1; else hi = m; } return lo ? arr[lo - 1] : null; };
 const mid = (s) => Math.min(0.99, Math.max(0.01, (s.bid + s.ask) / 2));
 

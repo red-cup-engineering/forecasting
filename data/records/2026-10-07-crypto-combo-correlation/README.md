@@ -53,3 +53,28 @@ This is an in-sample result from one day (57 windows), and it assumes we would h
 becomes a lane only after the out-of-sample days pass. Those days are backfilled from public history:
 the combo tape, the legs, and 1-minute leg candles. The days were fixed in advance: 09-27, 09-30 and
 10-02.
+
+## Out of sample (days fixed in advance; public-history backfill): the lead is killed
+
+`node scripts/crypto-combo-measure.mjs --spot <day> --state combo-backfill/crypto-<day>`. Combos are
+restricted to the nine crypto assets; the backfill also holds 15-minute commodity legs.
+
+| day | prints / windows | β (ρ from 1-min returns) | Brier print | Brier midJoint | midJoint m=0.02 maker P&L |
+| --- | --- | --- | --- | --- | --- |
+| 09-27 | 4,854 / 22 | 1.265 ± 0.032 | 0.1356 | 0.1429 | −0.06¢ ± 3.8 |
+| 09-30 | 3,905 / 23 | 1.128 ± 0.030 | 0.1242 | 0.1335 | +1.8¢ ± 2.6 |
+| 10-02 | 5,291 / 19 | 1.165 ± 0.066 | 0.1080 | 0.1244 | −0.3¢ ± 2.1 |
+
+- **β replicates:** prints always carry more correlation than 1-minute-return ρ.
+- **The prints are the better forecaster on every day**, by 0.007–0.016 Brier. The extra correlation
+  is correct, and our ρ is too low.
+- **The cause is the Epps effect:** high-frequency correlation estimates are biased low. With
+  `RHO_H=15` (ρ from non-overlapping 15-minute returns), β moves toward 1 (09-27 1.035, 10-02 1.094)
+  and the Brier gap narrows (09-27 0.0044 ± 0.0035), but the prints still win.
+- **The maker rule earns nothing out of sample:** t = 0.89, 0.66 and −0.93 by day.
+
+**Verdict:** Kalshi's crypto-combo makers price the joint as well as or better than a measured-ρ
+copula. The in-sample +9.1¢ was the Epps bias plus one day's luck. Do not trade it.
+
+Keep two things: estimate ρ at the contract's own horizon, never at the sampling interval; and the
+house's measured-correlation copula, which now carries that correction.
