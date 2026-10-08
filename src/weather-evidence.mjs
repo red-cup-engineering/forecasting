@@ -167,8 +167,9 @@ export function observedBracketBound({kind,proxy,bracket},obs,margin=OBSERVED_EX
   const bound=kind==='high'?(Number.isFinite(obs?.floorPrecise)?obs.floorPrecise:obs?.floor):(Number.isFinite(obs?.ceilingPrecise)?obs.ceilingPrecise:obs?.ceiling);
   if(!Number.isFinite(bound))return {structural:null,bound:null};
   let structural=null;
-  if(kind==='high'){if(hi<=bound)structural={low:0,high:m};else if(hi===Infinity&&lo<bound)structural={low:1-m,high:1};}
-  else{if(lo>=bound)structural={low:0,high:m};else if(lo===-Infinity&&hi>bound)structural={low:1-m,high:1};}
+  const ruled=(low,high)=>({low,high,kind:'station-observation'});
+  if(kind==='high'){if(hi<=bound)structural=ruled(0,m);else if(hi===Infinity&&lo<bound)structural=ruled(1-m,1);}
+  else{if(lo>=bound)structural=ruled(0,m);else if(lo===-Infinity&&hi>bound)structural=ruled(1-m,1);}
   return {structural,bound};
 }
 export const OBSERVED_EXTREME = Object.freeze({reportShiftF:0.5,reportScaleF:0.8,restScaleF:1.5,restScalePerHourF:0.1,restScaleMaxF:4,nu:5,maxObservationAgeMinutes:90,proxyMargin:0.004});

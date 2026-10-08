@@ -8,8 +8,10 @@
  * probabilityBand: date-clustered Brier improvement over the mid with a positive lower bound). More
  * models can then only add information; a model that is merely different adds nothing.
  *
- *   structural  bounds that hold in every world the rules allow (a recorded extreme rules a bracket out;
- *               a coherence identity). They need no track record and always clip the surface.
+ *   structural  bounds that hold in every world the rules allow: a recorded extreme rules a bracket out.
+ *               They need no track record and always clip the surface. Only the kinds in STRUCTURAL_KINDS
+ *               count: a model's bounds conditional on its own forecast (weather-temperature-extremes'
+ *               Frechet bounds over hourly marginals) are a forecast, and are graded like one.
  *   admitted    models graded better than the mid. The surface is the logit pool of the mid and each
  *               admitted model, equally weighted; its band pools their calibration bands the same way.
  *
@@ -22,10 +24,12 @@ const logit = (p) => Math.log(clamp(p) / (1 - clamp(p)));
 const expit = (x) => 1 / (1 + Math.exp(-x));
 const pool = (ps) => expit(ps.reduce((s, p) => s + logit(p), 0) / ps.length);
 
-/** A model's structural bounds when they bind and are valid. */
+export const STRUCTURAL_KINDS = Object.freeze(['station-observation']);
+
+/** A model's structural bounds when they are of a structural kind, bind, and are valid. */
 export function structuralBounds(model) {
-  const s = model.band?.structuralProbabilityBounds ?? model.details?.structuralProbabilityBounds;
-  if (!s || !Number.isFinite(s.low) || !Number.isFinite(s.high) || s.low < 0 || s.high > 1 || s.low > s.high) return null;
+  const s = model.details?.structuralProbabilityBounds;
+  if (!s || !STRUCTURAL_KINDS.includes(s.kind) || !Number.isFinite(s.low) || !Number.isFinite(s.high) || s.low < 0 || s.high > 1 || s.low > s.high) return null;
   return s.low > 0 || s.high < 1 ? s : null;
 }
 
