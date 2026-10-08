@@ -289,3 +289,15 @@ Feature distribution (forecast window): nfl: wind p50 6.0 p90 10.8, gust p90 18.
   rain shows a total-reducing signal, too rare (8 games) to trade. The test is underpowered for the windy tail (the cases that matter): to detect 3 points
   at 15 mph needs the NFL/NCAAF November-December windy games, which this window lacks. Rerun the same script after the season supplies windy and cold games;
   nothing here needs to change in the rules.
+
+## Forward hypotheses (committed 2026-10-07, before any later game)
+
+1. **Re-run the four weather rules unchanged after December 2026.** The windy and cold games will then
+   exist. The rules are fixed above.
+2. **NCAAF overs (post hoc, so forward only).** Aug 28–Oct 6 college totals ran about 1.1 points over
+   the market-implied median: buying NO on the rung nearest 50% lost 7.7¢ ± 2.6. This was found by
+   inspection, so it is a hypothesis only.
+   - **Rule O1:** for every FBS game from 2026-10-08, buy YES at the ask on the `KXNCAAFTOTAL` rung
+     whose mid at start − 60 min is nearest 0.50. One entry per game; hold to settlement.
+   - **Fees:** taker fee 0.07 × fee_multiplier × P × (1 − P).
+   - **Verdict:** after 150 games, mean net > 0 with t > 2, jackknife by game. Otherwise drop it.
