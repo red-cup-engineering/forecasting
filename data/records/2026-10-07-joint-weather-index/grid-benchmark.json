@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-07T18:12:40.444866Z",
+  "stations": 48,
+  "sourceFieldSha256": "afc57060fb7a9fd236c1911cb2e2435fcf83bd97af9f121594db902dc203b1eb",
+  "run": "2026-10-07T06:00:00+00:00",
+  "validTime": "2026-10-07T18:00:00+00:00",
+  "member": 35,
+  "vectorMs": 179.08706236630678,
+  "repeatedNearestMs": 957.6769545674324,
+  "speedup": 5.347549632639508,
+  "maxProjectionDifferenceF": 0.0,
+  "scope": "single real field, actual full-collector station geometry; code-path benchmark, not forecast skill or whole-cycle latency",
+  "orderEffect": false
+}

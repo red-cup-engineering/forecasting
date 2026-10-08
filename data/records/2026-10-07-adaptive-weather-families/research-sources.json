@@ -1,0 +1,16 @@
+{
+  "retrievedAt": "2026-10-07T18:37:06.725956+00:00",
+  "sources": [
+    {
+      "url": "https://rmets.onlinelibrary.wiley.com/doi/10.1002/qj.2940",
+      "title": "Online learning with the Continuous Ranked Probability Score for ensemble forecasting",
+      "used": "sequential mixture learning from past outcomes; our fixed date-weighted EWA protocol differs from the paper and inherits no guarantee"
+    },
+    {
+      "url": "https://arxiv.org/abs/2005.03540",
+      "title": "Sequential Aggregation of Probabilistic Forecasts -- Applicaton to Wind Speed Ensemble Forecasts",
+      "used": "past-only expert aggregation; lower CRPS alone does not establish reliability"
+    }
+  ],
+  "status": "research and forward experiment; no climate-science exhaustion or market-alpha claim"
+}

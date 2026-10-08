@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "expiredPartialLeavesPreviousPublicationIntact": true,
+  "partialRegimeCannotBorrowCompleteAdmission": true,
+  "completeRegimeAdmissionPreserved": true,
+  "publicationErrorsRetained": true,
+  "coalescedUpdatesReceived": true,
+  "minuteThrottleVerified": true,
+  "serializedPublicationVerified": true,
+  "completionTimerCancelled": true,
+  "completeOriginalForecastModelsPreserved": true,
+  "blockedSources": [
+    "NBM",
+    "NWS-stations"
+  ],
+  "publicationBeforeAcquisitionTerminal": true,
+  "initialPartialModels": 2,
+  "fullModels": 2,
+  "universeRetained": 3,
+  "fullStationsRetained": 2,
+  "completePendingSources": 0,
+  "immutableInitialArchiveVerified": true,
+  "initialEvidenceId": "08447b2a6536486780c6404dcbaf4b3e45924ce9478ad19be612a04972803c44",
+  "fullEvidenceId": "5af53e02c49434a0e4d2386039c7c59689c752979a432ca5c4ece40a5aefd826",
+  "root": "/tmp/weather-progressive-receiving-UKrsii",
+  "readCalls": 50,
+  "ordersPlaced": 0
+}

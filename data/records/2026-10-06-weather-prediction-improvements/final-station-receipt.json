@@ -1,0 +1,79 @@
+{
+  "at": "2026-10-07T05:24:39.918Z",
+  "hostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/13c6125329959d2f895818ecdb727f64d412b4a1adc718ed21459aaa934d20a8",
+  "tools": 9,
+  "evidenceId": "289d1440b38065d43b23947f9d0f75d6dc6a6e8be809c8592daf1fcba8e7f565",
+  "sourceEvidenceId": "5368432990395c43a51974fc6fcdf40957d8376d9683f607ef46d7a7838733a3",
+  "station": "KSEA",
+  "lamp": {
+    "source": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/lmp/prod/lmp.20261007/lmp.t0430z.lavtxt.ascii",
+    "extendedSource": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/lmp/prod/lmp.20261007/lmp.t0430z.lavtxt_ext.ascii",
+    "runtime": "2026-10-07T04:30:00.000Z",
+    "hours": 38,
+    "first": {
+      "validTime": "2026-10-07T05:00:00.000Z",
+      "leadHours": 0.5,
+      "temperatureF": 55,
+      "dewpointF": 52,
+      "windDirectionTens": 36,
+      "windKnots": 6,
+      "gustKnots": null,
+      "precipOccurrencePct": 0,
+      "measurablePrecipHourPct": 0,
+      "measurablePrecip6hPct": null,
+      "lightningHourPct": 0,
+      "convectionHourPct": 0
+    },
+    "last": {
+      "validTime": "2026-10-08T18:00:00.000Z",
+      "leadHours": 37.5,
+      "temperatureF": 61,
+      "dewpointF": 50,
+      "windDirectionTens": 25,
+      "windKnots": 5,
+      "gustKnots": null,
+      "precipOccurrencePct": null,
+      "measurablePrecipHourPct": 1,
+      "measurablePrecip6hPct": 2,
+      "lightningHourPct": null,
+      "convectionHourPct": null
+    }
+  },
+  "physicalForecasts": 52,
+  "observationReadings": 252,
+  "stationSkill": {
+    "at": "2026-10-07T05:24:39.827Z",
+    "truth": "NWS station observations; separate from venue settlement",
+    "scoring": "first available forecast per station/valid hour/model/lead cohort; observed temperature nearest valid hour within 15 minutes; 41-point quadrature CRPS",
+    "metrics": [
+      {
+        "station": "KSEA",
+        "model": "lamp-hourly-v2.7-v1",
+        "horizon": "0-3h",
+        "samples": 2,
+        "dates": 1,
+        "biasF": -1.3999999999999986,
+        "maeF": 1.3999999999999986,
+        "rmseF": 1.3999999999999986,
+        "crpsF": 0.9321734813155631,
+        "coverage90": 1
+      }
+    ],
+    "pending": 60,
+    "parameters": {
+      "KSEA/lamp-hourly-v2.7-v1/0-3h": {
+        "dates": 1,
+        "samples": 2,
+        "biasF": -0.12727272727272715,
+        "scaleMultiplier": 1,
+        "ready": false,
+        "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+        "truth": "NWS station observations"
+      }
+    },
+    "missingOutcomes": 0
+  },
+  "errors": [],
+  "kalshiReads": 0,
+  "orderEffect": false
+}

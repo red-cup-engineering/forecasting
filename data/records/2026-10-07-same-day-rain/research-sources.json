@@ -1,0 +1,26 @@
+{
+  "primarySources": [
+    {
+      "url": "https://www.weather.gov/documentation/services-web-api",
+      "use": "precipitation quantitative observation fields, delayed receipts and resolved API rounding incident"
+    },
+    {
+      "url": "https://www.weather.gov/media/asos/aum-toc.pdf",
+      "use": "METAR hourly Prrrr, trace P0000, missing-constituent PNO and 3/6-hour accumulations; no absent-token dry inference"
+    },
+    {
+      "url": "https://www.weather.gov/media/zse/metar_decode_key.pdf",
+      "use": "Prrrr hundredths-of-inch encoding and trace; keep boundary interval uncertainty"
+    },
+    {
+      "url": "https://vlab.noaa.gov/web/mdl/nbm-text-products",
+      "use": "NBH hourly probability elements and station-grid projection; direct fetch 403, accessible indexed NOAA description and existing decoder"
+    },
+    {
+      "url": "https://www.weather.gov/media/mdl/nbm/ALL_NBM_V3.2_New_WX_Element_List.pdf",
+      "use": "hourly PoP01 element alongside multi-hour PQPF; no proof that independence or hourly union identifies reported daily rain"
+    }
+  ],
+  "internalResearch": "existing 2026-10-04-weather-coverage fitted daily-rain study: same-day exclusion compared model with contemporaneous midpoint; preserve fitted lane while separating that comparator from weather ability",
+  "hypotheses": "1% and 5% NWS-to-final-TWC failure probabilities fixed and untrained; not inferred from one observation or transferred from temperature"
+}

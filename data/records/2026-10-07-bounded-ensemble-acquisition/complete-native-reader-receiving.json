@@ -1,0 +1,50 @@
+{
+  "at": "2026-10-08T02:54:43.711Z",
+  "installedHouse": "/gnu/store/vpx1qghvayx293bdblxiigjvhc7k8n9c-cold-red-gate-deployment-1",
+  "publicationAt": "2026-10-08T02:51:16.577Z",
+  "collectionStartedAt": "2026-10-08T02:44:11.991Z",
+  "fullPublicationDelaySeconds": 424.586,
+  "marketCount": 1529,
+  "modelled": 586,
+  "requestedStations": 48,
+  "finishedStationAcquisitionAttempts": 48,
+  "retainedStationGeometryCount": 45,
+  "completeEnsembleMembers": 51,
+  "ensembleStations": 45,
+  "ensembleRuntime": "2026-10-07T18:00:00Z",
+  "ensembleReceiptAt": "2026-10-08T02:48:49.038487Z",
+  "verifiedScopedRawNwsPages": 96,
+  "sourceEvidenceId": "6eb3335dd7507d73e501356775d3c21aa5527abba01bf596d7e3e1b0b6295189",
+  "evidenceId": "a37a434c22f0987099ddbbb3564f9c238c3eadc7e9bfb26d9bc86003ac0eb59d",
+  "scienceAt": "2026-10-08T02:48:56.954Z",
+  "physicalForecasts": 11384,
+  "ecmwfPhysicalForecasts": 45,
+  "reportCellForecasts": 1934,
+  "physicalOutcomesScored": 1258,
+  "reportCellOutcomesScored": 96,
+  "newScientificRegistrations": 2824,
+  "nativeEvidenceAndStatusReadersVerified": true,
+  "stationGeometryNativeReaderVerified": true,
+  "sourceErrors": [
+    {
+      "station": "KLAX",
+      "source": "NWS-hourly",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "station": "KSAN",
+      "source": "NWS-hourly",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "station": "KHOU",
+      "source": "NWS-hourly",
+      "error": "The operation was aborted due to timeout"
+    }
+  ],
+  "physicalProspectiveSkillEstablished": false,
+  "conditionalFillProbabilityIdentified": false,
+  "netExecutableAlphaEstablished": false,
+  "httpTransportVerified": false,
+  "ordersPlaced": 0
+}

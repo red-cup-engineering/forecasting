@@ -1,0 +1,27 @@
+{
+  "before": {
+    "MainPID": "2263325",
+    "Result": "success",
+    "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+    "ExecMainExitTimestamp": "",
+    "MemoryPeak": "107544576",
+    "MemorySwapPeak": "30707712",
+    "CPUUsageNSec": "885501000",
+    "ActiveState": "activating",
+    "SubState": "start"
+  },
+  "started": false,
+  "pid": 2263325,
+  "cwd": "/home/emsenn/.local/share/561-group/weather-research/releases/7b7ef516d446abcbb52feac46876a7616f57deae40965c52aead1469ef3d79fd/lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section",
+  "current": {
+    "MainPID": "2263325",
+    "Result": "success",
+    "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+    "ExecMainExitTimestamp": "",
+    "MemoryPeak": "107544576",
+    "MemorySwapPeak": "30707712",
+    "CPUUsageNSec": "885501000",
+    "ActiveState": "activating",
+    "SubState": "start"
+  }
+}

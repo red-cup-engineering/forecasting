@@ -1,0 +1,7 @@
+import pathlib,json,datetime,subprocess,collections
+h=pathlib.Path.home();root=h/'.local/state/561-group/settlements/kalshi-services-section/weather';latest=json.loads((root/'latest.json').read_text());unit=subprocess.check_output(['systemctl','--user','show','weather-561-group.service','-p','ActiveState','-p','SubState','-p','Result','-p','ExecMainStatus','-p','MemoryPeak'],text=True)
+if 'ActiveState=activating' in unit:print(json.dumps({'status':'waiting','lastCycle':latest['at'],'service':unit}));raise SystemExit(2)
+models=collections.Counter(m['id'] for r in latest['forecasts'] for m in r['models']);hourly=[r for r in latest['forecasts'] if any(m['id'].startswith('kalshi-index-') for m in r['models'])]
+assert any(m.startswith('kalshi-index-nbh-') for m in models);assert hourly;assert not latest['scoring']['errors'];assert 'ExecMainStatus=0' in unit
+r={'verifiedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'latestCycleAt':latest['at'],'marketCount':latest['marketCount'],'modelled':latest['modelled'],'hourlyModelled':len(hourly),'models':dict(models),'sourceErrors':latest['errors'],'physical':latest.get('science'),'service':unit,'timer':subprocess.check_output(['systemctl','--user','is-active','weather-561-group.timer'],text=True).strip(),'orderEffect':False}
+dir=h/'.local/state/561-group/weather-index-demonstration';dir.mkdir(exist_ok=True);(dir/'live-runtime-receipt.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps({**r,'physical':{'pending':r['physical']['pending'],'metrics':len(r['physical']['metrics'])}}))

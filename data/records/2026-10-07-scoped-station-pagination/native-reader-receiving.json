@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-08T00:37:28.496Z",
+  "actualInstalledReader": true,
+  "actualInstalledHostDeclaration": "/gnu/store/vpx1qghvayx293bdblxiigjvhc7k8n9c-cold-red-gate-deployment-1/deployment/host.json",
+  "receivingStateRoot": "/home/emsenn/.local/state/561-group/weather-scoped-pagination/isolated-state",
+  "liveWeatherStateChanged": false,
+  "evidenceId": "4fa74dc5cd5d6958fa3a11a8961663a605ed35074e06d557ed60ebde922351c9",
+  "newPhysicalForecastsRead": 96,
+  "observationPagesRead": 4,
+  "nativeHandlerReceiving": true,
+  "httpTransportVerified": false,
+  "publicConnectorAttempt": {
+    "command": "help weather",
+    "result": "MCP request timed out",
+    "weatherReadDemonstrated": false
+  },
+  "ordersPlaced": 0
+}

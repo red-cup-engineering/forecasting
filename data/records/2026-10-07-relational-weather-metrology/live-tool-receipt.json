@@ -1,0 +1,148 @@
+{
+  "at": "2026-10-07T14:14:01.052Z",
+  "hostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/8ea39e1a86d0e986c4c1d8681292e7b81afcd360fc315e7905838310bef56559",
+  "node": "24.16.0",
+  "tools": 11,
+  "previousToolsRetained": true,
+  "networkHosts": [
+    "mesonet.agron.iastate.edu",
+    "mesonet.agron.iastate.edu"
+  ],
+  "kalshiReads": 0,
+  "experiments": [
+    {
+      "region": "nyc",
+      "evidenceId": "0c7fed67fe38bacc74a246a498793f39b0ae330ec94211edfffd41c459cb8665",
+      "source": {
+        "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=JFK&station=LGA&station=EWR&station=HPN&year1=2026&month1=7&day1=1&year2=2026&month2=10&day2=7&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+        "availableAt": "2026-10-07T14:13:55.697Z",
+        "sha256": "83394e5e1ce98074f5d88ebe45e4082fff879ac9a31788dd3c7d89b1e406c962",
+        "bytes": 464901,
+        "observationFrom": "2026-07-01T00:00:00.000Z",
+        "observationBefore": "2026-10-07T00:00:00.000Z",
+        "archiveQuality": "IEM processed routine METAR; as-is collection, limited quality control; not an independent second sensor"
+      },
+      "stations": [
+        "KJFK",
+        "KLGA",
+        "KEWR",
+        "KHPN"
+      ],
+      "heldout": {
+        "station": "all",
+        "samples": 3453,
+        "dates": 37,
+        "models": {
+          "persistence": {
+            "maeC": 0.6212954918428629,
+            "rmseC": 0.8722212128118817,
+            "crpsC": 0.4671583682319058,
+            "coverage90": 0.9252823631624674
+          },
+          "own": {
+            "maeC": 0.5365311841561596,
+            "rmseC": 0.7117112939913288,
+            "crpsC": 0.38851776520806175,
+            "coverage90": 0.8954532290761656
+          },
+          "relational": {
+            "maeC": 0.4922950140582859,
+            "rmseC": 0.6528332529212673,
+            "crpsC": 0.356416164373746,
+            "coverage90": 0.9015348971908486
+          }
+        },
+        "meanDayMaeGainOverOwnC": 0.04408459032892438,
+        "pairedDayInterval": {
+          "lower95C": 0.03815612686687249,
+          "upper95C": 0.04640990041025005,
+          "blockDays": 7,
+          "replicates": 1000,
+          "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+        },
+        "meanDayCrpsGainOverOwnC": 0.03221191100726829,
+        "pairedDayCrpsInterval": {
+          "lower95C": 0.02841092582839,
+          "upper95C": 0.033089317855011256,
+          "blockDays": 7,
+          "replicates": 1000,
+          "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+        }
+      },
+      "retrospective": true,
+      "archiveRoundtrip": true
+    },
+    {
+      "region": "miami",
+      "evidenceId": "17a6be154448659e7ffb2a9f627214f847abb18a14e3b2ac7ab399375e35236e",
+      "source": {
+        "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=MIA&station=FLL&station=OPF&year1=2026&month1=7&day1=1&year2=2026&month2=10&day2=7&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+        "availableAt": "2026-10-07T14:13:58.786Z",
+        "sha256": "e77bac2068aacb39ef0284283bf164e7dd371613acc1548d0eb03a8f33797d19",
+        "bytes": 345524,
+        "observationFrom": "2026-07-01T00:00:00.000Z",
+        "observationBefore": "2026-10-07T00:00:00.000Z",
+        "archiveQuality": "IEM processed routine METAR; as-is collection, limited quality control; not an independent second sensor"
+      },
+      "stations": [
+        "KMIA",
+        "KFLL",
+        "KOPF"
+      ],
+      "heldout": {
+        "station": "all",
+        "samples": 2651,
+        "dates": 37,
+        "models": {
+          "persistence": {
+            "maeC": 0.6908084999371468,
+            "rmseC": 1.1194623079876194,
+            "crpsC": 0.5418602686074896,
+            "coverage90": 0.938513768389287
+          },
+          "own": {
+            "maeC": 0.6920564834736516,
+            "rmseC": 1.0634326716031282,
+            "crpsC": 0.5160633092190623,
+            "coverage90": 0.9192757450018861
+          },
+          "relational": {
+            "maeC": 0.6286960031725265,
+            "rmseC": 0.9712088113248809,
+            "crpsC": 0.46937791050209365,
+            "coverage90": 0.918898528857035
+          }
+        },
+        "meanDayMaeGainOverOwnC": 0.06316555799800685,
+        "pairedDayInterval": {
+          "lower95C": 0.05445653687882482,
+          "upper95C": 0.07344183700590094,
+          "blockDays": 7,
+          "replicates": 1000,
+          "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+        },
+        "meanDayCrpsGainOverOwnC": 0.04648208668539442,
+        "pairedDayCrpsInterval": {
+          "lower95C": 0.04032171115304765,
+          "upper95C": 0.05622964471713203,
+          "blockDays": 7,
+          "replicates": 1000,
+          "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+        }
+      },
+      "retrospective": true,
+      "archiveRoundtrip": true
+    }
+  ],
+  "publicHealth": 200,
+  "orderEffect": false,
+  "finalHostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/8ea39e1a86d0e986c4c1d8681292e7b81afcd360fc315e7905838310bef56559",
+  "verifiedAt": "2026-10-07T14:23:25.547124+00:00",
+  "stationReplay": {
+    "packets": 0,
+    "skipped": 2,
+    "scored": 0,
+    "forecasted": 0,
+    "calibrationStateCreated": false
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "olderPointConsumerCannotScoreCellTarget": true,
+  "knownCellPendingMigratedUnderExistingWriter": true,
+  "legacyPhysicalForecastsUnchanged": 472,
+  "supplementalReportCellForecasts": 96,
+  "status": "passed",
+  "gridChecks": 4004,
+  "measurementFixturesPassed": true,
+  "legacyPointObservationProjectionUnchanged": true,
+  "legacyPointLearnerOutputUnchanged": true,
+  "prequentialSynthetic": {
+    "pointLearnerMeanF": 73.0327128551089,
+    "reportCellLearnerMeanF": 72.97382556504391,
+    "matchedDates": 1,
+    "matchedSamples": 1,
+    "scoredBeforeLearning": 2
+  },
+  "causalRefusals": [
+    "future outcome receipt",
+    "future cell receipt",
+    "publication after earliest target",
+    "unknown precision",
+    "contradictory encodings"
+  ],
+  "observedSkillEstablished": false,
+  "ordersPlaced": 0
+}

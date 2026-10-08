@@ -1,0 +1,43 @@
+{
+  "stage": "/tmp/receive-stream-archive-mnpUZB",
+  "checks": [
+    {
+      "name": "native omission, arrays, numbers and Unicode",
+      "passed": true,
+      "bytes": 197
+    },
+    {
+      "name": "null-prototype maps and special keys",
+      "passed": true,
+      "bytes": 37
+    },
+    {
+      "name": "native toJSON key semantics at all levels",
+      "passed": true,
+      "bytes": 171
+    },
+    {
+      "name": "large record arrays",
+      "passed": true,
+      "bytes": 6356107
+    },
+    {
+      "name": "concurrent identical writes converge",
+      "passed": true
+    },
+    {
+      "name": "failed serialization publishes nothing and removes temporary files",
+      "passed": true
+    },
+    {
+      "name": "actual archived full producer evidence",
+      "passed": true,
+      "bytes": 66952240
+    },
+    {
+      "name": "all seven archive consumers migrated; old full-packet route retired",
+      "passed": true
+    }
+  ],
+  "passed": 8
+}

@@ -1,0 +1,53 @@
+{
+  "source": "2026-10-04-weather-coverage/data/rain-scored.csv",
+  "sha256": "aceb961d8814820d8fbfde6b19b6af7f88a56b8710a16a3b1ef01c40c770e4a8",
+  "evaluation": "Only dates >= 2026-09-02, predicted by the early-half model; reverse-time fold excluded. Pool selected retrospectively, so not prospective validation.",
+  "bootstrap": "10000 resamples of settlement dates, paired daily-mean Brier improvement; fixed seed 561",
+  "stages": [
+    {
+      "stage": "D-1 15h",
+      "rows": 766,
+      "dates": 31,
+      "rowWeightedBrier": {
+        "weather": 0.08092891244742909,
+        "market": 0.07794317885117494,
+        "pool": 0.07734122563384281
+      },
+      "dateWeightedPoolImprovementOverMarket": 0.0005801640612444037,
+      "dateBootstrap95": [
+        -0.0024340045190517716,
+        0.003596786081923247
+      ]
+    },
+    {
+      "stage": "D-1 21h",
+      "rows": 766,
+      "dates": 31,
+      "rowWeightedBrier": {
+        "weather": 0.0781465618599105,
+        "market": 0.07772594647519582,
+        "pool": 0.07566064656352565
+      },
+      "dateWeightedPoolImprovementOverMarket": 0.0019478118578088596,
+      "dateBootstrap95": [
+        -0.00013264122268911882,
+        0.0040694177198939575
+      ]
+    },
+    {
+      "stage": "D 07h",
+      "rows": 766,
+      "dates": 31,
+      "rowWeightedBrier": {
+        "weather": 0.075585431844082,
+        "market": 0.05431462140992167,
+        "pool": 0.05462150456344827
+      },
+      "dateWeightedPoolImprovementOverMarket": -0.000494245876839725,
+      "dateBootstrap95": [
+        -0.002990821701942464,
+        0.002001798951678894
+      ]
+    }
+  ]
+}

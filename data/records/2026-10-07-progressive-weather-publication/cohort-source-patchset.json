@@ -1,0 +1,23 @@
+{
+  "kind": "source-patchset",
+  "version": 1,
+  "disposition": "candidate",
+  "reason": "A partial-acquisition forecasting regime must not borrow completed-cycle admission history.",
+  "changes": [
+    {
+      "operation": "edit",
+      "path": "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-engine.mjs",
+      "inputSha256": "9064cea9ded5cca65fbae6a49aaf210da22b338209ebe918d3a9416499b72fc0",
+      "replacements": [
+        {
+          "before": "      const s=stage(c,decisionNow),models=weatherEstimates(c,evidence,decisionNow);",
+          "after": "      const s=stage(c,decisionNow)+(evidence.acquisition?.complete===false?'/during-acquisition-v1':''),models=weatherEstimates(c,evidence,decisionNow);"
+        }
+      ],
+      "clauses": [
+        "partial-regime-cohort",
+        "complete-regime-preserved"
+      ]
+    }
+  ]
+}

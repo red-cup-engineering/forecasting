@@ -1,0 +1,14 @@
+from pathlib import Path
+import json,hashlib,uuid,shutil,subprocess,tarfile
+repo=Path('/home/emsenn/info');f=Path(Path('/tmp/weather-forecasting-root').read_text().strip());r=Path(Path('/tmp/weather-stream-archive-record').read_text().strip());stage=Path(Path('/tmp/weather-stream-archive-stage').read_text().strip());owner=Path(Path('/tmp/weather-source-admission-root').read_text().strip())/'kalshi/services/forecasting-service';inventory=json.loads((r/'input-inventory.json').read_text());sha=lambda p:hashlib.sha256(p.read_bytes()).hexdigest();assert json.loads((r/'controlled-receiving.json').read_text())['passed']==8;assert json.loads((r/'native-profile-receiving.json').read_text())['sameActualFullEvidenceId'];installed=[]
+for name,v in inventory['files'].items():
+ rel=Path(name).relative_to(f.relative_to(repo));assert sha(repo/name)==v['sha256'];assert sha(owner/rel)==v['sha256']
+ for target in [repo/name,owner/rel]:
+  tmp=target.with_name(target.name+'.stream-'+uuid.uuid4().hex);shutil.copyfile(stage/name,tmp);tmp.replace(target);assert sha(target)==sha(stage/name)
+ installed.append({'path':name,'sha256':sha(repo/name)})
+for p in ['/tmp/prepare-weather-stream-archive.py','/tmp/receive-weather-stream-archive.mjs','/tmp/profile-weather-stream-archive.mjs','/tmp/receive-weather-stream-native.py','/tmp/install-weather-stream-archive.py']:shutil.copyfile(p,r/'scripts'/Path(p).name)
+tool=repo/Path('/tmp/weather-source-patchset-tool').read_text().strip();helper=Path(Path('/tmp/weather-progressive-record').read_text().strip())/'scripts/update-retained-weather-runtime.py';archive=r/'runtime-source.tar.gz'
+with tarfile.open(archive,'w:gz') as tar:
+ for source,name in [(r/'input-inventory.json','inventory.json'),(r/'source-patchset.json','patchset.json'),(tool,'materialize.py'),(helper,'update.py')]:tar.add(source,arcname=name)
+(r/'source-install-receipt.json').write_text(json.dumps({'installed':installed,'canonicalAndOwningMatch':True,'sourceArchiveSha256':sha(archive),'ordersPlaced':0},indent=2)+'\n')
+remote='/tmp/weather-stream-deploy-'+sha(archive)[:12];subprocess.run(['ssh','-o','BatchMode=yes','cold-red-gate','mkdir -p '+remote],check=True);subprocess.run(['scp','-q',str(archive),'cold-red-gate:'+remote+'/source.tar.gz'],check=True);cmd='export PATH=/home/emsenn/.nvm/versions/node/v24.16.0/bin:$PATH; tar -xzf '+remote+'/source.tar.gz -C '+remote+'; python3 '+remote+'/update.py '+remote+'/inventory.json '+remote+'/patchset.json '+remote+'/materialize.py '+remote+'/source.tar.gz';result=subprocess.run(['ssh','-o','BatchMode=yes','cold-red-gate',cmd],text=True,capture_output=True);(r/'runtime-deploy.log').write_text(result.stdout+result.stderr);print((result.stdout+result.stderr)[-3000:]);result.check_returncode();(r/'runtime-only-receipt.json').write_text(json.dumps(json.loads(result.stdout.strip().splitlines()[-1]),indent=2)+'\n')

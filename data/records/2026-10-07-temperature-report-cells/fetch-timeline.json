@@ -1,0 +1,200 @@
+[
+  {
+    "url": "https://api.weather.gov/stations/KMIA",
+    "requestedAt": "2026-10-07T23:50:32.116Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:32.302Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KABQ",
+    "requestedAt": "2026-10-07T23:50:32.220Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:32.312Z"
+  },
+  {
+    "url": "https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20261007/23/text/blend_nbstx.t23z",
+    "requestedAt": "2026-10-07T23:50:32.232Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:32.362Z"
+  },
+  {
+    "url": "https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20261007/23/text/blend_nbhtx.t23z",
+    "requestedAt": "2026-10-07T23:50:32.240Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:32.401Z"
+  },
+  {
+    "url": "https://api.weather.gov/points/25.7906,-80.3164",
+    "requestedAt": "2026-10-07T23:50:32.328Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:32.356Z"
+  },
+  {
+    "url": "https://api.weather.gov/points/35.0417,-106.6147",
+    "requestedAt": "2026-10-07T23:50:32.333Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:32.359Z"
+  },
+  {
+    "url": "https://api.weather.gov/gridpoints/MFL/105,51/forecast/hourly",
+    "requestedAt": "2026-10-07T23:50:32.368Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:32.386Z"
+  },
+  {
+    "url": "https://api.weather.gov/gridpoints/ABQ/99,119/forecast/hourly",
+    "requestedAt": "2026-10-07T23:50:32.369Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:32.413Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KMIA",
+    "requestedAt": "2026-10-07T23:50:32.433Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:32.467Z"
+  },
+  {
+    "url": "https://api.weather.gov/alerts/active?point=25.7906,-80.3164",
+    "requestedAt": "2026-10-07T23:50:32.507Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:32.661Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KABQ",
+    "requestedAt": "2026-10-07T23:50:32.546Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:32.581Z"
+  },
+  {
+    "url": "https://api.weather.gov/alerts/active?point=35.0417,-106.6147",
+    "requestedAt": "2026-10-07T23:50:32.646Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:32.887Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KMIA/observations?start=2026-10-07T05%3A00%3A00.000Z&end=2026-10-07T23%3A50%3A31.997Z&limit=500",
+    "requestedAt": "2026-10-07T23:50:32.671Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:33.367Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KABQ/observations?start=2026-10-07T07%3A00%3A00.000Z&end=2026-10-07T23%3A50%3A31.997Z&limit=500",
+    "requestedAt": "2026-10-07T23:50:32.893Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:33.393Z"
+  },
+  {
+    "url": "https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20261007/19/text/blend_nbptx.t19z",
+    "requestedAt": "2026-10-07T23:50:34.316Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:34.383Z"
+  },
+  {
+    "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/lmp/prod/lmp.20261007/lmp.t2330z.lavtxt.ascii",
+    "requestedAt": "2026-10-07T23:50:34.329Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:34.610Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KABQ/observations?cursor=eyJzIjoiMjAyNi0xMC0wN1QwNzowMDowMCswMDowMCJ9",
+    "requestedAt": "2026-10-07T23:50:34.379Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:34.499Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KMIA/observations?cursor=eyJzIjoiMjAyNi0xMC0wN1QwNTowMDowMCswMDowMCJ9",
+    "requestedAt": "2026-10-07T23:50:34.637Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:34.689Z"
+  },
+  {
+    "url": "https://weather.com/kalshi/api/climate/primary?date=2026-10-06",
+    "requestedAt": "2026-10-07T23:50:35.488Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:35.677Z"
+  },
+  {
+    "url": "https://weather.com/kalshi/api/climate/primary?date=2026-10-07",
+    "requestedAt": "2026-10-07T23:50:35.496Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:35.654Z"
+  },
+  {
+    "url": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/lmp/prod/lmp.20261007/lmp.t2330z.lavtxt_ext.ascii",
+    "requestedAt": "2026-10-07T23:50:35.608Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:35.816Z"
+  },
+  {
+    "url": "https://weather.com/kalshi/api/climate/international?date=2026-10-07",
+    "requestedAt": "2026-10-07T23:50:35.729Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:35.813Z"
+  },
+  {
+    "url": "https://weather.com/kalshi/api/climate/international?date=2026-10-06",
+    "requestedAt": "2026-10-07T23:50:35.743Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:35.820Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KABQ/observations?cursor=eyJzIjoiMjAyNi0xMC0wNVQxNjozNTowMCswMDowMCJ9",
+    "requestedAt": "2026-10-07T23:50:35.804Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:36.137Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KMIA/observations?cursor=eyJzIjoiMjAyNi0xMC0wNVQxNDozNTowMCswMDowMCJ9",
+    "requestedAt": "2026-10-07T23:50:35.951Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:36.006Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KMIA/observations?cursor=eyJzIjoiMjAyNi0xMC0wNFQwMDoxMDowMCswMDowMCJ9",
+    "requestedAt": "2026-10-07T23:50:36.284Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:36.321Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KABQ/observations?cursor=eyJzIjoiMjAyNi0xMC0wNFQwMjowNTowMCswMDowMCJ9",
+    "requestedAt": "2026-10-07T23:50:36.421Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:36.485Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KMIA/observations?cursor=eyJzIjoiMjAyNi0xMC0wMlQwOTo0NTowMCswMDowMCJ9",
+    "requestedAt": "2026-10-07T23:50:36.586Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:37.129Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KABQ/observations?cursor=eyJzIjoiMjAyNi0xMC0wMlQxMTowMDowMCswMDowMCJ9",
+    "requestedAt": "2026-10-07T23:50:36.644Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:36.802Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KABQ/observations?cursor=eyJzIjoiMjAyNi0wOS0zMFQyMzo0MDowMCswMDowMCJ9",
+    "requestedAt": "2026-10-07T23:50:36.866Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:36.906Z"
+  },
+  {
+    "url": "https://api.weather.gov/stations/KMIA/observations?cursor=eyJzIjoiMjAyNi0wOS0zMFQyMzoyMDowMCswMDowMCJ9",
+    "requestedAt": "2026-10-07T23:50:37.198Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:37.308Z"
+  },
+  {
+    "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=MIA&station=FLL&station=OPF&year1=2026&month1=7&day1=1&year2=2026&month2=10&day2=7&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+    "requestedAt": "2026-10-07T23:50:37.524Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:37.836Z"
+  },
+  {
+    "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=MIA&station=FLL&station=OPF&year1=2026&month1=10&day1=5&year2=2026&month2=10&day2=8&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+    "requestedAt": "2026-10-07T23:50:50.054Z",
+    "status": 200,
+    "respondedAt": "2026-10-07T23:50:50.284Z"
+  }
+]

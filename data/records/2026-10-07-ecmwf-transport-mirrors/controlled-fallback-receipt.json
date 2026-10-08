@@ -1,0 +1,71 @@
+{
+  "at": "2026-10-07T18:51:21.963701Z",
+  "mode": "controlled primary and regional HTTP failures; successful mirror uses real public bytes; injected failures do not describe source operation",
+  "temporaryEvidenceRoot": "/tmp/controlled-ecmwf-mirror-mh1g95f7",
+  "requestedUrl": "https://ecmwf-forecasts.s3.amazonaws.com/20261007/12z/aifs-ens/0p25/enfo/20261007120000-12h-enfo-cf.grib2",
+  "successfulTransport": "https://storage.googleapis.com/ecmwf-open-data/20261007/12z/aifs-ens/0p25/enfo/20261007120000-12h-enfo-cf.grib2",
+  "indexSha256": "298c5f5e6d2d122f82bde22522f6b0c53d8cbea7ffbeb8f5379f221f0276100d",
+  "fieldSha256": "2758ee927308590f508a7e333a66847c69473ac7c87c76689cea0cdcad8f6c54",
+  "fieldBytes": 620594,
+  "fieldAvailableAt": "2026-10-07T18:51:21.759457Z",
+  "indexVerification": {
+    "url": "https://storage.googleapis.com/ecmwf-open-data/20261007/12z/aifs-ens/0p25/enfo/20261007120000-12h-enfo-cf.index",
+    "availableAt": "2026-10-07T18:51:21.141214Z",
+    "sha256": "298c5f5e6d2d122f82bde22522f6b0c53d8cbea7ffbeb8f5379f221f0276100d",
+    "bytes": 25806
+  },
+  "failedTransports": 2,
+  "exactRangeRequired": true,
+  "decodedMetadataMatched": true,
+  "projection": {
+    "KLGA": {
+      "temperatureF": 62.096339480804374,
+      "corners": [
+        {
+          "lat": 41.0,
+          "lon": -74.0,
+          "distance": 26.510580248053177,
+          "index": 282664,
+          "value": 288.7795104980469,
+          "dx": -0.11972000000000094,
+          "dy": 0.22055999999999898,
+          "weight": 0.06136709120000001
+        },
+        {
+          "lat": 41.0,
+          "lon": -73.75,
+          "distance": 26.86013112966958,
+          "index": 282665,
+          "value": 289.4045104980469,
+          "dx": 0.13027999999999906,
+          "dy": 0.22055999999999898,
+          "weight": 0.056392908799999995
+        },
+        {
+          "lat": 40.75,
+          "lon": -74.0,
+          "distance": 10.601157464954664,
+          "index": 284104,
+          "value": 289.4670104980469,
+          "dx": -0.11972000000000094,
+          "dy": -0.02944000000000102,
+          "weight": 0.4597529088
+        },
+        {
+          "lat": 40.75,
+          "lon": -73.75,
+          "distance": 11.450364910388128,
+          "index": 284105,
+          "value": 290.5295104980469,
+          "dx": 0.13027999999999906,
+          "dy": -0.02944000000000102,
+          "weight": 0.4224870912
+        }
+      ]
+    }
+  },
+  "cachedFirstReceiptPreserved": true,
+  "conflictingCachedIndexRefused": true,
+  "conflictingMirrorIndexRefused": true,
+  "orderEffect": false
+}

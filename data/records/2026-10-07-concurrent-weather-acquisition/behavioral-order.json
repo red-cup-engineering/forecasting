@@ -1,0 +1,15 @@
+{
+  "intent": "Acquire independent station observations, NOAA guidance products and TWC reports concurrently under bounded source concurrency.",
+  "carrier": "same station/date and provider response evidence returned by collectStationWeatherEvidence",
+  "remaining": "all evidence fields, provider errors, raw bytes, receipt clocks, existing provider decoders and NWS three-station request limit",
+  "retired": "serial ordering of independent providers before station observation acquisition",
+  "receiving": [
+    "a delayed NOAA source cannot delay starting station observations",
+    "at most three top-level source collectors active",
+    "same request multiset and same fixed-clock data projection as original serial collector",
+    "failed product remains visible and cannot suppress independent station data",
+    "same-day rain and original temperature projection preserved",
+    "actual native Cold Red Gate source acquisition returns retained raw evidence"
+  ],
+  "limits": "does not publish before all chosen sources complete; census and scoring latency remain separate"
+}

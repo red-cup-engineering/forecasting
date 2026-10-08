@@ -1,0 +1,32 @@
+{
+  "kind": "corrected-publication-native-receiving",
+  "receivedAt": "2026-10-08T03:50:44.890Z",
+  "runtime": "/home/emsenn/.local/share/561-group/weather-research/releases/8d0c84247e0561c0652cddcd80fbafef51fa4bd5392d6e28c3098bd8634d14d4",
+  "moduleSha256": "79eb97d2701bb8012d5704a1190ccd7f5a80b0dbf0c7c2ee40577f488148c102",
+  "installedHouse": "/gnu/store/vpx1qghvayx293bdblxiigjvhc7k8n9c-cold-red-gate-deployment-1",
+  "scope": "one station from actual archived complete acquisition; isolated scientific learning state; production evidence store and installed native reader",
+  "sourceEvidenceId": "3d620f14dd2700be3511e03bfe4f31d9ed1342a1b38e904f0a63b009d2dcac3d",
+  "station": "KPHL",
+  "publication": {
+    "evidenceId": "63a717ebf353ce3ab06c54b368f648e55ef5b2c04602952f3c4355c8cf67475f",
+    "mode": "live",
+    "generatedAt": "2026-10-08T03:50:41.906Z",
+    "receivedAt": "2026-10-08T03:50:43.056Z",
+    "availableAt": "2026-10-08T03:50:43.056Z",
+    "clockResolutionMs": 1,
+    "forecastCount": 675,
+    "prospectiveForecastCount": 675
+  },
+  "newScientificRegistrations": 675,
+  "publicationPending": 675,
+  "publicationErrors": [],
+  "publicationCtimeMs": 1791431443055.1433,
+  "publicationClockVerified": true,
+  "nativeReaderVerified": true,
+  "fullMarketCycleCompleted": false,
+  "physicalSkillEstablished": false,
+  "conditionalFillProbabilityIdentified": false,
+  "netAlphaEstablished": false,
+  "httpTransportVerified": false,
+  "ordersPlaced": 0
+}

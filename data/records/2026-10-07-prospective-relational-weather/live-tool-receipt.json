@@ -1,0 +1,261 @@
+{
+  "at": "2026-10-07T16:36:38.923Z",
+  "hostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/20c85f541736635aea44d11e6b7d8fff15e9f61bf9f137fd860a2999963c7408",
+  "tools": 13,
+  "previousToolsRetained": true,
+  "experiments": [
+    {
+      "region": "nyc",
+      "evidenceId": "35bfbf13e91545f20036a11d654bfaec45553e34a8c0c025c2c9ce57fd9adbf6",
+      "trainingId": "491bdb55fcf284c4bba34540e33013684b141e0496c5b5244caf2976ad63abbb",
+      "source": {
+        "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=JFK&station=LGA&station=EWR&station=HPN&year1=2026&month1=10&day1=5&year2=2026&month2=10&day2=8&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+        "availableAt": "2026-10-07T16:36:29.589Z",
+        "sha256": "b6737e9bb4237ecb50f3f639907a27586561430e87c1079a577c32bd60283b64",
+        "bytes": 12560,
+        "operator": "last routine report within 20 minutes at/before UTC boundary; no interpolation; same observational lineage as NWS"
+      },
+      "firstCalls": 1,
+      "repeatCalls": 1,
+      "firstPublished": 4,
+      "repeatPublished": 0,
+      "livePending": 1,
+      "firstRetrospectiveRows": [
+        {
+          "station": "JFK",
+          "training": 1074,
+          "calibration": 332
+        },
+        {
+          "station": "LGA",
+          "training": 1077,
+          "calibration": 332
+        },
+        {
+          "station": "EWR",
+          "training": 1078,
+          "calibration": 333
+        },
+        {
+          "station": "HPN",
+          "training": 1076,
+          "calibration": 333
+        }
+      ],
+      "examples": [
+        {
+          "station": "KJFK",
+          "issuedAt": "2026-10-07T16:36:29.594Z",
+          "validTime": "2026-10-07T17:00:00.000Z",
+          "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+          "inputLastObservedAt": "2026-10-07T15:56:00.000Z",
+          "meanF": 64.12601703061398
+        },
+        {
+          "station": "KLGA",
+          "issuedAt": "2026-10-07T16:36:29.594Z",
+          "validTime": "2026-10-07T17:00:00.000Z",
+          "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+          "inputLastObservedAt": "2026-10-07T15:56:00.000Z",
+          "meanF": 65.2921505750595
+        },
+        {
+          "station": "KEWR",
+          "issuedAt": "2026-10-07T16:36:29.594Z",
+          "validTime": "2026-10-07T17:00:00.000Z",
+          "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+          "inputLastObservedAt": "2026-10-07T15:56:00.000Z",
+          "meanF": 65.57393668406311
+        },
+        {
+          "station": "KHPN",
+          "issuedAt": "2026-10-07T16:36:29.594Z",
+          "validTime": "2026-10-07T17:00:00.000Z",
+          "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+          "inputLastObservedAt": "2026-10-07T15:56:00.000Z",
+          "meanF": 63.348161506407195
+        }
+      ],
+      "gaps": [
+        {
+          "region": "nyc",
+          "reason": "hourly learners withheld: incomplete fresh three-bin network or expired target window",
+          "conflicts": 0
+        }
+      ],
+      "archiveRoundtrip": true,
+      "fitCacheReuse": true
+    },
+    {
+      "region": "miami",
+      "evidenceId": "74490f5190933bb142cb1e8ce9eae01a93be33d5da2a1c6ff3fe404222a86933",
+      "trainingId": "9524cfc27a3d7676fb1ecf79e3d69e4ff8b5d21ef220c1f9f730d33f7b981855",
+      "source": {
+        "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=MIA&station=FLL&station=OPF&year1=2026&month1=10&day1=5&year2=2026&month2=10&day2=8&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+        "availableAt": "2026-10-07T16:36:36.427Z",
+        "sha256": "f6baabc6cd3e27531faba435e3b122455d2cd6cc550190c4cd730a39912bb285",
+        "bytes": 9298,
+        "operator": "last routine report within 20 minutes at/before UTC boundary; no interpolation; same observational lineage as NWS"
+      },
+      "firstCalls": 1,
+      "repeatCalls": 1,
+      "firstPublished": 3,
+      "repeatPublished": 0,
+      "livePending": 293,
+      "firstRetrospectiveRows": [
+        {
+          "station": "MIA",
+          "training": 1091,
+          "calibration": 331
+        },
+        {
+          "station": "FLL",
+          "training": 1092,
+          "calibration": 332
+        },
+        {
+          "station": "OPF",
+          "training": 1089,
+          "calibration": 332
+        }
+      ],
+      "examples": [
+        {
+          "station": "KMIA",
+          "issuedAt": "2026-10-07T16:36:36.429Z",
+          "validTime": "2026-10-07T17:00:00.000Z",
+          "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+          "inputLastObservedAt": "2026-10-07T15:53:00.000Z",
+          "meanF": 86.95795127089141
+        },
+        {
+          "station": "KFLL",
+          "issuedAt": "2026-10-07T16:36:36.429Z",
+          "validTime": "2026-10-07T17:00:00.000Z",
+          "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+          "inputLastObservedAt": "2026-10-07T15:53:00.000Z",
+          "meanF": 87.65240207723411
+        },
+        {
+          "station": "KOPF",
+          "issuedAt": "2026-10-07T16:36:36.429Z",
+          "validTime": "2026-10-07T17:00:00.000Z",
+          "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+          "inputLastObservedAt": "2026-10-07T15:53:00.000Z",
+          "meanF": 88.17021169807974
+        }
+      ],
+      "gaps": [
+        {
+          "region": "miami",
+          "reason": "hourly learners withheld: incomplete fresh three-bin network or expired target window",
+          "conflicts": 0
+        }
+      ],
+      "archiveRoundtrip": true,
+      "fitCacheReuse": true
+    }
+  ],
+  "networkRequests": 4,
+  "kalshiReads": 0,
+  "orderEffect": false,
+  "prospectiveSkillClaim": false,
+  "livePendingRoutine": 7,
+  "pendingProof": [
+    {
+      "station": "KJFK",
+      "model": "relational-live/irregular-clock-ridge-100/v1",
+      "availableAt": "2026-10-07T16:36:29.594Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "sourceEvidenceId": "619e4801ddae648e4808c73f61b9b0cbece6c12730dda2743dbe087f54e7143d",
+      "reportSpansHours": [
+        1,
+        2
+      ],
+      "tradeEligible": false
+    },
+    {
+      "station": "KLGA",
+      "model": "relational-live/irregular-clock-ridge-100/v1",
+      "availableAt": "2026-10-07T16:36:29.594Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "sourceEvidenceId": "619e4801ddae648e4808c73f61b9b0cbece6c12730dda2743dbe087f54e7143d",
+      "reportSpansHours": [
+        1,
+        2
+      ],
+      "tradeEligible": false
+    },
+    {
+      "station": "KEWR",
+      "model": "relational-live/irregular-clock-ridge-100/v1",
+      "availableAt": "2026-10-07T16:36:29.594Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "sourceEvidenceId": "619e4801ddae648e4808c73f61b9b0cbece6c12730dda2743dbe087f54e7143d",
+      "reportSpansHours": [
+        1,
+        2
+      ],
+      "tradeEligible": false
+    },
+    {
+      "station": "KHPN",
+      "model": "relational-live/irregular-clock-ridge-100/v1",
+      "availableAt": "2026-10-07T16:36:29.594Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "sourceEvidenceId": "619e4801ddae648e4808c73f61b9b0cbece6c12730dda2743dbe087f54e7143d",
+      "reportSpansHours": [
+        1,
+        2
+      ],
+      "tradeEligible": false
+    },
+    {
+      "station": "KMIA",
+      "model": "relational-live/irregular-clock-ridge-100/v1",
+      "availableAt": "2026-10-07T16:36:36.429Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "sourceEvidenceId": "4403c531e87ae42b2e2d7b06ae9f71fb8c1abf3f0cf011fa48e803d1c87cc1d5",
+      "reportSpansHours": [
+        1,
+        2
+      ],
+      "tradeEligible": false
+    },
+    {
+      "station": "KFLL",
+      "model": "relational-live/irregular-clock-ridge-100/v1",
+      "availableAt": "2026-10-07T16:36:36.429Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "sourceEvidenceId": "4403c531e87ae42b2e2d7b06ae9f71fb8c1abf3f0cf011fa48e803d1c87cc1d5",
+      "reportSpansHours": [
+        1,
+        2
+      ],
+      "tradeEligible": false
+    },
+    {
+      "station": "KOPF",
+      "model": "relational-live/irregular-clock-ridge-100/v1",
+      "availableAt": "2026-10-07T16:36:36.429Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "sourceEvidenceId": "4403c531e87ae42b2e2d7b06ae9f71fb8c1abf3f0cf011fa48e803d1c87cc1d5",
+      "reportSpansHours": [
+        1,
+        2
+      ],
+      "tradeEligible": false
+    }
+  ],
+  "verifiedAt": "2026-10-07T16:40:59.518547+00:00",
+  "houseService": "MainPID=298062\nSubState=running\n",
+  "publicHealth": null,
+  "publicHealthError": "The read operation timed out"
+}

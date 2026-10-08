@@ -1,0 +1,106 @@
+{
+  "at": "2026-10-08T02:20:04.110Z",
+  "runtime": "/home/emsenn/.local/share/561-group/weather-research/releases/ce66beed57909ba51c5d5a3062fa240fd69ea6f213c78358b150a4a09a23b201",
+  "forecastEvidenceAt": "2026-10-08T02:19:18.150Z",
+  "forecastLane": "source-projection-v1",
+  "sourceModelSelection": [
+    {
+      "ticker": "KXLOWTATL-26OCT08-T52",
+      "side": "no",
+      "sourceModelLower": 0.9936857586378491
+    },
+    {
+      "ticker": "KXLOWTNOLA-26OCT07-T67",
+      "side": "no",
+      "sourceModelLower": 0.9889868356468677
+    },
+    {
+      "ticker": "KXLOWTHOU-26OCT07-T66",
+      "side": "no",
+      "sourceModelLower": 0.9923449391010006
+    }
+  ],
+  "sourceProbabilityIsNotConditionalFillProbability": true,
+  "capitalUsd": 10,
+  "capitalIsHypothetical": true,
+  "firstSnapshotId": "35275af1f492b5afdd461b4518c6f15b84da8de5487a25348a72d48e2d23344e",
+  "secondSnapshotId": "cc9ff738f8216ea2d8a35bf5604a51f10181abbaab159635aead01168a4a843c",
+  "firstCoverage": {
+    "forecastCandidates": 634,
+    "selected": 3,
+    "captured": 3,
+    "selectionLimit": null,
+    "selectionTruncated": true,
+    "feeEvents": 3,
+    "feeSeries": 3
+  },
+  "secondCoverage": {
+    "forecastCandidates": 634,
+    "selected": 3,
+    "captured": 3,
+    "selectionLimit": null,
+    "selectionTruncated": true,
+    "feeEvents": 3,
+    "feeSeries": 3
+  },
+  "quotes": [
+    {
+      "ticker": "KXLOWTATL-26OCT08-T52",
+      "side": "no",
+      "price": 0.97,
+      "quantity": 1
+    },
+    {
+      "ticker": "KXLOWTNOLA-26OCT07-T67",
+      "side": "no",
+      "price": 0.97,
+      "quantity": 1
+    },
+    {
+      "ticker": "KXLOWTHOU-26OCT07-T66",
+      "side": "no",
+      "price": 0.97,
+      "quantity": 1
+    }
+  ],
+  "quoteActions": [
+    {
+      "ticker": "KXLOWTATL-26OCT08-T52",
+      "side": "no",
+      "quantity": 1,
+      "price": 0.97,
+      "capitalRequiredUsd": 0.97,
+      "feeUpperUsd": 0,
+      "winSurplusUsd": 0.030000000000000027,
+      "breakEvenConditionalWinProbability": 0.97,
+      "actualFill": null
+    },
+    {
+      "ticker": "KXLOWTNOLA-26OCT07-T67",
+      "side": "no",
+      "quantity": 1,
+      "price": 0.97,
+      "capitalRequiredUsd": 0.97,
+      "feeUpperUsd": 0,
+      "winSurplusUsd": 0.030000000000000027,
+      "breakEvenConditionalWinProbability": 0.97,
+      "actualFill": null
+    },
+    {
+      "ticker": "KXLOWTHOU-26OCT07-T66",
+      "side": "no",
+      "quantity": 1,
+      "price": 0.97,
+      "capitalRequiredUsd": 0.97,
+      "feeUpperUsd": 0,
+      "winSurplusUsd": 0.030000000000000027,
+      "breakEvenConditionalWinProbability": 0.97,
+      "actualFill": null
+    }
+  ],
+  "errors": [],
+  "readCalls": 16,
+  "elapsedSeconds": 6.454,
+  "ordersPlaced": 0,
+  "tradeAuthority": false
+}

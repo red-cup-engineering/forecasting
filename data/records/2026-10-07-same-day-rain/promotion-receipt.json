@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-07T21:58:53.176131+00:00",
+  "sourceRevalidated": true,
+  "receiving": "passed",
+  "assessor": "same primary, declared effect checks; no independent agent certification",
+  "sourceHashes": {
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-precipitation.mjs": "a71b1e317a7b46aa903b7ab02a5ad7a8fd6913a31a5fada4c282ed319a8d4de3",
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/station-observations.mjs": "d2d3083f7a601a1cc000942fac1387ae66f04740d6ab2806365de3238a35cf56",
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-evidence.mjs": "54729863d306c308a8e64c5987c3c436328130fb0434dcbe000af54ef61118e5",
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-engine.mjs": "13d54361e81dbeba407c55eb0e07f0793345288d6ac7caaed6d97db5790ff324",
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/README-weather.md": "8a772d5e6f980eea4dcb012e826e65b81d256f37b3e30f20d13a31903a052246"
+  },
+  "deployment": "passed",
+  "nativeReceiving": "passed",
+  "deployments": [
+    {
+      "deployedAt": "2026-10-07T22:00:47.654741+00:00",
+      "sourceArchive": "d9840a53ef91268a53b06c491da1ecd926ca9febe64d5d2eb50044d4d6f46658",
+      "hostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/f347e42c5ebc6f7becf862373d0b3d19e7e6d57e7a928d60c886727c1aae6d4b",
+      "newTools": 15,
+      "weatherRuntime": "/home/emsenn/.local/share/561-group/weather-research/current",
+      "retainedRuntime": "/home/emsenn/.local/share/561-group/weather-research/releases/0475eb20cbf0b832d542cf67afbae444744f2c7c46060adef6f7640c19f5fc99",
+      "retainedFiles": 206,
+      "retainedBytes": 1207159,
+      "ordersPlaced": 0,
+      "houseRestartRequested": false,
+      "backup": "/home/emsenn/.local/state/561-group/weather-deployments/d9840a53ef91268a53b06c491da1ecd926ca9febe64d5d2eb50044d4d6f46658"
+    }
+  ],
+  "nativeReceivingArtifact": "native-receiving.json"
+}

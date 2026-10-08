@@ -1,0 +1,43 @@
+{
+  "runtime": "/home/emsenn/.local/share/561-group/weather-research/releases/ce66beed57909ba51c5d5a3062fa240fd69ea6f213c78358b150a4a09a23b201",
+  "at": "2026-10-08T02:28:05.185888Z",
+  "rows": [
+    {
+      "url": "https://ecmwf-forecasts.s3.amazonaws.com/20261008/00z/aifs-ens/0p25/enfo/20261008000000-6h-enfo-cf.index",
+      "startedAt": "2026-10-08T02:28:04.102373Z",
+      "status": "failed",
+      "errorType": "HTTPError",
+      "error": "HTTP Error 404: Not Found",
+      "finishedAt": "2026-10-08T02:28:04.523915Z",
+      "elapsedSeconds": 0.4215658400207758
+    },
+    {
+      "url": "https://ecmwf-forecasts.s3.eu-central-1.amazonaws.com/20261008/00z/aifs-ens/0p25/enfo/20261008000000-6h-enfo-cf.index",
+      "startedAt": "2026-10-08T02:28:04.104774Z",
+      "status": "failed",
+      "errorType": "HTTPError",
+      "error": "HTTP Error 404: Not Found",
+      "finishedAt": "2026-10-08T02:28:04.509903Z",
+      "elapsedSeconds": 0.4051550719887018
+    },
+    {
+      "url": "https://storage.googleapis.com/ecmwf-open-data/20261008/00z/aifs-ens/0p25/enfo/20261008000000-6h-enfo-cf.index",
+      "startedAt": "2026-10-08T02:28:04.106562Z",
+      "status": "failed",
+      "errorType": "HTTPError",
+      "error": "HTTP Error 404: Not Found",
+      "finishedAt": "2026-10-08T02:28:04.284816Z",
+      "elapsedSeconds": 0.17828444857150316
+    },
+    {
+      "url": "https://data.ecmwf.int/forecasts/20261008/00z/aifs-ens/0p25/enfo/20261008000000-6h-enfo-cf.index",
+      "startedAt": "2026-10-08T02:28:04.107904Z",
+      "status": "failed",
+      "errorType": "HTTPError",
+      "error": "HTTP Error 404: Not Found",
+      "finishedAt": "2026-10-08T02:28:05.184414Z",
+      "elapsedSeconds": 1.076535007916391
+    }
+  ],
+  "ordersPlaced": 0
+}

@@ -1,0 +1,103 @@
+{
+  "at": "2026-10-08T02:48:14.573Z",
+  "collectionStartedAt": "2026-10-08T02:44:11.991Z",
+  "complete": true,
+  "evidenceComplete": false,
+  "forecastLane": "source-projection-v1",
+  "marketCount": 1529,
+  "modelled": 171,
+  "acquisition": {
+    "complete": false,
+    "requestedStations": 48,
+    "finishedStations": [],
+    "finishedSources": [
+      "NBM"
+    ],
+    "pendingSources": [
+      "NWS-stations",
+      "NBM-NBH",
+      "NBM-QMD",
+      "LAMP",
+      "climate-reports",
+      "relational:nyc",
+      "relational:miami",
+      "ECMWF-AIFS-ENS"
+    ],
+    "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+  },
+  "families": {
+    "other": {
+      "markets": 81,
+      "modelled": 0,
+      "volume24h": 4837.12
+    },
+    "snow": {
+      "markets": 172,
+      "modelled": 0,
+      "volume24h": 16764.909999999996
+    },
+    "precipitation": {
+      "markets": 244,
+      "modelled": 0,
+      "volume24h": 41990.63999999999
+    },
+    "tropical": {
+      "markets": 276,
+      "modelled": 0,
+      "volume24h": 156881.15999999997
+    },
+    "temperature": {
+      "markets": 79,
+      "modelled": 0,
+      "volume24h": 3433.5599999999995
+    },
+    "daily-temperature": {
+      "markets": 576,
+      "modelled": 144,
+      "volume24h": 2062693.0800000017
+    },
+    "hourly-temperature": {
+      "markets": 40,
+      "modelled": 0,
+      "volume24h": 18477.2
+    },
+    "daily-rain": {
+      "markets": 61,
+      "modelled": 27,
+      "volume24h": 473829.7
+    }
+  },
+  "errors": [
+    {
+      "station": "KLAX",
+      "source": "NWS-hourly",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "station": "KSAN",
+      "source": "NWS-hourly",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "station": "KHOU",
+      "source": "NWS-hourly",
+      "error": "The operation was aborted due to timeout"
+    }
+  ],
+  "receivedAt": "2026-10-08T02:48:20.785980+00:00",
+  "sha256": "8d38cdcea889108de3412a84cefb79bd521946916f6f0e04d65ddce98c3be6b3",
+  "worker": {
+    "MainPID": "2124579",
+    "Result": "success",
+    "ExecMainStartTimestamp": "Thu 2026-10-08 02:44:08 UTC",
+    "ExecMainExitTimestamp": "",
+    "MemoryPeak": "341934080",
+    "MemorySwapPeak": "53551104",
+    "CPUUsageNSec": "17119414000",
+    "ActiveState": "activating",
+    "SubState": "start"
+  },
+  "evidenceIds": [
+    "0a2de8b1cd38339d0ecea5108d5c9c7fe9350d6c1cf03005d7cb0210460d44cb"
+  ]
+}

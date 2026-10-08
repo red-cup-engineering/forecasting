@@ -1,0 +1,154 @@
+{
+  "kind": "source-patchset-stage",
+  "version": 1,
+  "inventorySha256": "0c8aa19281231191ab6526be2896a7acec5f4087d67731029b1eb70a84549116",
+  "candidateSha256": "d497126375dafa70526d7db93142af88b9d33d6b50fec39565ce5ed9cedebdc6",
+  "materializerSha256": "40e2f54798ff33e388191744000c934a7ff162cca800be84ead68ad964585f98",
+  "inputs": {
+    "package.json": {
+      "state": "present",
+      "sha256": "e0984fbab59c6c87c02403323053cc7506cbe2dea2173cef5b7370f81dcd301e",
+      "mode": 420
+    },
+    "services/forecasting-service/README-weather.md": {
+      "state": "present",
+      "sha256": "32d5063e4a51d0a07b9077593c5861357c88a94bef3537eabf8e5a42332c767f",
+      "mode": 420
+    },
+    "services/forecasting-service/apps/weather.mjs": {
+      "state": "present",
+      "sha256": "2c1639689497d0eb0c72cc88158bd5dcc2c98a9ab7ca751fc9459df6e70e7eed",
+      "mode": 493
+    },
+    "services/forecasting-service/src/station-observations.mjs": {
+      "state": "present",
+      "sha256": "70b015c90d111932de29b24433c9a785ec8f06f7dd1983e97d6ee31a22c63727",
+      "mode": 420
+    },
+    "services/forecasting-service/src/station-weather-science.mjs": {
+      "state": "present",
+      "sha256": "c9b51214328d76e2246c83c3eba07eade17b4d03bc6d121daa1c7f539030f175",
+      "mode": 420
+    },
+    "services/forecasting-service/src/weather-engine.mjs": {
+      "state": "present",
+      "sha256": "495edf504f6c50a3248606075c7aefd8a5b91296a0ad1994d01ee5508b196321",
+      "mode": 420
+    },
+    "services/forecasting-service/src/weather-evidence.mjs": {
+      "state": "present",
+      "sha256": "1688b04729dd2be6f76468b8e9454844b5549aeb8de9baf5780739b50b0a58ac",
+      "mode": 420
+    },
+    "services/forecasting-service/src/weather-family-learning.mjs": {
+      "state": "present",
+      "sha256": "486158c261582010abbda2170547366d937e49c2045abccc40cfa94a97d5b97c",
+      "mode": 420
+    },
+    "services/forecasting-service/src/weather-index.mjs": {
+      "state": "present",
+      "sha256": "7cd7973e4a96a873e01cd706a6d4605d7d55f06b1dd89cdfb3323eb73e9770bb",
+      "mode": 420
+    },
+    "services/forecasting-service/src/weather-precipitation.mjs": {
+      "state": "absent"
+    },
+    "src/arena.mjs": {
+      "state": "present",
+      "sha256": "2093829040fd449f3e7e7f9406138abdbe0b427b58f6cde0470ff16dcfdf7cd2",
+      "mode": 420
+    },
+    "src/client.mjs": {
+      "state": "present",
+      "sha256": "67703390904eefae179011f51a433d7ce7df309f1cc1152bf128cde342fe3453",
+      "mode": 420
+    },
+    "src/fees.mjs": {
+      "state": "absent"
+    },
+    "src/weather-capital.mjs": {
+      "state": "absent"
+    },
+    "src/weather-participation.mjs": {
+      "state": "absent"
+    }
+  },
+  "outputs": {
+    "package.json": {
+      "state": "present",
+      "sha256": "91d90144d9a20827b9bf9bc7e088aff3f750703e8b40b9a561990bbbf315cfd0",
+      "mode": 420
+    },
+    "services/forecasting-service/README-weather.md": {
+      "state": "present",
+      "sha256": "8a772d5e6f980eea4dcb012e826e65b81d256f37b3e30f20d13a31903a052246",
+      "mode": 420
+    },
+    "services/forecasting-service/apps/weather.mjs": {
+      "state": "present",
+      "sha256": "7309d262311cd79d0ce6fad756eafba3e48e3c26139594291b59b457a3b4306e",
+      "mode": 493
+    },
+    "services/forecasting-service/src/station-observations.mjs": {
+      "state": "present",
+      "sha256": "d2d3083f7a601a1cc000942fac1387ae66f04740d6ab2806365de3238a35cf56",
+      "mode": 420
+    },
+    "services/forecasting-service/src/station-weather-science.mjs": {
+      "state": "present",
+      "sha256": "e3a94fbc24a904273dbe9f4f9cec9d0e3c79a1ea323df9557ad296623c158bda",
+      "mode": 420
+    },
+    "services/forecasting-service/src/weather-engine.mjs": {
+      "state": "present",
+      "sha256": "13d54361e81dbeba407c55eb0e07f0793345288d6ac7caaed6d97db5790ff324",
+      "mode": 420
+    },
+    "services/forecasting-service/src/weather-evidence.mjs": {
+      "state": "present",
+      "sha256": "bc0116ac1e39090fe94c96c9b5dd53655e939c945eebd4c11297e461fe815bc5",
+      "mode": 420
+    },
+    "services/forecasting-service/src/weather-family-learning.mjs": {
+      "state": "present",
+      "sha256": "70df982962ce1edf400ec26bb91539d5592faa4a1c5c0009909cf18a312dffa6",
+      "mode": 420
+    },
+    "services/forecasting-service/src/weather-index.mjs": {
+      "state": "present",
+      "sha256": "639b74c20194cf4e59ff8c5fa1895922375dcf7fc1f62e67e41dcdefcd7f885a",
+      "mode": 420
+    },
+    "services/forecasting-service/src/weather-precipitation.mjs": {
+      "state": "present",
+      "sha256": "a71b1e317a7b46aa903b7ab02a5ad7a8fd6913a31a5fada4c282ed319a8d4de3",
+      "mode": 420
+    },
+    "src/arena.mjs": {
+      "state": "present",
+      "sha256": "9189ae2106972c2afd36de835680cae0e11b8b80fed9bba1eb18f7a7cd8941f3",
+      "mode": 420
+    },
+    "src/client.mjs": {
+      "state": "present",
+      "sha256": "d89f40afc700bb312865fb04dea8c4bcc0247c10ac9061e1145592abcd807b6b",
+      "mode": 420
+    },
+    "src/fees.mjs": {
+      "state": "present",
+      "sha256": "84f1a1ea0b48ed06038d640281238250f0faf3992107f54028ee5c4839cc9fc5",
+      "mode": 420
+    },
+    "src/weather-capital.mjs": {
+      "state": "present",
+      "sha256": "8b621b86026d6497aa2008c0afb0c233b9736a30ecbfb4bd7c09c96f0f6f9430",
+      "mode": 420
+    },
+    "src/weather-participation.mjs": {
+      "state": "present",
+      "sha256": "d3f03dec50075a9a95e6cea1b81c4006f49740c5c44bf2dc89b3e5eefe64bef1",
+      "mode": 420
+    }
+  },
+  "disposition": "staged-unaccepted"
+}

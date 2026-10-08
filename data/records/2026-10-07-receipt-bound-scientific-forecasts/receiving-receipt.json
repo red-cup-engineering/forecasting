@@ -1,0 +1,17 @@
+{
+  "kind": "receipt-bound-scientific-forecasts-receiving",
+  "controlledReceiving": "controlled-receiving.json",
+  "controlledChecks": 17,
+  "originalRuntimeDeployment": "runtime-only-receipt.json",
+  "clockOrderRefinement": "publication-cleanup-order/runtime-only-receipt.json",
+  "nativeCorrectedReceiving": "corrected-native-receiving.json",
+  "fullCycleReceiving": "whole-cycle-receiving.json",
+  "sourceOwningPatch": "kalshi-owning-source.patch",
+  "effect": "new forecasts are frozen in immutable batches before registration; actual availability and exact law integrity gate future grades, with fixed observation selection and explicit replay isolation",
+  "initialClockFaultPreservedWithoutGradeAdmission": true,
+  "nativeVerifiedScope": "one station, actual archived physical evidence, isolated learning state, production evidence store and installed native web reader",
+  "completeNativeMarketPublicationVerified": false,
+  "conditionalFillProbabilityIdentified": false,
+  "netExecutableAlphaEstablished": false,
+  "ordersPlaced": 0
+}

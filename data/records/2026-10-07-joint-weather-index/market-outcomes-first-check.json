@@ -1,0 +1,162 @@
+{
+  "at": "2026-10-07T18:10:46.857Z",
+  "snapshotAt": "2026-10-07T17:59:21.859Z",
+  "sourceEvidenceId": "432e604addb594fdaf3ac01e2330a7c51f44020bb5f99d79777aa0bdeadba90e",
+  "scored": [],
+  "waiting": [
+    {
+      "ticker": "KXTEMPMIAH-26OCT0714-T90.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPMIAH-26OCT0714-T89.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPMIAH-26OCT0714-T88.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPMIAH-26OCT0714-T87.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPMIAH-26OCT0714-T86.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPMIAH-26OCT0714-T85.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPMIAH-26OCT0714-T84.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPMIAH-26OCT0714-T83.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPMIAH-26OCT0714-T82.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPMIAH-26OCT0714-T81.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPLAXHS-26OCT0714-T84.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPLAXHS-26OCT0714-T83.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPLAXHS-26OCT0714-T82.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPLAXHS-26OCT0714-T81.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPLAXHS-26OCT0714-T80.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPLAXHS-26OCT0714-T79.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPLAXHS-26OCT0714-T78.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPLAXHS-26OCT0714-T77.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPLAXHS-26OCT0714-T76.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPNYCHS-26OCT0714-T68.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPNYCHS-26OCT0714-T67.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPNYCHS-26OCT0714-T66.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPNYCHS-26OCT0714-T65.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPNYCHS-26OCT0714-T64.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPNYCHS-26OCT0714-T63.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPNYCHS-26OCT0714-T61.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPNYCHS-26OCT0714-T60.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPNYCHS-26OCT0714-T59.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPLAXHS-26OCT0714-T85.99",
+      "status": "closed",
+      "result": ""
+    },
+    {
+      "ticker": "KXTEMPNYCHS-26OCT0714-T62.99",
+      "status": "closed",
+      "result": ""
+    }
+  ],
+  "conflicts": [],
+  "metrics": [],
+  "scope": "exact final nonprovisional binary venue outcomes; same-rule prospective snapshot; correlated contracts in one target hour; no execution, fees, depth, profit or trading admission",
+  "orderEffect": false
+}

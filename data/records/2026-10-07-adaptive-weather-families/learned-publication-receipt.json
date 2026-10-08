@@ -1,0 +1,1769 @@
+{
+  "at": "2026-10-07T19:42:06.916Z",
+  "evidenceId": "9250c4fe095d564b893003cd185ce35c93750ae8f4652a35424b02b2a09f7591",
+  "target": "2026-10-07T20:00:00.000Z",
+  "publishedAt": "2026-10-07T19:42:03.207Z",
+  "retainedForecasts": [
+    {
+      "meanF": 66.24374570353712,
+      "scaleF": 1.8965248264668597,
+      "nu": 5,
+      "mixture": {
+        "kind": "student-t-family-pool-v1",
+        "components": [
+          {
+            "family": "lamp",
+            "model": "kalshi-index-lamp-proxy-v1",
+            "weight": 0.4874914070742284,
+            "meanF": 66.5,
+            "scaleF": 2.5,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+            "issuedAt": "2026-10-07T19:30:00.000Z"
+          },
+          {
+            "family": "nbm",
+            "model": "kalshi-index-nbh-proxy-v1",
+            "weight": 0.5125085929257716,
+            "meanF": 66,
+            "scaleF": 1,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+            "issuedAt": "2026-10-07T18:00:00.000Z"
+          }
+        ]
+      },
+      "composition": "lamp:kalshi-index-lamp-proxy-v1|nbm:kalshi-index-nbh-proxy-v1",
+      "withinVarianceF2": 5.932216478566165,
+      "betweenVarianceF2": 0.06246088377575433,
+      "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+      "model": "kalshi-index-family-pool-v1/paired-family-ewa-v1",
+      "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+      "details": {
+        "meanF": 66.24374570353712,
+        "scaleF": 1.8965248264668597,
+        "nu": 5,
+        "mixture": {
+          "kind": "student-t-family-pool-v1",
+          "components": [
+            {
+              "family": "lamp",
+              "model": "kalshi-index-lamp-proxy-v1",
+              "weight": 0.4874914070742284,
+              "meanF": 66.5,
+              "scaleF": 2.5,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+              "issuedAt": "2026-10-07T19:30:00.000Z"
+            },
+            {
+              "family": "nbm",
+              "model": "kalshi-index-nbh-proxy-v1",
+              "weight": 0.5125085929257716,
+              "meanF": 66,
+              "scaleF": 1,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+              "issuedAt": "2026-10-07T18:00:00.000Z"
+            }
+          ]
+        },
+        "composition": "lamp:kalshi-index-lamp-proxy-v1|nbm:kalshi-index-nbh-proxy-v1",
+        "withinVarianceF2": 5.932216478566165,
+        "betweenVarianceF2": 0.06246088377575433,
+        "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+        "mean": 66.24374570353712,
+        "scale": 1.8965248264668597,
+        "configVersion": "nyc-temperature-v1.0-cal-20261005",
+        "configSource": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+        "stationForecasts": [
+          {
+            "station": "KLGA1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KEWR1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KTEB1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KCDW1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KHPN1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KFRG1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KSMQ1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KISP1M",
+            "weight": 0.125
+          }
+        ],
+        "targetTime": "2026-10-07T20:00:00.000Z",
+        "status": "past-only paired-family exponential weights; physical and market skill unproven"
+      },
+      "station": "index:nyc",
+      "validTime": "2026-10-07T20:00:00.000Z",
+      "availableAt": "2026-10-07T19:39:05.592Z",
+      "date": "2026-10-07",
+      "leadHours": 0.3484466666666667,
+      "horizon": "0-3h",
+      "verification": "kalshi-index",
+      "truth": "canonical Kalshi city weather index",
+      "publicationLeadBin": "15-30m",
+      "tradeEligible": false,
+      "comparators": [
+        {
+          "meanF": 66.25,
+          "scaleF": 1.9137659209004638,
+          "nu": 5,
+          "mixture": {
+            "kind": "student-t-family-pool-v1",
+            "components": [
+              {
+                "family": "lamp",
+                "model": "kalshi-index-lamp-proxy-v1",
+                "weight": 0.5,
+                "meanF": 66.5,
+                "scaleF": 2.5,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+                "issuedAt": "2026-10-07T19:30:00.000Z"
+              },
+              {
+                "family": "nbm",
+                "model": "kalshi-index-nbh-proxy-v1",
+                "weight": 0.5,
+                "meanF": 66,
+                "scaleF": 1,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+                "issuedAt": "2026-10-07T18:00:00.000Z"
+              }
+            ]
+          },
+          "composition": "lamp:kalshi-index-lamp-proxy-v1|nbm:kalshi-index-nbh-proxy-v1",
+          "withinVarianceF2": 6.041666666666666,
+          "betweenVarianceF2": 0.0625,
+          "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+          "model": "kalshi-index-family-pool-v1",
+          "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+          "details": {
+            "meanF": 66.25,
+            "scaleF": 1.9137659209004638,
+            "nu": 5,
+            "mixture": {
+              "kind": "student-t-family-pool-v1",
+              "components": [
+                {
+                  "family": "lamp",
+                  "model": "kalshi-index-lamp-proxy-v1",
+                  "weight": 0.5,
+                  "meanF": 66.5,
+                  "scaleF": 2.5,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+                  "issuedAt": "2026-10-07T19:30:00.000Z"
+                },
+                {
+                  "family": "nbm",
+                  "model": "kalshi-index-nbh-proxy-v1",
+                  "weight": 0.5,
+                  "meanF": 66,
+                  "scaleF": 1,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+                  "issuedAt": "2026-10-07T18:00:00.000Z"
+                }
+              ]
+            },
+            "composition": "lamp:kalshi-index-lamp-proxy-v1|nbm:kalshi-index-nbh-proxy-v1",
+            "withinVarianceF2": 6.041666666666666,
+            "betweenVarianceF2": 0.0625,
+            "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+            "mean": 66.25,
+            "scale": 1.9137659209004638,
+            "configVersion": "nyc-temperature-v1.0-cal-20261005",
+            "configSource": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+            "stationForecasts": [
+              {
+                "station": "KLGA1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KEWR1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KTEB1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KCDW1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KHPN1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KFRG1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KSMQ1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KISP1M",
+                "weight": 0.125
+              }
+            ],
+            "targetTime": "2026-10-07T20:00:00.000Z",
+            "status": "prospective ensemble experiment; physical calibration and market advantage unproven"
+          },
+          "station": "index:nyc",
+          "validTime": "2026-10-07T20:00:00.000Z",
+          "availableAt": "2026-10-07T19:39:05.592Z",
+          "date": "2026-10-07",
+          "leadHours": 0.3484466666666667,
+          "horizon": "0-3h",
+          "verification": "kalshi-index",
+          "truth": "canonical Kalshi city weather index"
+        }
+      ],
+      "learning": {
+        "id": "paired-family-ewa-v1",
+        "windowDays": 14,
+        "priorDays": 10,
+        "etaPerF": 1,
+        "uniformShare": 0.1,
+        "weights": {
+          "lamp": 0.4874914070742284,
+          "nbm": 0.5125085929257716
+        },
+        "regularizedMeanComponentExcessCrpsF": {
+          "lamp": 0.03492082715764315,
+          "nbm": -0.020687244289618715
+        },
+        "matchedDates": 1,
+        "matchedSamples": 1,
+        "fitAvailableAt": "2026-10-07T19:39:05.592Z",
+        "outcomeReceiptBoundAt": "2026-10-07T19:39:05.592Z",
+        "sourceDigest": "c4c0d56a8a45f92a22c83a6d3757714e1dab10a9feabcdeb0d8d715f4413dc15",
+        "witnesses": [
+          {
+            "date": "2026-10-07",
+            "samples": 1,
+            "components": [
+              {
+                "family": "lamp",
+                "model": "kalshi-index-lamp-proxy-v1",
+                "gainSumF": 0.38412909873407464,
+                "scoreAvailableAt": "2026-10-07T19:06:29.275Z",
+                "sourceEvidenceId": "6365d1cc563b0eadd276ad4b31e3cc2487bc6209a47472f82731aeb2e7116e44"
+              },
+              {
+                "family": "nbm",
+                "model": "kalshi-index-nbh-proxy-v1",
+                "gainSumF": -0.22755968718580588,
+                "scoreAvailableAt": "2026-10-07T19:06:29.275Z",
+                "sourceEvidenceId": "6365d1cc563b0eadd276ad4b31e3cc2487bc6209a47472f82731aeb2e7116e44"
+              }
+            ]
+          }
+        ],
+        "status": "forward experiment; partial-day updates remain one date contribution; fixed learning rate, prior and window untrained; no calibration, regret-bound, market-edge or profit claim"
+      },
+      "sourceEvidenceId": "1dbaa3ce666891a247cc543c39e0e9bc37459bd4050fd53a5aa43c26c1cf7117",
+      "earlierPublicationCount": 1
+    },
+    {
+      "meanF": 65.98338359158926,
+      "scaleF": 1.8879499192180385,
+      "nu": 5,
+      "mixture": {
+        "kind": "student-t-family-pool-v1",
+        "components": [
+          {
+            "family": "lamp",
+            "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+            "weight": 0.48805054047553614,
+            "meanF": 66.04382477249472,
+            "scaleF": 2.5,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791394726489&to=1791401926489&detailed=true",
+            "issuedAt": "2026-10-07T19:30:00.000Z"
+          },
+          {
+            "family": "nbm",
+            "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+            "weight": 0.5119494595244639,
+            "meanF": 65.92576393703334,
+            "scaleF": 1,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791394726489&to=1791401926489&detailed=true",
+            "issuedAt": "2026-10-07T18:00:00.000Z"
+          }
+        ]
+      },
+      "composition": "lamp:kalshi-index-lamp-proxy-v1/recent-innovation-v1|nbm:kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+      "withinVarianceF2": 5.937108895827607,
+      "betweenVarianceF2": 0.003482599964724363,
+      "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+      "model": "kalshi-index-family-pool-v1/recent-innovation-v1/paired-family-ewa-v1",
+      "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+      "details": {
+        "meanF": 65.98338359158926,
+        "scaleF": 1.8879499192180385,
+        "nu": 5,
+        "mixture": {
+          "kind": "student-t-family-pool-v1",
+          "components": [
+            {
+              "family": "lamp",
+              "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+              "weight": 0.48805054047553614,
+              "meanF": 66.04382477249472,
+              "scaleF": 2.5,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791394726489&to=1791401926489&detailed=true",
+              "issuedAt": "2026-10-07T19:30:00.000Z"
+            },
+            {
+              "family": "nbm",
+              "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+              "weight": 0.5119494595244639,
+              "meanF": 65.92576393703334,
+              "scaleF": 1,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791394726489&to=1791401926489&detailed=true",
+              "issuedAt": "2026-10-07T18:00:00.000Z"
+            }
+          ]
+        },
+        "composition": "lamp:kalshi-index-lamp-proxy-v1/recent-innovation-v1|nbm:kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+        "withinVarianceF2": 5.937108895827607,
+        "betweenVarianceF2": 0.003482599964724363,
+        "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+        "mean": 65.98338359158926,
+        "scale": 1.8879499192180385,
+        "configVersion": "nyc-temperature-v1.0-cal-20261005",
+        "configSource": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+        "stationForecasts": [
+          {
+            "station": "KLGA1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KEWR1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KTEB1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KCDW1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KHPN1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KFRG1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KSMQ1M",
+            "weight": 0.125
+          },
+          {
+            "station": "KISP1M",
+            "weight": 0.125
+          }
+        ],
+        "targetTime": "2026-10-07T20:00:00.000Z",
+        "status": "past-only paired-family exponential weights; physical and market skill unproven"
+      },
+      "station": "index:nyc",
+      "validTime": "2026-10-07T20:00:00.000Z",
+      "availableAt": "2026-10-07T19:39:05.592Z",
+      "date": "2026-10-07",
+      "leadHours": 0.3484466666666667,
+      "horizon": "0-3h",
+      "verification": "kalshi-index",
+      "truth": "canonical Kalshi city weather index",
+      "publicationLeadBin": "15-30m",
+      "tradeEligible": false,
+      "comparators": [
+        {
+          "meanF": 65.98479435476403,
+          "scaleF": 1.9044922562537439,
+          "nu": 5,
+          "mixture": {
+            "kind": "student-t-family-pool-v1",
+            "components": [
+              {
+                "family": "lamp",
+                "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+                "weight": 0.5,
+                "meanF": 66.04382477249472,
+                "scaleF": 2.5,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791394726489&to=1791401926489&detailed=true",
+                "issuedAt": "2026-10-07T19:30:00.000Z"
+              },
+              {
+                "family": "nbm",
+                "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+                "weight": 0.5,
+                "meanF": 65.92576393703334,
+                "scaleF": 1,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791394726489&to=1791401926489&detailed=true",
+                "issuedAt": "2026-10-07T18:00:00.000Z"
+              }
+            ]
+          },
+          "composition": "lamp:kalshi-index-lamp-proxy-v1/recent-innovation-v1|nbm:kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+          "withinVarianceF2": 6.041666666666666,
+          "betweenVarianceF2": 0.00348459021745965,
+          "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+          "model": "kalshi-index-family-pool-v1/recent-innovation-v1",
+          "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+          "details": {
+            "meanF": 65.98479435476403,
+            "scaleF": 1.9044922562537439,
+            "nu": 5,
+            "mixture": {
+              "kind": "student-t-family-pool-v1",
+              "components": [
+                {
+                  "family": "lamp",
+                  "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+                  "weight": 0.5,
+                  "meanF": 66.04382477249472,
+                  "scaleF": 2.5,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791394726489&to=1791401926489&detailed=true",
+                  "issuedAt": "2026-10-07T19:30:00.000Z"
+                },
+                {
+                  "family": "nbm",
+                  "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+                  "weight": 0.5,
+                  "meanF": 65.92576393703334,
+                  "scaleF": 1,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791394726489&to=1791401926489&detailed=true",
+                  "issuedAt": "2026-10-07T18:00:00.000Z"
+                }
+              ]
+            },
+            "composition": "lamp:kalshi-index-lamp-proxy-v1/recent-innovation-v1|nbm:kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+            "withinVarianceF2": 6.041666666666666,
+            "betweenVarianceF2": 0.00348459021745965,
+            "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+            "mean": 65.98479435476403,
+            "scale": 1.9044922562537439,
+            "configVersion": "nyc-temperature-v1.0-cal-20261005",
+            "configSource": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc/calibrations",
+            "stationForecasts": [
+              {
+                "station": "KLGA1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KEWR1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KTEB1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KCDW1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KHPN1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KFRG1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KSMQ1M",
+                "weight": 0.125
+              },
+              {
+                "station": "KISP1M",
+                "weight": 0.125
+              }
+            ],
+            "targetTime": "2026-10-07T20:00:00.000Z",
+            "status": "prospective ensemble experiment; physical calibration and market advantage unproven"
+          },
+          "station": "index:nyc",
+          "validTime": "2026-10-07T20:00:00.000Z",
+          "availableAt": "2026-10-07T19:39:05.592Z",
+          "date": "2026-10-07",
+          "leadHours": 0.3484466666666667,
+          "horizon": "0-3h",
+          "verification": "kalshi-index",
+          "truth": "canonical Kalshi city weather index"
+        }
+      ],
+      "learning": {
+        "id": "paired-family-ewa-v1",
+        "windowDays": 14,
+        "priorDays": 10,
+        "etaPerF": 1,
+        "uniformShare": 0.1,
+        "weights": {
+          "lamp": 0.48805054047553614,
+          "nbm": 0.5119494595244639
+        },
+        "regularizedMeanComponentExcessCrpsF": {
+          "lamp": 0.033130110537862884,
+          "nbm": -0.01999108665794139
+        },
+        "matchedDates": 1,
+        "matchedSamples": 1,
+        "fitAvailableAt": "2026-10-07T19:39:05.592Z",
+        "outcomeReceiptBoundAt": "2026-10-07T19:39:05.592Z",
+        "sourceDigest": "b69cd9b241c84aa9c31b9c8abc17284051634ce2708fdbc890fbd48de5917cf4",
+        "witnesses": [
+          {
+            "date": "2026-10-07",
+            "samples": 1,
+            "components": [
+              {
+                "family": "lamp",
+                "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+                "gainSumF": 0.36443121591649175,
+                "scoreAvailableAt": "2026-10-07T19:06:29.275Z",
+                "sourceEvidenceId": "6365d1cc563b0eadd276ad4b31e3cc2487bc6209a47472f82731aeb2e7116e44"
+              },
+              {
+                "family": "nbm",
+                "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+                "gainSumF": -0.21990195323735529,
+                "scoreAvailableAt": "2026-10-07T19:06:29.275Z",
+                "sourceEvidenceId": "6365d1cc563b0eadd276ad4b31e3cc2487bc6209a47472f82731aeb2e7116e44"
+              }
+            ]
+          }
+        ],
+        "status": "forward experiment; partial-day updates remain one date contribution; fixed learning rate, prior and window untrained; no calibration, regret-bound, market-edge or profit claim"
+      },
+      "sourceEvidenceId": "1dbaa3ce666891a247cc543c39e0e9bc37459bd4050fd53a5aa43c26c1cf7117",
+      "earlierPublicationCount": 1
+    },
+    {
+      "meanF": 84.01245995107317,
+      "scaleF": 2.8897270760693705,
+      "nu": 5,
+      "mixture": {
+        "kind": "student-t-family-pool-v1",
+        "components": [
+          {
+            "family": "lamp",
+            "model": "kalshi-index-lamp-proxy-v1",
+            "weight": 0.3449767731266778,
+            "meanF": 82.4,
+            "scaleF": 2.5,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+            "issuedAt": "2026-10-07T19:30:00.000Z"
+          },
+          {
+            "family": "nbm",
+            "model": "kalshi-index-nbh-proxy-v1",
+            "weight": 0.3526097295468173,
+            "meanF": 84.4,
+            "scaleF": 3.098386676965934,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+            "issuedAt": "2026-10-07T18:00:00.000Z"
+          },
+          {
+            "family": "nws",
+            "model": "kalshi-index-nws-proxy-v1",
+            "weight": 0.302413497326505,
+            "meanF": 85.4,
+            "scaleF": 2.5,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+            "issuedAt": "2026-10-07T18:32:00+00:00"
+          }
+        ]
+      },
+      "composition": "lamp:kalshi-index-lamp-proxy-v1|nbm:kalshi-index-nbh-proxy-v1|nws:kalshi-index-nws-proxy-v1",
+      "withinVarianceF2": 12.385404323303064,
+      "betweenVarianceF2": 1.5321333003109905,
+      "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+      "model": "kalshi-index-family-pool-v1/paired-family-ewa-v1",
+      "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+      "details": {
+        "meanF": 84.01245995107317,
+        "scaleF": 2.8897270760693705,
+        "nu": 5,
+        "mixture": {
+          "kind": "student-t-family-pool-v1",
+          "components": [
+            {
+              "family": "lamp",
+              "model": "kalshi-index-lamp-proxy-v1",
+              "weight": 0.3449767731266778,
+              "meanF": 82.4,
+              "scaleF": 2.5,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+              "issuedAt": "2026-10-07T19:30:00.000Z"
+            },
+            {
+              "family": "nbm",
+              "model": "kalshi-index-nbh-proxy-v1",
+              "weight": 0.3526097295468173,
+              "meanF": 84.4,
+              "scaleF": 3.098386676965934,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+              "issuedAt": "2026-10-07T18:00:00.000Z"
+            },
+            {
+              "family": "nws",
+              "model": "kalshi-index-nws-proxy-v1",
+              "weight": 0.302413497326505,
+              "meanF": 85.4,
+              "scaleF": 2.5,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+              "issuedAt": "2026-10-07T18:32:00+00:00"
+            }
+          ]
+        },
+        "composition": "lamp:kalshi-index-lamp-proxy-v1|nbm:kalshi-index-nbh-proxy-v1|nws:kalshi-index-nws-proxy-v1",
+        "withinVarianceF2": 12.385404323303064,
+        "betweenVarianceF2": 1.5321333003109905,
+        "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+        "mean": 84.01245995107317,
+        "scale": 2.8897270760693705,
+        "configVersion": "miami-temperature-v1.0-cal-20261005",
+        "configSource": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+        "stationForecasts": [
+          {
+            "station": "KMIA1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KOPF1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KFLL1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KFXE1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KPMP1M",
+            "weight": 0.2
+          }
+        ],
+        "targetTime": "2026-10-07T20:00:00.000Z",
+        "status": "past-only paired-family exponential weights; physical and market skill unproven"
+      },
+      "station": "index:miami",
+      "validTime": "2026-10-07T20:00:00.000Z",
+      "availableAt": "2026-10-07T19:39:05.592Z",
+      "date": "2026-10-07",
+      "leadHours": 0.3484466666666667,
+      "horizon": "0-3h",
+      "verification": "kalshi-index",
+      "truth": "canonical Kalshi city weather index",
+      "publicationLeadBin": "15-30m",
+      "tradeEligible": false,
+      "comparators": [
+        {
+          "meanF": 84.06666666666666,
+          "scaleF": 2.8809720581775866,
+          "nu": 5,
+          "mixture": {
+            "kind": "student-t-family-pool-v1",
+            "components": [
+              {
+                "family": "lamp",
+                "model": "kalshi-index-lamp-proxy-v1",
+                "weight": 0.3333333333333333,
+                "meanF": 82.4,
+                "scaleF": 2.5,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+                "issuedAt": "2026-10-07T19:30:00.000Z"
+              },
+              {
+                "family": "nbm",
+                "model": "kalshi-index-nbh-proxy-v1",
+                "weight": 0.3333333333333333,
+                "meanF": 84.4,
+                "scaleF": 3.098386676965934,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+                "issuedAt": "2026-10-07T18:00:00.000Z"
+              },
+              {
+                "family": "nws",
+                "model": "kalshi-index-nws-proxy-v1",
+                "weight": 0.3333333333333333,
+                "meanF": 85.4,
+                "scaleF": 2.5,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+                "issuedAt": "2026-10-07T18:32:00+00:00"
+              }
+            ]
+          },
+          "composition": "lamp:kalshi-index-lamp-proxy-v1|nbm:kalshi-index-nbh-proxy-v1|nws:kalshi-index-nws-proxy-v1",
+          "withinVarianceF2": 12.277777777777777,
+          "betweenVarianceF2": 1.5555555555555556,
+          "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+          "model": "kalshi-index-family-pool-v1",
+          "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+          "details": {
+            "meanF": 84.06666666666666,
+            "scaleF": 2.8809720581775866,
+            "nu": 5,
+            "mixture": {
+              "kind": "student-t-family-pool-v1",
+              "components": [
+                {
+                  "family": "lamp",
+                  "model": "kalshi-index-lamp-proxy-v1",
+                  "weight": 0.3333333333333333,
+                  "meanF": 82.4,
+                  "scaleF": 2.5,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+                  "issuedAt": "2026-10-07T19:30:00.000Z"
+                },
+                {
+                  "family": "nbm",
+                  "model": "kalshi-index-nbh-proxy-v1",
+                  "weight": 0.3333333333333333,
+                  "meanF": 84.4,
+                  "scaleF": 3.098386676965934,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+                  "issuedAt": "2026-10-07T18:00:00.000Z"
+                },
+                {
+                  "family": "nws",
+                  "model": "kalshi-index-nws-proxy-v1",
+                  "weight": 0.3333333333333333,
+                  "meanF": 85.4,
+                  "scaleF": 2.5,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+                  "issuedAt": "2026-10-07T18:32:00+00:00"
+                }
+              ]
+            },
+            "composition": "lamp:kalshi-index-lamp-proxy-v1|nbm:kalshi-index-nbh-proxy-v1|nws:kalshi-index-nws-proxy-v1",
+            "withinVarianceF2": 12.277777777777777,
+            "betweenVarianceF2": 1.5555555555555556,
+            "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+            "mean": 84.06666666666666,
+            "scale": 2.8809720581775866,
+            "configVersion": "miami-temperature-v1.0-cal-20261005",
+            "configSource": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+            "stationForecasts": [
+              {
+                "station": "KMIA1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KOPF1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KFLL1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KFXE1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KPMP1M",
+                "weight": 0.2
+              }
+            ],
+            "targetTime": "2026-10-07T20:00:00.000Z",
+            "status": "prospective ensemble experiment; physical calibration and market advantage unproven"
+          },
+          "station": "index:miami",
+          "validTime": "2026-10-07T20:00:00.000Z",
+          "availableAt": "2026-10-07T19:39:05.592Z",
+          "date": "2026-10-07",
+          "leadHours": 0.3484466666666667,
+          "horizon": "0-3h",
+          "verification": "kalshi-index",
+          "truth": "canonical Kalshi city weather index"
+        }
+      ],
+      "learning": {
+        "id": "paired-family-ewa-v1",
+        "windowDays": 14,
+        "priorDays": 10,
+        "etaPerF": 1,
+        "uniformShare": 0.1,
+        "weights": {
+          "lamp": 0.3449767731266778,
+          "nbm": 0.3526097295468173,
+          "nws": 0.302413497326505
+        },
+        "regularizedMeanComponentExcessCrpsF": {
+          "lamp": -0.03375744004591639,
+          "nbm": -0.05795490037733065,
+          "nws": 0.11309293045430752
+        },
+        "matchedDates": 1,
+        "matchedSamples": 1,
+        "fitAvailableAt": "2026-10-07T19:39:05.592Z",
+        "outcomeReceiptBoundAt": "2026-10-07T19:39:05.592Z",
+        "sourceDigest": "2d3eb4b3b259d77f86dc55aee277299a6e6138961cae3fbef43718b16e892c5e",
+        "witnesses": [
+          {
+            "date": "2026-10-07",
+            "samples": 1,
+            "components": [
+              {
+                "family": "lamp",
+                "model": "kalshi-index-lamp-proxy-v1",
+                "gainSumF": -0.3713318405050803,
+                "scoreAvailableAt": "2026-10-07T19:06:29.275Z",
+                "sourceEvidenceId": "6365d1cc563b0eadd276ad4b31e3cc2487bc6209a47472f82731aeb2e7116e44"
+              },
+              {
+                "family": "nbm",
+                "model": "kalshi-index-nbh-proxy-v1",
+                "gainSumF": -0.6375039041506372,
+                "scoreAvailableAt": "2026-10-07T19:06:29.275Z",
+                "sourceEvidenceId": "6365d1cc563b0eadd276ad4b31e3cc2487bc6209a47472f82731aeb2e7116e44"
+              },
+              {
+                "family": "nws",
+                "model": "kalshi-index-nws-proxy-v1",
+                "gainSumF": 1.2440222349973826,
+                "scoreAvailableAt": "2026-10-07T19:06:29.275Z",
+                "sourceEvidenceId": "6365d1cc563b0eadd276ad4b31e3cc2487bc6209a47472f82731aeb2e7116e44"
+              }
+            ]
+          }
+        ],
+        "status": "forward experiment; partial-day updates remain one date contribution; fixed learning rate, prior and window untrained; no calibration, regret-bound, market-edge or profit claim"
+      },
+      "sourceEvidenceId": "1dbaa3ce666891a247cc543c39e0e9bc37459bd4050fd53a5aa43c26c1cf7117",
+      "earlierPublicationCount": 1
+    },
+    {
+      "meanF": 80.55350799343232,
+      "scaleF": 2.7335223507162483,
+      "nu": 5,
+      "mixture": {
+        "kind": "student-t-family-pool-v1",
+        "components": [
+          {
+            "family": "lamp",
+            "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+            "weight": 0.3462114353030712,
+            "meanF": 80.8507256424349,
+            "scaleF": 2.5,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791394726489&to=1791401926489&detailed=true",
+            "issuedAt": "2026-10-07T19:30:00.000Z"
+          },
+          {
+            "family": "nbm",
+            "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+            "weight": 0.354652987545063,
+            "meanF": 80.50959994655874,
+            "scaleF": 3.098386676965934,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791394726489&to=1791401926489&detailed=true",
+            "issuedAt": "2026-10-07T18:00:00.000Z"
+          },
+          {
+            "family": "nws",
+            "model": "kalshi-index-nws-proxy-v1/recent-innovation-v1",
+            "weight": 0.29913557715186584,
+            "meanF": 80.2615733807424,
+            "scaleF": 2.5,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791394726489&to=1791401926489&detailed=true",
+            "issuedAt": "2026-10-07T18:32:00+00:00"
+          }
+        ]
+      },
+      "composition": "lamp:kalshi-index-lamp-proxy-v1/recent-innovation-v1|nbm:kalshi-index-nbh-proxy-v1/recent-innovation-v1|nws:kalshi-index-nws-proxy-v1/recent-innovation-v1",
+      "withinVarianceF2": 12.396812513793268,
+      "betweenVarianceF2": 0.056761555982206655,
+      "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+      "model": "kalshi-index-family-pool-v1/recent-innovation-v1/paired-family-ewa-v1",
+      "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+      "details": {
+        "meanF": 80.55350799343232,
+        "scaleF": 2.7335223507162483,
+        "nu": 5,
+        "mixture": {
+          "kind": "student-t-family-pool-v1",
+          "components": [
+            {
+              "family": "lamp",
+              "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+              "weight": 0.3462114353030712,
+              "meanF": 80.8507256424349,
+              "scaleF": 2.5,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791394726489&to=1791401926489&detailed=true",
+              "issuedAt": "2026-10-07T19:30:00.000Z"
+            },
+            {
+              "family": "nbm",
+              "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+              "weight": 0.354652987545063,
+              "meanF": 80.50959994655874,
+              "scaleF": 3.098386676965934,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791394726489&to=1791401926489&detailed=true",
+              "issuedAt": "2026-10-07T18:00:00.000Z"
+            },
+            {
+              "family": "nws",
+              "model": "kalshi-index-nws-proxy-v1/recent-innovation-v1",
+              "weight": 0.29913557715186584,
+              "meanF": 80.2615733807424,
+              "scaleF": 2.5,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791394726489&to=1791401926489&detailed=true",
+              "issuedAt": "2026-10-07T18:32:00+00:00"
+            }
+          ]
+        },
+        "composition": "lamp:kalshi-index-lamp-proxy-v1/recent-innovation-v1|nbm:kalshi-index-nbh-proxy-v1/recent-innovation-v1|nws:kalshi-index-nws-proxy-v1/recent-innovation-v1",
+        "withinVarianceF2": 12.396812513793268,
+        "betweenVarianceF2": 0.056761555982206655,
+        "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+        "mean": 80.55350799343232,
+        "scale": 2.7335223507162483,
+        "configVersion": "miami-temperature-v1.0-cal-20261005",
+        "configSource": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+        "stationForecasts": [
+          {
+            "station": "KMIA1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KOPF1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KFLL1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KFXE1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KPMP1M",
+            "weight": 0.2
+          }
+        ],
+        "targetTime": "2026-10-07T20:00:00.000Z",
+        "status": "past-only paired-family exponential weights; physical and market skill unproven"
+      },
+      "station": "index:miami",
+      "validTime": "2026-10-07T20:00:00.000Z",
+      "availableAt": "2026-10-07T19:39:05.592Z",
+      "date": "2026-10-07",
+      "leadHours": 0.3484466666666667,
+      "horizon": "0-3h",
+      "verification": "kalshi-index",
+      "truth": "canonical Kalshi city weather index",
+      "publicationLeadBin": "15-30m",
+      "tradeEligible": false,
+      "comparators": [
+        {
+          "meanF": 80.54063298991201,
+          "scaleF": 2.7206002316302063,
+          "nu": 5,
+          "mixture": {
+            "kind": "student-t-family-pool-v1",
+            "components": [
+              {
+                "family": "lamp",
+                "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+                "weight": 0.3333333333333333,
+                "meanF": 80.8507256424349,
+                "scaleF": 2.5,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791394726489&to=1791401926489&detailed=true",
+                "issuedAt": "2026-10-07T19:30:00.000Z"
+              },
+              {
+                "family": "nbm",
+                "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+                "weight": 0.3333333333333333,
+                "meanF": 80.50959994655874,
+                "scaleF": 3.098386676965934,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791394726489&to=1791401926489&detailed=true",
+                "issuedAt": "2026-10-07T18:00:00.000Z"
+              },
+              {
+                "family": "nws",
+                "model": "kalshi-index-nws-proxy-v1/recent-innovation-v1",
+                "weight": 0.3333333333333333,
+                "meanF": 80.2615733807424,
+                "scaleF": 2.5,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791394726489&to=1791401926489&detailed=true",
+                "issuedAt": "2026-10-07T18:32:00+00:00"
+              }
+            ]
+          },
+          "composition": "lamp:kalshi-index-lamp-proxy-v1/recent-innovation-v1|nbm:kalshi-index-nbh-proxy-v1/recent-innovation-v1|nws:kalshi-index-nws-proxy-v1/recent-innovation-v1",
+          "withinVarianceF2": 12.277777777777777,
+          "betweenVarianceF2": 0.058331589466112554,
+          "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+          "model": "kalshi-index-family-pool-v1/recent-innovation-v1",
+          "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+          "details": {
+            "meanF": 80.54063298991201,
+            "scaleF": 2.7206002316302063,
+            "nu": 5,
+            "mixture": {
+              "kind": "student-t-family-pool-v1",
+              "components": [
+                {
+                  "family": "lamp",
+                  "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+                  "weight": 0.3333333333333333,
+                  "meanF": 80.8507256424349,
+                  "scaleF": 2.5,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791394726489&to=1791401926489&detailed=true",
+                  "issuedAt": "2026-10-07T19:30:00.000Z"
+                },
+                {
+                  "family": "nbm",
+                  "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+                  "weight": 0.3333333333333333,
+                  "meanF": 80.50959994655874,
+                  "scaleF": 3.098386676965934,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791394726489&to=1791401926489&detailed=true",
+                  "issuedAt": "2026-10-07T18:00:00.000Z"
+                },
+                {
+                  "family": "nws",
+                  "model": "kalshi-index-nws-proxy-v1/recent-innovation-v1",
+                  "weight": 0.3333333333333333,
+                  "meanF": 80.2615733807424,
+                  "scaleF": 2.5,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791394726489&to=1791401926489&detailed=true",
+                  "issuedAt": "2026-10-07T18:32:00+00:00"
+                }
+              ]
+            },
+            "composition": "lamp:kalshi-index-lamp-proxy-v1/recent-innovation-v1|nbm:kalshi-index-nbh-proxy-v1/recent-innovation-v1|nws:kalshi-index-nws-proxy-v1/recent-innovation-v1",
+            "withinVarianceF2": 12.277777777777777,
+            "betweenVarianceF2": 0.058331589466112554,
+            "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+            "mean": 80.54063298991201,
+            "scale": 2.7206002316302063,
+            "configVersion": "miami-temperature-v1.0-cal-20261005",
+            "configSource": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami/calibrations",
+            "stationForecasts": [
+              {
+                "station": "KMIA1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KOPF1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KFLL1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KFXE1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KPMP1M",
+                "weight": 0.2
+              }
+            ],
+            "targetTime": "2026-10-07T20:00:00.000Z",
+            "status": "prospective ensemble experiment; physical calibration and market advantage unproven"
+          },
+          "station": "index:miami",
+          "validTime": "2026-10-07T20:00:00.000Z",
+          "availableAt": "2026-10-07T19:39:05.592Z",
+          "date": "2026-10-07",
+          "leadHours": 0.3484466666666667,
+          "horizon": "0-3h",
+          "verification": "kalshi-index",
+          "truth": "canonical Kalshi city weather index"
+        }
+      ],
+      "learning": {
+        "id": "paired-family-ewa-v1",
+        "windowDays": 14,
+        "priorDays": 10,
+        "etaPerF": 1,
+        "uniformShare": 0.1,
+        "weights": {
+          "lamp": 0.34621143530307114,
+          "nbm": 0.35465298754506297,
+          "nws": 0.2991355771518658
+        },
+        "regularizedMeanComponentExcessCrpsF": {
+          "lamp": -0.03728944568506908,
+          "nbm": -0.06391221673220765,
+          "nws": 0.12577163042488124
+        },
+        "matchedDates": 1,
+        "matchedSamples": 1,
+        "fitAvailableAt": "2026-10-07T19:39:05.592Z",
+        "outcomeReceiptBoundAt": "2026-10-07T19:39:05.592Z",
+        "sourceDigest": "38d73c0bb814a0ce594d3256e75028fb671e9e68fc7c693e151f57f905d4d06d",
+        "witnesses": [
+          {
+            "date": "2026-10-07",
+            "samples": 1,
+            "components": [
+              {
+                "family": "lamp",
+                "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+                "gainSumF": -0.41018390253575987,
+                "scoreAvailableAt": "2026-10-07T19:06:29.275Z",
+                "sourceEvidenceId": "6365d1cc563b0eadd276ad4b31e3cc2487bc6209a47472f82731aeb2e7116e44"
+              },
+              {
+                "family": "nbm",
+                "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+                "gainSumF": -0.7030343840542841,
+                "scoreAvailableAt": "2026-10-07T19:06:29.275Z",
+                "sourceEvidenceId": "6365d1cc563b0eadd276ad4b31e3cc2487bc6209a47472f82731aeb2e7116e44"
+              },
+              {
+                "family": "nws",
+                "model": "kalshi-index-nws-proxy-v1/recent-innovation-v1",
+                "gainSumF": 1.3834879346736937,
+                "scoreAvailableAt": "2026-10-07T19:06:29.275Z",
+                "sourceEvidenceId": "6365d1cc563b0eadd276ad4b31e3cc2487bc6209a47472f82731aeb2e7116e44"
+              }
+            ]
+          }
+        ],
+        "status": "forward experiment; partial-day updates remain one date contribution; fixed learning rate, prior and window untrained; no calibration, regret-bound, market-edge or profit claim"
+      },
+      "sourceEvidenceId": "1dbaa3ce666891a247cc543c39e0e9bc37459bd4050fd53a5aa43c26c1cf7117",
+      "earlierPublicationCount": 1
+    },
+    {
+      "meanF": 89.73333333333332,
+      "scaleF": 2.8809720581775866,
+      "nu": 5,
+      "mixture": {
+        "kind": "student-t-family-pool-v1",
+        "components": [
+          {
+            "family": "lamp",
+            "model": "kalshi-index-lamp-proxy-v1",
+            "weight": 0.3333333333333333,
+            "meanF": 86.39999999999999,
+            "scaleF": 2.5,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+            "issuedAt": "2026-10-07T19:30:00.000Z"
+          },
+          {
+            "family": "nbm",
+            "model": "kalshi-index-nbh-proxy-v1",
+            "weight": 0.3333333333333333,
+            "meanF": 91.39999999999999,
+            "scaleF": 1.549193338482967,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+            "issuedAt": "2026-10-07T18:00:00.000Z"
+          },
+          {
+            "family": "nws",
+            "model": "kalshi-index-nws-proxy-v1",
+            "weight": 0.3333333333333333,
+            "meanF": 91.39999999999999,
+            "scaleF": 2.5,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+            "issuedAt": "2026-10-07T18:26:42+00:00"
+          }
+        ]
+      },
+      "composition": "lamp:kalshi-index-lamp-proxy-v1|nbm:kalshi-index-nbh-proxy-v1|nws:kalshi-index-nws-proxy-v1",
+      "withinVarianceF2": 8.277777777777777,
+      "betweenVarianceF2": 5.5555555555555545,
+      "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+      "model": "kalshi-index-family-pool-v1/paired-family-ewa-v1",
+      "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+      "details": {
+        "meanF": 89.73333333333332,
+        "scaleF": 2.8809720581775866,
+        "nu": 5,
+        "mixture": {
+          "kind": "student-t-family-pool-v1",
+          "components": [
+            {
+              "family": "lamp",
+              "model": "kalshi-index-lamp-proxy-v1",
+              "weight": 0.3333333333333333,
+              "meanF": 86.39999999999999,
+              "scaleF": 2.5,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+              "issuedAt": "2026-10-07T19:30:00.000Z"
+            },
+            {
+              "family": "nbm",
+              "model": "kalshi-index-nbh-proxy-v1",
+              "weight": 0.3333333333333333,
+              "meanF": 91.39999999999999,
+              "scaleF": 1.549193338482967,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+              "issuedAt": "2026-10-07T18:00:00.000Z"
+            },
+            {
+              "family": "nws",
+              "model": "kalshi-index-nws-proxy-v1",
+              "weight": 0.3333333333333333,
+              "meanF": 91.39999999999999,
+              "scaleF": 2.5,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+              "issuedAt": "2026-10-07T18:26:42+00:00"
+            }
+          ]
+        },
+        "composition": "lamp:kalshi-index-lamp-proxy-v1|nbm:kalshi-index-nbh-proxy-v1|nws:kalshi-index-nws-proxy-v1",
+        "withinVarianceF2": 8.277777777777777,
+        "betweenVarianceF2": 5.5555555555555545,
+        "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+        "mean": 89.73333333333332,
+        "scale": 2.8809720581775866,
+        "configVersion": "la-coastal-temperature-v1.0-cal-20261005",
+        "configSource": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+        "stationForecasts": [
+          {
+            "station": "KHHR1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KLAX1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KSMO1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KLGB1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KSNA1M",
+            "weight": 0.2
+          }
+        ],
+        "targetTime": "2026-10-07T20:00:00.000Z",
+        "status": "past-only paired-family exponential weights; physical and market skill unproven"
+      },
+      "station": "index:la-coastal",
+      "validTime": "2026-10-07T20:00:00.000Z",
+      "availableAt": "2026-10-07T19:39:05.592Z",
+      "date": "2026-10-07",
+      "leadHours": 0.3484466666666667,
+      "horizon": "0-3h",
+      "verification": "kalshi-index",
+      "truth": "canonical Kalshi city weather index",
+      "publicationLeadBin": "15-30m",
+      "tradeEligible": false,
+      "comparators": [
+        {
+          "meanF": 89.73333333333332,
+          "scaleF": 2.8809720581775866,
+          "nu": 5,
+          "mixture": {
+            "kind": "student-t-family-pool-v1",
+            "components": [
+              {
+                "family": "lamp",
+                "model": "kalshi-index-lamp-proxy-v1",
+                "weight": 0.3333333333333333,
+                "meanF": 86.39999999999999,
+                "scaleF": 2.5,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+                "issuedAt": "2026-10-07T19:30:00.000Z"
+              },
+              {
+                "family": "nbm",
+                "model": "kalshi-index-nbh-proxy-v1",
+                "weight": 0.3333333333333333,
+                "meanF": 91.39999999999999,
+                "scaleF": 1.549193338482967,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+                "issuedAt": "2026-10-07T18:00:00.000Z"
+              },
+              {
+                "family": "nws",
+                "model": "kalshi-index-nws-proxy-v1",
+                "weight": 0.3333333333333333,
+                "meanF": 91.39999999999999,
+                "scaleF": 2.5,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+                "issuedAt": "2026-10-07T18:26:42+00:00"
+              }
+            ]
+          },
+          "composition": "lamp:kalshi-index-lamp-proxy-v1|nbm:kalshi-index-nbh-proxy-v1|nws:kalshi-index-nws-proxy-v1",
+          "withinVarianceF2": 8.277777777777777,
+          "betweenVarianceF2": 5.5555555555555545,
+          "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+          "model": "kalshi-index-family-pool-v1",
+          "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+          "details": {
+            "meanF": 89.73333333333332,
+            "scaleF": 2.8809720581775866,
+            "nu": 5,
+            "mixture": {
+              "kind": "student-t-family-pool-v1",
+              "components": [
+                {
+                  "family": "lamp",
+                  "model": "kalshi-index-lamp-proxy-v1",
+                  "weight": 0.3333333333333333,
+                  "meanF": 86.39999999999999,
+                  "scaleF": 2.5,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+                  "issuedAt": "2026-10-07T19:30:00.000Z"
+                },
+                {
+                  "family": "nbm",
+                  "model": "kalshi-index-nbh-proxy-v1",
+                  "weight": 0.3333333333333333,
+                  "meanF": 91.39999999999999,
+                  "scaleF": 1.549193338482967,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+                  "issuedAt": "2026-10-07T18:00:00.000Z"
+                },
+                {
+                  "family": "nws",
+                  "model": "kalshi-index-nws-proxy-v1",
+                  "weight": 0.3333333333333333,
+                  "meanF": 91.39999999999999,
+                  "scaleF": 2.5,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+                  "issuedAt": "2026-10-07T18:26:42+00:00"
+                }
+              ]
+            },
+            "composition": "lamp:kalshi-index-lamp-proxy-v1|nbm:kalshi-index-nbh-proxy-v1|nws:kalshi-index-nws-proxy-v1",
+            "withinVarianceF2": 8.277777777777777,
+            "betweenVarianceF2": 5.5555555555555545,
+            "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+            "mean": 89.73333333333332,
+            "scale": 2.8809720581775866,
+            "configVersion": "la-coastal-temperature-v1.0-cal-20261005",
+            "configSource": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+            "stationForecasts": [
+              {
+                "station": "KHHR1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KLAX1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KSMO1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KLGB1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KSNA1M",
+                "weight": 0.2
+              }
+            ],
+            "targetTime": "2026-10-07T20:00:00.000Z",
+            "status": "prospective ensemble experiment; physical calibration and market advantage unproven"
+          },
+          "station": "index:la-coastal",
+          "validTime": "2026-10-07T20:00:00.000Z",
+          "availableAt": "2026-10-07T19:39:05.592Z",
+          "date": "2026-10-07",
+          "leadHours": 0.3484466666666667,
+          "horizon": "0-3h",
+          "verification": "kalshi-index",
+          "truth": "canonical Kalshi city weather index"
+        }
+      ],
+      "learning": {
+        "id": "paired-family-ewa-v1",
+        "windowDays": 14,
+        "priorDays": 10,
+        "etaPerF": 1,
+        "uniformShare": 0.1,
+        "weights": {
+          "lamp": 0.3333333333333333,
+          "nbm": 0.3333333333333333,
+          "nws": 0.3333333333333333
+        },
+        "regularizedMeanComponentExcessCrpsF": {
+          "lamp": 0,
+          "nbm": 0,
+          "nws": 0
+        },
+        "matchedDates": 0,
+        "matchedSamples": 0,
+        "fitAvailableAt": "2026-10-07T19:39:05.592Z",
+        "outcomeReceiptBoundAt": "2026-10-07T19:39:05.592Z",
+        "sourceDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "witnesses": [],
+        "status": "forward experiment; partial-day updates remain one date contribution; fixed learning rate, prior and window untrained; no calibration, regret-bound, market-edge or profit claim"
+      },
+      "sourceEvidenceId": "1dbaa3ce666891a247cc543c39e0e9bc37459bd4050fd53a5aa43c26c1cf7117",
+      "earlierPublicationCount": 3
+    },
+    {
+      "meanF": 86.15852620458125,
+      "scaleF": 2.240570118696612,
+      "nu": 5,
+      "mixture": {
+        "kind": "student-t-family-pool-v1",
+        "components": [
+          {
+            "family": "lamp",
+            "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+            "weight": 0.3333333333333333,
+            "meanF": 85.74586193791696,
+            "scaleF": 2.5,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791394726489&to=1791401926489&detailed=true",
+            "issuedAt": "2026-10-07T19:30:00.000Z"
+          },
+          {
+            "family": "nbm",
+            "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+            "weight": 0.3333333333333333,
+            "meanF": 86.28739462003514,
+            "scaleF": 1.549193338482967,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791394726489&to=1791401926489&detailed=true",
+            "issuedAt": "2026-10-07T18:00:00.000Z"
+          },
+          {
+            "family": "nws",
+            "model": "kalshi-index-nws-proxy-v1/recent-innovation-v1",
+            "weight": 0.3333333333333333,
+            "meanF": 86.44232205579166,
+            "scaleF": 2.5,
+            "nu": 5,
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791394726489&to=1791401926489&detailed=true",
+            "issuedAt": "2026-10-07T18:26:42+00:00"
+          }
+        ]
+      },
+      "composition": "lamp:kalshi-index-lamp-proxy-v1/recent-innovation-v1|nbm:kalshi-index-nbh-proxy-v1/recent-innovation-v1|nws:kalshi-index-nws-proxy-v1/recent-innovation-v1",
+      "withinVarianceF2": 8.277777777777777,
+      "betweenVarianceF2": 0.08914631688247335,
+      "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+      "model": "kalshi-index-family-pool-v1/recent-innovation-v1/paired-family-ewa-v1",
+      "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+      "details": {
+        "meanF": 86.15852620458125,
+        "scaleF": 2.240570118696612,
+        "nu": 5,
+        "mixture": {
+          "kind": "student-t-family-pool-v1",
+          "components": [
+            {
+              "family": "lamp",
+              "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+              "weight": 0.3333333333333333,
+              "meanF": 85.74586193791696,
+              "scaleF": 2.5,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791394726489&to=1791401926489&detailed=true",
+              "issuedAt": "2026-10-07T19:30:00.000Z"
+            },
+            {
+              "family": "nbm",
+              "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+              "weight": 0.3333333333333333,
+              "meanF": 86.28739462003514,
+              "scaleF": 1.549193338482967,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791394726489&to=1791401926489&detailed=true",
+              "issuedAt": "2026-10-07T18:00:00.000Z"
+            },
+            {
+              "family": "nws",
+              "model": "kalshi-index-nws-proxy-v1/recent-innovation-v1",
+              "weight": 0.3333333333333333,
+              "meanF": 86.44232205579166,
+              "scaleF": 2.5,
+              "nu": 5,
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791394726489&to=1791401926489&detailed=true",
+              "issuedAt": "2026-10-07T18:26:42+00:00"
+            }
+          ]
+        },
+        "composition": "lamp:kalshi-index-lamp-proxy-v1/recent-innovation-v1|nbm:kalshi-index-nbh-proxy-v1/recent-innovation-v1|nws:kalshi-index-nws-proxy-v1/recent-innovation-v1",
+        "withinVarianceF2": 8.277777777777777,
+        "betweenVarianceF2": 0.08914631688247335,
+        "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+        "mean": 86.15852620458125,
+        "scale": 2.240570118696612,
+        "configVersion": "la-coastal-temperature-v1.0-cal-20261005",
+        "configSource": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+        "stationForecasts": [
+          {
+            "station": "KHHR1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KLAX1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KSMO1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KLGB1M",
+            "weight": 0.2
+          },
+          {
+            "station": "KSNA1M",
+            "weight": 0.2
+          }
+        ],
+        "targetTime": "2026-10-07T20:00:00.000Z",
+        "status": "past-only paired-family exponential weights; physical and market skill unproven"
+      },
+      "station": "index:la-coastal",
+      "validTime": "2026-10-07T20:00:00.000Z",
+      "availableAt": "2026-10-07T19:39:05.592Z",
+      "date": "2026-10-07",
+      "leadHours": 0.3484466666666667,
+      "horizon": "0-3h",
+      "verification": "kalshi-index",
+      "truth": "canonical Kalshi city weather index",
+      "publicationLeadBin": "15-30m",
+      "tradeEligible": false,
+      "comparators": [
+        {
+          "meanF": 86.15852620458125,
+          "scaleF": 2.240570118696612,
+          "nu": 5,
+          "mixture": {
+            "kind": "student-t-family-pool-v1",
+            "components": [
+              {
+                "family": "lamp",
+                "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+                "weight": 0.3333333333333333,
+                "meanF": 85.74586193791696,
+                "scaleF": 2.5,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791394726489&to=1791401926489&detailed=true",
+                "issuedAt": "2026-10-07T19:30:00.000Z"
+              },
+              {
+                "family": "nbm",
+                "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+                "weight": 0.3333333333333333,
+                "meanF": 86.28739462003514,
+                "scaleF": 1.549193338482967,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791394726489&to=1791401926489&detailed=true",
+                "issuedAt": "2026-10-07T18:00:00.000Z"
+              },
+              {
+                "family": "nws",
+                "model": "kalshi-index-nws-proxy-v1/recent-innovation-v1",
+                "weight": 0.3333333333333333,
+                "meanF": 86.44232205579166,
+                "scaleF": 2.5,
+                "nu": 5,
+                "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791394726489&to=1791401926489&detailed=true",
+                "issuedAt": "2026-10-07T18:26:42+00:00"
+              }
+            ]
+          },
+          "composition": "lamp:kalshi-index-lamp-proxy-v1/recent-innovation-v1|nbm:kalshi-index-nbh-proxy-v1/recent-innovation-v1|nws:kalshi-index-nws-proxy-v1/recent-innovation-v1",
+          "withinVarianceF2": 8.277777777777777,
+          "betweenVarianceF2": 0.08914631688247335,
+          "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+          "model": "kalshi-index-family-pool-v1/recent-innovation-v1",
+          "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+          "details": {
+            "meanF": 86.15852620458125,
+            "scaleF": 2.240570118696612,
+            "nu": 5,
+            "mixture": {
+              "kind": "student-t-family-pool-v1",
+              "components": [
+                {
+                  "family": "lamp",
+                  "model": "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+                  "weight": 0.3333333333333333,
+                  "meanF": 85.74586193791696,
+                  "scaleF": 2.5,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791394726489&to=1791401926489&detailed=true",
+                  "issuedAt": "2026-10-07T19:30:00.000Z"
+                },
+                {
+                  "family": "nbm",
+                  "model": "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+                  "weight": 0.3333333333333333,
+                  "meanF": 86.28739462003514,
+                  "scaleF": 1.549193338482967,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791394726489&to=1791401926489&detailed=true",
+                  "issuedAt": "2026-10-07T18:00:00.000Z"
+                },
+                {
+                  "family": "nws",
+                  "model": "kalshi-index-nws-proxy-v1/recent-innovation-v1",
+                  "weight": 0.3333333333333333,
+                  "meanF": 86.44232205579166,
+                  "scaleF": 2.5,
+                  "nu": 5,
+                  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791394726489&to=1791401926489&detailed=true",
+                  "issuedAt": "2026-10-07T18:26:42+00:00"
+                }
+              ]
+            },
+            "composition": "lamp:kalshi-index-lamp-proxy-v1/recent-innovation-v1|nbm:kalshi-index-nbh-proxy-v1/recent-innovation-v1|nws:kalshi-index-nws-proxy-v1/recent-innovation-v1",
+            "withinVarianceF2": 8.277777777777777,
+            "betweenVarianceF2": 0.08914631688247335,
+            "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+            "mean": 86.15852620458125,
+            "scale": 2.240570118696612,
+            "configVersion": "la-coastal-temperature-v1.0-cal-20261005",
+            "configSource": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal/calibrations",
+            "stationForecasts": [
+              {
+                "station": "KHHR1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KLAX1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KSMO1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KLGB1M",
+                "weight": 0.2
+              },
+              {
+                "station": "KSNA1M",
+                "weight": 0.2
+              }
+            ],
+            "targetTime": "2026-10-07T20:00:00.000Z",
+            "status": "prospective ensemble experiment; physical calibration and market advantage unproven"
+          },
+          "station": "index:la-coastal",
+          "validTime": "2026-10-07T20:00:00.000Z",
+          "availableAt": "2026-10-07T19:39:05.592Z",
+          "date": "2026-10-07",
+          "leadHours": 0.3484466666666667,
+          "horizon": "0-3h",
+          "verification": "kalshi-index",
+          "truth": "canonical Kalshi city weather index"
+        }
+      ],
+      "learning": {
+        "id": "paired-family-ewa-v1",
+        "windowDays": 14,
+        "priorDays": 10,
+        "etaPerF": 1,
+        "uniformShare": 0.1,
+        "weights": {
+          "lamp": 0.3333333333333333,
+          "nbm": 0.3333333333333333,
+          "nws": 0.3333333333333333
+        },
+        "regularizedMeanComponentExcessCrpsF": {
+          "lamp": 0,
+          "nbm": 0,
+          "nws": 0
+        },
+        "matchedDates": 0,
+        "matchedSamples": 0,
+        "fitAvailableAt": "2026-10-07T19:39:05.592Z",
+        "outcomeReceiptBoundAt": "2026-10-07T19:39:05.592Z",
+        "sourceDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "witnesses": [],
+        "status": "forward experiment; partial-day updates remain one date contribution; fixed learning rate, prior and window untrained; no calibration, regret-bound, market-edge or profit claim"
+      },
+      "sourceEvidenceId": "1dbaa3ce666891a247cc543c39e0e9bc37459bd4050fd53a5aa43c26c1cf7117",
+      "earlierPublicationCount": 3
+    }
+  ],
+  "changedWeightForecastCount": 4,
+  "compositionColdStartForecastCount": 2,
+  "earlierUniformPublicationsPreserved": true,
+  "evidenceRoundTrip": true,
+  "correlatedPublicationsAreNotIndependentDates": true,
+  "errors": [],
+  "orderEffect": false
+}

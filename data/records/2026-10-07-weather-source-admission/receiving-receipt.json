@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-07T23:07:31.686617+00:00",
+  "sourceCandidates": {
+    "kalshi": {
+      "path": "/home/emsenn/info/lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/data/records/2026-10-07-weather-source-admission/kalshi-source.patch",
+      "sha256": "024bacecac1b150595c7ed007a029e6e8bbafba6a603ae31028c027e902731c0",
+      "bytes": 110266
+    },
+    "operations": {
+      "path": "/home/emsenn/info/lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/data/records/2026-10-07-weather-source-admission/operations-source.patch",
+      "sha256": "5fc9716eee4378479edc1dcef4b68cd2e7059b1379bf1fa30b45f9ea2a35ccb8",
+      "bytes": 15215
+    }
+  },
+  "completePatchesReverseApply": true,
+  "canonicalSdkChangedOnlyForRepeatedQueryKeys": true,
+  "changedModuleSyntaxValid": true,
+  "nativeReceivingArtifact": "receiving-summary.json",
+  "liveAdmission": false,
+  "admissionRequirement": "Cold Red Gate verify-release-admission.mjs requires merged owning-repository PR provenance; no source PR or machine generation created in this turn",
+  "sourceOwners": {
+    "kalshi": "red-cup-engineering/kalshi-engineering-services-section",
+    "operations": "coesite-operations/operations-services-section"
+  },
+  "ordersPlaced": 0,
+  "sharedHouseRestarted": false
+}

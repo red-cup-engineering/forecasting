@@ -1,0 +1,60 @@
+{
+  "kind": "source-patchset",
+  "version": 1,
+  "disposition": "candidate",
+  "reason": "Retain at most three admitted field tasks during complete ordered ensemble projection; hash each field once and retain the actual station geometry and receipt evidence in partial and complete snapshots.",
+  "changes": [
+    {
+      "operation": "edit",
+      "path": "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-ecmwf-decode.py",
+      "inputSha256": "0e48a3f01e62042e7924d31207937cfa4f9314dc8201669070a27c96a3d7e6da",
+      "replacements": [
+        {
+          "before": "import eccodes\n",
+          "after": "import eccodes\nfrom collections import deque\n"
+        },
+        {
+          "before": "    paths={};projected={};metadata=None;missing=[]\n",
+          "after": "    paths={};projected={};metadata=None;missing=[];field_sha256=sha(b)\n"
+        },
+        {
+          "before": "{\"field\":sha(b),\"run\":str(run)",
+          "after": "{\"field\":field_sha256,\"run\":str(run)"
+        },
+        {
+          "before": "def assemble(root,run,records,indices,valids,options):\n",
+          "after": "def acquired_records(pool,records,download):\n    # Keep three admitted field tasks, rather than materializing every member's\n    # bytes in completed futures while projection consumes the ensemble in order.\n    records=iter(records);pending=deque()\n    for _ in range(3):\n        try: record=next(records)\n        except StopIteration: break\n        pending.append(pool.submit(download,record))\n    while pending:\n        future=pending.popleft();result=future.result();del future\n        yield result\n        del result\n        try: record=next(records)\n        except StopIteration: continue\n        pending.append(pool.submit(download,record))\n\ndef assemble(root,run,records,indices,valids,options):\n"
+        },
+        {
+          "before": "        for record,b,receipt in pool.map(download,records):",
+          "after": "        for record,b,receipt in acquired_records(pool,records,download):"
+        }
+      ],
+      "clauses": [
+        "all-members-sites-retained",
+        "bounded-field-residence",
+        "exact-operator-preserved",
+        "immutable-field-receipts",
+        "station-geometry-evidence"
+      ]
+    },
+    {
+      "operation": "edit",
+      "path": "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-evidence.mjs",
+      "inputSha256": "ea3a53b49b6400a51b0001bdfb3dd48a16b6ca7bf1f9100a2b2b478dbd403dbf",
+      "replacements": [
+        {
+          "before": "guidance,hourlyGuidance,quantiles,lamp,settlement,local,observations,relational,ecmwfEnsemble,errors,\n    acquisition:",
+          "after": "guidance,hourlyGuidance,quantiles,lamp,settlement,local,observations,stationMetadata,relational,ecmwfEnsemble,errors,\n    acquisition:"
+        }
+      ],
+      "clauses": [
+        "all-members-sites-retained",
+        "bounded-field-residence",
+        "exact-operator-preserved",
+        "immutable-field-receipts",
+        "station-geometry-evidence"
+      ]
+    }
+  ]
+}

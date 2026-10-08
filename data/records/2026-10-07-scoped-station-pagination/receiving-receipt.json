@@ -1,0 +1,26 @@
+{
+  "status": "scoped acquisition accepted; whole-cycle freshness remains unmet",
+  "usefulEffect": "Fresh, scoped station evidence reaches the existing forecast and market-participation readers without collecting unrelated days.",
+  "sourcePatchset": "source-patchset.json",
+  "controlledReceiving": "controlled-receiving.json",
+  "nativeReceiving": "native-receiving.json",
+  "nativeEvidence": "producer-evidence.json.gz",
+  "liveContinuationProbe": "scoped-pagination-probe.json",
+  "deployment": "runtime-only-receipt.json",
+  "limits": [
+    "Two-station receiving alone does not establish full-cycle reliability.",
+    "Measurement-aware forecasts have no demonstrated prospective skill yet.",
+    "Residual-capital probabilities and usable-cash times remain unvalidated scenarios.",
+    "Existing installed native reader is available; HTTP transport and new-tool source admission are separate unresolved work."
+  ],
+  "ordersPlaced": 0,
+  "wholeCycleReceiving": "whole-cycle-receiving.json",
+  "installedNativeReaderReceiving": "native-reader-receiving.json",
+  "wholeCycleTerminal": "timeout",
+  "newWholeCyclePublication": false,
+  "wholeCycleResourceLimitsUnchanged": true,
+  "wholeCycleElapsedSeconds": 541,
+  "observedFailure": "No new weather evidence archive or latest publication before the existing worker deadline; settlement scoring completed, but no later stage published.",
+  "publicTransportAttempt": "Read-only help weather through existing connector timed out; weather HTTP transport remains unverified.",
+  "goalComplete": false
+}

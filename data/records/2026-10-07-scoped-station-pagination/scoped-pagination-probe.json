@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-08T00:14:06.633530+00:00",
+  "url": "https://api.weather.gov/stations/KMIA/observations?cursor=eyJzIjoiMjAyNi0xMC0wN1QwNTowMDowMCswMDowMCJ9&start=2026-10-07T05%3A00%3A00.000Z&end=2026-10-08T00%3A04%3A37.939Z&limit=500",
+  "status": 200,
+  "features": 0,
+  "pagination": null,
+  "sha256": "a59a1df06b9b1bd3629d880e75e40784a40d5c9c7be28a87a9bd4c48ad39169e",
+  "elapsedSeconds": 0.415743,
+  "scope": {
+    "start": [
+      "2026-10-07T05:00:00.000Z"
+    ],
+    "end": [
+      "2026-10-08T00:04:37.939Z"
+    ],
+    "limit": [
+      "500"
+    ]
+  },
+  "station": "KMIA"
+}

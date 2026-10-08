@@ -1,0 +1,22 @@
+{
+  "kind": "source-patchset-stage",
+  "version": 1,
+  "inventorySha256": "5cc82923a2dc7880a02091cc27779d3dd8befd69dbb81b9b5481f81b3ac966c9",
+  "candidateSha256": "367bbaef065622e321ab353300735c71e7ac9590c29d3bd3b491f9486f46ea64",
+  "materializerSha256": "40e2f54798ff33e388191744000c934a7ff162cca800be84ead68ad964585f98",
+  "inputs": {
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-evidence.mjs": {
+      "state": "present",
+      "sha256": "54729863d306c308a8e64c5987c3c436328130fb0434dcbe000af54ef61118e5",
+      "mode": 420
+    }
+  },
+  "outputs": {
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-evidence.mjs": {
+      "state": "present",
+      "sha256": "bc0116ac1e39090fe94c96c9b5dd53655e939c945eebd4c11297e461fe815bc5",
+      "mode": 420
+    }
+  },
+  "disposition": "staged-unaccepted"
+}

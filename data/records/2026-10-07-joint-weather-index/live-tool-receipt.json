@@ -1,0 +1,170 @@
+{
+  "at": "2026-10-07T17:54:18.254Z",
+  "hostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/73a5411af5c7c2956baa5865c54944011cbca97d9f288666c23ddc551037eb03",
+  "evidenceId": "432e604addb594fdaf3ac01e2330a7c51f44020bb5f99d79777aa0bdeadba90e",
+  "wallMs": 34212,
+  "sourceRuntime": "2026-10-07T06:00:00Z",
+  "sourceAvailableAt": "2026-10-07T17:54:14.123999Z",
+  "fields": 51,
+  "stations": 18,
+  "firstPublished": 6,
+  "certifiedMethodologies": {
+    "nyc": {
+      "sha256": "9942610d44ac4236207dc1ec68a711ecec20dc1d97b3d878ff567fca63d7d959",
+      "availableAt": "2026-10-07T17:53:44.678Z",
+      "quorum": {
+        "members": 7,
+        "weight": 0.875
+      },
+      "configurationVersion": "1.0",
+      "compatible": false,
+      "blocker": "no usable published index configuration"
+    },
+    "miami": {
+      "sha256": "f7acb398f739ef0b4745e9ae4cbf19b9834676ca4316a81af5c7e3c2c4d20a87",
+      "availableAt": "2026-10-07T17:53:44.641Z",
+      "quorum": {
+        "members": 4,
+        "weight": 0.8
+      },
+      "configurationVersion": "1.0",
+      "compatible": false,
+      "blocker": "no usable published index configuration"
+    },
+    "la-coastal": {
+      "sha256": "216bf34b214613a1b2134511b6887bd1be070dbaaf7e5aa50e16b1dc4f421a6e",
+      "availableAt": "2026-10-07T17:53:44.722Z",
+      "quorum": {
+        "members": 4,
+        "weight": 0.8
+      },
+      "configurationVersion": "1.0",
+      "compatible": false,
+      "blocker": "no usable published index configuration"
+    },
+    "chicago": {
+      "sha256": "eeeb92b5156d194e95c0e88c8e40fa619852a12419ce3b858d28847612899a44",
+      "availableAt": "2026-10-07T17:53:44.700Z",
+      "quorum": {
+        "members": 4,
+        "weight": 0.8
+      },
+      "configurationVersion": "1.1",
+      "compatible": false,
+      "blocker": "contract configuration v1.1 conflicts with published configuration v1.0"
+    }
+  },
+  "forecasts": [
+    {
+      "station": "index:nyc",
+      "model": "kalshi-index-aifs-joint-v1",
+      "availableAt": "2026-10-07T17:54:14.981Z",
+      "validTime": "2026-10-07T18:00:00.000Z",
+      "meanF": 64.71532709739144,
+      "scaleF": 0.5635621640761792,
+      "empiricalMembers": 51,
+      "methodologySha256": "9942610d44ac4236207dc1ec68a711ecec20dc1d97b3d878ff567fca63d7d959"
+    },
+    {
+      "station": "index:nyc",
+      "model": "kalshi-index-family-pool-with-aifs-v2",
+      "availableAt": "2026-10-07T17:54:14.981Z",
+      "validTime": "2026-10-07T18:00:00.000Z",
+      "meanF": 65.65510903246381,
+      "scaleF": 1.671448811631969,
+      "mixtureFamilies": [
+        "ecmwf-aifs",
+        "lamp",
+        "nbm"
+      ]
+    },
+    {
+      "station": "index:miami",
+      "model": "kalshi-index-aifs-joint-v1",
+      "availableAt": "2026-10-07T17:54:14.981Z",
+      "validTime": "2026-10-07T18:00:00.000Z",
+      "meanF": 86.639259643812,
+      "scaleF": 1.1443355363271468,
+      "empiricalMembers": 51,
+      "methodologySha256": "f7acb398f739ef0b4745e9ae4cbf19b9834676ca4316a81af5c7e3c2c4d20a87"
+    },
+    {
+      "station": "index:miami",
+      "model": "kalshi-index-family-pool-with-aifs-v2",
+      "availableAt": "2026-10-07T17:54:14.981Z",
+      "validTime": "2026-10-07T18:00:00.000Z",
+      "meanF": 87.359814910953,
+      "scaleF": 2.217705105176569,
+      "mixtureFamilies": [
+        "ecmwf-aifs",
+        "lamp",
+        "nbm",
+        "nws"
+      ]
+    },
+    {
+      "station": "index:la-coastal",
+      "model": "kalshi-index-aifs-joint-v1",
+      "availableAt": "2026-10-07T17:54:14.981Z",
+      "validTime": "2026-10-07T18:00:00.000Z",
+      "meanF": 84.78266847829588,
+      "scaleF": 1.4210423849445255,
+      "empiricalMembers": 51,
+      "methodologySha256": "216bf34b214613a1b2134511b6887bd1be070dbaaf7e5aa50e16b1dc4f421a6e"
+    },
+    {
+      "station": "index:la-coastal",
+      "model": "kalshi-index-family-pool-with-aifs-v2",
+      "availableAt": "2026-10-07T17:54:14.981Z",
+      "validTime": "2026-10-07T18:00:00.000Z",
+      "meanF": 86.59422282609863,
+      "scaleF": 2.7248802847921962,
+      "mixtureFamilies": [
+        "ecmwf-aifs",
+        "lamp",
+        "nbm"
+      ]
+    }
+  ],
+  "registeredForecasts": [
+    {
+      "station": "index:nyc",
+      "model": "kalshi-index-aifs-joint-v1",
+      "availableAt": "2026-10-07T17:54:14.981Z",
+      "validTime": "2026-10-07T18:00:00.000Z"
+    },
+    {
+      "station": "index:nyc",
+      "model": "kalshi-index-family-pool-with-aifs-v2",
+      "availableAt": "2026-10-07T17:54:14.981Z",
+      "validTime": "2026-10-07T18:00:00.000Z"
+    },
+    {
+      "station": "index:miami",
+      "model": "kalshi-index-aifs-joint-v1",
+      "availableAt": "2026-10-07T17:54:14.981Z",
+      "validTime": "2026-10-07T18:00:00.000Z"
+    },
+    {
+      "station": "index:miami",
+      "model": "kalshi-index-family-pool-with-aifs-v2",
+      "availableAt": "2026-10-07T17:54:14.981Z",
+      "validTime": "2026-10-07T18:00:00.000Z"
+    },
+    {
+      "station": "index:la-coastal",
+      "model": "kalshi-index-aifs-joint-v1",
+      "availableAt": "2026-10-07T17:54:14.981Z",
+      "validTime": "2026-10-07T18:00:00.000Z"
+    },
+    {
+      "station": "index:la-coastal",
+      "model": "kalshi-index-family-pool-with-aifs-v2",
+      "availableAt": "2026-10-07T17:54:14.981Z",
+      "validTime": "2026-10-07T18:00:00.000Z"
+    }
+  ],
+  "errors": [],
+  "orderEffect": false,
+  "prospectiveSkillClaim": false
+}

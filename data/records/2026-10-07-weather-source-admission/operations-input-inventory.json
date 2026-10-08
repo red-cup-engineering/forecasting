@@ -1,0 +1,17 @@
+{
+  "kind": "source-patchset-input",
+  "version": 1,
+  "sourceRoot": "/tmp/weather-source-admission-83dec53aab404a86899c902c1ee3c345/operations",
+  "files": {
+    "apps/group-operations/src/weather-network.mjs": {
+      "state": "present",
+      "sha256": "6f64ad4cec940d899b1778380a25ad16e79650be59a116742ab2de851d5aa3c4"
+    }
+  },
+  "clauses": [
+    "owning-source-weather-closure",
+    "native-capability-admission",
+    "canonical-venue-client-preserved",
+    "original-forecast-lane-retained"
+  ]
+}

@@ -1,0 +1,44 @@
+{
+  "observationPages": 4,
+  "paginationScopePreserved": true,
+  "at": "2026-10-08T00:19:10.545Z",
+  "route": "isolated owning-source candidate weatherStationEvidence using admitted dependencies",
+  "evidenceId": "4fa74dc5cd5d6958fa3a11a8961663a605ed35074e06d557ed60ebde922351c9",
+  "sourceEvidenceId": "ae0ecb68e6be2fd41904482731423260207bedbb6c5659baf2a0cca0ebadf0d3",
+  "cells": {
+    "KMIA/2026-10-07": {
+      "legacyPointCount": 225,
+      "identified": 16,
+      "conflicted": 0,
+      "unidentified": 209,
+      "statusCounts": {
+        "precision-unidentified": 209,
+        "identified": 16
+      }
+    },
+    "KABQ/2026-10-07": {
+      "legacyPointCount": 196,
+      "identified": 11,
+      "conflicted": 0,
+      "unidentified": 185,
+      "statusCounts": {
+        "precision-unidentified": 185,
+        "identified": 11
+      }
+    }
+  },
+  "newPhysicalForecasts": 96,
+  "legacyPhysicalForecasts": 474,
+  "allNewForecastsProspective": true,
+  "reportedCellSkillEstablished": false,
+  "coldWeightsUntrained": true,
+  "verifiedRawPages": 4,
+  "receivingElapsedSeconds": 62.763619998,
+  "cpuSeconds": 7.256432,
+  "peakRssMiB": 294.44921875,
+  "httpReads": 26,
+  "httpWrites": 0,
+  "errors": [],
+  "ordersPlaced": 0,
+  "liveStationScienceChanged": false
+}

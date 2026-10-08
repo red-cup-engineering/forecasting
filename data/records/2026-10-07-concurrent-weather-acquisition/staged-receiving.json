@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-07T22:39:14.907Z",
+  "receiving": "passed",
+  "realArchivedSourceSha256": "71989946bc134558849d42a36bb2838cf67ddee1d4082345dd37689ad1ac0b1f",
+  "semanticProjectionAndRequestMultisetUnchanged": true,
+  "observationsStartBeforeDelayedGuidance": true,
+  "maxActiveSourceProviders": 3,
+  "declaredSerialFixtureMs": 830.629543,
+  "declaredConcurrentFixtureMs": 259.7749510000001,
+  "partialSourceFailurePreserved": true,
+  "rainModelsPreserved": true,
+  "performanceScope": "controlled producer delays and retained real NWS response bytes; not live latency estimate",
+  "assessor": "same primary, deterministic receiving; not independent certification"
+}

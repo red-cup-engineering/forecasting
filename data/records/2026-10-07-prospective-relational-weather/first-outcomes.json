@@ -1,0 +1,183 @@
+{
+  "at": "2026-10-07T17:18:07.097405+00:00",
+  "outcomes": [
+    {
+      "evidenceId": "b915ae6bd5acf22acac6c3b51fcdc0aae3a1184d772b9441ac2422a7822ab865",
+      "id": "880e67b1c301d3a2dcf852ec86b973fb09ba6aac36006c08f2f0fe5a884a0b88",
+      "station": "KMIA",
+      "publishedAt": "2026-10-07T16:36:36.429Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "meanF": 86.95795127089141,
+      "observation": {
+        "at": "2026-10-07T16:53:00.000Z",
+        "temperatureF": 86,
+        "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=MIA&station=FLL&station=OPF&year1=2026&month1=10&day1=5&year2=2026&month2=10&day2=8&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+        "sourceId": "19c7359e1121014ffbf08daf2d41bb71b74a0f009d64b006d263c29121d3d512",
+        "availableAt": "2026-10-07T17:09:36.291Z",
+        "binAt": "2026-10-07T17:00:00.000Z",
+        "witnesses": [
+          {
+            "sourceId": "19c7359e1121014ffbf08daf2d41bb71b74a0f009d64b006d263c29121d3d512",
+            "row": 191
+          }
+        ]
+      },
+      "errorF": -0.9579512708914137,
+      "crpsF": 0.6505559640914957
+    },
+    {
+      "evidenceId": "b915ae6bd5acf22acac6c3b51fcdc0aae3a1184d772b9441ac2422a7822ab865",
+      "id": "eb78ce4e23b2cbc1206abeba08ecd3e8f2ac0209a04c7bd5831a2254de51dd8b",
+      "station": "KFLL",
+      "publishedAt": "2026-10-07T16:36:36.429Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "meanF": 87.65240207723411,
+      "observation": {
+        "at": "2026-10-07T16:53:00.000Z",
+        "temperatureF": 89,
+        "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=MIA&station=FLL&station=OPF&year1=2026&month1=10&day1=5&year2=2026&month2=10&day2=8&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+        "sourceId": "19c7359e1121014ffbf08daf2d41bb71b74a0f009d64b006d263c29121d3d512",
+        "availableAt": "2026-10-07T17:09:36.291Z",
+        "binAt": "2026-10-07T17:00:00.000Z",
+        "witnesses": [
+          {
+            "sourceId": "19c7359e1121014ffbf08daf2d41bb71b74a0f009d64b006d263c29121d3d512",
+            "row": 193
+          }
+        ]
+      },
+      "errorF": 1.3475979227658854,
+      "crpsF": 0.8550060874989498
+    },
+    {
+      "evidenceId": "b915ae6bd5acf22acac6c3b51fcdc0aae3a1184d772b9441ac2422a7822ab865",
+      "id": "b49f5471172c76f4e50dd8b9da6b317696b7a6b7ff8d3045b76f86bd2c7b5e58",
+      "station": "KOPF",
+      "publishedAt": "2026-10-07T16:36:36.429Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "meanF": 88.17021169807974,
+      "observation": {
+        "at": "2026-10-07T16:53:00.000Z",
+        "temperatureF": 89,
+        "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=MIA&station=FLL&station=OPF&year1=2026&month1=10&day1=5&year2=2026&month2=10&day2=8&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+        "sourceId": "19c7359e1121014ffbf08daf2d41bb71b74a0f009d64b006d263c29121d3d512",
+        "availableAt": "2026-10-07T17:09:36.291Z",
+        "binAt": "2026-10-07T17:00:00.000Z",
+        "witnesses": [
+          {
+            "sourceId": "19c7359e1121014ffbf08daf2d41bb71b74a0f009d64b006d263c29121d3d512",
+            "row": 192
+          }
+        ]
+      },
+      "errorF": 0.8297883019202601,
+      "crpsF": 0.47977751537934343
+    },
+    {
+      "evidenceId": "ddc99973ed83f14c04f492c481e8b4dc9fd034325e65ac0b43fbb30fe7c6a6bc",
+      "id": "23616e9dfeb62a9f89f114d53644b70eea156ceab3807399aeec03dd7e3b424b",
+      "station": "KJFK",
+      "publishedAt": "2026-10-07T16:36:29.594Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "meanF": 64.12601703061398,
+      "observation": {
+        "at": "2026-10-07T16:51:00.000Z",
+        "temperatureF": 64,
+        "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=JFK&station=LGA&station=EWR&station=HPN&year1=2026&month1=10&day1=5&year2=2026&month2=10&day2=8&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+        "sourceId": "f1266bd3b7aef3ad7ac04cbb3fb2137efdfafd687d837018f3b12dab0f736450",
+        "availableAt": "2026-10-07T17:09:34.450Z",
+        "binAt": "2026-10-07T17:00:00.000Z",
+        "witnesses": [
+          {
+            "sourceId": "f1266bd3b7aef3ad7ac04cbb3fb2137efdfafd687d837018f3b12dab0f736450",
+            "row": 256
+          }
+        ]
+      },
+      "errorF": -0.12601703061397984,
+      "crpsF": 0.24310811555137968
+    },
+    {
+      "evidenceId": "ddc99973ed83f14c04f492c481e8b4dc9fd034325e65ac0b43fbb30fe7c6a6bc",
+      "id": "7b3967ce55c8325e7e32508ec5a005bdbef026daf35a1bb1e6644d98b9b5f38b",
+      "station": "KLGA",
+      "publishedAt": "2026-10-07T16:36:29.594Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "meanF": 65.2921505750595,
+      "observation": {
+        "at": "2026-10-07T16:51:00.000Z",
+        "temperatureF": 65,
+        "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=JFK&station=LGA&station=EWR&station=HPN&year1=2026&month1=10&day1=5&year2=2026&month2=10&day2=8&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+        "sourceId": "f1266bd3b7aef3ad7ac04cbb3fb2137efdfafd687d837018f3b12dab0f736450",
+        "availableAt": "2026-10-07T17:09:34.450Z",
+        "binAt": "2026-10-07T17:00:00.000Z",
+        "witnesses": [
+          {
+            "sourceId": "f1266bd3b7aef3ad7ac04cbb3fb2137efdfafd687d837018f3b12dab0f736450",
+            "row": 257
+          }
+        ]
+      },
+      "errorF": -0.2921505750594946,
+      "crpsF": 0.22513624454143183
+    },
+    {
+      "evidenceId": "ddc99973ed83f14c04f492c481e8b4dc9fd034325e65ac0b43fbb30fe7c6a6bc",
+      "id": "c481c5db51fb0bade25e9932ecce669d24c6479ce983efb20fae66ab4e84f9d4",
+      "station": "KEWR",
+      "publishedAt": "2026-10-07T16:36:29.594Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "meanF": 65.57393668406311,
+      "observation": {
+        "at": "2026-10-07T16:51:00.000Z",
+        "temperatureF": 65,
+        "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=JFK&station=LGA&station=EWR&station=HPN&year1=2026&month1=10&day1=5&year2=2026&month2=10&day2=8&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+        "sourceId": "f1266bd3b7aef3ad7ac04cbb3fb2137efdfafd687d837018f3b12dab0f736450",
+        "availableAt": "2026-10-07T17:09:34.450Z",
+        "binAt": "2026-10-07T17:00:00.000Z",
+        "witnesses": [
+          {
+            "sourceId": "f1266bd3b7aef3ad7ac04cbb3fb2137efdfafd687d837018f3b12dab0f736450",
+            "row": 255
+          }
+        ]
+      },
+      "errorF": -0.5739366840631135,
+      "crpsF": 0.36742435518109806
+    },
+    {
+      "evidenceId": "ddc99973ed83f14c04f492c481e8b4dc9fd034325e65ac0b43fbb30fe7c6a6bc",
+      "id": "a117b518ec0f62312120134fd991e3ebc5e86bb98c07d586438d049dce15b4f0",
+      "station": "KHPN",
+      "publishedAt": "2026-10-07T16:36:29.594Z",
+      "validTime": "2026-10-07T17:00:00.000Z",
+      "earliestTargetObservationAt": "2026-10-07T16:40:00.000Z",
+      "meanF": 63.348161506407195,
+      "observation": {
+        "at": "2026-10-07T16:56:00.000Z",
+        "temperatureF": 63,
+        "source": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=JFK&station=LGA&station=EWR&station=HPN&year1=2026&month1=10&day1=5&year2=2026&month2=10&day2=8&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+        "sourceId": "f1266bd3b7aef3ad7ac04cbb3fb2137efdfafd687d837018f3b12dab0f736450",
+        "availableAt": "2026-10-07T17:09:34.450Z",
+        "binAt": "2026-10-07T17:00:00.000Z",
+        "witnesses": [
+          {
+            "sourceId": "f1266bd3b7aef3ad7ac04cbb3fb2137efdfafd687d837018f3b12dab0f736450",
+            "row": 258
+          }
+        ]
+      },
+      "errorF": -0.34816150640719457,
+      "crpsF": 0.30755234170922463
+    }
+  ],
+  "comparisonAvailable": false,
+  "skillGainClaim": false,
+  "orderEffect": false
+}

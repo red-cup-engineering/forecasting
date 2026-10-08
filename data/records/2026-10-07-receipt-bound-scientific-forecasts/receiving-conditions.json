@@ -1,0 +1,14 @@
+{
+  "kind": "scientific-publication-receiving-conditions",
+  "version": 1,
+  "conditions": [
+    "immutable bytes precede pending state registration",
+    "published law integrity and scope required to grade",
+    "late publication refuses prospective registration",
+    "truth selection independent of forecast availability",
+    "replay cannot enter live grading",
+    "legacy pending preserved without duplicate registration",
+    "unknown maps and Unicode survive bounded JSON I/O",
+    "immutable law distribution unchanged by receipt metadata"
+  ]
+}

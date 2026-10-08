@@ -1,0 +1,17 @@
+{
+  "effect": "Retain climate-day/time scope through station observation pagination and remove acquisition of unrelated older days.",
+  "shall": [
+    "Every request stays on the original origin and station observation path.",
+    "Every continuation retains original start/end/limit and opaque cursor.",
+    "Preserve required multi-page observations, conflicting measurement witnesses and exact raw bytes.",
+    "No early-stop assumption based on ordering or feature count.",
+    "Preserve original point projections, rain witnesses and new report-cell projections on the requested window."
+  ],
+  "receiving": [
+    "Natively probe cursor combined with original start/end/limit.",
+    "Controlled sparse and dense pagination, rewritten scope, looping links and off-origin/path refusals.",
+    "Replay native archived first pages and compare required-window measurement/forecast projections.",
+    "Receive through real retained producer, then verify routine full-market publication at existing limits."
+  ],
+  "inputSha256": "de46276f264e483f33c181018a30e8ccd892c61d4332d767652037fcfac8f93d"
+}

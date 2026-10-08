@@ -1,0 +1,70 @@
+{
+  "kind": "source-patchset",
+  "version": 1,
+  "disposition": "candidate",
+  "reason": "Publish source-derived physical probabilities independently of scientific outcome fitting and venue prices; preserve the completed refined publication and give direct projections their own prospective cohort.",
+  "changes": [
+    {
+      "operation": "edit",
+      "path": "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-engine.mjs",
+      "inputSha256": "1777e231f5a919744ae424a399e74d80384902768de193c4eff18aae5384f38e",
+      "replacements": [
+        {
+          "before": "async function archiveWeatherEvidence(evidence,root) {",
+          "after": "async function archiveWeatherEvidence(evidence,root,{sourceProjection=false}={}) {"
+        },
+        {
+          "before": "  try{evidence.science=await locked(join(root,'station-science'),()=>updateStationScience",
+          "after": "  if(sourceProjection)evidence.science={status:'source projection; scientific outcome scoring and refinement await complete acquisition',parameters:{},forecasts:[],outcomes:[]};\n  else try{evidence.science=await locked(join(root,'station-science'),()=>updateStationScience"
+        },
+        {
+          "before": "    const scoring=await scorePending(root,client,now);",
+          "after": "    let scoring={settled:0,pending:null,errors:[],grades:await read(join(root,'grades.json'),{}),status:'venue outcome scoring awaits completed acquisition'};"
+        },
+        {
+          "before": "    const publish=async evidence=>{\n    const evidenceId=await archiveWeatherEvidence(evidence,root);",
+          "after": "    const publish=async (evidence,{sourceProjection=false}={})=>{\n    const evidenceId=await archiveWeatherEvidence(evidence,root,{sourceProjection});\n    if(!sourceProjection)scoring=await scorePending(root,client,Date.now());"
+        },
+        {
+          "before": "    for(let i=0;i<quoted.length;i+=100){",
+          "after": "    for(let i=0;!sourceProjection&&i<quoted.length;i+=100){"
+        },
+        {
+          "before": "    const ex=await experiments(root,contracts,decisionNow),pending=await read(join(root,'pending.json'),{}),rows=[],opportunities=[];",
+          "after": "    const ex=sourceProjection?new Map():await experiments(root,contracts,decisionNow),pending=await read(join(root,'pending.json'),{}),rows=[],opportunities=[];"
+        },
+        {
+          "before": "      const s=stage(c,decisionNow)+(evidence.acquisition?.complete===false?'/during-acquisition-v1':''),models=weatherEstimates(c,evidence,decisionNow);",
+          "after": "      const s=stage(c,decisionNow)+(sourceProjection?'/source-projection-v1':evidence.acquisition?.complete===false?'/during-acquisition-v1':''),models=weatherEstimates(c,evidence,decisionNow);"
+        },
+        {
+          "before": "      if(models.length&&midpoint!==null&&c.status==='active'&&Date.parse(c.close_time)>Date.now()){",
+          "after": "      if(models.length&&(sourceProjection||midpoint!==null)&&c.status==='active'&&Date.parse(c.close_time)>Date.now()){"
+        },
+        {
+          "before": "      try{opportunities.push(...await quoteWeatherContract(c,modelBands,evidence,client));}catch(e){row.bookError=e.message;}",
+          "after": "      if(!sourceProjection)try{opportunities.push(...await quoteWeatherContract(c,modelBands,evidence,client));}catch(e){row.bookError=e.message;}"
+        },
+        {
+          "before": "    const result={science,at:new Date().toISOString(),collectionStartedAt:",
+          "after": "    const result={science,...(sourceProjection?{forecastLane:'source-projection-v1'}:{}),at:new Date().toISOString(),collectionStartedAt:"
+        },
+        {
+          "before": "      return Boolean(await publish(packet));",
+          "after": "      return Boolean(await publish(packet,{sourceProjection:true}));"
+        },
+        {
+          "before": "const b=c.binding,stageValue=stage(c,Date.parse(receivedAt)),bands=",
+          "after": "const b=c.binding,stageValue=stage(c,Date.parse(receivedAt))+(state.forecastLane==='source-projection-v1'?'/source-projection-v1':state.evidenceComplete===false?'/during-acquisition-v1':''),bands="
+        }
+      ],
+      "clauses": [
+        "source-law-before-learning",
+        "market-capture-separate",
+        "complete-refinement-preserved",
+        "independent-prospective-cohort",
+        "all-markets-retained"
+      ]
+    }
+  ]
+}

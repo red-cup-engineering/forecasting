@@ -198,12 +198,13 @@ export async function runScoreClosedMarkets({ configPath, dataRoot, now, request
 
   let calibrationRowsWritten = 0;
   for (const observation of settled) {
-    if (observation.result !== "yes" && observation.result !== "no") continue;
-    const outcome = observation.result === "yes" ? 1 : 0;
+    if (!observation.settlement) continue;
+    const outcome = observation.settlement.outcome;
     const questionId = questionIdFromTicker(observation.ticker);
     const referenceClass = referenceClassFromSeries(observation.seriesTicker);
     const forecastRows = forecastJournal.query({ category: FORECAST_CATEGORY }).filter((row) => row.record.questionId === questionId);
     for (const row of forecastRows) {
+      if (!Number.isFinite(Date.parse(row.recordedAt)) || Date.parse(row.recordedAt) >= Date.parse(observation.settlement.settledAt)) continue;
       if (scored.has(row.id)) continue;
       const source = row.record.evidenceCitations?.[0]?.source;
       const kind = source === MARKET_EVIDENCE_SOURCE ? "market" : source === HOUSE_EVIDENCE_SOURCE ? "house" : null;
@@ -215,7 +216,7 @@ export async function runScoreClosedMarkets({ configPath, dataRoot, now, request
       calibrationJournal.record({
         category: CALIBRATION_CATEGORY,
         recordedAt: observedAt,
-        record: { referenceClass, forecastId: row.id, questionId, kind, probability, outcome, brierScore: brier, logScore: log, logScoreUndefinedReason, scoredAt: observedAt },
+        record: { referenceClass, forecastId: row.id, questionId, kind, probability, outcome, brierScore: brier, logScore: log, logScoreUndefinedReason, scoredAt: observedAt, settlement: observation.settlement },
         told: { for: true, against: false },
       });
       scored.add(row.id);

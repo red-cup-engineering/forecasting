@@ -1,0 +1,31 @@
+{
+  "effect": "Supplement point-weather learning with a forecast-family learner evaluated on source-supported reported-temperature intervals.",
+  "carrier": "NWS exact response pages -> station temperature-report cells -> prospective station science outcomes and matched family comparisons -> new weighted forecast law. Existing point forecasts and fits retained.",
+  "shall": [
+    "No inference of reporting precision from an integer API temperature or a five-minute clock alone.",
+    "Use validated same-station/time raw METAR tenths/whole encodings; keep unknown precision and contradictions as witnesses.",
+    "Report-cell CRPS and shared-cell paired gain extrema are exact for empirical atoms and existing 41-node Student-t scoring approximation.",
+    "New learner uses past received paired upper excess losses, date weighting, fixed untrained prior/rate and explicit separate verification.",
+    "Exclude target observations already occurring at publication; never use future cell or score receipts.",
+    "Demonstrate changed weights and forecasts under deterministic prequential inputs, then publish new hypotheses via Cold Red Gate without claiming skill."
+  ],
+  "receiving": [
+    "METAR sign, cells, missing header/QC, API-only unknown precision, incompatible encoding, duplicate identity and pages, foreign/future reports.",
+    "Direct atom-law scoring across every knot and dense grids verifies cell CRPS/gain bounds; paired extrema tighter than separate unrelated intervals.",
+    "Legacy point learner byte-structure and legacy observation projections unchanged.",
+    "Synthetic paired observations score BEFORE learning and produce changed future mixtures; future score receipts excluded.",
+    "Native source pages exact-byte verified; report-cell models published and archived; no order effect."
+  ],
+  "sourceHashes": {
+    "src/station-observations.mjs": "d2d3083f7a601a1cc000942fac1387ae66f04740d6ab2806365de3238a35cf56",
+    "src/weather-ensemble.mjs": "42ef1206682eb082e6c71f0589d5c4ae7537e1f0a41dea4a6b10e6d910cac8af",
+    "src/weather-family-learning.mjs": "70df982962ce1edf400ec26bb91539d5592faa4a1c5c0009909cf18a312dffa6",
+    "src/station-weather-science.mjs": "e3a94fbc24a904273dbe9f4f9cec9d0e3c79a1ea323df9557ad296623c158bda",
+    "README-weather.md": "75fb5d2fa827c76b873cf85b092c12bac7aa3368c5165e5c1166cfac58d7971c"
+  },
+  "primarySources": [
+    "https://www.weather.gov/lot/weather_observations_faq",
+    "https://www.weather.gov/lox/asostemperature",
+    "https://www.weather.gov/documentation/services-web-api"
+  ]
+}

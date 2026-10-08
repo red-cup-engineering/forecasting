@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-08T04:13:49.204Z",
+  "installedHouse": "/gnu/store/vpx1qghvayx293bdblxiigjvhc7k8n9c-cold-red-gate-deployment-1",
+  "root": "/tmp/weather-stream-profile-8f751c15f8144aa8a997f99153e9f6f1/candidate-out",
+  "evidenceId": "a37a434c22f0987099ddbbb3564f9c238c3eadc7e9bfb26d9bc86003ac0eb59d",
+  "nativeStreamedFullPacketReaderVerified": true,
+  "configuredArchiveScopeVerifiedByMissingFile": true,
+  "physicalForecasts": 11384,
+  "scope": "isolated streamed copy of actual archived full producer evidence; not a new live forecast or full cycle",
+  "ordersPlaced": 0
+}

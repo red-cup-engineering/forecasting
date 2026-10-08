@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-07T05:21:35.131Z",
+  "runtime": "/home/emsenn/.local/share/561-group/weather-research/releases/fb14237c6bce02ea250335d0e94fb69996351dc657a8ec482611c1c6dc297c02",
+  "importedModules": 31,
+  "allModulesInsideRetainedRuntime": true,
+  "evidenceId": "2a8f88d0b1c41776e7bcd4b0e860637a50afc692293d6105a639ae3585f862c8",
+  "sourceEvidenceId": "99b4d3c544162ec12508b7916d5d345c81c952a203e29ac8f155d2d91334b7ca",
+  "station": "KSEA",
+  "guidanceHours": 38,
+  "observationReadings": 252,
+  "physicalForecasts": 52,
+  "scored": 0,
+  "kalshiReads": 0,
+  "orderEffect": false
+}

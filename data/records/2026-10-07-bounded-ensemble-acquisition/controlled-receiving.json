@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "slowFirstFieldDidNotAdmitRemaining48": true,
+  "outOfOrderCompletionPreserves51MemberOrder": true,
+  "originalFieldBytesAndReceiptsPreserved": true,
+  "fieldFailureNotAccepted": true,
+  "failedSourceTasksStarted": 5,
+  "ordersPlaced": 0
+}

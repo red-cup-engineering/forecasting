@@ -1,0 +1,143 @@
+{
+  "at": "2026-10-07T17:59:04.866Z",
+  "evidenceId": "95f1c64a6d9ee3c4290176fbf9ca8f71fc4b7c8a1ecc35ef8b9f3e9312a5d1b6",
+  "sourceRuntime": "2026-10-07T06:00:00Z",
+  "methodologies": {
+    "nyc": {
+      "validation": {
+        "at": "2026-10-07T17:58:40.888Z",
+        "expectedVersion": "1.0",
+        "reportedVersion": "1.0",
+        "configVersion": "nyc-temperature-v1.0-cal-20261005",
+        "compatible": true,
+        "conflicted": false,
+        "address": "ni:///sha-256;-2p8GPsZFBGfRVPYKjcbSgPUXmAsbSeQwR0qHNZZX58",
+        "cell": {
+          "subject": "index:nyc",
+          "predicate": "current-methodology-version",
+          "object": {
+            "version": "1.0"
+          },
+          "for": [
+            {
+              "source": "https://assets.kalshi.com/contract_terms/NYCWINDEX.pdf",
+              "version": "1.0"
+            }
+          ],
+          "against": []
+        }
+      },
+      "quorum": {
+        "members": 7,
+        "weight": 0.875
+      },
+      "availableAt": "2026-10-07T17:58:40.732Z",
+      "decodedAt": "2026-10-07T17:58:40.887Z",
+      "sha256": "9942610d44ac4236207dc1ec68a711ecec20dc1d97b3d878ff567fca63d7d959"
+    },
+    "miami": {
+      "validation": {
+        "at": "2026-10-07T17:58:40.884Z",
+        "expectedVersion": "1.0",
+        "reportedVersion": "1.0",
+        "configVersion": "miami-temperature-v1.0-cal-20261005",
+        "compatible": true,
+        "conflicted": false,
+        "address": "ni:///sha-256;vLkde26of_GdNt8LafHeu0dorfc0EEq__i6GvbGOFlc",
+        "cell": {
+          "subject": "index:miami",
+          "predicate": "current-methodology-version",
+          "object": {
+            "version": "1.0"
+          },
+          "for": [
+            {
+              "source": "https://assets.kalshi.com/contract_terms/MIAWINDEX.pdf",
+              "version": "1.0"
+            }
+          ],
+          "against": []
+        }
+      },
+      "quorum": {
+        "members": 4,
+        "weight": 0.8
+      },
+      "availableAt": "2026-10-07T17:58:40.724Z",
+      "decodedAt": "2026-10-07T17:58:40.880Z",
+      "sha256": "f7acb398f739ef0b4745e9ae4cbf19b9834676ca4316a81af5c7e3c2c4d20a87"
+    },
+    "la-coastal": {
+      "validation": {
+        "at": "2026-10-07T17:58:40.889Z",
+        "expectedVersion": "1.0",
+        "reportedVersion": "1.0",
+        "configVersion": "la-coastal-temperature-v1.0-cal-20261005",
+        "compatible": true,
+        "conflicted": false,
+        "address": "ni:///sha-256;Ri97y4xB_ZZiI6JtKdjgArwXMTDWiuowTeF41Sz-LAY",
+        "cell": {
+          "subject": "index:la-coastal",
+          "predicate": "current-methodology-version",
+          "object": {
+            "version": "1.0"
+          },
+          "for": [
+            {
+              "source": "https://assets.kalshi.com/contract_terms/LAWINDEX.pdf",
+              "version": "1.0"
+            }
+          ],
+          "against": []
+        }
+      },
+      "quorum": {
+        "members": 4,
+        "weight": 0.8
+      },
+      "availableAt": "2026-10-07T17:58:40.716Z",
+      "decodedAt": "2026-10-07T17:58:40.888Z",
+      "sha256": "216bf34b214613a1b2134511b6887bd1be070dbaaf7e5aa50e16b1dc4f421a6e"
+    },
+    "chicago": {
+      "validation": {
+        "at": "2026-10-07T17:58:40.886Z",
+        "expectedVersion": "1.1",
+        "reportedVersion": "1.0",
+        "configVersion": "chicago-temperature-v1.0-cal-20261005",
+        "compatible": false,
+        "conflicted": true,
+        "address": "ni:///sha-256;7lQAN8OqgERYCExcFC0nboOK6UM-ug87ZHq_7vontr8",
+        "cell": {
+          "subject": "index:chicago",
+          "predicate": "current-methodology-version",
+          "object": {
+            "version": "1.1"
+          },
+          "for": [
+            {
+              "source": "https://assets.kalshi.com/contract_terms/CHIMETROWINDEX.pdf",
+              "version": "1.1"
+            }
+          ],
+          "against": [
+            {
+              "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago/calibrations",
+              "version": "1.0",
+              "configVersion": "chicago-temperature-v1.0-cal-20261005"
+            }
+          ]
+        }
+      },
+      "quorum": {
+        "members": 4,
+        "weight": 0.8
+      },
+      "availableAt": "2026-10-07T17:58:40.727Z",
+      "decodedAt": "2026-10-07T17:58:40.885Z",
+      "sha256": "eeeb92b5156d194e95c0e88c8e40fa619852a12419ce3b858d28847612899a44"
+    }
+  },
+  "errors": [],
+  "orderEffect": false
+}

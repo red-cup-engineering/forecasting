@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-07T23:04:03.937372+00:00",
+  "owner": "operations",
+  "baseCommit": "77eb25b112b7db2d769eb9121de37c9716f0b727",
+  "branch": "codex/receive-weather-capabilities",
+  "sourcePathsReceived": [
+    "apps/group-operations/src/weather-network.mjs"
+  ],
+  "sourceHashes": {
+    "apps/group-operations/src/weather-network.mjs": "fbb265fe4555ca035c172b3f435c7fce824393fc9709d8511f2f8ace80627ef4"
+  },
+  "receiving": "passed under admitted host reader and dependencies",
+  "liveAdmission": false,
+  "assessor": "same primary; no independent certification"
+}

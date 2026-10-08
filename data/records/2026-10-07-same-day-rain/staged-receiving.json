@@ -1,0 +1,24 @@
+{
+  "at": "2026-10-07T21:58:03.654Z",
+  "actualResponseBytesAndHashRetained": true,
+  "observationRequests": 1,
+  "temperatureProjectionRetained": true,
+  "originalDayBeforeModelRetained": true,
+  "rawMetarHundredthsRecoverQuantizedMm": true,
+  "traceMissingBoundaryAndContradictionsDoNotForceWet": true,
+  "overlappingWindowsNotSummed": true,
+  "remainingUnionBounds": [
+    0.3,
+    0.5
+  ],
+  "independenceScenario": 0.44,
+  "partialHourNotConditionedFromMarginal": true,
+  "sameDayResearchModels": [
+    0.99,
+    0.95
+  ],
+  "wholeDayDryProbabilityNotInvented": true,
+  "forecastCalibrationProven": false,
+  "tradeAuthority": false,
+  "orderEffect": false
+}

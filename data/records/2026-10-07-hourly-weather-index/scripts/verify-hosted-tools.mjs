@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';
+import {realpath,writeFile,mkdir} from 'node:fs/promises';
+import {pathToFileURL} from 'node:url';import {execFileSync} from 'node:child_process';
+const release=await realpath(process.env.HOME+'/.local/share/561-group/releases/cold-red-gate.561.group/current');
+const network=execFileSync('find',[release+'/lib','-path','*/apps/group-operations/src/weather-network.mjs'],{encoding:'utf8'}).trim();
+const client=(await import(pathToFileURL(network))).weatherNetworkSources({environment:process.env,config:{instance:{name:'hourly-index-verification'}}})[0].client;
+const catalog=await client.listTools();assert.equal(catalog.tools.length,10);assert(catalog.tools.some(r=>r.name==='weather_index_evidence'));
+let marketReads=0,indexReads=0;const native=globalThis.fetch;globalThis.fetch=(url,...args)=>{if(/kalshi\.com/.test(String(url))){if(String(url).includes('/live_data/weather/'))indexReads++;else marketReads++;}return native(url,...args);};
+const e=await client.call('weather_index_evidence',{cities:['miami']});
+assert(e.indices.miami.validation.compatible);assert(e.hourlyGuidance);assert(Object.values(e.hourlyGuidance.stations).every(s=>s.rows.length===25));
+const forecasts=e.science.forecasts.filter(r=>r.station==='index:miami');assert(forecasts.some(r=>r.model==='kalshi-index-nbh-proxy-v1'));assert(forecasts.some(r=>r.model.endsWith('/recent-innovation-v1')));
+assert.equal(marketReads,0);assert.equal(indexReads,2);
+const saved=await client.call('weather_evidence',{evidenceId:e.evidenceId,station:'index:miami'});assert(saved.science.forecasts.some(r=>r.station==='index:miami'));
+const skill=await client.call('weather_station_skill',{station:'index:miami'});assert(skill.pending>0);
+const chi=await client.call('weather_index_evidence',{cities:['chicago']});assert(chi.indices.chicago.validation.conflicted);assert(!chi.indices.chicago.validation.compatible);assert(!chi.science.forecasts.some(r=>r.station==='index:chicago'));
+const result={at:new Date().toISOString(),hostRelease:release,tools:catalog.tools.length,evidenceId:e.evidenceId,sourceEvidenceId:e.sourceEvidenceId,city:'miami',configuration:e.indices.miami.validation,stationCount:e.stations.length,nbh:{source:e.hourlyGuidance.source,runtime:e.hourlyGuidance.runtime,stations:Object.keys(e.hourlyGuidance.stations),hours:25},physicalIndexForecasts:forecasts.length,indexModels:[...new Set(forecasts.map(r=>r.model))],indexSkill:skill,sourceErrors:e.errors,marketReads,publicIndexReads:4,chicago:{validation:chi.indices.chicago.validation,blocker:chi.indices.chicago.blocker,physicalIndexForecasts:0},orderEffect:false};
+const dir=process.env.HOME+'/.local/state/561-group/weather-index-demonstration';await mkdir(dir,{recursive:true});await writeFile(dir+'/live-receipt.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));globalThis.fetch=native;await client.close();

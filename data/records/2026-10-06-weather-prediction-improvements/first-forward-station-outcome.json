@@ -1,0 +1,49 @@
+{
+  "evidenceId": "079626f0f6a047855a22018f2a06ea4cb1442522af5f3aaae90148a1766d71f5",
+  "sourceEvidenceId": "9a07d3d8cbaf711b8fb6acb54cffc41dffaa58a1e305539ddd4c10e4010a0968",
+  "evaluation": "production forward forecasts registered before target hour; observations collected and scored afterward; no retrospective seeding",
+  "outcomes": [
+    {
+      "id": "320d0fe2dcc444eabca185bf894775e707bfbdfc402ecc2ce6332df6b806c8fb",
+      "forecast": {
+        "model": "lamp-hourly-v2.7-v1",
+        "validTime": "2026-10-07T04:00:00.000Z",
+        "meanF": 55,
+        "scaleF": 2.5,
+        "source": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/lmp/prod/lmp.20261007/lmp.t0330z.lavtxt.ascii",
+        "issuedAt": "2026-10-07T03:30:00.000Z",
+        "uncertainty": "experimental 2.5F Student-t scale; LAMP temperature is deterministic",
+        "station": "KSEA",
+        "leadHours": 0.10400055555555555,
+        "horizon": "0-3h",
+        "availableAt": "2026-10-07T03:53:45.598Z",
+        "date": "2026-10-06",
+        "nu": 5,
+        "sourceEvidenceId": "2571eb215119043758dc68616ae775a40e944222c4e5fa7cd198ae0d355c7cc3"
+      },
+      "observation": {
+        "at": "2026-10-07T04:00:00.000Z",
+        "temperatureF": 53.6,
+        "qualityControl": "V",
+        "source": "https://api.weather.gov/stations/KSEA/observations?start=2026-10-06T08%3A00%3A00.000Z&end=2026-10-07T04%3A15%3A19.277Z&limit=500"
+      },
+      "errorF": -1.3999999999999986,
+      "crpsF": 0.9321734813155631,
+      "sourceEvidenceId": "9a07d3d8cbaf711b8fb6acb54cffc41dffaa58a1e305539ddd4c10e4010a0968"
+    }
+  ],
+  "metrics": [
+    {
+      "station": "KSEA",
+      "model": "lamp-hourly-v2.7-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": -1.3999999999999986,
+      "maeF": 1.3999999999999986,
+      "rmseF": 1.3999999999999986,
+      "crpsF": 0.9321734813155631,
+      "coverage90": 1
+    }
+  ]
+}

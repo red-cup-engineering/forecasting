@@ -1,0 +1,94 @@
+{
+  "kind": "scientific-publication-controlled-receiving",
+  "version": 1,
+  "stage": "/tmp/receive-publication-Xr8sys",
+  "conditions": {
+    "kind": "scientific-publication-receiving-conditions",
+    "version": 1,
+    "conditions": [
+      "immutable bytes precede pending state registration",
+      "published law integrity and scope required to grade",
+      "late publication refuses prospective registration",
+      "truth selection independent of forecast availability",
+      "replay cannot enter live grading",
+      "legacy pending preserved without duplicate registration",
+      "unknown maps and Unicode survive bounded JSON I/O",
+      "immutable law distribution unchanged by receipt metadata"
+    ]
+  },
+  "receipts": [
+    {
+      "name": "publication clock follows immutable link",
+      "passed": true,
+      "evidenceId": "1014973a53d06c06e8b526be5b797aa8d197dd8182e7ac6e1a3dad52508ffa9e",
+      "availableAt": "2026-10-08T03:56:13.913Z"
+    },
+    {
+      "name": "Unicode batch and exact forecast validate",
+      "passed": true
+    },
+    {
+      "name": "changed curve refuses grading",
+      "passed": true
+    },
+    {
+      "name": "source scope mismatch refuses grading",
+      "passed": true
+    },
+    {
+      "name": "corrupt publication refuses grading",
+      "passed": true
+    },
+    {
+      "name": "nearest pre-publication report is not replaced by convenient later report",
+      "passed": true
+    },
+    {
+      "name": "fixed future observation grades exact published law",
+      "passed": true
+    },
+    {
+      "name": "publication beyond target is nonprospective",
+      "passed": true
+    },
+    {
+      "name": "replay semantics are isolated and receipt clock cannot be forged",
+      "passed": true
+    },
+    {
+      "name": "normal update publishes before registration and preserves mathematical law",
+      "passed": true,
+      "forecasted": 1
+    },
+    {
+      "name": "normal update refuses late registration",
+      "passed": true,
+      "forecastCount": 1
+    },
+    {
+      "name": "previous producer preserves and cannot grade new pending carrier",
+      "passed": true
+    },
+    {
+      "name": "existing first-law records suppress duplicate registration",
+      "passed": true
+    },
+    {
+      "name": "real filesystem receipt follows final temporary-link removal",
+      "passed": true
+    },
+    {
+      "name": "future outcomes do not trigger archive reads",
+      "passed": true
+    },
+    {
+      "name": "missing publication refuses grading",
+      "passed": true
+    },
+    {
+      "name": "bounded state I/O retains unknown maps and byte representation",
+      "passed": true
+    }
+  ],
+  "passed": 17
+}

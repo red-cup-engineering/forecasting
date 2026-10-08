@@ -1,0 +1,98 @@
+{
+  "at": "2026-10-07T12:03:40.970Z",
+  "hostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/ec9467e826983e92a3784eb785ba99a80ed543124aefa222e6a1abf799014c9c",
+  "tools": 10,
+  "evidenceId": "3c184e01f2762f6dc9bf0575b4b7ccce4cf048967bc45f899cb7c0e0aac4c27f",
+  "sourceEvidenceId": "2dc3b24d4ccc28caea26c967c863d00d0fbcb9e60ac3e536dc83bcc5437cd8cf",
+  "city": "miami",
+  "configuration": {
+    "expectedVersion": "1.0",
+    "reportedVersion": "1.0",
+    "configVersion": "miami-temperature-v1.0-cal-20261005",
+    "compatible": true,
+    "conflicted": false,
+    "address": "ni:///sha-256;vLkde26of_GdNt8LafHeu0dorfc0EEq__i6GvbGOFlc",
+    "cell": {
+      "subject": "index:miami",
+      "predicate": "current-methodology-version",
+      "object": {
+        "version": "1.0"
+      },
+      "for": [
+        {
+          "source": "https://assets.kalshi.com/contract_terms/MIAWINDEX.pdf",
+          "version": "1.0"
+        }
+      ],
+      "against": []
+    }
+  },
+  "stationCount": 5,
+  "nbh": {
+    "source": "https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20261007/11/text/blend_nbhtx.t11z",
+    "runtime": "2026-10-07T11:00:00.000Z",
+    "stations": [
+      "KFLL",
+      "KFXE",
+      "KMIA",
+      "KOPF",
+      "KPMP"
+    ],
+    "hours": 25
+  },
+  "physicalIndexForecasts": 166,
+  "indexModels": [
+    "kalshi-index-lamp-proxy-v1",
+    "kalshi-index-lamp-proxy-v1/recent-innovation-v1",
+    "kalshi-index-nbh-proxy-v1",
+    "kalshi-index-nbh-proxy-v1/recent-innovation-v1",
+    "kalshi-index-nws-proxy-v1",
+    "kalshi-index-nws-proxy-v1/recent-innovation-v1",
+    "kalshi-index-nbm-proxy-v1"
+  ],
+  "indexSkill": {
+    "at": "2026-10-07T12:03:40.513Z",
+    "truth": "NWS station observations and canonical Kalshi city-index observations; separate from venue binary settlement",
+    "scoring": "first available forecast per location/valid hour/model/lead cohort; NWS nearest hour within 15 minutes; city index latest canonical minute at/before target within 60 minutes; 41-point quadrature CRPS",
+    "metrics": [],
+    "pending": 166,
+    "parameters": {},
+    "missingOutcomes": 0
+  },
+  "sourceErrors": [],
+  "marketReads": 0,
+  "publicIndexReads": 4,
+  "chicago": {
+    "validation": {
+      "expectedVersion": "1.1",
+      "reportedVersion": "1.0",
+      "configVersion": "chicago-temperature-v1.0-cal-20261005",
+      "compatible": false,
+      "conflicted": true,
+      "address": "ni:///sha-256;7lQAN8OqgERYCExcFC0nboOK6UM-ug87ZHq_7vontr8",
+      "cell": {
+        "subject": "index:chicago",
+        "predicate": "current-methodology-version",
+        "object": {
+          "version": "1.1"
+        },
+        "for": [
+          {
+            "source": "https://assets.kalshi.com/contract_terms/CHIMETROWINDEX.pdf",
+            "version": "1.1"
+          }
+        ],
+        "against": [
+          {
+            "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago/calibrations",
+            "version": "1.0",
+            "configVersion": "chicago-temperature-v1.0-cal-20261005"
+          }
+        ]
+      }
+    },
+    "blocker": "contract configuration v1.1 conflicts with published configuration v1.0",
+    "physicalIndexForecasts": 0
+  },
+  "orderEffect": false
+}

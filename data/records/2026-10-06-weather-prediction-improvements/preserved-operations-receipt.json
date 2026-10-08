@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-07T05:12:54.744Z",
+  "release": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/d05b0105fd493889d32bbe7b957193dc36f50228e623104712112e2b4fabbb37",
+  "originalForecasts": 18,
+  "semanticReceipts": 18,
+  "dailyCycleDiscovered": 18,
+  "operations": [
+    "kalshi-research-candidates-rank",
+    "kalshi-weather-research-cycle",
+    "kalshi-weather-research-score",
+    "kalshi-weather-forecast",
+    "kalshi-weather-score",
+    "kalshi-market-read",
+    "kalshi-order-intent",
+    "kalshi-order-place"
+  ],
+  "collectorUsesExportedModule": true,
+  "orderEffect": false
+}

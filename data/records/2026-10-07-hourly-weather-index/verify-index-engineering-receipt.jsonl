@@ -1,0 +1,3 @@
+{"publishedMinutesReproduced":345,"degradedMinutes":2}
+{"precisionF":0.01,"receiptAndAvailabilityChecks":true,"noHindsightAnchor":true,"fullyCorrelatedScaleF":2.5,"properTargetMinuteFallback":true,"retryIdempotent":true,"physicalOutcomes":2}
+{"exactContractBindings":40,"configurationCompatible":30,"chicagoSourceConflictExcluded":true}

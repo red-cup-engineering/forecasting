@@ -1,0 +1,51 @@
+{
+  "verifiedAt": "2026-10-07",
+  "realNoaaBulletin": {
+    "run": "2026-10-07T02:30:00Z",
+    "stations": [
+      "KNYC",
+      "KSEA"
+    ],
+    "hoursPerStation": 38,
+    "standardFile": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/lmp/prod/lmp.20261007/lmp.t0230z.lavtxt.ascii",
+    "extensionFile": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/lmp/prod/lmp.20261007/lmp.t0230z.lavtxt_ext.ascii",
+    "utcRolloverAndDailyCoverageVerified": true
+  },
+  "physicalScoringFixture": {
+    "futureObservationIgnored": true,
+    "retryDoesNotDuplicateSamples": true,
+    "celsiusAndFahrenheitUnits": true,
+    "biasUpdateStartsAfterSevenCompletedDates": true,
+    "postprocessedModelSeparatelyVersioned": true,
+    "scaleNeverNarrows": true,
+    "minimumAdvanceMinutes": 5
+  },
+  "rainChronologyReproduction": {
+    "rows": 2298,
+    "maxFrozenCoefficientRoundingError": 1.4250608393329145e-07,
+    "poolMatchesExistingResearchWithin": 1e-12
+  },
+  "originalRoute": "Configured NWS model, semantic journal and daily-cycle consumers preserved under original operation names; supplemental operations added separately; concurrent definitive settlement checks retained.",
+  "dailyExtremeV2": {
+    "finalPartialHourRetained": true,
+    "freshBulletinObservationAnchor": true,
+    "softObservationMixtureConservesMass": true,
+    "proxyFailurePrior": 0.01,
+    "priorCalibrated": false
+  },
+  "streamingGrades": {
+    "chronologicalRainRows": 2298,
+    "exactPreviousGradeAgreement": true,
+    "actualScorerEarliestForecastAndRetryVerified": true,
+    "ladderContracts": 62,
+    "effectiveDates": 31
+  },
+  "deploymentRetention": {
+    "files": 43,
+    "bytes": 326682,
+    "modules": 31,
+    "allImportedModulesInsideRetainedRevision": true,
+    "independentLiveStationCollectionVerified": true,
+    "houseGarbageCollectionCannotRemoveRetainedHardlinks": true
+  }
+}

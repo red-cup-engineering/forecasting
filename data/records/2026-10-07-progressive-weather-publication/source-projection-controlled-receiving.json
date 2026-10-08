@@ -1,0 +1,32 @@
+{
+  "status": "passed",
+  "sourcePublicationPrecedesScience": true,
+  "sourcePublicationPrecedesMarketReads": true,
+  "existingPendingDoesNotTriggerVenueReadsBeforeSourcePublication": true,
+  "sourceProspectiveCohortRecorded": true,
+  "sourceProjectionHasNoPricesOrOrderOpportunities": true,
+  "partialRegimeCannotBorrowCompleteAdmission": true,
+  "completeRegimeAdmissionPreserved": true,
+  "publicationErrorsRetained": true,
+  "coalescedUpdatesReceived": true,
+  "minuteThrottleVerified": true,
+  "serializedPublicationVerified": true,
+  "completionTimerCancelled": true,
+  "completeOriginalForecastModelsPreserved": true,
+  "blockedSources": [
+    "NBM",
+    "NWS-stations"
+  ],
+  "publicationBeforeAcquisitionTerminal": true,
+  "initialPartialModels": 2,
+  "fullModels": 2,
+  "universeRetained": 3,
+  "fullStationsRetained": 2,
+  "completePendingSources": 0,
+  "immutableInitialArchiveVerified": true,
+  "initialEvidenceId": "088796ea75f970c9af64e5dd2d9e747ef974e565e19579412beb83a269a5a08d",
+  "fullEvidenceId": "5c46efe2d73f1e57d7a78ed9f9016f1a71a86f203b27e02b69db16f42ffa6041",
+  "root": "/tmp/weather-progressive-receiving-Ws4LP7",
+  "readCalls": 38,
+  "ordersPlaced": 0
+}

@@ -1,0 +1,11 @@
+{
+  "installed": [
+    {
+      "path": "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-engine.mjs",
+      "sha256": "5d9491c97ea85273b95fc7da8fa5111f7f9e8f2e87d907ae7b4195200311e1c9"
+    }
+  ],
+  "canonicalAndOwningMatch": true,
+  "sourceArchiveSha256": "23548f9b192a42ddccf313473bd9e431fb19c1294c02fa3eab1ff6cfce5f949d",
+  "ordersPlaced": 0
+}

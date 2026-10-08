@@ -1,0 +1,32 @@
+[
+  {
+    "component": "station-lamp-aligned-v1",
+    "matchedSamples": 531,
+    "localDates": 2,
+    "poolCrpsF": 1.2651693275443145,
+    "componentCrpsF": 1.1965062819503642,
+    "meanDateWeightedGainF": -0.017451087320917418,
+    "confidenceInterval": null,
+    "evidence": "exploratory historical reconstruction across only two local dates; no fitting or production calibration seeding"
+  },
+  {
+    "component": "station-nbm-aligned-v1",
+    "matchedSamples": 297,
+    "localDates": 1,
+    "poolCrpsF": 1.286601563394848,
+    "componentCrpsF": 1.5232214770935575,
+    "meanDateWeightedGainF": 0.23661991369870938,
+    "confidenceInterval": null,
+    "evidence": "exploratory historical reconstruction across only two local dates; no fitting or production calibration seeding"
+  },
+  {
+    "component": "station-nws-aligned-v1",
+    "matchedSamples": 469,
+    "localDates": 2,
+    "poolCrpsF": 1.2534399930558302,
+    "componentCrpsF": 1.5556813831351077,
+    "meanDateWeightedGainF": 0.3869682551785869,
+    "confidenceInterval": null,
+    "evidence": "exploratory historical reconstruction across only two local dates; no fitting or production calibration seeding"
+  }
+]

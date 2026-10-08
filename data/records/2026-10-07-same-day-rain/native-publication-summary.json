@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-07T22:17:59.998Z",
+  "cycleAt": "2026-10-07T22:17:46.826Z",
+  "marketCount": 1538,
+  "modelled": 634,
+  "sameDayRainRows": 29,
+  "sameDayRainModelled": 1,
+  "tickers": [
+    "KXRAIN-26OCT07-MIA"
+  ],
+  "wetModels": [
+    {
+      "id": "nws-measurable-rain-proxy-failure-1pct-v1",
+      "p": 0.99,
+      "admitted": false
+    },
+    {
+      "id": "nws-measurable-rain-proxy-failure-5pct-v1",
+      "p": 0.95,
+      "admitted": false
+    }
+  ],
+  "dryModels": 0,
+  "prospectivePendingRows": 1,
+  "sourceEvidenceId": "f5e084e1f893b2cb007c004661f7bae54d51700fc8654b2c42aaa7b48459c2be",
+  "oldAdmissionPreserved": true,
+  "orderEffect": false
+}

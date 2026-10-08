@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-08T00:05:54.859Z",
+  "existingInstalledWeatherEvidenceReaderWorks": true,
+  "actualInstalledHostDeclaration": "/gnu/store/vpx1qghvayx293bdblxiigjvhc7k8n9c-cold-red-gate-deployment-1/deployment/host.json",
+  "nativeMcpHandlerReceiving": true,
+  "httpTransportVerified": false,
+  "admissionRequiredForNewCatalogTools": true,
+  "evidenceId": "3770e330a1a72d1649364eb897420afb2c62ffd4bca9eeea312f22abc04f5a97",
+  "newPhysicalForecastsRead": 96,
+  "owningSourceFallbackReadsProtectedPending": true,
+  "station": "KMIA",
+  "protectedPending": 53,
+  "measurementMetrics": 0,
+  "ordersPlaced": 0,
+  "sharedHouseRestartRequested": false
+}

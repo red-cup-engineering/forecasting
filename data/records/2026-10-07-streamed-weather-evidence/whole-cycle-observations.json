@@ -1,0 +1,2963 @@
+[
+  {
+    "at": "2026-10-08T04:04:47.282642+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "99741696",
+      "MemorySwapPeak": "34197504",
+      "CPUUsageNSec": "1113279000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [
+      {
+        "evidenceId": "63a717ebf353ce3ab06c54b368f648e55ef5b2c04602952f3c4355c8cf67475f",
+        "generatedAt": "2026-10-08T03:50:41.906Z",
+        "mode": "live",
+        "forecasts": 675,
+        "sourceEvidenceId": "3d620f14dd2700be3511e03bfe4f31d9ed1342a1b38e904f0a63b009d2dcac3d",
+        "ctime": 1791431443.0551434
+      }
+    ],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:05:07.894559+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "99741696",
+      "MemorySwapPeak": "35057664",
+      "CPUUsageNSec": "1400440000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:05:28.889846+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "99741696",
+      "MemorySwapPeak": "35414016",
+      "CPUUsageNSec": "1628755000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:05:50.254619+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "99741696",
+      "MemorySwapPeak": "38973440",
+      "CPUUsageNSec": "1907987000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:06:12.168588+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "99741696",
+      "MemorySwapPeak": "40329216",
+      "CPUUsageNSec": "2286005000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:06:34.831215+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "99741696",
+      "MemorySwapPeak": "40644608",
+      "CPUUsageNSec": "2546968000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:06:56.876417+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "99741696",
+      "MemorySwapPeak": "44482560",
+      "CPUUsageNSec": "2924461000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:07:19.177393+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "50851840",
+      "CPUUsageNSec": "4687361000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:07:41.257064+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "57913344",
+      "CPUUsageNSec": "8302289000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:08:03.394872+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "58568704",
+      "CPUUsageNSec": "10589100000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:08:26.179680+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "58634240",
+      "CPUUsageNSec": "12212732000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:08:48.457881+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "58634240",
+      "CPUUsageNSec": "14937175000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:09:11.312531+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "78462976",
+      "CPUUsageNSec": "17822456000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:09:33.984340+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "78540800",
+      "CPUUsageNSec": "19967398000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:09:58.059735+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "84799488",
+      "CPUUsageNSec": "22153334000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:10:21.199024+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "84799488",
+      "CPUUsageNSec": "24418330000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:10:43.823591+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "84799488",
+      "CPUUsageNSec": "26395934000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:11:06.531871+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "84799488",
+      "CPUUsageNSec": "28155505000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:11:30.114503+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "84799488",
+      "CPUUsageNSec": "29074220000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:11:53.398591+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "84799488",
+      "CPUUsageNSec": "30801777000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:12:15.625087+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "84799488",
+      "CPUUsageNSec": "32453152000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:12:39.219317+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "84799488",
+      "CPUUsageNSec": "34063551000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:13:01.971043+00:00",
+    "unit": {
+      "MainPID": "2364199",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "84799488",
+      "CPUUsageNSec": "35815429000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  {
+    "at": "2026-10-08T04:13:24.910950+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 04:13:09 UTC",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "84799488",
+      "CPUUsageNSec": "36216108000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  }
+]

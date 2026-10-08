@@ -1,0 +1,755 @@
+[
+  {
+    "at": "2026-10-08T03:35:51.859710+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "107544576",
+      "MemorySwapPeak": "39321600",
+      "CPUUsageNSec": "1919517000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:29:46.218Z",
+      "evidenceId": null,
+      "evidenceComplete": true,
+      "forecastLane": null,
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:36:12.685160+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "107544576",
+      "MemorySwapPeak": "40538112",
+      "CPUUsageNSec": "2127817000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:29:46.218Z",
+      "evidenceId": null,
+      "evidenceComplete": true,
+      "forecastLane": null,
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:36:34.204804+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "166363136",
+      "MemorySwapPeak": "41103360",
+      "CPUUsageNSec": "4081153000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:29:46.218Z",
+      "evidenceId": null,
+      "evidenceComplete": true,
+      "forecastLane": null,
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:36:55.893678+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "166363136",
+      "MemorySwapPeak": "58769408",
+      "CPUUsageNSec": "8054400000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:29:46.218Z",
+      "evidenceId": null,
+      "evidenceComplete": true,
+      "forecastLane": null,
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:37:18.064873+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "166363136",
+      "MemorySwapPeak": "59568128",
+      "CPUUsageNSec": "13497014000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:29:46.218Z",
+      "evidenceId": null,
+      "evidenceComplete": true,
+      "forecastLane": null,
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:37:39.831948+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "290643968",
+      "MemorySwapPeak": "147324928",
+      "CPUUsageNSec": "16928915000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:37:38.129Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:38:01.773235+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "290643968",
+      "MemorySwapPeak": "157290496",
+      "CPUUsageNSec": "19188828000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:37:38.129Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:38:23.070901+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "315199488",
+      "MemorySwapPeak": "157290496",
+      "CPUUsageNSec": "22288009000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:37:38.129Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:38:44.504130+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "396210176",
+      "MemorySwapPeak": "217948160",
+      "CPUUsageNSec": "25693265000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:37:38.129Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:39:05.991212+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "396210176",
+      "MemorySwapPeak": "236863488",
+      "CPUUsageNSec": "27961730000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:39:27.701769+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "244113408",
+      "CPUUsageNSec": "31049854000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:39:49.652447+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "244113408",
+      "CPUUsageNSec": "35037356000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:40:11.967187+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "254713856",
+      "CPUUsageNSec": "37736990000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:40:34.080885+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "260161536",
+      "CPUUsageNSec": "40681303000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:40:57.105222+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "263475200",
+      "CPUUsageNSec": "43084808000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:41:19.634579+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "291581952",
+      "CPUUsageNSec": "46513532000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [
+      {
+        "evidenceId": "a7d597a5cdd4993a4405e484bddf8091b1a301161c30bbf8abc288c141628872",
+        "generatedAt": "2026-10-08T03:39:46.638Z",
+        "mode": "live",
+        "forecasts": 12740,
+        "sourceEvidenceId": "3d620f14dd2700be3511e03bfe4f31d9ed1342a1b38e904f0a63b009d2dcac3d",
+        "ctime": 1791430865.5170102
+      }
+    ],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:41:42.644877+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "315252736",
+      "CPUUsageNSec": "48593555000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:42:07.975214+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "51998450000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:42:29.810150+00:00",
+    "unit": {
+      "MainPID": "2263325",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "54035559000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:42:51.869172+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 03:42:35 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "55069938000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:43:14.212253+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 03:42:35 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "55069938000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:43:36.705790+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 03:42:35 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "55069938000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:43:59.090099+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 03:42:35 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "55069938000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:44:21.945338+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 03:42:35 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "55069938000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:44:44.468557+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 03:42:35 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "55069938000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:45:06.972933+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 03:42:35 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "55069938000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:45:30.076209+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 03:42:35 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "55069938000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:45:52.676574+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 03:42:35 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "55069938000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:46:15.449152+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 03:42:35 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "55069938000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:46:38.674010+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 03:42:35 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "55069938000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  {
+    "at": "2026-10-08T03:47:01.802421+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 03:42:35 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "55069938000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  }
+]

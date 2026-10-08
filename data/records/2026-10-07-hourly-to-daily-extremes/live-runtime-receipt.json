@@ -1,0 +1,276 @@
+{
+  "verifiedAt": "2026-10-07T13:08:07.391607+00:00",
+  "latestCycleAt": "2026-10-07T13:08:02.357Z",
+  "marketCount": 1241,
+  "modelled": 318,
+  "newModels": {
+    "nbm-nbh-comonotone-high-v1": 144,
+    "nbm-nbh-comonotone-low-v1": 144
+  },
+  "sourceErrors": [],
+  "settlementErrors": [],
+  "dailyDistributions": 96,
+  "coverageGaps": [
+    {
+      "station": "KSEA",
+      "timeZone": "America/Los_Angeles",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KPHL",
+      "timeZone": "America/New_York",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KLAS",
+      "timeZone": "America/Los_Angeles",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KEWR",
+      "timeZone": "America/New_York",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KNYC",
+      "timeZone": "America/New_York",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KMIA",
+      "timeZone": "America/New_York",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KATL",
+      "timeZone": "America/New_York",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KDFW",
+      "timeZone": "America/Chicago",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KAUS",
+      "timeZone": "America/Chicago",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KOKC",
+      "timeZone": "America/Chicago",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KPHX",
+      "timeZone": "America/Phoenix",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KMSY",
+      "timeZone": "America/Chicago",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KLAX",
+      "timeZone": "America/Los_Angeles",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KTTN",
+      "timeZone": "America/New_York",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KDCA",
+      "timeZone": "America/New_York",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KSAT",
+      "timeZone": "America/Chicago",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KSFO",
+      "timeZone": "America/Los_Angeles",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KSGF",
+      "timeZone": "America/Chicago",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KPVD",
+      "timeZone": "America/New_York",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KPIT",
+      "timeZone": "America/New_York",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KMKE",
+      "timeZone": "America/Chicago",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KMSP",
+      "timeZone": "America/Chicago",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KLEX",
+      "timeZone": "America/New_York",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KDEN",
+      "timeZone": "America/Denver",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KCMH",
+      "timeZone": "America/New_York",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KCLL",
+      "timeZone": "America/Chicago",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KORD",
+      "timeZone": "America/Chicago",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KBOS",
+      "timeZone": "America/New_York",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    },
+    {
+      "station": "KABQ",
+      "timeZone": "America/Denver",
+      "targetDate": "2026-10-08",
+      "reason": "NBH does not cover every remaining hour and the final day boundary with temperature and spread"
+    }
+  ],
+  "probabilityBoundsEnforced": true,
+  "newModelsAdmitted": 0,
+  "examples": [
+    {
+      "ticker": "KXHIGHTSEA-26OCT07-T72",
+      "station": "KSEA",
+      "targetDate": "2026-10-07",
+      "id": "nbm-nbh-comonotone-high-v1",
+      "p": 0.004262272930450117,
+      "bounds": {
+        "low": 0.004262272930450117,
+        "high": 0.01564119325643165,
+        "kind": "hourly-marginal-dependence-bounds",
+        "scope": "conditional on Student-t hourly marginals, piecewise-linear hourly path and declared proxy-bound mixture; excludes subhour peaks and station/source discrepancy"
+      },
+      "band": {
+        "low": 0,
+        "high": 1,
+        "admitted": false,
+        "grade": null,
+        "structuralProbabilityBounds": {
+          "low": 0.004262272930450117,
+          "high": 0.01564119325643165,
+          "kind": "hourly-marginal-dependence-bounds",
+          "scope": "conditional on Student-t hourly marginals, piecewise-linear hourly path and declared proxy-bound mixture; excludes subhour peaks and station/source discrepancy"
+        }
+      },
+      "points": 20
+    },
+    {
+      "ticker": "KXHIGHTSEA-26OCT07-T65",
+      "station": "KSEA",
+      "targetDate": "2026-10-07",
+      "id": "nbm-nbh-comonotone-high-v1",
+      "p": 0.1886956104747733,
+      "bounds": {
+        "low": 0,
+        "high": 0.1886956104747733,
+        "kind": "hourly-marginal-dependence-bounds",
+        "scope": "conditional on Student-t hourly marginals, piecewise-linear hourly path and declared proxy-bound mixture; excludes subhour peaks and station/source discrepancy"
+      },
+      "band": {
+        "low": 0,
+        "high": 1,
+        "admitted": false,
+        "grade": null,
+        "structuralProbabilityBounds": {
+          "low": 0,
+          "high": 0.1886956104747733,
+          "kind": "hourly-marginal-dependence-bounds",
+          "scope": "conditional on Student-t hourly marginals, piecewise-linear hourly path and declared proxy-bound mixture; excludes subhour peaks and station/source discrepancy"
+        }
+      },
+      "points": 20
+    },
+    {
+      "ticker": "KXHIGHTSEA-26OCT07-B71.5",
+      "station": "KSEA",
+      "targetDate": "2026-10-07",
+      "id": "nbm-nbh-comonotone-high-v1",
+      "p": 0.0125401454063101,
+      "bounds": {
+        "low": 0.001161225080328565,
+        "high": 0.05198800897545652,
+        "kind": "hourly-marginal-dependence-bounds",
+        "scope": "conditional on Student-t hourly marginals, piecewise-linear hourly path and declared proxy-bound mixture; excludes subhour peaks and station/source discrepancy"
+      },
+      "band": {
+        "low": 0,
+        "high": 1,
+        "admitted": false,
+        "grade": null,
+        "structuralProbabilityBounds": {
+          "low": 0.001161225080328565,
+          "high": 0.05198800897545652,
+          "kind": "hourly-marginal-dependence-bounds",
+          "scope": "conditional on Student-t hourly marginals, piecewise-linear hourly path and declared proxy-bound mixture; excludes subhour peaks and station/source discrepancy"
+        }
+      },
+      "points": 20
+    }
+  ],
+  "service": "Result=success\nExecMainStartTimestamp=Wed 2026-10-07 13:03:51 UTC\nExecMainStatus=0\nMemoryPeak=194027520\nActiveState=inactive\nSubState=dead\n",
+  "timer": "active",
+  "currentHostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/2e9d5eeed892121c84d092bbff5e61a881b626d74ca9bf435c957cf1264a4bb4",
+  "retainedWeatherRuntime": "/home/emsenn/.local/share/561-group/weather-research/releases/ff82065a3838b0ce2d001efbcaf3097ceb5cb87ffdfc7cfc1b6c91e4cfd1e42b",
+  "orderEffect": false
+}

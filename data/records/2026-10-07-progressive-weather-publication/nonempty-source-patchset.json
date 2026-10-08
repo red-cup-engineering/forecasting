@@ -1,0 +1,27 @@
+{
+  "kind": "source-patchset",
+  "version": 1,
+  "disposition": "candidate",
+  "reason": "Recheck usefulness after evidence/science/quote processing; a partial zero-model snapshot must not replace the previous publication.",
+  "changes": [
+    {
+      "operation": "edit",
+      "path": "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-engine.mjs",
+      "inputSha256": "1936d42d796006af1a08e5ff8ef6aa33b9457961f624b08b14f18d553eea42a2",
+      "replacements": [
+        {
+          "before": "    await atomic(join(root,'pending.json'),pending);\n    const families={};",
+          "after": "    if(evidence.acquisition?.complete===false&&!rows.some(row=>row.models.length))return false;\n    await atomic(join(root,'pending.json'),pending);\n    const families={};"
+        },
+        {
+          "before": "      await publish(packet);return true;",
+          "after": "      return Boolean(await publish(packet));"
+        }
+      ],
+      "clauses": [
+        "publication-time-validity",
+        "previous-useful-publication-retained"
+      ]
+    }
+  ]
+}

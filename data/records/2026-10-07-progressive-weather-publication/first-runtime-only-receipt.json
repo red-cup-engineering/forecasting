@@ -1,0 +1,18 @@
+{
+  "deployedAt": "2026-10-08T00:50:46.446756+00:00",
+  "sourceArchive": "3a8bc86338dfc8346c47400d05ef7b3e1e2dab09fb366eecfea13c3a60664595",
+  "hostRelease": "/gnu/store/vpx1qghvayx293bdblxiigjvhc7k8n9c-cold-red-gate-deployment-1",
+  "retainedRuntime": "/home/emsenn/.local/share/561-group/weather-research/releases/7815537a0b52e953e99a4a417a9a08bf77f41f27b4d2030041a8f16366c0e972",
+  "previousRuntime": "/home/emsenn/.local/share/561-group/weather-research/releases/4202edb8c76cca37ef8a6a4ac9f4a9da8488273d5567bee68c2a7aae442d889e",
+  "retainedFiles": 207,
+  "sourcePathsChanged": [
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-evidence.mjs",
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-engine.mjs"
+  ],
+  "patchsetMaterializer": "existing deterministic source-patchset materializer",
+  "retainedDependencyClosureVerified": true,
+  "sharedHouseWritten": false,
+  "houseRestartRequested": false,
+  "serviceConfigurationChanged": false,
+  "ordersPlaced": 0
+}

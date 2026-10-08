@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-08T01:14:01.375Z",
+  "originalLiveStateChanged": false,
+  "inputBytes": 91545148,
+  "inputSha256": "2276ab11c49f07778385c961895ea55315037793041f17e185e6da349b9c0382",
+  "byteIdenticalOutput": true,
+  "pending": 27928,
+  "measurementPending": 3806,
+  "rootFields": [
+    "pending",
+    "history",
+    "missingOutcomes",
+    "parameters",
+    "at",
+    "comparisons",
+    "measurementPending"
+  ],
+  "elapsedSeconds": 8.172971492,
+  "cpuSeconds": 3.716496,
+  "loadedHeapMiB": 126.3367919921875,
+  "peakRssMiB": 247.17578125,
+  "ordersPlaced": 0
+}

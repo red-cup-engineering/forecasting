@@ -1,0 +1,56 @@
+{
+  "at": "2026-10-07T03:53:45.617Z",
+  "hostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/8808eb4809aa2413b41179a519acefbe7d08188f916e9e889ec45aa1b8ad6d30",
+  "tools": 9,
+  "evidenceId": "5f8908f8ff593dbe909acc9279b00dd3c7c2b4ca5e5aabbaec3602b11fd3d7a3",
+  "sourceEvidenceId": "2571eb215119043758dc68616ae775a40e944222c4e5fa7cd198ae0d355c7cc3",
+  "station": "KSEA",
+  "lamp": {
+    "source": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/lmp/prod/lmp.20261007/lmp.t0330z.lavtxt.ascii",
+    "extendedSource": "https://nomads.ncep.noaa.gov/pub/data/nccf/com/lmp/prod/lmp.20261007/lmp.t0330z.lavtxt_ext.ascii",
+    "runtime": "2026-10-07T03:30:00.000Z",
+    "hours": 38,
+    "first": {
+      "validTime": "2026-10-07T04:00:00.000Z",
+      "leadHours": 0.5,
+      "temperatureF": 55,
+      "dewpointF": 52,
+      "windDirectionTens": 35,
+      "windKnots": 6,
+      "gustKnots": null,
+      "precipOccurrencePct": 0,
+      "measurablePrecipHourPct": 0,
+      "measurablePrecip6hPct": null,
+      "lightningHourPct": 0,
+      "convectionHourPct": 0
+    },
+    "last": {
+      "validTime": "2026-10-08T17:00:00.000Z",
+      "leadHours": 37.5,
+      "temperatureF": 58,
+      "dewpointF": 50,
+      "windDirectionTens": 3,
+      "windKnots": 4,
+      "gustKnots": null,
+      "precipOccurrencePct": null,
+      "measurablePrecipHourPct": 1,
+      "measurablePrecip6hPct": null,
+      "lightningHourPct": null,
+      "convectionHourPct": null
+    }
+  },
+  "physicalForecasts": 53,
+  "observationReadings": 234,
+  "stationSkill": {
+    "at": "2026-10-07T03:53:45.598Z",
+    "truth": "NWS station observations; separate from venue settlement",
+    "scoring": "first available forecast per station/valid hour/model/lead cohort; observed temperature nearest valid hour within 15 minutes; 41-point quadrature CRPS",
+    "metrics": [],
+    "pending": 53,
+    "parameters": {},
+    "missingOutcomes": 0
+  },
+  "errors": [],
+  "kalshiReads": 0,
+  "orderEffect": false
+}

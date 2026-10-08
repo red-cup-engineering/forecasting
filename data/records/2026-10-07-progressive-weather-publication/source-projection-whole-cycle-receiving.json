@@ -1,0 +1,1050 @@
+{
+  "at": "2026-10-08T02:21:21.544268+00:00",
+  "runtime": "/home/emsenn/.local/share/561-group/weather-research/releases/ce66beed57909ba51c5d5a3062fa240fd69ea6f213c78358b150a4a09a23b201",
+  "previousWorker": {
+    "MainPID": "0",
+    "Result": "timeout",
+    "ExecMainStartTimestamp": "Thu 2026-10-08 01:52:56 UTC",
+    "ExecMainExitTimestamp": "Thu 2026-10-08 02:01:57 UTC",
+    "MemoryPeak": "402653184",
+    "MemorySwapPeak": "328744960",
+    "CPUUsageNSec": "49281869000",
+    "ActiveState": "failed",
+    "SubState": "failed"
+  },
+  "samples": [
+    {
+      "at": "2026-10-08T02:12:01.380442+00:00",
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 01:52:56 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 02:01:57 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "328744960",
+      "CPUUsageNSec": "49281869000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    {
+      "at": "2026-10-08T02:12:11.732542+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "0",
+      "CPUUsageNSec": "518952000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:12:21.990948+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "5890048",
+      "CPUUsageNSec": "630431000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:12:32.287600+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "26869760",
+      "CPUUsageNSec": "779682000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:12:43.186968+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "37634048",
+      "CPUUsageNSec": "893134000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:12:55.473211+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "37634048",
+      "CPUUsageNSec": "1045005000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:13:06.227380+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "37634048",
+      "CPUUsageNSec": "1180628000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:13:18.745690+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "37634048",
+      "CPUUsageNSec": "1308891000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:13:30.068833+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "37634048",
+      "CPUUsageNSec": "1393929000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:13:40.404416+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "37851136",
+      "CPUUsageNSec": "1483846000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:13:50.871448+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "38453248",
+      "CPUUsageNSec": "1634272000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:14:03.059739+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "41570304",
+      "CPUUsageNSec": "1794529000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:14:13.734790+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "41570304",
+      "CPUUsageNSec": "1881406000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:14:24.773690+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "41570304",
+      "CPUUsageNSec": "1994666000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:14:37.132371+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "43118592",
+      "CPUUsageNSec": "2131786000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:14:49.090290+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "109068288",
+      "MemorySwapPeak": "43118592",
+      "CPUUsageNSec": "2251326000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:15:02.321604+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "129282048",
+      "MemorySwapPeak": "43118592",
+      "CPUUsageNSec": "2797474000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:15:13.149701+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "148250624",
+      "MemorySwapPeak": "43118592",
+      "CPUUsageNSec": "3602909000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:15:23.983094+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "148250624",
+      "MemorySwapPeak": "55644160",
+      "CPUUsageNSec": "4636736000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:15:34.670886+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "148250624",
+      "MemorySwapPeak": "57389056",
+      "CPUUsageNSec": "5765416000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:15:45.047824+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "148250624",
+      "MemorySwapPeak": "58044416",
+      "CPUUsageNSec": "8011573000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:15:55.888821+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "148250624",
+      "MemorySwapPeak": "59699200",
+      "CPUUsageNSec": "9629081000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:16:06.287811+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "148250624",
+      "MemorySwapPeak": "59699200",
+      "CPUUsageNSec": "11316506000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:16:16.609859+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "148250624",
+      "MemorySwapPeak": "59699200",
+      "CPUUsageNSec": "12567105000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:16:26.908067+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "148250624",
+      "MemorySwapPeak": "59777024",
+      "CPUUsageNSec": "13816100000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:16:38.992270+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "218345472",
+      "MemorySwapPeak": "67694592",
+      "CPUUsageNSec": "14955669000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:16:49.825909+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "218345472",
+      "MemorySwapPeak": "72634368",
+      "CPUUsageNSec": "15713184000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:17:01.112845+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "289914880",
+      "MemorySwapPeak": "108888064",
+      "CPUUsageNSec": "16413496000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:17:11.640358+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "289914880",
+      "MemorySwapPeak": "108888064",
+      "CPUUsageNSec": "17859091000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:17:24.071278+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "289914880",
+      "MemorySwapPeak": "181309440",
+      "CPUUsageNSec": "19008684000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:17:35.464387+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "289914880",
+      "MemorySwapPeak": "181309440",
+      "CPUUsageNSec": "20045350000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:17:46.597737+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "289914880",
+      "MemorySwapPeak": "181309440",
+      "CPUUsageNSec": "21330307000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:17:57.009864+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "343363584",
+      "MemorySwapPeak": "245235712",
+      "CPUUsageNSec": "23192000000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:18:08.246775+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "348950528",
+      "MemorySwapPeak": "245235712",
+      "CPUUsageNSec": "25079909000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:18:18.482731+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "348950528",
+      "MemorySwapPeak": "256880640",
+      "CPUUsageNSec": "26974045000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:18:28.724875+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "348950528",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "28743875000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:18:39.876297+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "30668949000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:18:51.674232+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "32916013000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:19:03.594994+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "34388549000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:19:16.196104+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "36589427000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:19:29.248012+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "38462951000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:19:41.446122+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "40463420000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:19:53.455947+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "42215657000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:20:06.661576+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "43743783000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:20:18.128419+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "46686014000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:20:30.987424+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "48537817000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:20:43.392723+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "50759999000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:20:53.990615+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "52878713000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:21:06.688867+00:00",
+      "MainPID": "2047684",
+      "Result": "success",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "54583883000",
+      "ActiveState": "activating",
+      "SubState": "start"
+    },
+    {
+      "at": "2026-10-08T02:21:18.714164+00:00",
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 02:21:08 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "346685440",
+      "CPUUsageNSec": "54799688000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    }
+  ],
+  "publications": [
+    {
+      "at": "2026-10-08T02:17:10.164Z",
+      "collectionStartedAt": "2026-10-08T02:12:09.597Z",
+      "complete": true,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "marketCount": 1529,
+      "modelled": 171,
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [],
+        "finishedSources": [
+          "NBM"
+        ],
+        "pendingSources": [
+          "NWS-stations",
+          "NBM-NBH",
+          "NBM-QMD",
+          "LAMP",
+          "climate-reports",
+          "relational:nyc",
+          "relational:miami",
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "families": {
+        "temperature": {
+          "markets": 79,
+          "modelled": 0,
+          "volume24h": 3280.2799999999997
+        },
+        "tropical": {
+          "markets": 276,
+          "modelled": 0,
+          "volume24h": 157499.31000000006
+        },
+        "snow": {
+          "markets": 172,
+          "modelled": 0,
+          "volume24h": 16576.739999999998
+        },
+        "hourly-temperature": {
+          "markets": 40,
+          "modelled": 0,
+          "volume24h": 5690.960000000001
+        },
+        "daily-temperature": {
+          "markets": 576,
+          "modelled": 144,
+          "volume24h": 2051016.7
+        },
+        "precipitation": {
+          "markets": 244,
+          "modelled": 0,
+          "volume24h": 42264.84
+        },
+        "other": {
+          "markets": 81,
+          "modelled": 0,
+          "volume24h": 4742.83
+        },
+        "daily-rain": {
+          "markets": 61,
+          "modelled": 27,
+          "volume24h": 470374.04000000004
+        }
+      },
+      "errors": [
+        {
+          "station": "KPHL",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KDEN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KATL",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        }
+      ],
+      "receivedAt": "2026-10-08T02:17:11.967135+00:00",
+      "sha256": "8bfbd2e28efed2c44cebaf5f797b22a502d597b2c2e0dbd51d5e0ebef8adf082",
+      "worker": {
+        "MainPID": "2047684",
+        "Result": "success",
+        "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+        "ExecMainExitTimestamp": "",
+        "MemoryPeak": "289914880",
+        "MemorySwapPeak": "108888064",
+        "CPUUsageNSec": "17859091000",
+        "ActiveState": "activating",
+        "SubState": "start"
+      },
+      "evidenceIds": [
+        "1a224b108730d495a59c49f5cee5b10399227f8980664def728abc4baf478fc8"
+      ]
+    },
+    {
+      "at": "2026-10-08T02:18:31.423Z",
+      "collectionStartedAt": "2026-10-08T02:12:09.597Z",
+      "complete": true,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "marketCount": 1529,
+      "modelled": 634,
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KDEN",
+          "KPHL",
+          "KATL",
+          "KAUS",
+          "KHOU",
+          "KMSY",
+          "KDFW",
+          "KMDW",
+          "KDCA",
+          "KPHX",
+          "KOKC",
+          "KSGF",
+          "KTTN",
+          "KSAT",
+          "KSFO",
+          "KSEA",
+          "KNYC",
+          "KPVD",
+          "KPIT",
+          "KMKE",
+          "KMSP",
+          "KMIA",
+          "KLAS",
+          "KLEX",
+          "KLAX",
+          "KEWR",
+          "KCMH",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KSAN",
+          "KSDF",
+          "KOPF",
+          "KFXE",
+          "KFLL",
+          "KPMP",
+          "KTEB",
+          "KLGA",
+          "KCDW",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KSMO",
+          "KHHR"
+        ],
+        "finishedSources": [
+          "NBM",
+          "NBM-QMD",
+          "LAMP",
+          "climate-reports",
+          "NBM-NBH"
+        ],
+        "pendingSources": [
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami",
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "families": {
+        "temperature": {
+          "markets": 79,
+          "modelled": 0,
+          "volume24h": 3280.2799999999997
+        },
+        "tropical": {
+          "markets": 276,
+          "modelled": 0,
+          "volume24h": 157499.31000000006
+        },
+        "snow": {
+          "markets": 172,
+          "modelled": 0,
+          "volume24h": 16576.739999999998
+        },
+        "hourly-temperature": {
+          "markets": 40,
+          "modelled": 30,
+          "volume24h": 5690.960000000001
+        },
+        "daily-temperature": {
+          "markets": 576,
+          "modelled": 576,
+          "volume24h": 2051016.7
+        },
+        "precipitation": {
+          "markets": 244,
+          "modelled": 0,
+          "volume24h": 42264.84
+        },
+        "other": {
+          "markets": 81,
+          "modelled": 0,
+          "volume24h": 4742.83
+        },
+        "daily-rain": {
+          "markets": 61,
+          "modelled": 28,
+          "volume24h": 470374.04000000004
+        }
+      },
+      "errors": [
+        {
+          "station": "KPHL",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KDEN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KATL",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSY",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ],
+      "receivedAt": "2026-10-08T02:18:41.501902+00:00",
+      "sha256": "99fa0d01a6d121aaec1210b0271aa1f934a9453f366fe7ed844213c38ec394d7",
+      "worker": {
+        "MainPID": "2047684",
+        "Result": "success",
+        "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+        "ExecMainExitTimestamp": "",
+        "MemoryPeak": "402653184",
+        "MemorySwapPeak": "346685440",
+        "CPUUsageNSec": "30668949000",
+        "ActiveState": "activating",
+        "SubState": "start"
+      },
+      "evidenceIds": [
+        "05b158d9e5fae615b8fa8d1f4a3d844e0d8daaa1471a84c556058cebe990cc74"
+      ]
+    },
+    {
+      "at": "2026-10-08T02:19:18.150Z",
+      "collectionStartedAt": "2026-10-08T02:12:09.597Z",
+      "complete": true,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "marketCount": 1529,
+      "modelled": 634,
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KDEN",
+          "KPHL",
+          "KATL",
+          "KAUS",
+          "KHOU",
+          "KMSY",
+          "KDFW",
+          "KMDW",
+          "KDCA",
+          "KPHX",
+          "KOKC",
+          "KSGF",
+          "KTTN",
+          "KSAT",
+          "KSFO",
+          "KSEA",
+          "KNYC",
+          "KPVD",
+          "KPIT",
+          "KMKE",
+          "KMSP",
+          "KMIA",
+          "KLAS",
+          "KLEX",
+          "KLAX",
+          "KEWR",
+          "KCMH",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KSAN",
+          "KSDF",
+          "KOPF",
+          "KFXE",
+          "KFLL",
+          "KPMP",
+          "KTEB",
+          "KLGA",
+          "KCDW",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KSMO",
+          "KHHR",
+          "KSNA",
+          "KLGB"
+        ],
+        "finishedSources": [
+          "NBM",
+          "NBM-QMD",
+          "LAMP",
+          "climate-reports",
+          "NBM-NBH",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "families": {
+        "temperature": {
+          "markets": 79,
+          "modelled": 0,
+          "volume24h": 3280.2799999999997
+        },
+        "tropical": {
+          "markets": 276,
+          "modelled": 0,
+          "volume24h": 157499.31000000006
+        },
+        "snow": {
+          "markets": 172,
+          "modelled": 0,
+          "volume24h": 16576.739999999998
+        },
+        "hourly-temperature": {
+          "markets": 40,
+          "modelled": 30,
+          "volume24h": 5690.960000000001
+        },
+        "daily-temperature": {
+          "markets": 576,
+          "modelled": 576,
+          "volume24h": 2051016.7
+        },
+        "precipitation": {
+          "markets": 244,
+          "modelled": 0,
+          "volume24h": 42264.84
+        },
+        "other": {
+          "markets": 81,
+          "modelled": 0,
+          "volume24h": 4742.83
+        },
+        "daily-rain": {
+          "markets": 61,
+          "modelled": 28,
+          "volume24h": 470374.04000000004
+        }
+      },
+      "errors": [
+        {
+          "station": "KPHL",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KDEN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KATL",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSY",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ],
+      "receivedAt": "2026-10-08T02:19:31.310673+00:00",
+      "sha256": "3369b5953440a0856bb45489053cb5d095802763a32ef0e48cd332b3f06e3253",
+      "worker": {
+        "MainPID": "2047684",
+        "Result": "success",
+        "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+        "ExecMainExitTimestamp": "",
+        "MemoryPeak": "402653184",
+        "MemorySwapPeak": "346685440",
+        "CPUUsageNSec": "38462951000",
+        "ActiveState": "activating",
+        "SubState": "start"
+      },
+      "evidenceIds": [
+        "3948922a222cf689e6a77beb74b6c75cc3c4ef09ad573c97200f2dde53ba909d"
+      ]
+    }
+  ],
+  "terminal": {
+    "MainPID": "0",
+    "Result": "timeout",
+    "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+    "ExecMainExitTimestamp": "Thu 2026-10-08 02:21:08 UTC",
+    "MemoryPeak": "402653184",
+    "MemorySwapPeak": "346685440",
+    "CPUUsageNSec": "54799688000",
+    "ActiveState": "failed",
+    "SubState": "failed"
+  },
+  "terminalObserved": true,
+  "unitConfigurationUnchanged": true,
+  "serviceRestartRequested": false,
+  "sharedHouseRestarted": false,
+  "ordersPlaced": 0
+}

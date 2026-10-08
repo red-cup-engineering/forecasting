@@ -1,0 +1,29 @@
+{
+  "kind": "source-patchset-input",
+  "version": 1,
+  "sourceRoot": "/home/emsenn/info",
+  "files": {
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/station-observations.mjs": {
+      "state": "present",
+      "sha256": "d2d3083f7a601a1cc000942fac1387ae66f04740d6ab2806365de3238a35cf56"
+    },
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-ensemble.mjs": {
+      "state": "present",
+      "sha256": "42ef1206682eb082e6c71f0589d5c4ae7537e1f0a41dea4a6b10e6d910cac8af"
+    },
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-family-learning.mjs": {
+      "state": "present",
+      "sha256": "70df982962ce1edf400ec26bb91539d5592faa4a1c5c0009909cf18a312dffa6"
+    },
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/station-weather-science.mjs": {
+      "state": "present",
+      "sha256": "e3a94fbc24a904273dbe9f4f9cec9d0e3c79a1ea323df9557ad296623c158bda"
+    }
+  },
+  "clauses": [
+    "measurement-witnesses",
+    "cell-scoring",
+    "past-only-learning",
+    "existing-consumers"
+  ]
+}

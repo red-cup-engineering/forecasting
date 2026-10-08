@@ -1,0 +1,33 @@
+{
+  "kind": "source-patchset-input",
+  "version": 1,
+  "sourceRoot": "/home/emsenn/info",
+  "files": {
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-precipitation.mjs": {
+      "state": "absent"
+    },
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/station-observations.mjs": {
+      "state": "present",
+      "sha256": "70b015c90d111932de29b24433c9a785ec8f06f7dd1983e97d6ee31a22c63727"
+    },
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-evidence.mjs": {
+      "state": "present",
+      "sha256": "1688b04729dd2be6f76468b8e9454844b5549aeb8de9baf5780739b50b0a58ac"
+    },
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-engine.mjs": {
+      "state": "present",
+      "sha256": "1e5595943fd6254000cef07a15e710fd4387dbe677ee94fa5879302d7f5fe559"
+    },
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/README-weather.md": {
+      "state": "present",
+      "sha256": "cfd270599e22a163606cbcccad6847259266a271704b906910ce307ae461c454"
+    }
+  },
+  "clauses": [
+    "retained-rain-carrier",
+    "interval-metrology",
+    "dependence-bounds",
+    "same-day-experiment",
+    "original-lane-retained"
+  ]
+}

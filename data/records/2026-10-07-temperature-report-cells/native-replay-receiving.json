@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-07T23:57:28.448Z",
+  "sourceEvidenceSha256": "dbea8f98dff6281f94943fece07e0490ea6a9ab1b4f5cf884565fca618609c49",
+  "nativeCellsAndForecastsUnchanged": true,
+  "rawPagesReverified": true,
+  "receiving": "new source revision on exact archived host inputs; no re-fetch",
+  "beforeJsonBytes": 7739343,
+  "afterJsonBytes": 5733670,
+  "outsideWindowStructuredCopiesRemoved": 3909,
+  "outsideWindowRawEvidenceRetained": true,
+  "newProspectiveForecasts": 94,
+  "ordersPlaced": 0
+}

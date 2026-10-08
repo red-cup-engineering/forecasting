@@ -1,0 +1,93 @@
+{
+  "kind": "temperature-report-cell-receiving-v1",
+  "at": "2026-10-08T00:05:45.217Z",
+  "effect": "Raw reporting cells now drive a separate prospective family-weight experiment with shared-cell CRPS ranges; existing point forecasting, fitting and venue settlement retained.",
+  "mathematics": {
+    "olderPointConsumerCannotScoreCellTarget": true,
+    "knownCellPendingMigratedUnderExistingWriter": true,
+    "legacyPhysicalForecastsUnchanged": 472,
+    "supplementalReportCellForecasts": 96,
+    "status": "passed",
+    "gridChecks": 4004,
+    "measurementFixturesPassed": true,
+    "legacyPointObservationProjectionUnchanged": true,
+    "legacyPointLearnerOutputUnchanged": true,
+    "prequentialSynthetic": {
+      "pointLearnerMeanF": 73.0327128551089,
+      "reportCellLearnerMeanF": 72.97382556504391,
+      "matchedDates": 1,
+      "matchedSamples": 1,
+      "scoredBeforeLearning": 2
+    },
+    "causalRefusals": [
+      "future outcome receipt",
+      "future cell receipt",
+      "publication after earliest target",
+      "unknown precision",
+      "contradictory encodings"
+    ],
+    "observedSkillEstablished": false,
+    "ordersPlaced": 0
+  },
+  "live": {
+    "protectedPendingCarrier": "measurementPending",
+    "noCellTargetsExposedToOlderPointScorers": true,
+    "at": "2026-10-08T00:05:45.217Z",
+    "route": "declared current retained weatherStationEvidence export and existing persistent station science carrier",
+    "evidenceId": "3770e330a1a72d1649364eb897420afb2c62ffd4bca9eeea312f22abc04f5a97",
+    "sourceEvidenceId": "8ef3208924ac3c22ad403c79899d042e874645de0929cfddb21e50b3f23f6a43",
+    "newPhysicalForecasts": 96,
+    "recordedPendingReportCellForecasts": 106,
+    "publicationStatus": "station science updated under existing lock",
+    "allNewForecastsProspective": true,
+    "reportCellSkillEstablished": false,
+    "matchedDates": [
+      0
+    ],
+    "cells": {
+      "KMIA/2026-10-07": {
+        "identified": 15,
+        "conflicted": 0,
+        "unidentified": 205,
+        "outsideWindowRawRows": 1944
+      },
+      "KABQ/2026-10-07": {
+        "identified": 10,
+        "conflicted": 0,
+        "unidentified": 181,
+        "outsideWindowRawRows": 1957
+      }
+    },
+    "verifiedRawPages": 12,
+    "receivedElapsedSeconds": 67.279694088,
+    "cpuSeconds": 7.961061,
+    "peakRssMiB": 447.1015625,
+    "httpReads": 29,
+    "httpWrites": 0,
+    "errors": [],
+    "ordersPlaced": 0,
+    "sharedHouseRestartRequested": false
+  },
+  "consumer": {
+    "at": "2026-10-08T00:05:54.859Z",
+    "existingInstalledWeatherEvidenceReaderWorks": true,
+    "actualInstalledHostDeclaration": "/gnu/store/vpx1qghvayx293bdblxiigjvhc7k8n9c-cold-red-gate-deployment-1/deployment/host.json",
+    "nativeMcpHandlerReceiving": true,
+    "httpTransportVerified": false,
+    "admissionRequiredForNewCatalogTools": true,
+    "evidenceId": "3770e330a1a72d1649364eb897420afb2c62ffd4bca9eeea312f22abc04f5a97",
+    "newPhysicalForecastsRead": 96,
+    "owningSourceFallbackReadsProtectedPending": true,
+    "station": "KMIA",
+    "protectedPending": 53,
+    "measurementMetrics": 0,
+    "ordersPlaced": 0,
+    "sharedHouseRestartRequested": false
+  },
+  "archiveShaVerified": true,
+  "scienceLimit": "Synthetic changed weights are demonstrated; no prospective report-cell score, calibrated skill, venue alpha or independent-date confidence established.",
+  "knownCompatibilityFailureRemoved": "Installed older reader has no report-cell interpretation. New targets are kept in measurementPending; known first-candidate pending targets migrated under existing station lock. Older point scorer preserved mature synthetic cell target; new scorer subsequently scored it.",
+  "remaining": "HTTP transport and release admission for new catalog tools remain unverified/unfinished; existing installed native weather_evidence reader successfully reads new record.",
+  "ordersPlaced": 0,
+  "sharedHouseRestartRequested": false
+}

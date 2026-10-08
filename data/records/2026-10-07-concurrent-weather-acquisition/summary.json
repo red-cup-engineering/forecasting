@@ -1,0 +1,48 @@
+{
+  "at": "2026-10-07T22:46:19.215Z",
+  "runtime": "/home/emsenn/.local/share/561-group/weather-research/releases/1325cb6bef5e4801bfa78e60352b37bec2ebf7602cff7fa5edbee4b7f2379da3",
+  "house": "/gnu/store/vpx1qghvayx293bdblxiigjvhc7k8n9c-cold-red-gate-deployment-1",
+  "evidenceId": "2d4fb234a06b7d5790e37dbe6584f9a92bde7604fab70567e839ff79cbabe835",
+  "evidenceRoundTrip": true,
+  "productionEngineExports": true,
+  "rows": [
+    {
+      "station": "KMIA",
+      "rawPagesVerified": 6,
+      "temperatureCount": 202,
+      "measurableWitnesses": 4,
+      "conflicts": 0,
+      "observationReceivedAt": "2026-10-07T22:46:04.501Z"
+    },
+    {
+      "station": "KABQ",
+      "rawPagesVerified": 6,
+      "temperatureCount": 175,
+      "measurableWitnesses": 0,
+      "conflicts": 0,
+      "observationReceivedAt": "2026-10-07T22:46:09.149Z"
+    }
+  ],
+  "sourceErrors": [],
+  "elapsedSeconds": 16.104,
+  "cpuSeconds": 3.157146,
+  "maxRssMiB": 468.625,
+  "evidenceJsonBytes": 8425984,
+  "observedHttpRequests": 29,
+  "admittedHouseForecastConsumerVerified": true,
+  "admittedHouseTools": [
+    "weather_ecmwf_evidence",
+    "weather_status",
+    "weather_cycle",
+    "weather_forecast",
+    "weather_evidence",
+    "weather_station_evidence",
+    "weather_station_skill",
+    "weather_index_evidence",
+    "weather_score",
+    "weather_allocate",
+    "weather_model_admit"
+  ],
+  "periodicUnitChanged": false,
+  "orderEffect": false
+}

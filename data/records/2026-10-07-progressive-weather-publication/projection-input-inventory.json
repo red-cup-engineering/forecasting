@@ -1,0 +1,18 @@
+{
+  "kind": "source-patchset-input",
+  "version": 1,
+  "sourceRoot": "/home/emsenn/info",
+  "files": {
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-engine.mjs": {
+      "state": "present",
+      "sha256": "1777e231f5a919744ae424a399e74d80384902768de193c4eff18aae5384f38e"
+    }
+  },
+  "clauses": [
+    "source-law-before-learning",
+    "market-capture-separate",
+    "complete-refinement-preserved",
+    "independent-prospective-cohort",
+    "all-markets-retained"
+  ]
+}

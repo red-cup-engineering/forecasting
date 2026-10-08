@@ -1,0 +1,14 @@
+from pathlib import Path
+import subprocess,json,hashlib,tarfile,shlex,uuid
+repo=Path('/home/emsenn/info');f=Path(Path('/tmp/weather-forecasting-root').read_text().strip());r=Path(Path('/tmp/weather-bounded-ensemble-record').read_text().strip());own=Path(Path('/tmp/weather-source-admission-root').read_text().strip())/'kalshi';stage=Path(Path('/tmp/weather-bounded-ensemble-stage').read_text().strip());inventory=json.loads((r/'input-inventory.json').read_text())
+assert json.loads((r/'native-decoder-receiving.json').read_text())['status']=='passed';assert json.loads((r/'source-publication-controlled-receiving.json').read_text())['stationGeometryAndReceiptRetained']
+for name,expect in inventory['files'].items():
+ canonical=repo/name;candidate=stage/name;q=own/canonical.relative_to(f.parents[1]);assert hashlib.sha256(canonical.read_bytes()).hexdigest()==expect['sha256'];assert q.read_bytes()==canonical.read_bytes();canonical.write_bytes(candidate.read_bytes());q.write_bytes(candidate.read_bytes())
+(r/'kalshi-owning-source.patch').write_bytes(subprocess.check_output(['git','-C',str(own),'diff','--binary']));subprocess.run(['git','-C',str(own),'apply','--check','--reverse',str(r/'kalshi-owning-source.patch')],check=True)
+for n in ['prepare-weather-bounded-ensemble.py','receive-weather-bounded-ensemble.py','receive-weather-bounded-ensemble-native.py','receive-weather-bounded-source-publication.mjs','profile-weather-ecmwf-cache.py','probe-weather-ecmwf-transport.py','install-weather-bounded-ensemble.py']:(r/'scripts'/n).write_bytes((Path('/tmp')/n).read_bytes())
+prev=Path(Path('/tmp/weather-progressive-record').read_text().strip());tool=repo/Path('/tmp/weather-source-patchset-tool').read_text().strip();archive=r/'source-update.tar.gz'
+with tarfile.open(archive,'w:gz') as t:
+ for n in ['input-inventory.json','source-patchset.json']:t.add(r/n,arcname=n)
+ t.add(tool,arcname='materializer.py');t.add(prev/'scripts/update-retained-weather-runtime.py',arcname='update-runtime.py')
+hostpath='/tmp/weather-bounded-ensemble-'+uuid.uuid4().hex;subprocess.run(['ssh','-o','BatchMode=yes','cold-red-gate','mkdir -p '+shlex.quote(hostpath)],check=True);subprocess.run(['scp','-q',str(archive),'cold-red-gate:'+hostpath+'/source.tar.gz'],check=True)
+cmd='export PATH=/home/emsenn/.nvm/versions/node/v24.16.0/bin:$PATH; tar -xzf '+shlex.quote(hostpath+'/source.tar.gz')+' -C '+shlex.quote(hostpath)+'; python3 '+shlex.quote(hostpath+'/update-runtime.py')+' '+ ' '.join(shlex.quote(hostpath+'/'+n) for n in ['input-inventory.json','source-patchset.json','materializer.py','source.tar.gz']);receipt=json.loads(subprocess.check_output(['ssh','-o','BatchMode=yes','cold-red-gate',cmd],text=True).splitlines()[-1]);(r/'runtime-only-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))

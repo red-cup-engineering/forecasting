@@ -1,0 +1,52 @@
+ KNYC   GFS LAMP GUIDANCE  10/07/2026  0230 UTC                                  
+ UTC  03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 00 01 02 03 
+ TMP  54 53 53 52 51 51 50 50 50 50 53 56 59 61 63 64 64 64 64 63 62 61 61 61 61 
+ DPT  35 36 36 36 35 36 36 35 36 35 38 39 39 38 38 39 40 41 43 44 46 47 47 48 48 
+ WDR  30 31 30 32 30 29 00 26 27 25 22 20 21 21 22 21 21 20 19 20 19 20 18 20 21 
+ WSP  03 02 02 01 01 01 00 01 01 01 02 02 02 03 04 04 04 05 03 03 03 03 02 02 03 
+ WGS  NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG 
+ PPO   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 
+ PCO   N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N 
+ P01   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  1  1  1  1  1  1  1  2  3 
+ PC1   N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N 
+ P06                              0                 1                 2          
+ LP1   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 
+ LC1   N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N 
+ CP1   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  1  1 
+ CC1   N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N 
+ POZ   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 
+ POS   0  0  0  3  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 
+ TYP   R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R 
+ CLD  CL CL CL CL CL CL CL CL CL CL CL CL CL CL CL CL CL CL CL CL CL CL CL CL CL 
+ CIG   8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8 
+ CCG   8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  8  7  8  8  8  8 
+ VIS   7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7 
+ CVS   7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7  7 
+ OBV   N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N 
+
+ KSEA   GFS LAMP GUIDANCE  10/07/2026  0230 UTC                                  
+ UTC  03 04 05 06 07 08 09 10 11 12 13 14 15 16 17 18 19 20 21 22 23 00 01 02 03 
+ TMP  57 57 56 56 55 54 53 53 52 52 51 51 52 54 57 60 62 66 68 70 70 70 67 63 61 
+ DPT  53 53 53 53 53 52 52 51 51 50 50 50 50 50 51 51 51 50 50 49 49 48 48 48 49 
+ WDR  34 35 36 36 01 01 36 01 01 02 02 03 03 01 01 36 34 34 33 33 32 33 34 35 35 
+ WSP  06 06 06 05 05 05 04 04 03 03 03 03 04 05 06 06 06 06 07 07 07 07 06 05 05 
+ WGS  NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG NG 
+ PPO   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 
+ PCO   N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N 
+ P01   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  1  0  0  0  0  0  0  0  0  0 
+ PC1   N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N 
+ P06                              0                 1                 1          
+ LP1   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 
+ LC1   N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N 
+ CP1   1  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 
+ CC1   N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N  N 
+ POZ   0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 
+ POS   3  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0 
+ TYP   R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R  R 
+ CLD  SC SC SC FW FW FW FW FW FW SC SC BK BK BK BK BK FW FW FW FW CL CL FW FW CL 
+ CIG   8  8  8  3  3  3  3  3  2  2  1  1  1  8  8  8  8  8  8  8  8  8  8  8  8 
+ CCG   8  8  8  2  3  2  2  3  2  2  2  2  2  7  7  7  7  7  8  7  8  8  8  8  8 
+ VIS   7  7  7  7  7  7  7  7  7  6  2  2  2  7  7  7  7  7  7  7  7  7  7  7  7 
+ CVS   7  7  7  7  5  7  7  7  7  3  1  1  1  7  7  7  7  7  7  7  7  7  7  7  7 
+ OBV   N  N  N  N  N  N  N  N  N  N  N  N BR  N  N  N  N  N  N  N  N  N  N  N  N 
+

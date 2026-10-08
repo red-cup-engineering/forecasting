@@ -1,0 +1,23 @@
+{
+  "installed": [
+    {
+      "path": "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/station-weather-science.mjs",
+      "sha256": "bf452a7a35ae2e61c848abac8a388428d8b26adfa82156e2c92e494472dffc05"
+    },
+    {
+      "path": "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-engine.mjs",
+      "sha256": "05adb365a6712a9ac1c1b1ee5fca55d05276e29acda8b145a77df0526f9d2043"
+    },
+    {
+      "path": "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/apps/replay-station-weather-science.mjs",
+      "sha256": "138032aa8247ff03da2ccd81cdc67a5289ed424b727cad6331080038aaefb20c"
+    }
+  ],
+  "ordersPlaced": 0,
+  "owningReplayScopeRecovered": [
+    "ecmwfEnsemble",
+    "relational"
+  ],
+  "canonicalAndOwningMatch": true,
+  "sourceArchiveSha256": "1c733dbb7231aba3c2cbc02561e9e141a8423bfd0f7f51d2eb2d749f66d4ee2d"
+}

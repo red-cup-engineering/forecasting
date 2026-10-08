@@ -1,0 +1,25 @@
+{
+  "kind": "source-patchset",
+  "version": 1,
+  "disposition": "candidate",
+  "reason": "Keep the original observation interval on every continuation and eliminate unrelated older-day acquisition.",
+  "changes": [
+    {
+      "operation": "edit",
+      "path": "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/station-observations.mjs",
+      "inputSha256": "de46276f264e483f33c181018a30e8ccd892c61d4332d767652037fcfac8f93d",
+      "replacements": [
+        {
+          "before": "    const pageUrl=new URL(next,url);if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname||visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');",
+          "after": "    const pageUrl=new URL(next,url);\n    if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname)throw new Error('station-observations: invalid or excessive observation pagination');\n    // NWS continuation links can omit the original interval. The opaque cursor\n    // advances within our request; it does not widen the requested evidence.\n    for(const key of ['start','end','limit'])pageUrl.searchParams.set(key,url.searchParams.get(key));\n    if(visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');"
+        }
+      ],
+      "clauses": [
+        "request-scope",
+        "required-pages",
+        "causal-evidence",
+        "bounded-pressure"
+      ]
+    }
+  ]
+}

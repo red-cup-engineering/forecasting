@@ -22,7 +22,7 @@ import { join } from 'node:path';
 
 export const NBM_OPEN_DATA = 'https://noaa-nbm-grib2-pds.s3.amazonaws.com';
 const HEADER = /^\s*(\S+)\s+NBM V[\d.]+ NBS GUIDANCE\s+(\d\d)\/(\d\d)\/(\d{4})\s+(\d\d)(\d\d) UTC/u;
-const ROWS = new Set(['FHR', 'TXN', 'XND', 'TMP', 'TSD']);
+const ROWS = new Set(['FHR', 'TXN', 'XND', 'TMP', 'TSD', 'P06', 'Q06', 'S06']);
 
 const pad2 = (n) => String(n).padStart(2, '0');
 export const bulletinUrl = (runtime, base = NBM_OPEN_DATA) => {
@@ -64,6 +64,7 @@ export function parseNbsBulletin(text, stations) {
     const rows = block.FHR.map((fhr, c) => ({
       ftime: new Date(runtime + fhr * 3600_000).toISOString(),
       txn: block.TXN?.[c] ?? null, xnd: block.XND?.[c] ?? null, tmp: block.TMP?.[c] ?? null, tsd: block.TSD?.[c] ?? null,
+      p06: block.P06?.[c] ?? null, q06: block.Q06?.[c] ?? null, s06: block.S06?.[c] ?? null,
     })).filter((row) => Number.isFinite(Date.parse(row.ftime)));
     out.set(station, { station, runtime: new Date(runtime).toISOString(), rows });
   }
@@ -85,18 +86,20 @@ export async function latestStationGuidance({ stations, now = Date.now(), cacheD
   for (let back = 0; back <= lookbackHours; back += 1) {
     const runtime = new Date(hour - back * 3600_000).toISOString();
     const cached = join(cacheDir, `nbs-${runtime.slice(0, 13)}.json`);
+    let prior;
     try {
       const doc = JSON.parse(await readFile(cached, 'utf8'));
-      if (stations.every((station) => doc.stations[station])) return doc;
+      if(doc.runtime===runtime)prior=doc;
+      if (doc.runtime===runtime&&stations.every((station) => doc.stations[station])) return doc;
     } catch (error) {
       if (error.code !== 'ENOENT' && !(error instanceof SyntaxError)) throw error;
     }
     const source = bulletinUrl(runtime, baseUrl);
-    const res = await fetchImpl(source, { signal: AbortSignal.timeout(180_000) });
+    const res = await fetchImpl(source, { signal: AbortSignal.timeout(45_000) });
     if (res.status === 404 || res.status === 403) continue;
     if (!res.ok) throw new Error(`nbm-station-guidance: GET ${source} answered ${res.status}`);
     const parsed = parseNbsBulletin(await res.text(), stations);
-    const doc = { runtime, source, stations: Object.fromEntries(parsed) };
+    const doc = { runtime, source, stations: {...prior?.stations,...Object.fromEntries(parsed)} };
     const temporary = `${cached}.${process.pid}.tmp`;
     await writeFile(temporary, JSON.stringify(doc));
     await rename(temporary, cached);

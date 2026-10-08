@@ -1,0 +1,41 @@
+{
+  "at": "2026-10-07T17:59:04.866Z",
+  "certifiedMethodologies": {
+    "nyc": {
+      "quorum": {
+        "members": 7,
+        "weight": 0.875
+      },
+      "availableAt": "2026-10-07T17:58:40.732Z",
+      "decodedAt": "2026-10-07T17:58:40.887Z",
+      "sha256": "9942610d44ac4236207dc1ec68a711ecec20dc1d97b3d878ff567fca63d7d959"
+    },
+    "miami": {
+      "quorum": {
+        "members": 4,
+        "weight": 0.8
+      },
+      "availableAt": "2026-10-07T17:58:40.724Z",
+      "decodedAt": "2026-10-07T17:58:40.880Z",
+      "sha256": "f7acb398f739ef0b4745e9ae4cbf19b9834676ca4316a81af5c7e3c2c4d20a87"
+    },
+    "la-coastal": {
+      "quorum": {
+        "members": 4,
+        "weight": 0.8
+      },
+      "availableAt": "2026-10-07T17:58:40.716Z",
+      "decodedAt": "2026-10-07T17:58:40.888Z",
+      "sha256": "216bf34b214613a1b2134511b6887bd1be070dbaaf7e5aa50e16b1dc4f421a6e"
+    },
+    "chicago": {
+      "quorum": {
+        "members": 4,
+        "weight": 0.8
+      },
+      "availableAt": "2026-10-07T17:58:40.727Z",
+      "decodedAt": "2026-10-07T17:58:40.885Z",
+      "sha256": "eeeb92b5156d194e95c0e88c8e40fa619852a12419ce3b858d28847612899a44"
+    }
+  }
+}

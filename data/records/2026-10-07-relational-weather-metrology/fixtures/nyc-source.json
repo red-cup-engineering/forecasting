@@ -1,0 +1,6 @@
+{
+  "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=JFK&station=LGA&station=EWR&station=HPN&data=tmpf&year1=2026&month1=7&day1=1&year2=2026&month2=10&day2=7&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+  "sha256": "83394e5e1ce98074f5d88ebe45e4082fff879ac9a31788dd3c7d89b1e406c962",
+  "bytes": 464901,
+  "availableAt": "2026-10-07T13:58:46.700665+00:00"
+}

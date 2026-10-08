@@ -1,0 +1,171 @@
+{
+  "at": "2026-10-07T17:18:11.156Z",
+  "hostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/e9eceb7da2366060389bf5b932b982c23fda813d3309db0234e9e1ff4a156465",
+  "nativeTools": 14,
+  "evidenceId": "1ec7b23ed21603274674a2bc86ced8ac413ae5b9175cb253097aa9fb32c99f96",
+  "repeatEvidenceId": "9d11266ba678bfa463be0701d737c1a05d5126a0609517527096a02f4fbc7de7",
+  "runtime": "2026-10-07T06:00:00Z",
+  "sourceAvailableAt": "2026-10-07T17:17:07.053595Z",
+  "collectedAt": "2026-10-07T17:17:10.913054Z",
+  "wallMs": 129742,
+  "fields": 102,
+  "members": 51,
+  "validTimes": [
+    "2026-10-07T18:00:00Z",
+    "2026-10-08T00:00:00Z"
+  ],
+  "stations": [
+    "KJFK",
+    "KLGA",
+    "KEWR",
+    "KHPN",
+    "KMIA",
+    "KFLL",
+    "KOPF"
+  ],
+  "firstPublished": 14,
+  "repeatPublished": 0,
+  "retainedFieldBytes": 63912333,
+  "immutableFieldRoundtrip": true,
+  "immutableReceiptReuse": true,
+  "scenarioIdentitiesRetained": true,
+  "stationGeometryVerified": true,
+  "examples": [
+    {
+      "station": "KJFK",
+      "validTime": "2026-10-07T18:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 62.86751737129096,
+      "scaleF": 0.8269761508393056,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    },
+    {
+      "station": "KJFK",
+      "validTime": "2026-10-08T00:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 61.27345563678291,
+      "scaleF": 0.6335840179485386,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    },
+    {
+      "station": "KLGA",
+      "validTime": "2026-10-07T18:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 64.7087532576586,
+      "scaleF": 0.8200523265971832,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    },
+    {
+      "station": "KLGA",
+      "validTime": "2026-10-08T00:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 60.38168634269765,
+      "scaleF": 0.7566416450459971,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    },
+    {
+      "station": "KEWR",
+      "validTime": "2026-10-07T18:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 66.13259637648214,
+      "scaleF": 0.6552485387781644,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    },
+    {
+      "station": "KEWR",
+      "validTime": "2026-10-08T00:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 59.17174145740356,
+      "scaleF": 0.8039113652447761,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    },
+    {
+      "station": "KHPN",
+      "validTime": "2026-10-07T18:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 64.51508593683032,
+      "scaleF": 0.7753036577725751,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    },
+    {
+      "station": "KHPN",
+      "validTime": "2026-10-08T00:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 58.4922920536388,
+      "scaleF": 0.7682335882042877,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    },
+    {
+      "station": "KMIA",
+      "validTime": "2026-10-07T18:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 86.55482097505617,
+      "scaleF": 1.2175392522094586,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    },
+    {
+      "station": "KMIA",
+      "validTime": "2026-10-08T00:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 80.86014043433053,
+      "scaleF": 0.9636564361423424,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    },
+    {
+      "station": "KFLL",
+      "validTime": "2026-10-07T18:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 86.35160717328218,
+      "scaleF": 1.1331816610275443,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    },
+    {
+      "station": "KFLL",
+      "validTime": "2026-10-08T00:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 80.30842582554476,
+      "scaleF": 0.9324937398825367,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    },
+    {
+      "station": "KOPF",
+      "validTime": "2026-10-07T18:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 86.48810647883506,
+      "scaleF": 1.2560832206627481,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    },
+    {
+      "station": "KOPF",
+      "validTime": "2026-10-08T00:00:00Z",
+      "availableAt": "2026-10-07T17:17:12.609Z",
+      "meanF": 80.53334277622709,
+      "scaleF": 0.9806554511556366,
+      "model": "ecmwf-aifs-ens-v2-bilinear-v1",
+      "members": 51
+    }
+  ],
+  "availabilityAttempts": [
+    {
+      "runtime": "2026-10-07T12:00:00+00:00",
+      "status": 404,
+      "receivedAt": "2026-10-07T17:16:04.116028Z"
+    }
+  ],
+  "orderEffect": false,
+  "prospectiveSkillClaim": false,
+  "publicCatalogReloadVerified": false
+}

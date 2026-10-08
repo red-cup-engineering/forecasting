@@ -1,0 +1,17 @@
+{
+  "kind": "source-patchset-input",
+  "version": 1,
+  "sourceRoot": "/home/emsenn/info",
+  "files": {
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/station-observations.mjs": {
+      "state": "present",
+      "sha256": "de46276f264e483f33c181018a30e8ccd892c61d4332d767652037fcfac8f93d"
+    }
+  },
+  "clauses": [
+    "request-scope",
+    "required-pages",
+    "causal-evidence",
+    "bounded-pressure"
+  ]
+}

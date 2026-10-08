@@ -1,0 +1,9 @@
+from pathlib import Path
+import json,hashlib,shutil,subprocess
+r=Path(Path('/tmp/weather-progressive-record').read_text().strip());f=Path(Path('/tmp/weather-forecasting-root').read_text().strip());repo=Path('/home/emsenn/info');candidate=r/'weather-engine.candidate.mjs';before=candidate.read_text();old='      const s=stage(c,decisionNow),models=weatherEstimates(c,evidence,decisionNow);';new="      const s=stage(c,decisionNow)+(evidence.acquisition?.complete===false?'/during-acquisition-v1':''),models=weatherEstimates(c,evidence,decisionNow);";assert before.count(old)==1;after=before.replace(old,new)
+assert (f/'src/weather-engine.mjs').read_text()==before
+clauses=['partial-regime-cohort','complete-regime-preserved'];name=str((f/'src/weather-engine.mjs').relative_to(repo));sha=hashlib.sha256(before.encode()).hexdigest();inventory={'kind':'source-patchset-input','version':1,'sourceRoot':str(repo),'files':{name:{'state':'present','sha256':sha}},'clauses':clauses};patch={'kind':'source-patchset','version':1,'disposition':'candidate','reason':'A partial-acquisition forecasting regime must not borrow completed-cycle admission history.','changes':[{'operation':'edit','path':name,'inputSha256':sha,'replacements':[{'before':old,'after':new}],'clauses':clauses}]}
+(r/'cohort-input-inventory.json').write_text(json.dumps(inventory,indent=2)+'\n');(r/'cohort-source-patchset.json').write_text(json.dumps(patch,indent=2)+'\n');(r/'weather-engine.first-version.mjs').write_text(before);candidate.write_text(after)
+complete=json.loads((r/'source-patchset.json').read_text());complete['changes'][1]['replacements'][0]['after']=after;(r/'source-patchset.json').write_text(json.dumps(complete,indent=2)+'\n')
+stage=Path(Path('/tmp/weather-progressive-stage').read_text().strip());tmp=stage/name;assert tmp.read_text()==before;tmp.write_text(after);subprocess.run(['node','--check',str(tmp)],check=True)
+print(json.dumps({'cohortStageAmended':True}))

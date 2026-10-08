@@ -1,0 +1,952 @@
+diff --git a/package.json b/package.json
+index f92236c..45066c6 100644
+--- a/package.json
++++ b/package.json
+@@ -46,7 +46,8 @@
+     "./settlement-accounting": "./src/settlement-accounting.mjs",
+     "./weather-cli": "./services/forecasting-service/apps/weather.mjs",
+     "./weather-replay": "./services/forecasting-service/apps/replay-station-weather-science.mjs",
+-    "./desk-order-recovery": "./services/kalshi-stake-path-service/apps/kalshi-desk.mjs"
++    "./desk-order-recovery": "./services/kalshi-stake-path-service/apps/kalshi-desk.mjs",
++    "./weather-participation": "./src/weather-participation.mjs"
+   },
+   "bin": {
+     "provision-kalshi-api-key": "./scripts/provision-kalshi-api-key.mjs"
+diff --git a/services/forecasting-service/README-weather.md b/services/forecasting-service/README-weather.md
+index d08236c..2deec92 100644
+--- a/services/forecasting-service/README-weather.md
++++ b/services/forecasting-service/README-weather.md
+@@ -1,11 +1,15 @@
+ # Weather research and Kalshi on Cold Red Gate
+ 
++Same-day daily-rain research now retains compressed exact NWS observation response pages, validated accumulation quantities and raw METAR precipitation remarks. Trace, missing, conflicting and boundary-crossing measurements remain separate; overlapping windows are never added. Fully future NBH P01 marginals expose union bounds and an explicitly hypothetical independence value; partially elapsed hours and unobserved past rain prevent identification of the whole-day event. A supported measurable proxy witness supplies two forward experimental probabilities (0.99 and 0.95), each with a fixed, untrained NWS-to-final-TWC failure assumption. These supplement the frozen day-before model and remain subject to the existing venue-outcome admission controls. Forecast rows expose `rainNowcast` even when a whole-day probability is unidentified.
++
+ The existing `kalshi-weather-forecast` / `kalshi-weather-score` operations and `forecast-weather-markets-cli.mjs run|score|calibration` keep their configured NWS model, semantic journal, calibration and paper-sizing behavior. The general forecasting daily cycle continues to consume those records.
+ 
+ The supplemental research and market collector: `node apps/weather.mjs cycle`, or the authenticated Cold Red Gate `weather_weather_cycle` tool. `weather_weather_status` shows coverage, gaps, scored model skill and available opportunities. `weather_weather_forecast` reads a specific contract. `weather_weather_model_admit` contributes a model experiment. `weather_weather_allocate` creates a depth-limited capital plan. These tools do not place orders; execution remains the custody-bound Kalshi desk.
+ 
+ The collector discovers every Climate and Weather series from Kalshi, paginates its open markets, binds the actual contract rules, collects one NBM run for all required stations, NOAA LAMP v2.7 short-range station guidance through 38 hours, NWS hourly trajectories, timestamped observations and active hazards, reads the domestic and international official-report endpoints used by weather.com/kalshi, and archives the evidence compressed in machine state. Official, revised, preliminary and missing statuses remain separate; only definitive binary venue settlement with its actual settlement timestamp scores a market; forecasts issued after settlement or under changed rules are excluded. Daily high/low and daily rain models are recovered from the existing fitted implementations. A competing NBM v5 QMD model reads the published 10/25/50/75/90th percentile station temperatures from NBP, preserves asymmetry, and labels its outer-tail extrapolation explicitly. NBM v5 includes AIFS/AIGFS inputs; no separate global AI inference is claimed. Rain P06 is now retained by the NBS parser. The configured NWS forecasting route remains available alongside these additional models. Its journal and calibration history continue through their existing consumers; the supplementary collector keeps its own source archive and model comparisons.
+ 
++During acquisition, useful source-derived laws publish directly to the same status/forecast readers with `forecastLane: source-projection-v1`. They retain the full discovered market universe, frozen content-addressed evidence and first prospective venue forecasts, while `evidenceComplete` and pending source names describe acquisition separately from universe completeness. This route does not wait for physical-outcome fitting, historical venue grading, market quote refreshes, experiments or orderbooks. Its prices are null and its opportunities empty; `weather_participation` captures fresh venue information independently. These laws and newly listed hourly projections use a separate `/source-projection-v1` grading cohort, so refined forecasts cannot confer admission on them. Completed acquisition still runs the existing scientific refinement and full publication. Direct source publication is supplemental; its probability calibration, physical skill and executable returns require their own observations.
++
+ `KALSHI_WEATHER_STATE_DIR` selects persistent state; default `~/.local/state/561-group/settlements/kalshi-services-section/weather`. The timer invokes the declared weather-engine export from a separately pinned deployed weather revision, so unrelated host release changes cannot silently replace the producer or drop its CLI path. The CLI and replay entrypoints are explicit package exports. Original operation names continue to call their configured forecasting functions; `kalshi-weather-research-cycle` and `kalshi-weather-research-score` are separate supplemental operations. The timer starts another cycle ten minutes after the previous one finishes. A web-triggered cycle returns immediately; status reports its running state and latest result. `latest.json` contains exact live rules and source bindings, probabilities per model, SignCell witnesses for and against, research gaps ranked by current traded volume, and qualified opportunities. Evidence objects are addressed by SHA-256 and compressed; `pending.json` holds first forecasts per contract/horizon/model-set, and immutable score files recover scoring after interruption. Kalshi's settlement, including an early rain settlement, determines the outcome. Missing or non-binary results are left unresolved.
+ 
+ Weather observations are not settlement truth. The live contracts inspected on October 6 name The Weather Company for daily extremes and rain, and Synoptic for hourly directionals. NWS is a forecast/observation source; proxy observations never force TWC probabilities to zero. A climate day's standard-time boundary is used for station estimates, with source/window uncertainty remaining in validation. Rules hashes accompany model experiments and opportunities. Skill groups preserve the full measurement and revision rules while normalizing dates and ladder strikes; a source or methodology change resets eligibility. Contract changes are visible and external contract forecasts must match exact current rules.
+@@ -75,3 +79,49 @@ The climate day uses local standard time. Missing hourly temperature/spread or u
+ `weather_weather_relational_science` accepts `{"region":"nyc"}` or `{"region":"miami"}`. The equivalent command is `node apps/weather.mjs relational-science --region nyc`. It obtains a bounded 98-day IEM routine-METAR archive and tests next-report temperature increments using temporal and inter-station relations against persistence and a target-only control. All models fit and calibrate on earlier labels, and comparisons use identical cases. Raw reports, geometry, retrieval clocks and source hashes remain recoverable through `weather_weather_evidence`; contradictory reports remain explicit. This research does not register archive replays as forward forecast skill or trading admission.
+ 
+ The [empirical science record](data/records/2026-10-07-relational-weather-metrology/README.md) gives the mathematical scope, measurements, reproducible results and limitations. This supplements operational NWS/NBM/LAMP forecasting and supports research without requiring any Kalshi market.
++
++## Learner-generating weather strategy research
++
++`weather_weather_strategy_research` with `{"region":"nyc"}` or `{"region":"miami"}` generates bounded relational learners, learns generators from earlier outcomes, and learns which generator to use. It evaluates exact predictive-mixture CRPS and explicitly hypothetical economic scenarios with adaptive rivals and conserved cash. The encoded arena is consumed and checked by the ecosystem's existing game runtime in the [scientific experiment](data/records/2026-10-07-weather-strategy-generators/README.md). Raw reports, frozen fits and full game plays are available through its content-addressed evidence ID. The CLI is `node apps/weather.mjs strategy-research --region nyc`. These retrospective studies preserve existing forecasting and trading admission; they do not send orders or claim real-market alpha.
++
++Prospective relational forecasts use the existing station-science consumer, retain empirical predictive laws and actual receipt/issuance clocks, and refuse expired or incomplete reporting windows. See [the implementation and observed checks](data/records/2026-10-07-prospective-relational-weather/README.md).
++
++## Operational ECMWF AI ensemble
++
++`weather_weather_ecmwf_evidence` retains the complete 51-member AIFS ENS v2 scenario array across requested stations and 1..4 future six-hour slots. Verified station geometry, all four projection corners, indexed GRIB2 bytes and real availability clocks stay recoverable through `weather_weather_evidence`; `rawFieldSha256` retrieves a matching retained field. The normal station collector adds this family when the private ecCodes decoder is installed. Physical forecast pools preserve its full empirical law and score it prospectively. See [the source, mathematical scope and hosted evidence](data/records/2026-10-07-ecmwf-joint-weather-ensemble/README.md). Six-hour projections have no daily-extreme or venue-admission claim.
++
++The existing city-index tools now push aligned AIFS members through certified city weights and offsets at exact six-hour slots, and preserve that empirical law in mixed pools. Certified PDF receipts define degraded-observation quorum; ambiguous half-cent ties retain probability bounds. [The joint-index science record](data/records/2026-10-07-joint-weather-index/README.md) retains six real prospective city forecasts and a sixty-probability snapshot against thirty live contracts. These are sensor proxies pending forward physical and exact venue validation.
++
++Forecast-family adaptation now runs within the existing physical station science. Each station or city, lead cohort, exact family composition, truth carrier and city configuration receives a separate past-only exponential-weight fit over paired daily CRPS differences. The fixed `paired-family-ewa-v1` protocol uses a 14-day rolling window, ten uniform prior days and a 10% uniform weight share. Multiple hours within a date change that date’s mean, rather than multiplying its learning weight. Full empirical atoms and Student-t components survive the weight transformation. Every adaptive forecast freezes its weights, fit clock, paired sufficient statistics and source digest, and carries the simultaneously issued equal pool as its comparator. The city-index contract consumer prices these frozen scientific laws only with matching configuration, composition, target and lead cohort. Physical index verification excludes fallback observations already known before forecast publication. This is a forward experiment: neither a CRPS improvement nor a synthetic regime-change result proves calibration, regret guarantees, opponent strategy identification or executable market alpha.
++
++Primary research informing this implementation: [Thorey, Mallet and Baudin, online CRPS learning](https://rmets.onlinelibrary.wiley.com/doi/10.1002/qj.2940), and [Zamo, Bel and Mestre, sequential aggregation and reliability](https://arxiv.org/abs/2005.03540). The present fixed window, prior and uniform share are our experimental engineering choices; the papers’ guarantees are not claimed for this implementation. Reproducible mechanics and prospective receipts live in `data/records/2026-10-07-adaptive-weather-families/`.
++
++ECMWF transport fallback now uses its official regional S3, Google Cloud and direct ECMWF replicas after retryable HTTP failures. A field range is accepted only when that transport’s full index hash matches the selected immutable index. Receipts preserve both the requested logical URL and actual successful URL, failed transport clocks, byte range and index witness. The original cache identity and first receipt clock survive transport changes. Decoder metadata, full 51-member completeness, receipt-time checks and operating-reserve requirements still apply. A three-mirror real probe found byte-identical indexes and a 620,594-byte control temperature field. A separate controlled transport-failure experiment recovered and decoded that real field through Google Cloud, while rejecting mismatched indexes; it is not evidence that the source actually failed during that experiment. See `data/records/2026-10-07-ecmwf-transport-mirrors/`.
++
++Adaptive publications retain both their publication lead window (5–15, 15–30 or 30–60 minutes, otherwise the existing lead cohort) and frozen fit digest. A newly learned law can therefore be scored even when an earlier law for that target already exists. Metrics distinguish these lead windows; repeated fits for one target remain correlated forecast publications and do not add independent target dates. Each carries its equal-pool comparator from the same publication. Original physical and binary venue records remain available. Concurrent evidence collection reads the last atomic paired learning state without modifying the active writer’s lock or state; it preserves learned family weights and does not append outcomes from that read-only publication.
++
++
++Weather forecasting and weather-market participation have separate evaluations. Physical CRPS/calibration and exact-outcome Brier comparisons remain scientific evidence; outperforming a midpoint is not a universal prerequisite for useful quoting. The existing live admission controls still govern orders. A market participant also needs conditional fill-selection evidence, queue/latency measurements, inventory and capital control.
++
++`weather_participation` captures take/rest/wait alternatives for all available forecasted live weather contracts from frozen probabilities and fresh public books. Supply explicit scenario `capitalUsd`, optionally `encumberedUsd`, whole `contracts` and `windowSeconds` (5..300). Omit `tickers` for station-diverse discovery across all forecasted contracts; use optional `maxMarkets` (`--max-markets` in the CLI) for a smaller capture. Default discovery also binds newly listed hourly contracts from the already received city-index evidence, so listing discovery does not require another physical collection cycle. Current series fees and event overrides are retained; impending event fee changes shorten quote expiry. Metadata is fetched in batches and prepared before book requests containing at most 100 repeated `tickers` keys. Each batch preserves its actual receipt; no atomic exchange snapshot is claimed. Series and event fee observations are shared only inside this fresh capture, without a persistent fee cache. Coverage reports omitted or failed contracts. Monetary depth walks reuse the venue arena and upstream graded book calculations; exact rational average prices survive alongside numeric projections.
++
++Retrieve the returned `evidenceId` through `weather_evidence`. Pass it as `snapshotId` to review subsequent non-block public trades and exact, same-rule, final venue outcomes. Public trade pagination and an initial queue support only a conditional replay: absent order acknowledgments, changing price priority, publication delays and market impact prevent certification of a maker fill. Conditional maker probability and fill probability remain unknown. An empty or incomplete tape does not become demonstrated profitability. Reviews now expose `publicCounterpartyEvidence`: actual non-block public transactions in the captured receipt window, their opposite directional exposure, and purchase-equivalent gross payoffs when the consumer supplies an exact final label and certifies one-dollar binary face value. These are not actual counterparty strategy PnL: opening/closing positions, fees and member cash timing are unknown. Canonical outcome/book direction and legacy direction must agree. Conflicting identities, directions, clocks or quantities retain their witnesses and are excluded; a conflicted window cannot certify a complete queue replay. Public counterparties are a different selection population from our own absent orders, so our fill probability and conditional win law remain unknown.
++
++Pass `snapshotId` with `proposalActionIds` to verify an untrusted research proposal. The verifier checks scoped action identities, expiration, conflicts on each contract side and one cash budget across simultaneous YES/NO quotes. Unresolved fill-selection questions remain separately visible from competing commitments, following the game-foam double-banana distinction. This implements the proposer/verifier seam described in the Panini QMA-ready Reading specification; it makes no quantum-computing or profitability claim. The CLI exposes the same ability through `participation --capital 100 --contracts 3` or `participation --snapshot ID [--actions JSON_ARRAY]`, with `--full` for the retained record.
++
++The Cold Red Gate web handler and weather worker now resolve the same retained weather producer. Each retained release carries its actual entry in `manifest.json`; web calls resolve the current immutable release instead of importing weather code from an unrelated disposable house build. The normal local import remains available when no retained deployment exists. Public HTTP catalog activation must be verified separately from a fresh native MCP handler.
++
++The 2026-10-07 native host capture covered all 627 currently forecasted contracts (576 daily temperature, 30 hourly temperature and 21 rain) across 100 events and 34 locations. Seven metadata batches, 52 fresh series observations, 100 event observations and seven book batches replaced per-contract metadata/fee requests. An exploratory proposal of 959 one-contract resting bids reserved $618.46 of a hypothetical $1,000 budget; it is a feasibility demonstration, not an optimal policy. End-to-end capture took 74.15 seconds; proposal receipt followed the relevant books by 3.94–7.17 seconds. The pure verifier took 12.36 ms; native verification including archive loading and serialization took 997 ms. The snapshot retained 14.46 MB of JSON; the demonstration process reached 317.9 MiB peak RSS. These observations are in `data/records/2026-10-07-weather-participation/broad-capture-receipt.json` and `broad-verifier-profile.json`. Unforecasted listings, conditional maker selection and public HTTP catalog activation remain separate unfinished capabilities.
++
++Optional `quoteIntents` (`--quotes JSON` in the CLI) supplies scoped `{ticker, side, price, quantity?}` proposals, including initial bids on a side without displayed bids. Prices must lie on the observed price grid and stay strictly below the reciprocal offer. Legal lower bids may park cash behind better displayed bids. Initial quotes have no known queue ahead; changing priority and adverse selection remain unresolved. Below-best quotes retain the initial better-price and same-price queues. Their tape replay is explicitly blocked until a fuller book-event replay can account for price priority; quote formation and cash allocation remain available. These proposed prices are separate from physical forecast generation and confer no order authority.
++
++Pass `snapshotId` with `carryPolicy` (`--snapshot ID --carry JSON` in the CLI) to evaluate small carry bids against reserved cash and a holding hurdle. The policy requires `cases` containing `actionId`, conditional-on-full-fill `winProbabilityLow`/`winProbabilityHigh`, and `usableCashAtEarliest`/`usableCashAtLatest`. Optional `priorityReserveUsd` protects cash for better uses; `hourlyCashHurdle` is a dollar-per-dollar-per-hour opportunity cost; `minimumWinSurplusUsd` and `maxLossBudgetUsd` constrain selection. Captured resting actions are ranked greedily by conservative conditional net per dollar-hour; optimality and the conditional probability/cash-release assumptions remain unproved. The selected actions pass the existing shared-cash verifier using the residual budget. Allocation reads no venue data and does not refit weather models; its policy, evaluation and verifier result are retained through `weather_evidence`.
++
++A 97-cent bid does not imply a 97% conditional win probability. With a conservative one-cent fee reserve, winning returns two cents, but a 99% conditional win probability gives only one cent of expected net before opportunity cost. At 97% it gives minus one cent. On a fee-free cent-price contract the win surplus is three cents. Fee reserves now derive from the existing exact `scheduledFee` primitive: the venue rounds position cost plus fee to a centicent, and an integer-hundredth fragmentation bound replaces whole-cent rounding plus a blanket per-contract fragmentation overhead. The declared source patchset, precommitted cases, exact partition oracle, staged consumer receiving and failed first candidate are retained in `data/records/2026-10-07-weather-capital-opportunity`. Market close is not certified cash release; the scenario must supply that separate interval.
++
++
++
++Optional `carryPolicy.postedLossPolicy` supplies `{tailFraction, maxGrossExpectedShortfallUsd}`. Every case must then also supply a separate `marginalWinProbabilityLow` for the quoted side: the conditional-on-full-fill probability is never reused as this marginal. For worst-tail mass `a` (e.g. 0.05 for the worst 5%), the gross posted-loss envelope has expected shortfall at most `sum(cost_i * min(1, (1-pLow_i)/a))`, allowing any dependence among weather errors and fills, including partial fills bounded by the captured fee reserve. Opposite YES/NO marginal lower bounds for the same contract must sum to at most one; contradictory supplied bounds are refused. This cap consumes one portfolio budget during greedy selection and is retained in the normal participation evidence. It excludes winning profits and credits no collateral return. The bound is sharp only for unrestricted Bernoulli envelopes, can be loose for logically related weather contracts, and remains conditional on supplied marginal probabilities and costs; it supplies no calibration or order authority. See [Embrechts, Wang and Wang, Section 3](https://people.math.ethz.ch/~embrecht/ftp/agg_rob_2014_FS.pdf) and [Dhara, Das and Natarajan](https://arxiv.org/abs/1701.04167) for risk aggregation under unknown dependence.
++
++
++Reported-temperature metrology supplements the original point-temperature lane. `observedExtremes.temperatureMetrology` retains validated raw METAR whole-Celsius and tenths-Celsius inverse-rounding cells, their page hashes, actual receipts and conflicting witnesses. Numeric API formatting or observation cadence alone never establishes reporting precision; those rows remain unidentified. Cells cover reporting quantization, not instrument error or final climate extremes. The `paired-family-cell-ewa-v1` station experiment requires publication before the earliest possible target report (15 minutes before the target hour). It scores CRPS and paired component excess-loss ranges over the same source-supported cell, using exact empirical atoms and the existing 41-node Student-t scoring approximation. Prospective cell comparisons feed a separate past-only family learner using upper paired excess loss, equal date contributions, the existing fixed prior/rate/window and uniform share; it does not reuse point-label fits. `weather_station_skill` exposes `measurementMetrics`; full cell outcomes and model inputs remain in `weather_evidence`. Unknown or contradictory cells cannot supply a training label. The outcome uses the first received eligible report set; later arrivals or revisions remain source evidence and never rewrite that frozen outcome. Report-cell targets use `measurementPending` within the existing locked state record; older point-only consumers preserve that map but never interpret its targets. Known report-cell targets from the earlier candidate are migrated from `pending` under the same lock. Original forecasts, point scores and venue settlement remain separate. This is an uncalibrated experiment, with no regret or profitability claim. Primary measurement descriptions: [NWS Chicago](https://www.weather.gov/lot/weather_observations_faq), [NWS Los Angeles](https://www.weather.gov/lox/asostemperature).
+diff --git a/services/forecasting-service/apps/replay-station-weather-science.mjs b/services/forecasting-service/apps/replay-station-weather-science.mjs
+index d5c89a2..ce0102b 100644
+--- a/services/forecasting-service/apps/replay-station-weather-science.mjs
++++ b/services/forecasting-service/apps/replay-station-weather-science.mjs
+@@ -15,9 +15,9 @@ files.sort((a,b)=>a.mtime-b.mtime||a.name.localeCompare(b.name));
+ let packets=0,skipped=0,scored=0,forecasted=0;const outcomes=[];
+ for(const {name,mtime} of files){
+  const e=JSON.parse(gunzipSync(await readFile(join(options.archives,name))));
+- if(e.science||![e.local,e.guidance,e.hourlyGuidance,e.lamp,e.indices,e.observations].some(v=>v&&typeof v==='object'&&!Array.isArray(v))||Date.parse(e.at)>mtime){skipped++;continue;}
++ if(e.science||![e.local,e.guidance,e.hourlyGuidance,e.lamp,e.indices,e.observations,e.ecmwfEnsemble||e.relational].some(v=>v&&typeof v==='object'&&!Array.isArray(v))||Date.parse(e.at)>mtime){skipped++;continue;}
+  e.stations??=[...bindings.values()].filter(r=>e.local?.[r.station]||e.guidance?.stations?.[r.station]);
+- const result=await updateStationScience(e,{root:options.output,now:mtime,sourceEvidenceId:name.slice(0,64)});
++ const result=await updateStationScience(e,{root:options.output,now:mtime,sourceEvidenceId:name.slice(0,64),publicationMode:'replay'});
+  packets++;scored+=result.scored;forecasted+=result.forecasted;outcomes.push(...result.outcomes);
+ }
+ const report={evaluation:'retrospective replay of immutable archived forecasts; filesystem write time conservatively defines availability; latest contracts supply only station time zones; does not qualify trading or seed production calibration',packets,skipped,scored,forecasted,...await readStationScience({root:options.output})};
+diff --git a/services/forecasting-service/apps/weather.mjs b/services/forecasting-service/apps/weather.mjs
+index 7b933c2..f832a2f 100755
+--- a/services/forecasting-service/apps/weather.mjs
++++ b/services/forecasting-service/apps/weather.mjs
+@@ -1,20 +1,22 @@
+ #!/usr/bin/env node
+ import { readFile } from 'node:fs/promises';
+-import { weatherRoot, weatherStrategyResearch,weatherRelationalNowcast, weatherRelationalScience, runWeatherCycle, scoreWeather, weatherStatus, allocateLiveWeather, admitWeatherModel } from '../src/weather-engine.mjs';
++import { weatherParticipation, weatherRoot, weatherEcmwfEvidence, weatherStrategyResearch,weatherRelationalNowcast, weatherRelationalScience, runWeatherCycle, scoreWeather, weatherStatus, allocateLiveWeather, admitWeatherModel } from '../src/weather-engine.mjs';
+ const [command,...args]=process.argv.slice(2);
+ const opt=(key,fallback)=>{const i=args.indexOf(`--${key}`);return i<0?fallback:args[i+1];};
+ const root=opt('state',weatherRoot());
+ try {
+   let result;
+   if(command==='cycle')result=await runWeatherCycle({root,capitalUsd:Number(opt('capital',0)),encumberedUsd:Number(opt('encumbered',0))}).catch(e=>{if(e.code==='WEATHER_CYCLE_RUNNING')return {status:'already-running',orderEffect:false};throw e;});
++  else if(command==='participation')result=await weatherParticipation({root,...(opt('snapshot')?{snapshotId:opt('snapshot'),...(opt('carry')?{carryPolicy:JSON.parse(opt('carry'))}:{}),...(opt('actions')?{proposalActionIds:JSON.parse(opt('actions'))}:{})}:{...(opt('quotes')?{quoteIntents:JSON.parse(opt('quotes'))}:{}),...(opt('max-markets')?{maxMarkets:Number(opt('max-markets'))}:{}),capitalUsd:Number(opt('capital',NaN)),encumberedUsd:Number(opt('encumbered',0)),contracts:Number(opt('contracts',1)),windowSeconds:Number(opt('window',60)),...(opt('tickers')?{tickers:opt('tickers').split(',')}:{})})});
+   else if(command==='score')result=await scoreWeather({root});
++  else if(command==='ecmwf-evidence')result=await weatherEcmwfEvidence({root,stations:JSON.parse(await readFile(opt('stations'),'utf8')),validCount:Number(opt('valid-count',1))});
+   else if(command==='relational-nowcast')result=await weatherRelationalNowcast({root,region:opt('region','nyc')});
+   else if(command==='strategy-research')result=await weatherStrategyResearch({root,region:opt('region','nyc')});
+   else if(command==='relational-science')result=await weatherRelationalScience({root,region:opt('region','nyc')});
+   else if(command==='status')result=await weatherStatus({root});
+   else if(command==='model')result=await admitWeatherModel(JSON.parse(await readFile(args[0],'utf8')),{root});
+   else if(command==='allocate')result=await allocateLiveWeather({root,...(args.includes('--capital')?{capitalUsd:Number(opt('capital',0)),encumberedUsd:Number(opt('encumbered',0))}:{})});
+-  else throw new Error('usage: weather.mjs cycle|score|status|allocate [--state DIR] [--capital USD] [--encumbered USD] | model FILE | relational-science|strategy-research|relational-nowcast [--region nyc|miami]');
+-  const output=args.includes('--full')?result:{status:result.status,running:result.running,at:result.at,complete:result.complete,series:result.series,marketCount:result.marketCount,modelled:result.modelled,families:result.families,errors:result.errors?.slice(0,8),errorCount:result.errors?.length,scoring:result.scoring,research:result.research,opportunities:result.opportunities?.length,allocation:result.allocation??(command==='allocate'?result:undefined),...(command==='model'||command==='score'||command==='relational-science'||command==='strategy-research'||command==='relational-nowcast'?result:{}),orderEffect:false};
++  else throw new Error('usage: weather.mjs cycle|score|status|allocate|participation [--state DIR] [--capital USD] [--encumbered USD] | model FILE | ecmwf-evidence --stations JSON_FILE [--valid-count 1..4] | relational-science|strategy-research|relational-nowcast [--region nyc|miami]');
++  const output=args.includes('--full')?result:{status:result.status,running:result.running,at:result.at,complete:result.complete,series:result.series,marketCount:result.marketCount,modelled:result.modelled,families:result.families,errors:result.errors?.slice(0,8),errorCount:result.errors?.length,scoring:result.scoring,research:result.research,opportunities:result.opportunities?.length,allocation:result.allocation??(command==='allocate'?result:undefined),...(command==='participation'||command==='model'||command==='score'||command==='relational-science'||command==='strategy-research'||command==='relational-nowcast'||command==='ecmwf-evidence'?result:{}),orderEffect:false};
+   console.log(JSON.stringify(output,null,2));
+ } catch(e){console.error(e.stack??e.message);process.exitCode=1;}
+diff --git a/services/forecasting-service/src/station-observations.mjs b/services/forecasting-service/src/station-observations.mjs
+index c6fa1c5..f8f50d1 100644
+--- a/services/forecasting-service/src/station-observations.mjs
++++ b/services/forecasting-service/src/station-observations.mjs
+@@ -12,9 +12,51 @@
+  * conversion and rounding: the day's maximum is at least `floor`, its
+  * minimum at most `ceiling`.
+  */
++import {createHash} from 'node:crypto';
++import {gzipSync} from 'node:zlib';
++import {precipitationWitnesses} from './weather-precipitation.mjs';
+ export const NWS_API = 'https://api.weather.gov';
+ export const NWS_USER_AGENT = '(561 Group weather desk, ops@561.group)';
+ 
++export const NWS_REPORT_CELL_VERSION='nws-metar-temperature-cell-v1';
++export const NWS_REPORT_CELL_TRUTH='first received validated NWS METAR temperature cell; nearest identified report within 15 minutes';
++/** Reporting quantization only: neither instrument error nor a final climate
++ * extreme is identified. API numeric formatting/cadence supplies no precision. */
++export function temperatureReportCells(pages,{station,start,end,receivedAt}){
++ if(!Array.isArray(pages)||pages.length>8||!Number.isFinite(start)||!Number.isFinite(end)||end<=start||!Number.isFinite(Date.parse(receivedAt)))throw new TypeError('bounded observation pages, interval and receipt required');
++ const witnesses=[],groups=new Map();let outsideWindowRows=0;
++ for(const page of pages)for(const feature of page.packet.features??[]){
++  const p=feature?.properties??{},q=p.temperature,epoch=Date.parse(p.timestamp),receipt=Date.parse(page.receivedAt),raw=typeof p.rawMessage==='string'?p.rawMessage.trim():'',featureStation=typeof p.station==='string'?p.station.split('/').at(-1):null;
++  if(Number.isFinite(epoch)&&(epoch<start||epoch>=end)){outsideWindowRows++;continue;}
++  const w={featureId:feature.id??p['@id']??null,pageSha256:page.sha256,source:page.url,availableAt:page.receivedAt,station,at:Number.isFinite(epoch)?new Date(epoch).toISOString():null,rawTemperature:q??null,rawMessage:raw,status:'precision-unidentified',cell:null};
++  witnesses.push(w);
++  if(!Number.isFinite(epoch)||epoch<start||epoch>=end){w.status='invalid-observation-time';continue;}
++  if(!Number.isFinite(receipt)||receipt>Date.parse(receivedAt)||epoch>receipt){w.status='noncausal-report';continue;}
++  if(featureStation&&featureStation!==station){w.status='station-mismatch';continue;}
++  if(!['V','qc:V'].includes(q?.qualityControl)||!Number.isFinite(q?.value)||!['wmoUnit:degC','wmoUnit:degF'].includes(q?.unitCode)){w.status='missing-or-untrusted';continue;}
++  if(!raw)continue;
++  const header=/^(?:(?:METAR|SPECI)\s+)?([A-Z0-9]{4})\s+(\d{2})(\d{2})(\d{2})Z\b/.exec(raw),at=new Date(epoch);
++  if(!header||header[1]!==station||Number(header[2])!==at.getUTCDate()||Number(header[3])!==at.getUTCHours()||Number(header[4])!==at.getUTCMinutes()||at.getUTCSeconds()!==0){w.status='report-header-mismatch';continue;}
++  const [body,remarks='']=raw.split(/\bRMK\b/,2),whole=/\b(M?\d{2})\/(?:M?\d{2}|\/\/)?(?=\s|$)/.exec(body),tenths=[...remarks.matchAll(/(?:^|\s)T([01])(\d{3})(?:[01]\d{3}|\/\/\/\/)(?=\s|$)/g)];
++  const encoded=[];if(whole){const value=Number(whole[1].replace('M',''))*(whole[1].startsWith('M')?-1:1);encoded.push({kind:'whole-Celsius-body',valueC:value,resolutionC:1,lowC:value-.5,highC:value+.5});}
++  for(const match of tenths){const value=Number(match[2])/10*(match[1]==='1'?-1:1);encoded.push({kind:'tenths-Celsius-remark',valueC:value,resolutionC:.1,lowC:value-.05,highC:value+.05});}
++  if(!encoded.length)continue;
++  const lowC=Math.max(...encoded.map(c=>c.lowC)),highC=Math.min(...encoded.map(c=>c.highC)),apiC=q.unitCode==='wmoUnit:degF'?(q.value-32)*5/9:q.value,apiEnvelope=whole?encoded[0]:{lowC,highC};
++  const incompatible=lowC>highC||lowC*9/5+32< -150||highC*9/5+32>180||(apiEnvelope&&(apiC<apiEnvelope.lowC-1e-8||apiC>apiEnvelope.highC+1e-8));
++  w.encodings=encoded;w.decodedApiF=q.unitCode==='wmoUnit:degF'?q.value:q.value*9/5+32;
++  if(incompatible){w.status='contradictory-encoding';}
++  else{w.status='identified';w.cell={lowF:lowC*9/5+32,highF:highC*9/5+32,resolutionBasis:encoded.some(c=>c.resolutionC===.1)?'tenths-Celsius-remark':'whole-Celsius-body'};}
++  const group=groups.get(w.at)??[];group.push(w);groups.set(w.at,group);
++ }
++ const readings=[];
++ for(const [at,rows] of groups){
++  const cells=rows.filter(w=>w.cell),lowF=cells.length?Math.max(...cells.map(w=>w.cell.lowF)):null,highF=cells.length?Math.min(...cells.map(w=>w.cell.highF)):null,conflicted=rows.some(w=>w.status==='contradictory-encoding')||lowF===null||lowF>highF;
++  readings.push({at,status:conflicted?'conflicted':'identified',lowF:conflicted?null:lowF,highF:conflicted?null:highF,temperatureF:conflicted?null:(lowF+highF)/2,availableAt:rows.reduce((a,w)=>a<w.availableAt?w.availableAt:a,''),source:rows[0].source,measurementOperator:NWS_REPORT_CELL_VERSION,witnesses:rows});
++ }
++ readings.sort((a,b)=>a.at.localeCompare(b.at));
++ return {operator:NWS_REPORT_CELL_VERSION,truth:NWS_REPORT_CELL_TRUTH,receivedAt,outsideWindowRows,witnesses,readings,identified:readings.filter(r=>r.status==='identified').length,conflicted:readings.filter(r=>r.status==='conflicted').length,unidentified:witnesses.filter(w=>w.status==='precision-unidentified').length,scope:'closed inverse-rounding envelopes conditional on validated raw METAR encoding; no cadence-derived precision, instrument-error bound, independent-trial count or settlement certification'};
++}
++
+ /** The UTC instant of local standard-time midnight starting `date` in `timeZone`. */
+ export function climateDayStart(date, timeZone) {
+   const noon = new Date(`${date}T12:00:00Z`);
+@@ -46,13 +88,19 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
+   url.searchParams.set('start', from.toISOString());
+   url.searchParams.set('end', until.toISOString());
+   url.searchParams.set('limit','500');
+-  const readings=new Map(),visited=new Set();let next=url.href;
++  const readings=new Map(),visited=new Set(),pages=[];let next=url.href;
+   while(next){
+-    const pageUrl=new URL(next,url);if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname||visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');
++    const pageUrl=new URL(next,url);
++    if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname)throw new Error('station-observations: invalid or excessive observation pagination');
++    // NWS continuation links can omit the original interval. The opaque cursor
++    // advances within our request; it does not widen the requested evidence.
++    for(const key of ['start','end','limit'])pageUrl.searchParams.set(key,url.searchParams.get(key));
++    if(visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');
+     visited.add(pageUrl.href);
+     const res=await fetchImpl(pageUrl,{headers:{'user-agent':userAgent,accept:'application/geo+json'},signal:AbortSignal.timeout(30000)});
+     if(!res.ok)throw new Error(`station-observations: GET ${pageUrl} answered ${res.status}`);
+-    const page=await res.json();next=page.pagination?.next??null;
++    const rawText=typeof res.text==='function'?await res.text():JSON.stringify(await res.json()),rawBytes=Buffer.from(rawText),page=JSON.parse(rawText),receivedAt=new Date().toISOString();
++    pages.push({url:pageUrl.href,receivedAt,sha256:createHash('sha256').update(rawBytes).digest('hex'),bytes:rawBytes.length,encoding:'gzip-base64',body:gzipSync(rawBytes).toString('base64'),serializationBasis:typeof res.text==='function'?'received response body':'reconstructed supplied-client JSON',packet:page});next=page.pagination?.next??null;
+     for(const feature of page.features??[]) {
+     const p=feature?.properties,temperature=p?.temperature,at=p?.timestamp,epoch=Date.parse(at);
+     if(!Number.isFinite(epoch)||epoch<from.getTime()||epoch>until.getTime()||epoch>=from.getTime()+86400000||typeof temperature?.value!=='number'||!Number.isFinite(temperature.value))continue;
+@@ -64,10 +112,12 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
+     const old=readings.get(row.at);if(!old||row.qualityControl==='qc:V')readings.set(row.at,row);
+   }
+   }
++  const receivedAt=new Date().toISOString(),precipitation=precipitationWitnesses(pages,{station,start:from.getTime(),end:from.getTime()+86400000,receivedAt}),rawPages=pages.map(({packet,...raw})=>raw);
++  const temperatureMetrology=temperatureReportCells(pages,{station,start:from.getTime(),end:from.getTime()+86400000,receivedAt});
+   const trace=[...readings.values()].sort((a,b)=>a.at.localeCompare(b.at));
+-  if(!trace.length)return {...empty,source:url.href};
++  if(!trace.length)return {...empty,source:url.href,precipitation,rawPages,temperatureMetrology};
+   const temps=trace.map(r=>r.temperatureF),maxF=Math.max(...temps),minF=Math.min(...temps);
+-  return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,latest:trace.at(-1).at,readings:trace,source:url.href};
++  return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,latest:trace.at(-1).at,readings:trace,source:url.href,precipitation,rawPages,temperatureMetrology};
+ }
+ 
+ /**
+diff --git a/services/forecasting-service/src/station-weather-science.mjs b/services/forecasting-service/src/station-weather-science.mjs
+index 1f15ff5..bbfe2b9 100644
+--- a/services/forecasting-service/src/station-weather-science.mjs
++++ b/services/forecasting-service/src/station-weather-science.mjs
+@@ -1,21 +1,101 @@
++import {NWS_REPORT_CELL_VERSION,NWS_REPORT_CELL_TRUTH} from './station-observations.mjs';
+ import {adaptiveTemperaturePool} from './weather-family-learning.mjs';
+ import {ecmwfStationDistributions} from './weather-ecmwf-ensemble.mjs';
+ import {relationalTemperaturePanel,RELATIONAL_REGIONS} from './weather-relational-temperature.mjs';
+ import {INDEX_CITIES,indexDistributions,canonicalIndexPoints,stationTemperatureDistribution} from './weather-index.mjs';
+ /** Prequential station verification and regularized local postprocessing, independent of markets. */
+-import {readFile,writeFile,mkdir,rename} from 'node:fs/promises';
++import {open,mkdir,rename,rm,link,stat} from 'node:fs/promises';
++import {createReadStream,createWriteStream} from 'node:fs';
++import {pipeline} from 'node:stream/promises';
++import {createGzip,createGunzip} from 'node:zlib';
+ import {join} from 'node:path';
+-import {createHash} from 'node:crypto';
+-import {makeTemperaturePool,postprocessTemperature,temperatureDiagnostics,temperatureDistributionCrps} from './weather-ensemble.mjs';
++import {createHash,randomUUID} from 'node:crypto';
++import {makeTemperaturePool,postprocessTemperature,temperatureDiagnostics,temperatureDistributionCrps,temperatureDistributionCellScores} from './weather-ensemble.mjs';
+ const hash=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
+-const key=r=>`${r.station}/${r.model}/${r.horizon}`;
++const key=r=>`${r.station}/${r.model}/${r.horizon}${r.publicationLeadBin?'/publication:'+r.publicationLeadBin:''}`;
+ const cohort=h=>h<=3?'0-3h':h<=6?'3-6h':h<=12?'6-12h':h<=24?'12-24h':'24-48h';
+ /** Backwards-compatible single-Student-t scoring, using the same quadrature as ensembles. */
+ export function temperatureCrps(meanF,scaleF,observedF){return temperatureDistributionCrps({meanF,scaleF,nu:5},observedF);}
+-const read=async(path,fallback)=>{try{return JSON.parse(await readFile(path,'utf8'));}catch(e){if(e.code==='ENOENT')return fallback;throw e;}};
+-async function atomic(path,value){const tmp=path+'.'+process.pid+'.tmp';await writeFile(tmp,JSON.stringify(value)+'\n',{mode:0o600});await rename(tmp,path);}
++// Keep the existing state JSON carrier. Decode/encode each map record without
++// retaining a second, file-sized JSON string alongside the live state object.
++async function readStateJson(path,{compressed=false,onBytes}={}){
++  const input=createReadStream(path,{highWaterMark:65536}),stream=compressed?input.pipe(createGunzip()):input;if(compressed)input.on('error',e=>stream.destroy(e));if(onBytes)stream.on('data',onBytes);stream.setEncoding('utf8');const iterator=stream[Symbol.asyncIterator]();let buffer='',at=0,done=false;
++  const fill=async()=>{while(at>=buffer.length&&!done){const part=await iterator.next();done=part.done;buffer=done?'':part.value;at=0;}return at<buffer.length;};
++  const space=async()=>{while(await fill()){while(at<buffer.length&&/[ \t\r\n]/.test(buffer[at]))at++;if(at<buffer.length)return;}};
++  const expect=async char=>{await space();if(!await fill()||buffer[at++]!==char)throw new SyntaxError('station science: invalid state JSON');};
++  const raw=async()=>{
++    await space();if(!await fill())throw new SyntaxError('station science: truncated state JSON');
++    const first=buffer[at],container=first==='{'||first==='[',quoted=first==='"',parts=[];let depth=0,string=false,escape=false;
++    while(await fill()){
++      const begin=at;
++      while(at<buffer.length){
++        const char=buffer[at];
++        if(!container&&!quoted&&(char===','||char==='}'||char===']'||/[ \t\r\n]/.test(char))){parts.push(buffer.slice(begin,at));return parts.join('');}
++        at++;
++        if(string){if(escape)escape=false;else if(char==='\\')escape=true;else if(char==='"'){string=false;if(quoted){parts.push(buffer.slice(begin,at));return parts.join('');}}}
++        else if(char==='"')string=true;
++        else if(container){if(char==='{'||char==='[')depth++;else if(char==='}'||char===']'){depth--;if(depth===0){parts.push(buffer.slice(begin,at));return parts.join('');}}}
++      }
++      parts.push(buffer.slice(begin,at));
++    }
++    if(container||quoted)throw new SyntaxError('station science: truncated state JSON');return parts.join('');
++  };
++  const object=async root=>{
++    await expect('{');const result={};await space();if(await fill()&&buffer[at]==='}'){at++;return result;}
++    while(true){
++      const name=JSON.parse(await raw());if(typeof name!=='string')throw new SyntaxError('station science: state JSON key must be a string');await expect(':');await space();
++      const value=root&&await fill()&&buffer[at]==='{'?await object(false):JSON.parse(await raw());
++      Object.defineProperty(result,name,{value,writable:true,configurable:true,enumerable:true});await space();if(!await fill())throw new SyntaxError('station science: truncated state JSON');const next=buffer[at++];if(next==='}')return result;if(next!==',')throw new SyntaxError('station science: invalid state JSON');
++    }
++  };
++  try{const result=await object(true);await space();if(await fill())throw new SyntaxError('station science: trailing state JSON');return result;}finally{stream.destroy();input.destroy();}
++}
++const read=async(path,fallback)=>{try{return await readStateJson(path);}catch(e){if(e.code==='ENOENT')return fallback;throw e;}};
++async function atomic(path,value,{newline=true}={}){
++  const tmp=path+'.'+process.pid+'.tmp',handle=await open(tmp,'w',0o600);let chunks=[],bytes=0;
++  const flush=async()=>{if(!chunks.length)return;const buffer=Buffer.from(chunks.join(''));chunks=[];bytes=0;let offset=0;while(offset<buffer.length){const {bytesWritten}=await handle.write(buffer,offset,buffer.length-offset,null);if(!bytesWritten)throw new Error('station science: state write did not advance');offset+=bytesWritten;}};
++  const put=async text=>{chunks.push(text);bytes+=text.length;if(bytes>=65536)await flush();};
++  const map=async(object,root=false)=>{await put('{');let comma=false;for(const name of Object.keys(object)){const item=object[name],nested=root&&item!==null&&!Array.isArray(item)&&typeof item==='object'&&[Object.prototype,null].includes(Object.getPrototypeOf(item)),encoded=nested?null:JSON.stringify(item);if(encoded===undefined)continue;if(comma)await put(',');comma=true;await put(JSON.stringify(name)+':');
++    // Root maps are serialized record by record, including all unknown fields.
++    if(nested)await map(item);else await put(encoded);
++  }await put('}');};
++  try{await map(value,true);if(newline)await put('\n');await flush();await handle.close();await rename(tmp,path);}catch(e){await handle.close().catch(()=>{});await rm(tmp,{force:true});throw e;}
++}
++// A frozen law becomes available when the immutable batch is linked, before
++// registration writes the much larger learning state. Replay time is distinct.
++async function publishForecastBatch(forecasts,{root,now,sourceEvidenceId,mode}){
++ const generatedAt=new Date(now).toISOString(),records=Object.fromEntries(forecasts.map((r,i)=>{const {availableAt,...law}=r;return [String(i),{...law,generationAvailableAt:availableAt}];})),packet={kind:'station-forecast-publication-v1',mode,generatedAt,sourceEvidenceId:sourceEvidenceId??null,forecasts:records};
++ await mkdir(root,{recursive:true,mode:0o700});const stem=join(root,'.forecast-'+randomUUID()),raw=stem+'.json',gz=stem+'.json.gz';
++ try{
++  await atomic(raw,packet,{newline:false});const digest=createHash('sha256'),input=createReadStream(raw);input.on('data',b=>digest.update(b));await pipeline(input,createGzip(),createWriteStream(gz,{flags:'wx',mode:0o600}));
++  const evidenceId=digest.digest('hex');try{await link(gz,join(root,evidenceId+'.json.gz'));}catch(e){if(e.code!=='EEXIST')throw e;}
++  // Unlink the temporary name before the receipt: unlink changes inode ctime.
++  await rm(gz,{force:true});
++  // Date.now has millisecond resolution; use its conservative upper endpoint.
++  const receivedAt=new Date(Date.now()+1).toISOString(),availableAt=mode==='replay'?generatedAt:receivedAt;
++  return {evidenceId,mode,generatedAt,receivedAt,availableAt,clockResolutionMs:1,forecasts:forecasts.map((_,i)=>confirmedForecast(records[String(i)],{evidenceId,mode,generatedAt,receivedAt,availableAt,ordinal:i}))};
++ }finally{await rm(raw,{force:true});await rm(gz,{force:true});}
++}
++function confirmedForecast(law,publication){
++ const leadHours=(Date.parse(law.validTime)-Date.parse(publication.availableAt))/3600000,regular=/^(0-3h|3-6h|6-12h|12-24h|24-48h)$/.test(law.horizon),horizon=regular?cohort(leadHours):law.horizon;
++ const publicationLeadBin=law.publicationLeadBin?(leadHours<=.25?'5-15m':leadHours<=.5?'15-30m':leadHours<=1?'30-60m':horizon):undefined;
++ const earliest=law.earliestTargetObservationAt?Date.parse(law.earliestTargetObservationAt):Date.parse(law.validTime),timely=Number.isFinite(leadHours)&&leadHours>0&&(!law.publicationLeadBin||leadHours>=5/60)&&Number.isFinite(earliest)&&Date.parse(publication.availableAt)<earliest&&Date.parse(publication.receivedAt)>=Date.parse(publication.generatedAt);
++ return {...law,leadHours,horizon,...(law.publicationLeadBin?{publicationLeadBin}:{}),availableAt:publication.availableAt,publication,verificationProspective:timely,...(!timely?{verificationBlocker:'confirmed publication reached the target observation window or clock order is invalid'}:{}),...(publication.mode==='replay'?{tradeEligible:false}: {})};
++}
++async function verifiedPublicationRecords(pending,{root,mode,now=Infinity}){
++ const groups=new Map(),verified=new Set(),errors=[];
++ for(const [id,r] of Object.entries(pending)){const due=Date.parse(r.validTime)+(r.verification==='routine-report-bin'?0:r.verification==='kalshi-index'?5*60000:15*60000);if(due>now)continue;const p=r.publication;if(!p||p.mode!==mode)continue;if(!groups.has(p.evidenceId))groups.set(p.evidenceId,[]);groups.get(p.evidenceId).push([id,r]);}
++ for(const [evidenceId,rows] of groups)try{
++  if(!/^[a-f0-9]{64}$/.test(evidenceId))throw new Error('invalid publication evidence identity');const path=join(root,evidenceId+'.json.gz'),digest=createHash('sha256'),packet=await readStateJson(path,{compressed:true,onBytes:b=>digest.update(b)});
++  if(digest.digest('hex')!==evidenceId||packet.kind!=='station-forecast-publication-v1'||packet.mode!==mode)throw new Error('publication evidence integrity or mode mismatch');const metadata=await stat(path);
++  for(const [id,r] of rows){const p=r.publication,law=packet.forecasts[String(p.ordinal)];if(!law||p.generatedAt!==packet.generatedAt||r.sourceEvidenceId!==(packet.sourceEvidenceId??undefined)||!r.verificationProspective||p.availableAt!==r.availableAt||mode==='replay'&&p.availableAt!==p.generatedAt||mode==='live'&&(Math.floor(metadata.ctimeMs)>Date.parse(p.receivedAt)||p.availableAt!==p.receivedAt)){errors.push({id,evidenceId,error:'publication receipt, forecast scope or prospective status mismatch'});continue;}
++   const {sourceEvidenceId,...actual}=r,expected=confirmedForecast(law,p);if(hash(actual)!==hash(expected)){errors.push({id,evidenceId,error:'pending forecast differs from its immutable published law'});continue;}verified.add(id);
++  }
++ }catch(e){errors.push({evidenceId,error:e.message});}
++ return {verified,errors};
++}
+ function fit(history){
+- const groups={};for(const day of Object.values(history)){if(day.verification==='routine-report-bin')continue;(groups[day.key]??=[]).push(day);}
++ const groups={};for(const day of Object.values(history)){if(['routine-report-bin','nws-report-cell-v1'].includes(day.verification))continue;(groups[day.key]??=[]).push(day);}
+  const out={};
+  for(const [k,days] of Object.entries(groups)){
+   const n=days.length,bias=days.reduce((s,d)=>s+d.errorSum/d.n,0)/(n+10);
+@@ -25,11 +105,12 @@ function fit(history){
+  return out;
+ }
+ export function stationScienceReport(state,{station}={}){
+- const groups={};for(const d of Object.values(state.history??{})){if(station&&d.station!==station)continue;const r=groups[d.key]??={station:d.station,model:d.model,horizon:d.horizon,truth:d.truth??'NWS station observations',verification:d.verification,discrete:d.discrete,n:0,dates:0,errorSum:0,error2Sum:0,absSum:0,crpsSum:0,covered90:0,diagnosticSamples:0,pitSum:0,pit2Sum:0,pitBins:Array(10).fill(0)};r.n+=d.n;r.dates++;for(const f of ['errorSum','error2Sum','absSum','crpsSum','covered90'])r[f]+=d[f];r.diagnosticSamples+=d.diagnosticSamples??0;r.pitSum+=d.pitSum??0;r.pit2Sum+=d.pit2Sum??0;for(let i=0;i<10;i++)r.pitBins[i]+=d.pitBins?.[i]??0;}
+- const metrics=Object.values(groups).map(r=>({station:r.station,model:r.model,horizon:r.horizon,truth:r.truth,verification:r.verification,samples:r.n,dates:r.dates,biasF:r.errorSum/r.n,maeF:r.absSum/r.n,rmseF:Math.sqrt(r.error2Sum/r.n),crpsF:r.crpsSum/r.n,coverage90:r.covered90/r.n,pit:r.diagnosticSamples?{samples:r.diagnosticSamples,mean:r.pitSum/r.diagnosticSamples,variance:r.pit2Sum/r.diagnosticSamples-(r.pitSum/r.diagnosticSamples)**2,bins:r.pitBins,idealMean:.5,idealVariance:1/12,note:r.verification==='routine-report-bin'||r.discrete?'seeded randomized PIT for empirical atoms; continuous CDF for continuous components; correlated hours and ensemble members are not independent calibration trials':'continuous-CDF PIT; correlated hours are not independent calibration trials'}:null}));
++ const groups={};for(const d of Object.values(state.history??{})){if(station&&d.station!==station)continue;const r=groups[d.key]??={station:d.station,model:d.model,horizon:d.horizon,publicationLeadBin:d.publicationLeadBin??null,truth:d.truth??'NWS station observations',verification:d.verification,discrete:d.discrete,n:0,dates:0,errorSum:0,error2Sum:0,absSum:0,crpsSum:0,covered90:0,diagnosticSamples:0,pitSum:0,pit2Sum:0,pitBins:Array(10).fill(0)};r.n+=d.n;r.dates++;for(const f of ['errorSum','error2Sum','absSum','crpsSum','covered90'])r[f]+=d[f];r.diagnosticSamples+=d.diagnosticSamples??0;r.pitSum+=d.pitSum??0;r.pit2Sum+=d.pit2Sum??0;for(let i=0;i<10;i++)r.pitBins[i]+=d.pitBins?.[i]??0;}
++ const metrics=Object.values(groups).map(r=>({station:r.station,model:r.model,horizon:r.horizon,publicationLeadBin:r.publicationLeadBin??null,truth:r.truth,verification:r.verification,samples:r.n,dates:r.dates,biasF:r.errorSum/r.n,maeF:r.absSum/r.n,rmseF:Math.sqrt(r.error2Sum/r.n),crpsF:r.crpsSum/r.n,coverage90:r.covered90/r.n,pit:r.diagnosticSamples?{samples:r.diagnosticSamples,mean:r.pitSum/r.diagnosticSamples,variance:r.pit2Sum/r.diagnosticSamples-(r.pitSum/r.diagnosticSamples)**2,bins:r.pitBins,idealMean:.5,idealVariance:1/12,note:r.verification==='routine-report-bin'||r.discrete?'seeded randomized PIT for empirical atoms; continuous CDF for continuous components; correlated hours and ensemble members are not independent calibration trials':'continuous-CDF PIT; correlated hours are not independent calibration trials'}:null}));
+  const pairs={};for(const d of Object.values(state.comparisons??{})){if(station&&d.station!==station)continue;(pairs[d.key]??=[]).push(d);}
+  const comparisons=Object.values(pairs).map(days=>{const means=days.map(d=>d.gainSum/d.n),n=means.length,mean=means.reduce((s,x)=>s+x,0)/n,se=n>1?Math.sqrt(means.reduce((s,x)=>s+(x-mean)**2,0)/(n*(n-1))):null;const {key,date,n:count,gainSum,...metadata}=days[0];return {...metadata,dates:n,samples:days.reduce((s,d)=>s+d.n,0),meanCrpsGainF:mean,lower95:n>=30?mean-1.96*se:null,upper95:n>=30?mean+1.96*se:null,supportedPhysicalGain:n>=30&&mean-1.96*se>0,method:'component and pool frozen together and scored on identical outcomes; equal day means; approximate date-cluster interval after 30 dates; no market-edge inference'};});
+- return {at:state.at??null,truth:'NWS station observations, canonical Kalshi city-index observations and IEM routine-report bins; separate carriers and venue binary settlement',scoring:'first available forecast per location/valid hour/model/lead cohort; NWS nearest hour within 15 minutes; city index latest canonical minute at/before target within 60 minutes; routine bins use the last uncontradicted report within 20 minutes before the boundary; exact empirical-atom CRPS and 41-point Student-t quadrature; weighted mixture CRPS',metrics,comparisons,pending:Object.values(state.pending??{}).filter(r=>!station||r.station===station).length,parameters:Object.fromEntries(Object.entries(state.parameters??{}).filter(([k])=>!station||k.startsWith(station+'/'))),missingOutcomes:state.missingOutcomes??0};
++ const measurementMetrics=Object.values(state.measurementHistory??{}).filter(r=>!station||r.station===station).map(r=>({...r,crpsCellLowF:r.crpsLowSumF/r.n,crpsCellHighF:r.crpsHighSumF/r.n}));
++  return {lastPublication:state.lastPublication??null,publicationErrors:state.publicationErrors??[],publicationPending:Object.values(state.publicationPending??{}).filter(r=>!station||r.station===station).length,legacyPublicationUnverifiedPending:Object.values({...state.pending,...state.measurementPending}).filter(r=>!station||r.station===station).length,measurementMetrics,at:state.at??null,truth:'NWS station observations, canonical Kalshi city-index observations and IEM routine-report bins; separate carriers and venue binary settlement',scoring:'first available forecast per location/valid hour/model/lead cohort; adaptive family forecasts additionally retain each frozen learning fit in 5-15m, 15-30m and 30-60m publication windows; repeated target updates are correlated forecast publications and do not add independent dates; NWS nearest hour within 15 minutes; city index latest canonical minute at/before target within 60 minutes; routine bins use the last uncontradicted report within 20 minutes before the boundary; exact empirical-atom CRPS and 41-point Student-t quadrature; weighted mixture CRPS',metrics,comparisons,measurementPending:Object.values({...state.measurementPending,...Object.fromEntries(Object.entries(state.publicationPending??{}).filter(([_,r])=>r.verification==='nws-report-cell-v1'))}).filter(r=>!station||r.station===station).length,pending:Object.values({...state.pending,...state.measurementPending,...state.publicationPending}).filter(r=>!station||r.station===station).length,parameters:Object.fromEntries(Object.entries(state.parameters??{}).filter(([k])=>!station||k.startsWith(station+'/'))),missingOutcomes:state.missingOutcomes??0};
+ }
+ export function stationPointForecasts(evidence,{now=Date.now(),parameters={},learningState={}}={}){
+  const out=[];
+@@ -73,13 +154,17 @@ export function stationPointForecasts(evidence,{now=Date.now(),parameters={},lea
+   }
+  }
+  const adaptive=out.filter(r=>/family-pool/.test(r.model)&&!r.model.includes('/station-postprocess-v1')&&!r.model.includes('/paired-family-ewa-v1')).map(r=>adaptiveTemperaturePool(r,learningState,{now})).filter(Boolean);
+- out.push(...adaptive);
++ const metrologic=out.filter(r=>/family-pool/.test(r.model)&&!r.model.includes('/station-postprocess-v1')&&!r.model.includes('/paired-family-')&&!r.verification).map(r=>adaptiveTemperaturePool(r,learningState,{now,reportedCells:true})).filter(Boolean);
++ out.push(...adaptive,...metrologic);
+  return out;
+ }
+ /** Caller holds the station-science lock. Scores known forecasts BEFORE fitting or recording future forecasts. */
+-export async function updateStationScience(evidence,{root,now=Date.now(),sourceEvidenceId}={}){
++export async function updateStationScience(evidence,{root,now=Date.now(),sourceEvidenceId,publicationRoot=join(root,'evidence'),publicationMode='live'}={}){
++ if(!['live','replay'].includes(publicationMode))throw new TypeError('live or explicitly simulated replay publication required');
+  await mkdir(root,{recursive:true,mode:0o700});const file=join(root,'state.json');
+- const state=await read(file,{pending:{},history:{},missingOutcomes:0});
++  const state=await read(file,{pending:{},history:{},missingOutcomes:0});state.publicationPending??={};const publicationCheck=await verifiedPublicationRecords(state.publicationPending,{root:publicationRoot,mode:publicationMode,now});
++ const metrology=new Map();for(const e of Object.values(evidence.observations??{}))for(const r of e.temperatureMetrology?.readings??[]){if(!metrology.has(e.station))metrology.set(e.station,[]);metrology.get(e.station).push(r);}
++ state.measurementPending??={};for(const [id,r] of Object.entries(state.pending))if(r.verification==='nws-report-cell-v1'){state.measurementPending[id]??=r;delete state.pending[id];}
+  const traces=new Map();
+  for(const e of Object.values(evidence.observations??{}))for(const r of e.readings??[]){if(!traces.has(e.station))traces.set(e.station,new Map());traces.get(e.station).set(r.at,{...r,source:e.source});}
+  for(const [city,packet] of Object.entries(evidence.indices??{})){
+@@ -94,29 +179,45 @@ export async function updateStationScience(evidence,{root,now=Date.now(),sourceE
+    routines.set('K'+station+'/'+p.at,{at:r.observedAt,temperatureF:r.rawTemperatureF,source:packet.source.url,sourceId:packet.source.sha256,availableAt:packet.source.availableAt,binAt:new Date(p.at).toISOString(),witnesses:r.witnesses});}
+  }
+  let scored=0,forecasted=0;const outcomes=[];state.comparisons??={};
+- for(const [id,r] of Object.entries(state.pending)){
++  for(const [id,r] of Object.entries({...state.pending,...state.measurementPending,...state.publicationPending})){
++   const receiptBound=Object.hasOwn(state.publicationPending,id);if(receiptBound&&!publicationCheck.verified.has(id))continue;const pendingCarrier=receiptBound?state.publicationPending:r.verification==='nws-report-cell-v1'?state.measurementPending:state.pending;
+   const valid=Date.parse(r.validTime);if(valid+(r.verification==='routine-report-bin'?0:r.verification==='kalshi-index'?5*60000:15*60000)>now)continue;
+-  const obs=r.verification==='routine-report-bin'?routines.get(r.station+'/'+valid):r.verification==='kalshi-index'?(readings.get(r.station)??[]).filter(o=>Date.parse(o.at)<=valid&&Date.parse(o.at)>=valid-60*60000&&Date.parse(o.at)>Date.parse(r.availableAt)).sort((a,b)=>b.at.localeCompare(a.at))[0]:(readings.get(r.station)??[]).filter(o=>Math.abs(Date.parse(o.at)-valid)<=15*60000&&Date.parse(o.at)<=now&&Date.parse(o.at)>Date.parse(r.availableAt)).sort((a,b)=>Math.abs(Date.parse(a.at)-valid)-Math.abs(Date.parse(b.at)-valid)||b.at.localeCompare(a.at))[0];
+-  if(!obs||r.verification==='routine-report-bin'&&(Date.parse(obs.at)<=Date.parse(r.availableAt)||Date.parse(obs.availableAt)<Date.parse(obs.at))){if(now-valid>72*3600000){delete state.pending[id];state.missingOutcomes++;}continue;}
++  const cellObservation=r.verification==='nws-report-cell-v1'?(metrology.get(r.station)??[]).filter(o=>Math.abs(Date.parse(o.at)-valid)<=15*60000&&Date.parse(o.at)<=now&&(!receiptBound?Date.parse(o.at)>Date.parse(r.availableAt):true)&&Date.parse(o.availableAt)<=now&&Date.parse(o.availableAt)>=Date.parse(o.at)&&o.measurementOperator===NWS_REPORT_CELL_VERSION).sort((a,b)=>Math.abs(Date.parse(a.at)-valid)-Math.abs(Date.parse(b.at)-valid)||b.at.localeCompare(a.at))[0]:null;
++   const obs=r.verification==='nws-report-cell-v1'?(cellObservation?.status==='identified'?cellObservation:null):r.verification==='routine-report-bin'?routines.get(r.station+'/'+valid):r.verification==='kalshi-index'?(readings.get(r.station)??[]).filter(o=>Date.parse(o.at)<=valid&&Date.parse(o.at)>=valid-60*60000&&(!receiptBound?Date.parse(o.at)>Date.parse(r.availableAt):true)).sort((a,b)=>b.at.localeCompare(a.at))[0]:(readings.get(r.station)??[]).filter(o=>Math.abs(Date.parse(o.at)-valid)<=15*60000&&Date.parse(o.at)<=now&&(!receiptBound?Date.parse(o.at)>Date.parse(r.availableAt):true)).sort((a,b)=>Math.abs(Date.parse(a.at)-valid)-Math.abs(Date.parse(b.at)-valid)||b.at.localeCompare(a.at))[0];
++  if(!obs||receiptBound&&Date.parse(obs.at)<=Date.parse(r.availableAt)||r.verification==='routine-report-bin'&&(Date.parse(obs.at)<=Date.parse(r.availableAt)||Date.parse(obs.availableAt)<Date.parse(obs.at))){if(now-valid>72*3600000){delete pendingCarrier[id];state.missingOutcomes++;}continue;}
++   if(r.verification==='nws-report-cell-v1'){
++    const baseline=r.comparators?.find(c=>c.model===r.model.split('/paired-family-cell-ewa-v1')[0]);
++    const cellScores=temperatureDistributionCellScores(r,obs),k=key(r),dk=k+'/'+r.date;
++    state.measurementHistory??={};const h=state.measurementHistory[dk]??={key:k,station:r.station,model:r.model,horizon:r.horizon,publicationLeadBin:r.publicationLeadBin??null,date:r.date,truth:NWS_REPORT_CELL_TRUTH,measurementOperator:NWS_REPORT_CELL_VERSION,n:0,crpsLowSumF:0,crpsHighSumF:0};h.n++;h.crpsLowSumF+=cellScores.lowF;h.crpsHighSumF+=cellScores.highF;h.scoreAvailableAt=new Date(now).toISOString();h.sourceEvidenceId=sourceEvidenceId;
++    if(baseline){
++     const scores=temperatureDistributionCellScores(baseline,obs,{comparators:baseline.mixture.components});state.measurementComparisons??={};
++     for(const gain of scores.gains){const pairKey=hash({station:r.station,pool:baseline.model,component:gain.model,horizon:r.horizon,composition:baseline.composition,configurationVersion:baseline.details?.configVersion??null,truth:NWS_REPORT_CELL_TRUTH,measurementOperator:NWS_REPORT_CELL_VERSION}),dayKey=pairKey+'/'+r.date;
++      const paired=state.measurementComparisons[dayKey]??={key:pairKey,station:r.station,pool:baseline.model,component:gain.model,family:gain.family,horizon:r.horizon,composition:baseline.composition,configurationVersion:baseline.details?.configVersion??null,truth:NWS_REPORT_CELL_TRUTH,measurementOperator:NWS_REPORT_CELL_VERSION,date:r.date,n:0,gainLowSumF:0,gainUpperSumF:0};paired.n++;paired.gainLowSumF+=gain.lowF;paired.gainUpperSumF+=gain.highF;paired.scoreAvailableAt=new Date(now).toISOString();paired.sourceEvidenceId=sourceEvidenceId;
++     }
++    }
++    outcomes.push({id,forecast:r,observation:obs,cellScores,sourceEvidenceId});delete pendingCarrier[id];scored++;continue;
++   }
+   const error=obs.temperatureF-r.meanF,k=key(r),dk=k+'/'+r.date;
+-  const d=state.history[dk]??={key:k,station:r.station,model:r.model,horizon:r.horizon,date:r.date,truth:r.truth??'NWS station observations',verification:r.verification,discrete:Boolean(r.empirical||r.mixture?.components?.some(c=>c.empirical)),n:0,errorSum:0,error2Sum:0,z2Sum:0,absSum:0,crpsSum:0,covered90:0};
++  const d=state.history[dk]??={key:k,station:r.station,model:r.model,horizon:r.horizon,publicationLeadBin:r.publicationLeadBin??null,date:r.date,truth:r.truth??'NWS station observations',verification:r.verification,discrete:Boolean(r.empirical||r.mixture?.components?.some(c=>c.empirical)),n:0,errorSum:0,error2Sum:0,z2Sum:0,absSum:0,crpsSum:0,covered90:0};
+   const diagnostics=temperatureDiagnostics(r,obs.temperatureF,{tieUniform:parseInt(hash({id,pitSeed:'pre-outcome-pit-v1'}).slice(0,8),16)/4294967296}),crps=diagnostics.crpsF;d.n++;d.errorSum+=error;d.error2Sum+=error*error;d.z2Sum+=(error/r.scaleF)**2;d.absSum+=Math.abs(error);d.crpsSum+=crps;d.covered90+=diagnostics.covered90?1:0;
+   d.diagnosticSamples=(d.diagnosticSamples??0)+1;d.pitSum=(d.pitSum??0)+diagnostics.pit;d.pit2Sum=(d.pit2Sum??0)+diagnostics.pit**2;d.pitBins??=Array(10).fill(0);d.pitBins[Math.min(9,Math.floor(diagnostics.pit*10))]++;
+   const comparisonComposition=r.mixture?.kind==='empirical-generated-learner-pool-v1'?'frozen-six-learner-past-only-selector-v1':r.composition;
+   for(const component of new Map([...(r.mixture?.components??[]),...(r.comparators??[])].map(c=>[c.model,c])).values()){
+-   const pairKey=hash({station:r.station,pool:r.model,component:component.model,horizon:r.horizon,composition:comparisonComposition,configurationVersion:r.details?.configVersion??null,truth:r.truth??'NWS station observations'}),dayKey=pairKey+'/'+r.date;
+-   const paired=state.comparisons[dayKey]??={key:pairKey,station:r.station,pool:r.model,component:component.model,family:component.family,horizon:r.horizon,composition:comparisonComposition,configurationVersion:r.details?.configVersion??null,truth:r.truth??'NWS station observations',date:r.date,n:0,gainSum:0};
++   const pairKey=hash({station:r.station,pool:r.model,component:component.model,horizon:r.horizon,...(r.publicationLeadBin?{publicationLeadBin:r.publicationLeadBin}:{}),composition:comparisonComposition,configurationVersion:r.details?.configVersion??null,truth:r.truth??'NWS station observations'}),dayKey=pairKey+'/'+r.date;
++   const paired=state.comparisons[dayKey]??={key:pairKey,station:r.station,pool:r.model,component:component.model,family:component.family,horizon:r.horizon,publicationLeadBin:r.publicationLeadBin??null,composition:comparisonComposition,configurationVersion:r.details?.configVersion??null,truth:r.truth??'NWS station observations',date:r.date,n:0,gainSum:0};
+    paired.scoreAvailableAt=new Date(now).toISOString();paired.sourceEvidenceId=sourceEvidenceId;paired.n++;paired.gainSum+=temperatureDistributionCrps({...component,weight:1},obs.temperatureF)-crps;
+   }
+-  outcomes.push({id,forecast:r,observation:obs,errorF:error,crpsF:crps,sourceEvidenceId});delete state.pending[id];scored++;
++  outcomes.push({id,forecast:r,observation:obs,errorF:error,crpsF:crps,sourceEvidenceId});delete pendingCarrier[id];scored++;
+  }
+  const cutoff=new Date(now-90*86400000).toISOString().slice(0,10);for(const [k,d] of Object.entries(state.history))if(d.date<cutoff)delete state.history[k];
++ for(const carrier of ['measurementHistory','measurementComparisons'])for(const [k,d] of Object.entries(state[carrier]??{}))if(d.date<cutoff)delete state[carrier][k];
+  for(const [k,d] of Object.entries(state.comparisons))if(d.date<cutoff)delete state.comparisons[k];
+  state.parameters=fit(state.history);
+- state.at=new Date(now).toISOString();
+- const forecasts=stationPointForecasts(evidence,{now,parameters:state.parameters,learningState:state});
+- for(const r of forecasts){const id=hash({station:r.station,model:r.model,horizon:r.horizon,validTime:r.validTime});if(state.pending[id])continue;state.pending[id]={...r,sourceEvidenceId};forecasted++;}
+- state.at=new Date(now).toISOString();await atomic(file,state);
++  state.at=new Date(now).toISOString();
++  const generationNow=publicationMode==='replay'?now:Date.now(),generated=stationPointForecasts(evidence,{now:generationNow,parameters:state.parameters,learningState:state}),publication=await publishForecastBatch(generated,{root:publicationRoot,now:generationNow,sourceEvidenceId,mode:publicationMode}),forecasts=publication.forecasts;
++  state.lastPublication={...publication,forecasts:undefined,forecastCount:forecasts.length,prospectiveForecastCount:forecasts.filter(r=>r.verificationProspective).length};state.publicationErrors=publicationCheck.errors;
++  for(const r of forecasts){if(!r.verificationProspective)continue;const id=hash({station:r.station,model:r.model,horizon:r.horizon,validTime:r.validTime,...(r.publicationLeadBin?{publicationLeadBin:r.publicationLeadBin,learningVersion:hash({sourceDigest:r.learning.sourceDigest,composition:r.composition,configurationVersion:r.details?.configVersion??null})}:{})});const pendingCarrier=state.publicationPending;if(pendingCarrier[id]||state.pending[id]||state.measurementPending[id])continue;pendingCarrier[id]={...r,sourceEvidenceId};forecasted++;}
++  state.at=publication.availableAt;await atomic(file,state);
+  return {...stationScienceReport(state),scored,forecasted,forecasts,outcomes};
+ }
+ export async function readStationScience({root,station}={}){return stationScienceReport(await read(join(root,'state.json'),{}),{station});}
+diff --git a/services/forecasting-service/src/weather-ecmwf-decode.py b/services/forecasting-service/src/weather-ecmwf-decode.py
+index 7f93d55..923ed25 100644
+--- a/services/forecasting-service/src/weather-ecmwf-decode.py
++++ b/services/forecasting-service/src/weather-ecmwf-decode.py
+@@ -1,6 +1,7 @@
+ """Bounded, losslessly retained ECMWF AIFS ENS 2m-temperature fields. ecCodes 2.49."""
+ import concurrent.futures, datetime as dt, hashlib, json, math, os, pathlib, sys, tempfile, urllib.request, urllib.error, threading
+ import eccodes
++from collections import deque
+ RESERVE=512*1024*1024
+ UTC=dt.timezone.utc
+ BASE="https://ecmwf-forecasts.s3.amazonaws.com/"
+@@ -120,9 +121,9 @@ def decode(b,record,run,valid,stations):
+     finally: eccodes.codes_release(g)
+ 
+ def decode_cached(root,b,record,run,valid,stations):
+-    paths={};projected={};metadata=None;missing=[]
++    paths={};projected={};metadata=None;missing=[];field_sha256=sha(b)
+     for station in stations:
+-        key=sha(json.dumps({"field":sha(b),"run":str(run),"valid":str(valid),"member":record["member"],"type":record["type"],"station":station["station"],"lat":station["latitude"],"lon":station["longitude"],"operator":"bilinear-v1","decoder":eccodes.codes_get_api_version()},sort_keys=True).encode())
++        key=sha(json.dumps({"field":field_sha256,"run":str(run),"valid":str(valid),"member":record["member"],"type":record["type"],"station":station["station"],"lat":station["latitude"],"lon":station["longitude"],"operator":"bilinear-v1","decoder":eccodes.codes_get_api_version()},sort_keys=True).encode())
+         path=root/"projections"/(key+".json");paths[station["station"]]=path
+         if path.exists():
+             cached=json.loads(path.read_text());metadata=cached["metadata"];projected[station["station"]]=cached["projection"]
+@@ -132,6 +133,22 @@ def decode_cached(root,b,record,run,valid,stations):
+         for station,projection in new.items():retain(paths[station],json.dumps({"metadata":metadata,"projection":projection},allow_nan=False).encode())
+     return metadata,projected
+ 
++def acquired_records(pool,records,download):
++    # Keep three admitted field tasks, rather than materializing every member's
++    # bytes in completed futures while projection consumes the ensemble in order.
++    records=iter(records);pending=deque()
++    for _ in range(3):
++        try: record=next(records)
++        except StopIteration: break
++        pending.append(pool.submit(download,record))
++    while pending:
++        future=pending.popleft();result=future.result();del future
++        yield result
++        del result
++        try: record=next(records)
++        except StopIteration: continue
++        pending.append(pool.submit(download,record))
++
+ def assemble(root,run,records,indices,valids,options):
+     need=sum(r["length"] for r in records)
+     missing_bytes=0
+@@ -145,7 +162,7 @@ def assemble(root,run,records,indices,valids,options):
+         return r,b,receipt
+     fields=[];rows={s["station"]:{v.isoformat().replace("+00:00","Z"):[] for v in valids} for s in options["stations"]}
+     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
+-        for record,b,receipt in pool.map(download,records):
++        for record,b,receipt in acquired_records(pool,records,download):
+             valid=dt.datetime.fromisoformat(record["validTime"].replace("Z","+00:00"))
+             metadata,projected=decode_cached(root,b,record,run,valid,options["stations"])
+             fields.append({**receipt,"member":record["member"],"validTime":record["validTime"],"indexSha256":record["indexSha256"],"metadata":metadata})
+diff --git a/services/forecasting-service/src/weather-engine.mjs b/services/forecasting-service/src/weather-engine.mjs
+index 653dc7e..ab116a4 100644
+--- a/services/forecasting-service/src/weather-engine.mjs
++++ b/services/forecasting-service/src/weather-engine.mjs
+@@ -1,3 +1,6 @@
++import {sameDayRainEvidence} from './weather-precipitation.mjs';
++import {weatherCarryAllocation} from '../../../src/weather-capital.mjs';
++import {weatherParticipationActions,reviewWeatherParticipation,readWeatherParticipationFees,verifyWeatherParticipationProposal} from '../../../src/weather-participation.mjs';
+ import {collectEcmwfEnsemble} from './weather-ecmwf-ensemble.mjs';
+ import {collectRelationalWeatherNowcast} from './weather-relational-nowcast.mjs';
+ import {collectWeatherStrategyResearch} from './weather-strategy-research.mjs';
+@@ -6,7 +9,7 @@ import {deriveDailyTemperatureExtremes} from './weather-temperature-extremes.mjs
+ import {INDEX_CITIES} from './weather-index.mjs';
+ import { binarySettlement } from '../../../src/market-facts.mjs';
+ import {randomUUID,createHash} from 'node:crypto';
+-import {updateStationScience,readStationScience,stationPointForecasts} from './station-weather-science.mjs';
++import {updateStationScience,readStationScience,stationPointForecasts,stationScienceReport} from './station-weather-science.mjs';
+ import { readFile, writeFile, mkdir, rename, readdir, appendFile, rm, stat, link } from 'node:fs/promises';
+ import { createReadStream } from 'node:fs';
+ import { createInterface } from 'node:readline';
+@@ -14,7 +17,7 @@ import { join } from 'node:path';
+ import { homedir } from 'node:os';
+ import { gzipSync, gunzipSync } from 'node:zlib';
+ import { createKalshiClient } from '../../../src/client.mjs';
+-import { digest, discoverWeather, weatherRuleKey, mapLimit } from './weather-universe.mjs';
++import { digest, discoverWeather, weatherContract, weatherRuleKey, mapLimit } from './weather-universe.mjs';
+ import { collectWeatherEvidence, collectStationWeatherEvidence, weatherEstimates, forecastCell } from './weather-evidence.mjs';
+ import { createModelGradeAccumulator, probabilityBand, allocateWeather } from './weather-learning.mjs';
+ import {sourceReport} from './weather-settlement-source.mjs';
+@@ -80,12 +83,13 @@ async function archivePacket(path,evidence){
+   try{await writeFile(tmp,gzipSync(JSON.stringify(evidence)),{mode:0o600,flag:'wx'});try{await link(tmp,path);}catch(e){if(e.code!=='EEXIST')throw e;}}
+   finally{await rm(tmp,{force:true});}
+ }
+-async function archiveWeatherEvidence(evidence,root) {
++async function archiveWeatherEvidence(evidence,root,{sourceProjection=false}={}) {
+   await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
+   const sourceEvidenceId=digest(evidence);await archivePacket(join(root,'evidence',`${sourceEvidenceId}.json.gz`),evidence);
+   evidence.dailyExtremes=deriveDailyTemperatureExtremes(evidence,{now:Date.now()});
+-  try{evidence.science=await locked(join(root,'station-science'),()=>updateStationScience(evidence,{root:join(root,'station-science'),now:Date.now(),sourceEvidenceId}));}
+-  catch(e){if(e.code!=='WEATHER_CYCLE_RUNNING')throw e;const report=await readStationScience({root:join(root,'station-science')});evidence.science={...report,status:'another station-science update is running',forecasts:stationPointForecasts(evidence,{parameters:report.parameters}),outcomes:[]};}
++  if(sourceProjection)evidence.science={status:'source projection; scientific outcome scoring and refinement await complete acquisition',parameters:{},forecasts:[],outcomes:[]};
++  else try{evidence.science=await locked(join(root,'station-science'),()=>updateStationScience(evidence,{root:join(root,'station-science'),now:Date.now(),sourceEvidenceId,publicationRoot:join(root,'evidence')}));}
++  catch(e){if(e.code!=='WEATHER_CYCLE_RUNNING')throw e;const learningState=await read(join(root,'station-science','state.json'),{}),report=stationScienceReport(learningState);evidence.science={...report,status:'another station-science update is running; read-only publication from the last atomic paired outcome state',learningStateAt:learningState.at??null,forecasts:stationPointForecasts(evidence,{parameters:learningState.parameters??{},learningState}),outcomes:[]};}
+   evidence.sourceEvidenceId=sourceEvidenceId;
+   const evidenceId=digest(evidence);await archivePacket(join(root,'evidence',`${evidenceId}.json.gz`),evidence);return evidenceId;
+ }
+@@ -283,13 +287,14 @@ export async function allocateLiveWeather({root=weatherRoot(),capitalUsd,encumbe
+ 
+ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient(),now=Date.now(),fetchImpl=fetch,capitalUsd=0,encumberedUsd=0}={}) {
+   return locked(root,async()=>{
+-    const scoring=await scorePending(root,client,now);
++    let scoring={settled:0,pending:null,errors:[],grades:await read(join(root,'grades.json'),{}),status:'venue outcome scoring awaits completed acquisition'};
+     const universe=await discoverWeather(client);
+-    const evidence=await collectWeatherEvidence(universe.markets,{cacheDir:join(root,'nbm'),now:Date.now(),fetchImpl});
+-    const evidenceId=await archiveWeatherEvidence(evidence,root);
++    const publish=async (evidence,{sourceProjection=false}={})=>{
++    const evidenceId=await archiveWeatherEvidence(evidence,root,{sourceProjection});
++    if(!sourceProjection)scoring=await scorePending(root,client,Date.now());
+     const quoteTimes=new Map(),freshQuotes=new Map();
+     const quoted=universe.markets;
+-    for(let i=0;i<quoted.length;i+=100){
++    for(let i=0;!sourceProjection&&i<quoted.length;i+=100){
+       const batch=quoted.slice(i,i+100);
+       try{for(const m of await client.getMarkets({tickers:batch.map(c=>c.ticker).join(',')})){freshQuotes.set(m.ticker,m);quoteTimes.set(m.ticker,new Date().toISOString());}}
+       catch(e){evidence.errors.push({source:'fresh-market-quotes',error:e.message});}
+@@ -297,27 +302,142 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
+     const decisionNow=Date.now();
+     const contracts=universe.markets.map(c=>{const fresh=freshQuotes.get(c.ticker);if(!fresh)return c;const changed=digest({primary:c.rules_primary,secondary:c.rules_secondary})!==digest({primary:fresh.rules_primary,secondary:fresh.rules_secondary});return {...c,...fresh,...(changed?{ruleKey:weatherRuleKey(fresh,c.seriesTicker,c.source,c.stationRule),binding:null,blocker:'rules changed during collection; rebind next cycle'}:{})};}).map(c=>({...c,rulesHash:digest({primary:c.rules_primary,secondary:c.rules_secondary})}));
+     for(const c of contracts)if(c.binding?.kind==='index-at'&&evidence.indices?.[c.binding.city]?.blocker)c.blocker=evidence.indices[c.binding.city].blocker;
+-    const ex=await experiments(root,contracts,decisionNow),pending=await read(join(root,'pending.json'),{}),rows=[],opportunities=[];
++    const ex=sourceProjection?new Map():await experiments(root,contracts,decisionNow),pending=await read(join(root,'pending.json'),{}),rows=[],opportunities=[];
+     await mapLimit(contracts,3,async c=>{
+-      const s=stage(c,decisionNow),models=weatherEstimates(c,evidence,decisionNow);
++      const s=stage(c,decisionNow)+(sourceProjection?'/source-projection-v1':evidence.acquisition?.complete===false?'/during-acquisition-v1':''),models=weatherEstimates(c,evidence,decisionNow);
+       models.push(...(ex.get(c.ticker)?.values()??[]));
+       const midpoint=quoteTimes.has(c.ticker)?mid(c):null,b=c.binding,modelBands=models.map(m=>({...m,band:probabilityBand({...c,station:b?.station??null,stage:s},m,scoring.grades)}));
+       const support=forecastCell(c,models);
+-      const row={ticker:c.ticker,eventTicker:c.event_ticker,title:c.title,family:c.family,source:c.source,stage:s,targetDate:b?.targetDate??null,closeTime:c.close_time,ruleKey:c.ruleKey,rulesHash:c.rulesHash,station:b?.station??null,mid:midpoint,marketObservedAt:quoteTimes.get(c.ticker)??null,models:modelBands,evidenceId,settlementReport:sourceReport(c,evidence.settlement),...support,blocker:c.blocker};
++      const row={ticker:c.ticker,eventTicker:c.event_ticker,title:c.title,family:c.family,source:c.source,stage:s,targetDate:b?.targetDate??null,closeTime:c.close_time,ruleKey:c.ruleKey,rulesHash:c.rulesHash,station:b?.station??null,...(b?.kind==='rain'?{rainNowcast:sameDayRainEvidence(c,evidence,decisionNow)}:{}),mid:midpoint,marketObservedAt:quoteTimes.get(c.ticker)??null,models:modelBands,evidenceId,settlementReport:sourceReport(c,evidence.settlement),...support,blocker:c.blocker};
+       rows.push(row);
+-      if(models.length&&midpoint!==null&&c.status==='active'&&Date.parse(c.close_time)>Date.now()){
++      if(models.length&&(sourceProjection||midpoint!==null)&&c.status==='active'&&Date.parse(c.close_time)>Date.now()){
+         const forecast={at:new Date().toISOString(),...row,models:models.map(m=>({id:m.id,p:m.p,details:m.details}))};
+         const id=digest({ticker:c.ticker,stage:s,rules:c.rulesHash,models:models.map(m=>m.id).sort()});
+         pending[id]??=forecast;
+       }
+-      try{opportunities.push(...await quoteWeatherContract(c,modelBands,evidence,client));}catch(e){row.bookError=e.message;}
++      if(!sourceProjection)try{opportunities.push(...await quoteWeatherContract(c,modelBands,evidence,client));}catch(e){row.bookError=e.message;}
+ 
+     });
++    if(evidence.acquisition?.complete===false&&!rows.some(row=>row.models.length))return false;
+     await atomic(join(root,'pending.json'),pending);
+     const families={};for(const c of contracts){families[c.family]??={markets:0,modelled:0,volume24h:0};families[c.family].markets++;families[c.family].volume24h+=Number(c.volume_24h_fp??0);if(rows.find(r=>r.ticker===c.ticker)?.models.length)families[c.family].modelled++;}
+     const research=Object.entries(families).filter(([_,v])=>v.modelled<v.markets).sort((a,b)=>b[1].volume24h-a[1].volume24h).map(([family,v])=>({family,...v,nextEffect:family==='hourly-temperature'?'bind official station/time and score short-horizon observation-conditioned forecasts':family==='precipitation'?'bind interval totals; validate probabilistic accumulation forecasts':family==='tropical'?'bind NHC event definitions and calibrate track/intensity ensembles':family==='snow'?'bind reporting station and validate snow accumulation ensembles':'bind settlement transformation and submit versioned forecasts'}));
+     const {forecasts:physicalForecasts,outcomes:physicalOutcomes,...science}=evidence.science??{};
+-    const result={science,at:new Date().toISOString(),collectionStartedAt:new Date(now).toISOString(),complete:universe.complete,series:universe.series,marketCount:contracts.length,modelled:rows.filter(r=>r.models.length).length,families,errors:[...universe.errors,...evidence.errors],scoring:{settled:scoring.settled,pending:Object.keys(pending).length,errors:scoring.errors},grades:scoring.grades,forecasts:rows,contracts,opportunities,research,allocation:allocateWeather(opportunities.filter(o=>Date.parse(o.quoteExpiresAt)>Date.now()),{capitalUsd,encumberedUsd}),orderEffect:false};
++    const result={science,...(sourceProjection?{forecastLane:'source-projection-v1'}:{}),at:new Date().toISOString(),collectionStartedAt:new Date(now).toISOString(),complete:universe.complete,evidenceComplete:evidence.acquisition?.complete??true,acquisition:evidence.acquisition,series:universe.series,marketCount:contracts.length,modelled:rows.filter(r=>r.models.length).length,families,errors:[...universe.errors,...evidence.errors],scoring:{settled:scoring.settled,pending:Object.keys(pending).length,errors:scoring.errors},grades:scoring.grades,forecasts:rows,contracts,opportunities,research,allocation:allocateWeather(opportunities.filter(o=>Date.parse(o.quoteExpiresAt)>Date.now()),{capitalUsd,encumberedUsd}),orderEffect:false};
+     await atomic(join(root,'latest.json'),result);return result;
++    };
++    const evidence=await collectWeatherEvidence(universe.markets,{cacheDir:join(root,'nbm'),now:Date.now(),fetchImpl,onEvidence:async packet=>{
++      // A frozen, useful projection can reach existing consumers while slower
++      // providers continue. Empty projections leave the prior publication intact.
++      if(!universe.markets.some(c=>weatherEstimates(c,packet,Date.now()).length))return false;
++      return Boolean(await publish(packet,{sourceProjection:true}));
++    }});
++    return publish(evidence);
+   });
+ }
++
++/** Market participation consumes frozen forecast evidence; it never generates
++ * physical forecasts or changes their admission. Capture and review are read-only
++ * venue operations, retained in the existing content-addressed evidence carrier. */
++export async function weatherParticipation({root=weatherRoot(),client=weatherClient(),tickers,maxMarkets,quoteIntents,capitalUsd,encumberedUsd=0,contracts=1,windowSeconds=60,snapshotId,proposalActionIds,carryPolicy,now=Date.now()}={}){
++ if(snapshotId!==undefined){
++  if(tickers!==undefined||maxMarkets!==undefined||quoteIntents!==undefined||capitalUsd!==undefined||encumberedUsd!==0||contracts!==1||windowSeconds!==60)throw new TypeError('review uses only snapshotId and optional proposalActionIds or carryPolicy');
++  const snapshot=await weatherEvidence({root,evidenceId:snapshotId});if(digest(snapshot)!==snapshotId)throw new TypeError('participation snapshot hash mismatch');if(snapshot.kind!=='weather-participation-snapshot-v1')throw new TypeError('market participation snapshot required');
++  if(carryPolicy!==undefined){
++   if(proposalActionIds!==undefined)throw new TypeError('choose carryPolicy or proposalActionIds');
++   const evaluatedAt=Date.now(),allocation=weatherCarryAllocation(snapshot,carryPolicy,{now:evaluatedAt});
++   const proposal=allocation.selectedActionIds.length?verifyWeatherParticipationProposal({...snapshot,availableCapitalUsd:allocation.carryBudgetUsd},{actionIds:allocation.selectedActionIds},{now:evaluatedAt}):null;
++   const packet={...allocation,snapshotId,policy:carryPolicy,proposal};const evidenceId=digest(packet);await archivePacket(join(root,'evidence',evidenceId+'.json.gz'),packet);return {evidenceId,...packet};
++  }
++  if(proposalActionIds!==undefined)return {snapshotId,...verifyWeatherParticipationProposal(snapshot,{actionIds:proposalActionIds},{now})};
++  const rows=await mapLimit(snapshot.rows,2,async row=>{
++   const pages=[],trades=[];let cursor,error=null;const end=Math.min(now,Date.parse(row.actions.expiresAt));
++   try {for(let page=0;page<3;page++){
++    const packet=await client.call('GET','/markets/trades',{signed:false,query:{ticker:row.ticker,min_ts:Math.floor(Date.parse(row.actions.observedAt)/1000),max_ts:Math.ceil(end/1000),is_block_trade:false,limit:1000,cursor}});
++    pages.push({receivedAt:new Date().toISOString(),packet});if(!Array.isArray(packet.trades))throw new TypeError('trade tape missing');trades.push(...packet.trades);cursor=packet.cursor;if(!cursor)break;
++   }}catch(e){error=e.message;}
++   const market=await client.getMarket(row.ticker),receivedAt=new Date().toISOString(),rulesMatch=digest({primary:market.rules_primary,secondary:market.rules_secondary})===row.rulesHash;
++   const label=binarySettlement(market),outcome=label&&rulesMatch&&Date.parse(label.settledAt)>=Date.parse(row.actions.observedAt)&&Date.parse(label.settledAt)<=Date.parse(receivedAt)?label:null;
++   const review=reviewWeatherParticipation(row.actions,{trades,complete:!error&&!cursor,reviewedAt:new Date(Math.min(now,Date.parse(receivedAt))).toISOString(),outcome,marketType:row.market.market_type,notionalValueUsd:Number(row.market.notional_value_dollars)});
++   return {ticker:row.ticker,tradePages:pages,market,marketReceivedAt:receivedAt,rulesMatch,errors:error?[error]:[],review};
++  });
++  const packet={kind:'weather-participation-review-v1',at:new Date().toISOString(),snapshotId,rows,orderEffect:false,tradeAuthority:false};const evidenceId=digest(packet);await archivePacket(join(root,'evidence',evidenceId+'.json.gz'),packet);return {evidenceId,...packet};
++ }
++ if(proposalActionIds!==undefined||carryPolicy!==undefined)throw new TypeError('proposal or carry policy needs a captured snapshotId');
++ if(!Number.isFinite(capitalUsd)||capitalUsd<0||!Number.isFinite(encumberedUsd)||encumberedUsd<0||!Number.isInteger(contracts)||contracts<1||contracts>10000||!Number.isInteger(windowSeconds)||windowSeconds<5||windowSeconds>300)throw new TypeError('explicit scenario capital, whole contracts and 5..300-second window required');
++ if(tickers!==undefined&&(!Array.isArray(tickers)||tickers.length<1||tickers.length>2000||new Set(tickers).size!==tickers.length||tickers.some(t=>typeof t!=='string'||t.length>120)))throw new TypeError('1..2000 distinct weather tickers required');
++ if(quoteIntents!==undefined&&(!Array.isArray(quoteIntents)||quoteIntents.length<1||quoteIntents.length>4000||quoteIntents.some(q=>!q||typeof q.ticker!=='string'||q.ticker.length>120||!['yes','no'].includes(q.side)||!Number.isFinite(q.price)||q.price<=0||q.price>=1||(q.quantity!==undefined&&(!Number.isInteger(q.quantity)||q.quantity<1||q.quantity>10000)))))throw new TypeError('scoped quote intents require a ticker, side, finite price and optional whole quantity');
++ if(maxMarkets!==undefined&&(!Number.isInteger(maxMarkets)||maxMarkets<1||maxMarkets>2000||tickers!==undefined))throw new TypeError('maxMarkets must be 1..2000 for automatic selection');
++ const state=await weatherStatus({root});if(!Number.isFinite(Date.parse(state.at))||Date.parse(state.at)>now||now-Date.parse(state.at)>15*60000)throw new TypeError('weather evidence needs a causal receipt within fifteen minutes');
++ const byTicker=new Map((state.contracts??[]).map(c=>[c.ticker,c]));let forecasts=(state.forecasts??[]).filter(r=>r.models?.some(m=>Number.isFinite(m.p))&&Date.parse(r.closeTime)>now),availableCapitalUsd=Math.max(0,capitalUsd-encumberedUsd);
++ const liveIndexDiscovery=[],discoveryErrors=[];
++ if(tickers===undefined){
++  // New hourly listings can appear between physical collection cycles. Bind
++  // them now against already-received weather evidence; no new weather model fit.
++  const indexSeries=[...new Map([...byTicker.values()].filter(c=>c.binding?.kind==='index-at'&&['nyc','miami','la-coastal'].includes(c.binding.city)).map(c=>[c.seriesTicker,c])).values()].slice(0,3),sourceId=forecasts.find(r=>r.evidenceId)?.evidenceId;
++  if(sourceId&&indexSeries.length){
++   const evidence=await weatherEvidence({root,evidenceId:sourceId});
++   await mapLimit(indexSeries,2,async template=>{try{
++    const series=await client.getSeries(template.seriesTicker),markets=await client.getMarkets({series_ticker:template.seriesTicker,status:'open'}),receivedAt=new Date().toISOString();liveIndexDiscovery.push({series,markets,receivedAt});
++    for(const market of markets){
++     if(forecasts.some(r=>r.ticker===market.ticker)||Date.parse(market.close_time)<=Date.parse(receivedAt))continue;
++     const c=weatherContract(market,series);c.rulesHash=digest({primary:c.rules_primary,secondary:c.rules_secondary});
++     const models=weatherEstimates(c,evidence,Date.parse(receivedAt));if(!models.length)continue;
++     const b=c.binding,stageValue=stage(c,Date.parse(receivedAt))+(state.forecastLane==='source-projection-v1'?'/source-projection-v1':state.evidenceComplete===false?'/during-acquisition-v1':''),bands=models.map(m=>({...m,band:probabilityBand({...c,station:b?.station??null,stage:stageValue},m,state.grades??{})}));byTicker.set(c.ticker,c);
++     forecasts.push({ticker:c.ticker,eventTicker:c.event_ticker,closeTime:c.close_time,family:c.family,station:'index:'+b.city,rulesHash:c.rulesHash,ruleKey:c.ruleKey,stage:stageValue,mid:mid(c),models:bands,evidenceId:sourceId,derivedAt:receivedAt,...forecastCell(c,models)});
++    }
++   }catch(e){discoveryErrors.push({series:template.seriesTicker,error:e.message});}});
++  }
++ }
++ let selected;
++ if(tickers)selected=tickers.map(t=>{const r=forecasts.find(r=>r.ticker===t);if(!r)throw new TypeError('no prospective weather probabilities for '+t);return r;});
++ else {
++  const sorted=[...forecasts].sort((a,b)=>Date.parse(a.closeTime)-Date.parse(b.closeTime)||Math.abs((a.mid??0)-.5)-Math.abs((b.mid??0)-.5)),groups=new Map();
++  for(const r of sorted){const group=r.station??r.family;if(!groups.has(group))groups.set(group,[]);groups.get(group).push(r);}
++  selected=[];const selectionLimit=maxMarkets??Infinity;while(selected.length<selectionLimit&&[...groups.values()].some(g=>g.length))for(const g of groups.values()){if(g.length&&selected.length<selectionLimit)selected.push(g.shift());}
++ }
++ if(quoteIntents?.some(q=>!selected.some(r=>r.ticker===q.ticker)))throw new TypeError('proposed quote ticker is outside the selected capture');
++ const errors=[...discoveryErrors],marketBatches=[],marketObservations=new Map(),seriesObservations=new Map(),eventObservations=new Map();
++ const chunks=rows=>Array.from({length:Math.ceil(rows.length/100)},(_,i)=>rows.slice(i*100,(i+1)*100));
++ await mapLimit(chunks(selected),2,async batch=>{try{
++  const packet=await client.call('GET','/markets',{signed:false,query:{tickers:batch.map(r=>r.ticker).join(','),limit:1000}}),receivedAt=new Date().toISOString(),requested=new Set(batch.map(r=>r.ticker));
++  marketBatches.push({requestedTickers:[...requested],receivedAt,packet});
++  if(!Array.isArray(packet.markets)||packet.cursor||new Set(packet.markets.map(m=>m.ticker)).size!==packet.markets.length||packet.markets.some(m=>!requested.has(m.ticker)))throw new TypeError('complete unique scoped market metadata required');
++  for(const market of packet.markets)marketObservations.set(market.ticker,{market,receivedAt});
++ }catch(e){errors.push({source:'batch-markets',tickers:batch.map(r=>r.ticker),error:e.message});}});
++ const scoped=[];for(const r of selected){try{
++  const c=byTicker.get(r.ticker);if(!c||c.rulesHash!==r.rulesHash)throw new TypeError('forecast rules scope missing');
++  const observation=marketObservations.get(r.ticker);if(!observation)throw new TypeError('requested market missing from metadata receipt');
++  const {market,receivedAt:marketReceivedAt}=observation;if(digest({primary:market.rules_primary,secondary:market.rules_secondary})!==r.rulesHash||market.event_ticker!==c.event_ticker||market.exchange_index!==c.exchange_index)throw new TypeError('fresh market changed rules, event or exchange');
++  const existing=eventObservations.get(c.event_ticker);if(existing&&existing.contract.seriesTicker!==c.seriesTicker)throw new TypeError('event has conflicting series fee scope');
++  if(!existing)eventObservations.set(c.event_ticker,{contract:c});scoped.push({r,c,market,marketReceivedAt});
++ }catch(e){errors.push({ticker:r.ticker,error:e.message});}}
++ await mapLimit([...eventObservations.values()],2,async observation=>{try{
++  observation.terms=await readWeatherParticipationFees(client,observation.contract,{seriesObservations});
++ }catch(e){observation.error=e.message;}});
++ const prepared=scoped.filter(({r,c})=>{const observation=eventObservations.get(c.event_ticker);if(observation.error){errors.push({ticker:r.ticker,error:observation.error});return false;}return true;});
++ const bookBatches=[],rows=[];
++ await mapLimit(chunks(prepared),2,async batch=>{try{
++  // Metadata/fees precede fresh books. Every batch keeps its own actual receipt;
++  // neither concurrent requests nor a common receipt imply exchange atomicity.
++  const packet=await client.call('GET','/markets/orderbooks',{signed:false,query:new URLSearchParams(batch.map(({r})=>['tickers',r.ticker]))}),receivedAt=new Date().toISOString(),requested=new Set(batch.map(({r})=>r.ticker));
++  bookBatches.push({requestedTickers:[...requested],receivedAt,packet});
++  if(!Array.isArray(packet.orderbooks)||new Set(packet.orderbooks.map(b=>b.ticker)).size!==packet.orderbooks.length||packet.orderbooks.some(b=>!requested.has(b.ticker)))throw new TypeError('unique scoped batch books required');
++  const books=new Map(packet.orderbooks.map(b=>[b.ticker,b.orderbook_fp]));
++  for(const {r,c,market,marketReceivedAt} of batch){try{
++   const book=books.get(r.ticker),observedAt=receivedAt,terms=eventObservations.get(c.event_ticker).terms;
++   if(!book)throw new TypeError('requested market missing from batch book receipt');
++   if(Date.parse(observedAt)-Date.parse(state.at)>15*60000)throw new TypeError('forecast receipt expired during market preparation');
++   const models=r.models.filter(m=>Number.isFinite(m.p)&&m.p>=0&&m.p<=1&&(!m.details?.validUntil||Date.parse(m.details.validUntil)>Date.parse(observedAt)));
++   const expiresAt=new Date(Math.min(Date.parse(observedAt)+windowSeconds*1000,Date.parse(market.close_time),terms.nextFeeChangeAt?Date.parse(terms.nextFeeChangeAt):Infinity)).toISOString();
++   const actions=weatherParticipationActions({market,book,series:terms.effective,models,capitalUsd:availableCapitalUsd,contracts,observedAt,expiresAt,quoteIntents:quoteIntents?.filter(q=>q.ticker===r.ticker)});
++   rows.push({ticker:r.ticker,eventTicker:r.eventTicker,family:r.family,station:r.station,rulesHash:r.rulesHash,sourceEvidenceId:r.evidenceId,frozenForecastAt:state.at,contractProbabilityDerivedAt:r.derivedAt??state.at,marketReceivedAt,market,book,feeObservations:terms,frozenModels:models,actions});
++  }catch(e){errors.push({ticker:r.ticker,error:e.message});}}
++ }catch(e){errors.push({source:'batch-orderbooks',tickers:batch.map(({r})=>r.ticker),error:e.message});}});
++ // Keep deterministic selection order without rewriting individual receipt clocks.
++ const positions=new Map(selected.map((r,i)=>[r.ticker,i]));rows.sort((a,b)=>positions.get(a.ticker)-positions.get(b.ticker));
++ const bookBatch=bookBatches.length===1?bookBatches[0].packet:null,bookBatchReceivedAt=bookBatches.length===1?bookBatches[0].receivedAt:null;
++ const coverage={forecastCandidates:forecasts.length,selected:selected.length,captured:rows.length,selectionLimit:maxMarkets??null,selectionTruncated:selected.length<forecasts.length,feeEvents:eventObservations.size,feeSeries:seriesObservations.size};
++ const packet={kind:'weather-participation-snapshot-v1',at:new Date().toISOString(),captureStartedAt:new Date(now).toISOString(),forecastEvidenceAt:state.at,capitalUsd,encumberedUsd,availableCapitalUsd,coverage,quoteIntents:quoteIntents??[],liveIndexDiscovery,marketBatches,bookBatches,bookBatchReceivedAt,bookBatch,bookBatchAtomicity:'not guaranteed; common receipt only',rows,errors,scope:'mutually exclusive alternatives per contract side; capital feasibility is per alternative until a joint proposal is verified; existing forecast admission unchanged',orderEffect:false,tradeAuthority:false};
++ await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});const evidenceId=digest(packet);await archivePacket(join(root,'evidence',evidenceId+'.json.gz'),packet);return {evidenceId,...packet};
++}
+diff --git a/services/forecasting-service/src/weather-ensemble.mjs b/services/forecasting-service/src/weather-ensemble.mjs
+index 31d9432..6e9898e 100644
+--- a/services/forecasting-service/src/weather-ensemble.mjs
++++ b/services/forecasting-service/src/weather-ensemble.mjs
+@@ -24,13 +24,30 @@ export function postprocessTemperature(r,{biasF,scaleMultiplier}){
+  if(r.mixture)out.mixture={...r.mixture,components:r.mixture.components.map(c=>({...c,model:c.model+'/pool-postprocess-v1',meanF:r.meanF+biasF+(c.meanF-r.meanF)*scaleMultiplier,scaleF:c.scaleF*scaleMultiplier,...(c.empirical?{empirical:{...c.empirical,pointsF:empiricalPoints(c).map(x=>out.meanF+(x-r.meanF)*scaleMultiplier)}}:{})}))};
+  return out;
+ }
++function scoringPoints(r){return components(r).flatMap(c=>c.empirical?empiricalPoints(c).map(x=>({x,w:c.weight/c.empirical.pointsF.length})):nodes.map(z=>({x:c.meanF+c.scaleF*z,w:c.weight/nodes.length}))).sort((a,b)=>a.x-b.x);}
+ /** 41 nodes per component, sorted weighted identity: O(n log n), including cross-component distance. */
+ export function temperatureDistributionCrps(r,observedF){
+- const points=components(r).flatMap(c=>c.empirical?empiricalPoints(c).map(x=>({x,w:c.weight/c.empirical.pointsF.length})):nodes.map(z=>({x:c.meanF+c.scaleF*z,w:c.weight/nodes.length}))).sort((a,b)=>a.x-b.x);
++ const points=scoringPoints(r);
+  let absolute=0,pairHalf=0,prefixWeight=0,prefixMoment=0;
+  for(const p of points){absolute+=p.w*Math.abs(p.x-observedF);pairHalf+=p.w*(p.x*prefixWeight-prefixMoment);prefixWeight+=p.w;prefixMoment+=p.w*p.x;}
+  return Math.max(0,absolute-pairHalf);
+ }
++/** Exact piecewise-linear extrema for the law used by the existing CRPS
++ * scorer: exact empirical atoms, 41-node approximation for Student-t components.
++ * Paired gains use ONE common report cell, rather than independent labels. */
++export function temperatureDistributionCellScores(r,{lowF,highF},{comparators=[]}={}){
++ if(!Number.isFinite(lowF)||!Number.isFinite(highF)||lowF>highF||!Array.isArray(comparators)||comparators.length>16)throw new TypeError('finite ordered reporting cell and bounded comparators required');
++ const summarize=law=>{
++  const points=scoringPoints(law),weights=[0],moments=[0];let pairHalf=0;
++  for(const p of points){if(!Number.isFinite(p.x)||!Number.isFinite(p.w)||p.w<0)throw new TypeError('finite nonnegative scoring law required');const w=weights.at(-1),m=moments.at(-1);pairHalf+=p.w*(p.x*w-m);weights.push(w+p.w);moments.push(m+p.w*p.x);}
++  const total=weights.at(-1),moment=moments.at(-1);if(Math.abs(total-1)>1e-8)throw new TypeError('normalized scoring law required');
++  const score=y=>{let lo=0,hi=points.length;while(lo<hi){const mid=(lo+hi)>>1;if(points[mid].x<=y)lo=mid+1;else hi=mid;}return Math.max(0,y*weights[lo]-moments[lo]+moment-moments[lo]-y*(total-weights[lo])-pairHalf);};
++  const knots=points.filter(p=>p.x>lowF&&p.x<highF).map(p=>p.x);return {score,knots};
++ };
++ const pool=summarize(r),values=[lowF,highF,...pool.knots].map(pool.score),gains=comparators.map(c=>{const component=summarize({...c,weight:1}),knots=[lowF,highF,...pool.knots,...component.knots],values=knots.map(y=>component.score(y)-pool.score(y));return {model:c.model,family:c.family??null,lowF:Math.min(...values),highF:Math.max(...values)};});
++ return {lowF:Math.min(...values),highF:Math.max(...values),gains,measurementCell:{lowF,highF},method:'all piecewise-linear knots in common report cell; exact empirical law / existing 41-node Student-t CRPS approximation'};
++}
++
+ export function temperatureDiagnostics(r,y,{tieUniform=.5}={}){const upper=Math.max(0,Math.min(1,temperatureCdf(r,y))),discrete=components(r).some(c=>c.empirical),lower=discrete?Math.max(0,Math.min(upper,temperatureCdf(r,y,{left:true}))):upper;if(!Number.isFinite(tieUniform)||tieUniform<0||tieUniform>1)throw new TypeError('PIT tie position in [0,1] required');return {pit:lower+tieUniform*(upper-lower),...(discrete?{pitInterval:[lower,upper],pitMethod:'seeded randomized PIT within atom CDF interval; no independent-time calibration guarantee'}:{}),covered90:upper>=.05&&lower<=.95,crpsF:temperatureDistributionCrps(r,y)};}
+ 
+ /** Pool probabilities for a common contract, preserving non-Student-t component CDFs. */
+diff --git a/services/forecasting-service/src/weather-evidence.mjs b/services/forecasting-service/src/weather-evidence.mjs
+index fe9d871..5157e3e 100644
+--- a/services/forecasting-service/src/weather-evidence.mjs
++++ b/services/forecasting-service/src/weather-evidence.mjs
+@@ -1,3 +1,4 @@
++import {sameDayRainModels} from './weather-precipitation.mjs';
+ import {collectEcmwfEnsemble} from './weather-ecmwf-ensemble.mjs';
+ import {access} from 'node:fs/promises';
+ import {homedir} from 'node:os';
+@@ -25,7 +26,7 @@ async function nws(url, fetchImpl) {
+   return r.json();
+ }
+ /** Public station evidence for research and forecasting, independent of any market. */
+-export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.now(),fetchImpl=fetch,marketCollection=false}={}) {
++export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.now(),fetchImpl=fetch,marketCollection=false,onEvidence}={}) {
+   if(!Array.isArray(requests)||requests.length<1||(!marketCollection&&requests.length>16))throw new TypeError('provide 1..16 station requests');
+   const normalized=requests.map(r=>{
+     if(!r||!/^[A-Z0-9]{4}$/.test(r.station)||typeof r.timeZone!=='string')throw new TypeError('station ICAO and IANA time zone required');
+@@ -38,13 +39,28 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
+   });
+   if(new Set(normalized.map(r=>r.station)).size!==normalized.length)throw new TypeError('combine target dates into one request per station');
+   const stations=normalized.map(r=>r.station),errors=[];
+-  let guidance=null,quantiles=null,lamp=null,hourlyGuidance=null;
+-  try{guidance=await latestStationGuidance({stations,cacheDir,now},{fetchImpl});}catch(e){errors.push({source:'NBM',error:e.message});}
+-  try{hourlyGuidance=await latestHourlyGuidance({stations,cacheDir,now},{fetchImpl});for(const station of hourlyGuidance.missingStations??[])if(stations.includes(station))errors.push({station,source:'NBM-NBH',error:'no complete hourly block in selected run'});}catch(e){errors.push({source:'NBM-NBH',error:e.message});}
+-  try{quantiles=await latestStationQuantiles({stations,cacheDir,now,fetchImpl});}catch(e){errors.push({source:'NBM-QMD',error:e.message});}
+-  try{lamp=await latestLampGuidance({stations,cacheDir,now,fetchImpl});for(const station of lamp.missingStations??[])errors.push({station,source:'LAMP',error:'no complete station block in the selected run'});}catch(e){errors.push({source:'LAMP',error:e.message});}
+-  const settlement=await climateReportEvidence({dates:normalized.flatMap(r=>r.targetDates),now,fetchImpl});errors.push(...settlement.errors);
+-  const observations={},local={},stationMetadata={};
++  let guidance=null,quantiles=null,lamp=null,hourlyGuidance=null,settlement=null;
++  const observations={},local={},stationMetadata={},relational={regions:[]};let ecmwfEnsemble=null;
++  if(onEvidence!==undefined&&typeof onEvidence!=='function')throw new TypeError('onEvidence must be a receiving function');
++  const sourceNames=['NWS-stations','NBM','NBM-NBH','NBM-QMD','LAMP','climate-reports'],finishedSources=[],finishedStations=[];
++  const regions=Object.entries(RELATIONAL_REGIONS).filter(([_,peers])=>stations.some(station=>peers.includes(station.slice(1))));
++  const plannedSources=[...sourceNames,...regions.map(([region])=>'relational:'+region),'ECMWF-AIFS-ENS'];
++  const snapshot=complete=>({at:new Date(now).toISOString(),stations:normalized,guidance,hourlyGuidance,quantiles,lamp,settlement,local,observations,stationMetadata,relational,ecmwfEnsemble,errors,
++    acquisition:{complete,requestedStations:stations.length,finishedStations:[...finishedStations],finishedSources:[...finishedSources],pendingSources:plannedSources.filter(s=>!finishedSources.includes(s)),scope:'finished means the acquisition attempt ended; source errors and missing evidence remain explicit'}});
++  let publication=null,timer=null,dirty=false,closed=false,lastAttempt=-Infinity;
++  const drain=()=>{
++    if(closed||!onEvidence||publication||!dirty)return;
++    const wait=60000-(Date.now()-lastAttempt);
++    if(wait>0){if(!timer){timer=setTimeout(()=>{timer=null;drain();},wait);timer.unref();}return;}
++    dirty=false;const frozen=structuredClone(snapshot(false));lastAttempt=Date.now();
++    publication=Promise.resolve().then(()=>onEvidence(frozen)).then(published=>{if(published===false)lastAttempt=-Infinity;})
++      .catch(e=>errors.push({source:'incremental-publication',error:e.message})).finally(()=>{publication=null;drain();});
++  };
++  const emit=()=>{dirty=true;drain();};
++  emit();
++  // These sources do not depend on one another. Keep the existing station
++  // request bound while overlapping acquisition across independent providers.
++  const collectors=[async()=>{
+   await mapLimit(normalized,3,async b=>{
+     const station=b.station;
+     try{
+@@ -68,16 +84,28 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
+       try{observations[`${station}/${date}`]=await observedExtremes({station,date,timeZone:b.timeZone,now:Math.min(now,start+86400000)},{fetchImpl});}
+       catch(e){errors.push({station,date,source:'NWS-observations',error:e.message});}
+     }
++    finishedStations.push(station);emit();
+   });
+-  const relational={regions:[]};
+-  for(const [region,peers] of Object.entries(RELATIONAL_REGIONS))if(stations.some(station=>peers.includes(station.slice(1))))try{relational.regions.push(await collectRelationalWeatherNowcast({region,cacheDir:cacheDir?join(cacheDir,'relational'):undefined,now:Date.now(),fetchImpl}));}catch(e){errors.push({source:'relational-nowcast',region,error:e.message});}
+-  let ecmwfEnsemble=null;
++  },
++    async()=>{try{guidance=await latestStationGuidance({stations,cacheDir,now},{fetchImpl});}catch(e){errors.push({source:'NBM',error:e.message});}},
++    async()=>{try{hourlyGuidance=await latestHourlyGuidance({stations,cacheDir,now},{fetchImpl});for(const station of hourlyGuidance.missingStations??[])if(stations.includes(station))errors.push({station,source:'NBM-NBH',error:'no complete hourly block in selected run'});}catch(e){errors.push({source:'NBM-NBH',error:e.message});}},
++    async()=>{try{quantiles=await latestStationQuantiles({stations,cacheDir,now,fetchImpl});}catch(e){errors.push({source:'NBM-QMD',error:e.message});}},
++    async()=>{try{lamp=await latestLampGuidance({stations,cacheDir,now,fetchImpl});for(const station of lamp.missingStations??[])errors.push({station,source:'LAMP',error:'no complete station block in the selected run'});}catch(e){errors.push({source:'LAMP',error:e.message});}},
++    async()=>{settlement=await climateReportEvidence({dates:normalized.flatMap(r=>r.targetDates),now,fetchImpl});errors.push(...settlement.errors);}
++  ];
++  try{await mapLimit(collectors,3,async(collect,i)=>{await collect();finishedSources.push(sourceNames[i]);emit();});
++  for(const [region] of regions){
++    try{relational.regions.push(await collectRelationalWeatherNowcast({region,cacheDir:cacheDir?join(cacheDir,'relational'):undefined,now:Date.now(),fetchImpl}));}catch(e){errors.push({source:'relational-nowcast',region,error:e.message});}
++    finishedSources.push('relational:'+region);emit();
++  }
+   const python=process.env.WEATHER_ECCODES_PYTHON??join(homedir(),'.local/share/561-group/weather-research/eccodes/bin/python');
+   if(cacheDir&&process.env.WEATHER_ECMWF_ENABLED!=='0'&&Object.keys(stationMetadata).length){
+    let decoderAvailable=false;try{await access(python);decoderAvailable=true;}catch{}
+    if(decoderAvailable)try{ecmwfEnsemble=await collectEcmwfEnsemble(normalized.filter(r=>stationMetadata[r.station]),{cacheDir:join(cacheDir,'..','ecmwf'),now:Date.now(),fetchImpl,python,stationMetadata});}catch(e){errors.push({source:'ECMWF-AIFS-ENS',error:e.message});}
+   }
+-  return {at:new Date(now).toISOString(),stations:normalized,guidance,hourlyGuidance,quantiles,lamp,settlement,local,observations,relational,ecmwfEnsemble,errors};
++  finishedSources.push('ECMWF-AIFS-ENS');
++  return snapshot(true);
++  }finally{closed=true;if(timer)clearTimeout(timer);if(publication)await publication;}
+ }
+ export async function collectWeatherEvidence(contracts,options={}) {
+   const requests=new Map(),now=options.now??Date.now(),cities=[...new Set(contracts.filter(c=>c.binding?.kind==='index-at').map(c=>c.binding.city))];
+@@ -90,18 +118,19 @@ export async function collectWeatherEvidence(contracts,options={}) {
+    const targetTimes=[configurationAvailableAt,...cityContracts.map(c=>Date.parse(c.binding.targetTime)).filter(Number.isFinite),...(packet.calibrations?.calibrations??[]).filter(c=>c.published_at_ms<=configurationAvailableAt&&c.effective_at_ms<=configurationAvailableAt+24*3600000&&c.effective_at_ms>configurationAvailableAt).map(c=>c.effective_at_ms)];
+    for(const targetTime of new Set(targetTimes)){const cfg=indexConfiguration(packet,city,targetTime,configurationAvailableAt);if(!cfg)continue;for(const member of cfg.stations)for(const date of dates)request(member.station_id.slice(0,4),INDEX_CITIES[city].timeZone,date);}
+   }
+-  const evidence=requests.size?await collectStationWeatherEvidence([...requests.values()],{...options,now,marketCollection:true}):{at:new Date(now).toISOString(),stations:[],guidance:null,quantiles:null,settlement:null,local:{},observations:{},errors:[]};
++  const receive=options.onEvidence?packet=>options.onEvidence({...packet,indices:structuredClone(indexEvidence.cities),errors:[...packet.errors,...indexEvidence.errors]}):undefined;
++  const evidence=requests.size?await collectStationWeatherEvidence([...requests.values()],{...options,now,marketCollection:true,onEvidence:receive}):{at:new Date(now).toISOString(),stations:[],guidance:null,quantiles:null,settlement:null,local:{},observations:{},errors:[],acquisition:{complete:true,requestedStations:0,finishedStations:[],finishedSources:[],pendingSources:[]}};
+   evidence.indices=indexEvidence.cities;evidence.errors.push(...indexEvidence.errors);return evidence;
+ }
+ export function weatherEstimates(c,e,now) {
+   const b=c.binding;if(!b)return [];
+   if(b.kind==='index-at')return priceWeatherIndex(c,e,now);
+   if(b.kind==='rain') {
+-    if(!e.guidance)return [];
+-    const r=priceRainMarket(c,{guidance:e.guidance,now});
+-    const out=r.priced?[{id:'nbm-rain-logistic-2026-10-04',p:r.probability,details:r}]:[];
++    const out=sameDayRainModels(c,e,now);
++    const r=e.guidance?priceRainMarket(c,{guidance:e.guidance,now}):{priced:false};
++    if(r.priced)out.unshift({id:'nbm-rain-logistic-2026-10-04',p:r.probability,details:r});
+     const a=Number(c.yes_ask_dollars),bid=Number(c.yes_bid_dollars);
+-    const pooled=priceRainPoolMarket(c,{guidance:e.guidance,marketProbability:a>bid&&a<=1&&bid>=0?(a+bid)/2:null,now});if(pooled)out.push(pooled);
++    const pooled=e.guidance&&priceRainPoolMarket(c,{guidance:e.guidance,marketProbability:a>bid&&a<=1&&bid>=0?(a+bid)/2:null,now});if(pooled)out.push(pooled);
+     return out;
+   }
+   const bracket={strikeType:c.strike_type,floorStrike:c.floor_strike,capStrike:c.cap_strike};
+diff --git a/services/forecasting-service/src/weather-family-learning.mjs b/services/forecasting-service/src/weather-family-learning.mjs
+index bfedaa1..bf47c53 100644
+--- a/services/forecasting-service/src/weather-family-learning.mjs
++++ b/services/forecasting-service/src/weather-family-learning.mjs
+@@ -1,26 +1,31 @@
+ /** Past-only forecast-family adaptation over the existing paired daily outcome carrier. */
+ import {createHash} from 'node:crypto';
++import {NWS_REPORT_CELL_VERSION,NWS_REPORT_CELL_TRUTH} from './station-observations.mjs';
+ import {makeTemperaturePool} from './weather-ensemble.mjs';
+ const hash=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
+ export const FAMILY_LEARNING_PROTOCOL=Object.freeze({id:'paired-family-ewa-v1',windowDays:14,priorDays:10,etaPerF:1,uniformShare:.1});
++export const CELL_FAMILY_LEARNING_PROTOCOL=Object.freeze({...FAMILY_LEARNING_PROTOCOL,id:'paired-family-cell-ewa-v1'});
+ /** Uniform initialization; matched completed outcomes, including currently received partial-day means. */
+-export function adaptiveTemperaturePool(base,state,{now=Date.now()}={}){
++export function adaptiveTemperaturePool(base,state,{now=Date.now(),reportedCells=false}={}){
++ if(typeof reportedCells!=='boolean')throw new TypeError('reportedCells must be boolean');
++ const protocol=reportedCells?CELL_FAMILY_LEARNING_PROTOCOL:FAMILY_LEARNING_PROTOCOL,gainField=reportedCells?'gainUpperSumF':'gainSum';
++ if(reportedCells&&(!Number.isFinite(Date.parse(base.validTime))||Date.parse(base.validTime)-15*60000<=now))return null;
+  const components=base.mixture?.components;
+  if(!Array.isArray(components)||components.length<2||!base.composition||!base.station||!base.horizon||!base.availableAt||Date.parse(base.availableAt)>now||!Number.isFinite(Date.parse(base.availableAt)))return null;
+  const families=components.map(c=>c.family);
+  if(families.some(f=>!f)||new Set(families).size!==families.length)return null;
+- const received=Date.parse(state.at),cutoff=new Date(now-FAMILY_LEARNING_PROTOCOL.windowDays*86400000).toISOString().slice(0,10),byDay=new Map();
+- if(Number.isFinite(received)&&received<=now)for(const row of Object.values(state.comparisons??{})){
+-  if(row.station!==base.station||row.pool!==base.model||row.horizon!==base.horizon||row.composition!==base.composition||row.truth!==(base.truth??'NWS station observations')||(row.configurationVersion??null)!==(base.details?.configVersion??null)||!/^\d{4}-\d{2}-\d{2}$/.test(row.date??'')||row.date<cutoff||row.date>new Date(now+86400000).toISOString().slice(0,10)||!Number.isFinite(row.n)||row.n<=0||!Number.isFinite(row.gainSum))continue;
++ const received=Date.parse(state.at),cutoff=new Date(now-protocol.windowDays*86400000).toISOString().slice(0,10),byDay=new Map();
++ if(Number.isFinite(received)&&received<=now)for(const row of Object.values((reportedCells?state.measurementComparisons:state.comparisons)??{})){
++  if(row.station!==base.station||row.pool!==base.model||row.horizon!==base.horizon||row.composition!==base.composition||row.truth!==(reportedCells?NWS_REPORT_CELL_TRUTH:(base.truth??'NWS station observations'))||(reportedCells&&row.measurementOperator!==NWS_REPORT_CELL_VERSION)||(row.configurationVersion??null)!==(base.details?.configVersion??null)||!/^\d{4}-\d{2}-\d{2}$/.test(row.date??'')||row.date<cutoff||row.date>new Date(now+86400000).toISOString().slice(0,10)||!Number.isFinite(row.n)||row.n<=0||!Number.isFinite(row[gainField]))continue;
+   const c=components.find(c=>c.model===row.component&&c.family===row.family);if(!c)continue;
+   const clock=Date.parse(row.scoreAvailableAt??state.at);if(!Number.isFinite(clock)||clock>now)continue;
+   const day=byDay.get(row.date)??new Map();if(day.has(c.family)){day.set(c.family,null);}else day.set(c.family,row);byDay.set(row.date,day);
+  }
+  const matched=[...byDay].filter(([,day])=>families.every(f=>day.get(f))&&new Set(families.map(f=>day.get(f).n)).size===1).sort(([a],[b])=>a.localeCompare(b));
+- const gains=Object.fromEntries(families.map(f=>[f,matched.reduce((s,[,day])=>s+day.get(f).gainSum/day.get(f).n,0)/(FAMILY_LEARNING_PROTOCOL.priorDays+matched.length)]));
+- const scores=families.map(f=>-FAMILY_LEARNING_PROTOCOL.etaPerF*gains[f]),max=Math.max(...scores),total=scores.reduce((s,x)=>s+Math.exp(x-max),0);
+- const weights=Object.fromEntries(families.map((f,i)=>[f,FAMILY_LEARNING_PROTOCOL.uniformShare/families.length+(1-FAMILY_LEARNING_PROTOCOL.uniformShare)*Math.exp(scores[i]-max)/total]));
++ const gains=Object.fromEntries(families.map(f=>[f,matched.reduce((s,[,day])=>s+day.get(f)[gainField]/day.get(f).n,0)/(protocol.priorDays+matched.length)]));
++ const scores=families.map(f=>-protocol.etaPerF*gains[f]),max=Math.max(...scores),total=scores.reduce((s,x)=>s+Math.exp(x-max),0);
++ const weights=Object.fromEntries(families.map((f,i)=>[f,protocol.uniformShare/families.length+(1-protocol.uniformShare)*Math.exp(scores[i]-max)/total]));
+  const pool=makeTemperaturePool(components,{familyWeights:weights});if(!pool)return null;
+- const witnesses=matched.map(([date,day])=>({date,samples:day.get(families[0]).n,components:families.map(f=>{const r=day.get(f);return {family:f,model:r.component,gainSumF:r.gainSum,scoreAvailableAt:r.scoreAvailableAt??state.at,sourceEvidenceId:r.sourceEvidenceId??null};})}));
+- return {...base,...pool,model:base.model+'/paired-family-ewa-v1',tradeEligible:false,comparators:[{...base,comparators:undefined}],learning:{...FAMILY_LEARNING_PROTOCOL,weights,regularizedMeanComponentExcessCrpsF:gains,matchedDates:matched.length,matchedSamples:matched.reduce((s,[,day])=>s+day.get(families[0]).n,0),fitAvailableAt:new Date(now).toISOString(),outcomeReceiptBoundAt:Number.isFinite(received)&&received<=now?state.at:null,sourceDigest:hash(witnesses),witnesses,status:'forward experiment; partial-day updates remain one date contribution; fixed learning rate, prior and window untrained; no calibration, regret-bound, market-edge or profit claim'},details:{...base.details,...pool,mean:pool.meanF,scale:pool.scaleF,status:'past-only paired-family exponential weights; physical and market skill unproven'}};
++ const witnesses=matched.map(([date,day])=>({date,samples:day.get(families[0]).n,components:families.map(f=>{const r=day.get(f);return {family:f,model:r.component,...(reportedCells?{gainLowSumF:r.gainLowSumF,gainUpperSumF:r.gainUpperSumF,measurementOperator:r.measurementOperator}:{gainSumF:r.gainSum}),scoreAvailableAt:r.scoreAvailableAt??state.at,sourceEvidenceId:r.sourceEvidenceId??null};})}));
++ return {...base,...pool,model:base.model+'/'+protocol.id,...(reportedCells?{verification:'nws-report-cell-v1',truth:NWS_REPORT_CELL_TRUTH,earliestTargetObservationAt:new Date(Date.parse(base.validTime)-15*60000).toISOString()}: {}),publicationLeadBin:(Date.parse(base.validTime)-now)/60000<=15?'5-15m':(Date.parse(base.validTime)-now)/60000<=30?'15-30m':(Date.parse(base.validTime)-now)/60000<=60?'30-60m':base.horizon,tradeEligible:false,comparators:[{...base,comparators:undefined}],learning:{...protocol,...(reportedCells?{lossBasis:'upper paired component excess CRPS over one common reported-temperature cell',measurementOperator:NWS_REPORT_CELL_VERSION}:{}),weights,regularizedMeanComponentExcessCrpsF:gains,matchedDates:matched.length,matchedSamples:matched.reduce((s,[,day])=>s+day.get(families[0]).n,0),fitAvailableAt:new Date(now).toISOString(),outcomeReceiptBoundAt:Number.isFinite(received)&&received<=now?state.at:null,sourceDigest:hash(witnesses),witnesses,status:'forward experiment; partial-day updates remain one date contribution; fixed learning rate, prior and window untrained; no calibration, regret-bound, market-edge or profit claim'},details:{...base.details,...pool,mean:pool.meanF,scale:pool.scaleF,status:'past-only paired-family exponential weights; physical and market skill unproven'}};
+ }
+diff --git a/services/forecasting-service/src/weather-index.mjs b/services/forecasting-service/src/weather-index.mjs
+index dfd8a60..febfd92 100644
+--- a/services/forecasting-service/src/weather-index.mjs
++++ b/services/forecasting-service/src/weather-index.mjs
+@@ -174,7 +174,7 @@ export function priceWeatherIndex(c,e,now){
+   for(const r of e.science.forecasts??[]){
+    if(!r.model?.endsWith('/paired-family-ewa-v1')||r.station!==b.station||Date.parse(r.validTime)!==target||r.horizon!==horizon||!Number.isFinite(Date.parse(r.availableAt))||Date.parse(r.availableAt)>now||!Number.isFinite(Date.parse(r.learning?.fitAvailableAt))||Date.parse(r.learning.fitAvailableAt)>Date.parse(r.availableAt))continue;
+    const base=distributions.find(d=>d.model===r.model.slice(0,-'/paired-family-ewa-v1'.length)&&d.composition===r.composition&&d.details?.configVersion===r.details?.configVersion);if(!base)continue;
+-   distributions.push({...r,details:{...r.details,learning:r.learning,frozenScienceAvailableAt:r.availableAt,tradeEligible:false}});
++   distributions.push({...r,details:{...r.details,learning:r.learning,frozenScienceAvailableAt:r.availableAt,publicationLeadBin:r.publicationLeadBin,tradeEligible:false}});
+   }
+  }
+  return distributions.flatMap(r=>{const p=indexBracketProbability(c,r);return Number.isFinite(p)?[{id:r.model,p,details:{...r.details,probabilityBounds:indexBracketProbabilityBounds(c,r)}}]:[];});
+diff --git a/src/arena.mjs b/src/arena.mjs
+index 987e52d..b07313f 100644
+--- a/src/arena.mjs
++++ b/src/arena.mjs
+@@ -1,3 +1,5 @@
++import { marketBuyWalk, marketSellWalk } from '@red-cup-engineering/gaming/market';
++import { gradedFromParts } from '@red-cup-engineering/computer-data-engineering-services-section/number/graded';
+ /**
+  * The Kalshi arena presented by its rules (gaming faculty `gameRules`, the arenas note 2026-07-07).
+  *
+@@ -160,3 +162,21 @@ export function shadowRest(intent, aheadAtPlace, events) {
+   }
+   return { filled: filled / 100, fills };
+ }
++
++/** Exact executable book in upstream gaming's graded monetary carrier. */
++export function orderBookOf(position, ticker, side = 'yes') {
++  const m = marketAt(position, ticker);
++  if (!m?.yes || m.stale || ['closed', 'determined', 'settled', 'deactivated'].includes(m.status)) throw new RangeError('known live depth required');
++  if (!['yes', 'no'].includes(side)) throw new TypeError('YES or NO book required');
++  const levels = (ladder, complement = false) => Object.entries(ladder).map(([p, q]) => ({ price: gradedFromParts(complement ? ONE - Number(p) : Number(p), ONE, 'USD'), quantity: gradedFromParts(q, 100, `kalshi:${ticker}:${side}`) }));
++  return { bids: levels(m[side]), asks: levels(m[side === 'yes' ? 'no' : 'yes'], true) };
++}
++
++/** Depth, slippage and liquidity shortfall use the one upstream book walk. */
++export function walkTake(position, ticker, side, quantityHundredths, action = 'buy') {
++  if (!Number.isSafeInteger(quantityHundredths) || quantityHundredths < 1) throw new RangeError('positive quantity in hundredths required');
++  if (!['buy', 'sell'].includes(action)) throw new TypeError('buy or sell action required');
++  const quantity = gradedFromParts(quantityHundredths, 100, `kalshi:${ticker}:${side}`);
++  return (action === 'buy' ? marketBuyWalk : marketSellWalk)(orderBookOf(position, ticker, side), quantity);
++}
++
+diff --git a/src/client.mjs b/src/client.mjs
+index 49758f7..c048813 100644
+--- a/src/client.mjs
++++ b/src/client.mjs
+@@ -71,7 +71,7 @@ export function createKalshiClient({ credentials = kalshiCredentials(), baseUrl
+     const write = method !== 'GET';
+     if (signed && !credentials) throw new KalshiVenueError('credentials-absent', 'KALSHI_API_KEY_ID and KALSHI_PRIVATE_KEY_PATH are required');
+     const url = new URL(`${baseUrl}${apiPath}`);
+-    for (const [key, value] of Object.entries(query ?? {})) if (value !== undefined && value !== null && value !== '') url.searchParams.set(key, String(value));
++    for (const [key, value] of (query instanceof URLSearchParams ? query : Object.entries(query ?? {}))) if (value !== undefined && value !== null && value !== '') url.searchParams.append(key, String(value));
+     let res;
+     // Kalshi answers 429 when the token bucket is empty, with no Retry-After, and a 429 is never
+     // a write, so it is retried with backoff. The signature is fresh each attempt (it carries a timestamp).

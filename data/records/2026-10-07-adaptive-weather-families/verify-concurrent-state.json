@@ -1,0 +1,14 @@
+{
+  "status": "another station-science update is running; read-only publication from the last atomic paired outcome state",
+  "learningStateAt": "2026-10-07T20:20:58.621Z",
+  "forecastCount": 10841,
+  "adaptiveFamilies": 2343,
+  "retainedLearnedFamilies": 340,
+  "oldFallbackLearnedFamilies": 0,
+  "learningStateUnchanged": true,
+  "writerLockUnchanged": true,
+  "outcomesAppended": 0,
+  "evidenceId": "f658dd1dc4c7e3ae2dc111d16039445b3db9327030eb84ee3e5ff07b1f290c8e",
+  "scope": "controlled live writer lock in a temporary root, using observed host evidence and last atomic learning state",
+  "orderEffect": false
+}

@@ -1,0 +1,520 @@
+{
+  "evaluation": "retrospective replay of immutable archived forecasts; filesystem write time conservatively defines availability; latest contracts supply only station time zones; does not qualify trading or seed production calibration",
+  "packets": 11,
+  "skipped": 2,
+  "scored": 24,
+  "forecasted": 3354,
+  "at": "2026-10-07T03:56:19.586Z",
+  "truth": "NWS station observations; separate from venue settlement",
+  "scoring": "first available forecast per station/valid hour/model/lead cohort; observed temperature nearest valid hour within 15 minutes; 41-point quadrature CRPS",
+  "metrics": [
+    {
+      "station": "KSEA",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": -1.6000000000000014,
+      "maeF": 1.6000000000000014,
+      "rmseF": 1.6000000000000014,
+      "crpsF": 1.0172497890064571,
+      "coverage90": 1
+    },
+    {
+      "station": "KTTN",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": -2.3999999999999986,
+      "maeF": 2.3999999999999986,
+      "rmseF": 2.3999999999999986,
+      "crpsF": 1.4479903447999725,
+      "coverage90": 1
+    },
+    {
+      "station": "KPHL",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 4.399999999999999,
+      "maeF": 4.399999999999999,
+      "rmseF": 4.399999999999999,
+      "crpsF": 2.9660086589885424,
+      "coverage90": 1
+    },
+    {
+      "station": "KAUS",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": -5,
+      "maeF": 5,
+      "rmseF": 5,
+      "crpsF": 3.495261728297959,
+      "coverage90": 1
+    },
+    {
+      "station": "KDCA",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 1.6000000000000014,
+      "maeF": 1.6000000000000014,
+      "rmseF": 1.6000000000000014,
+      "crpsF": 1.017249791576412,
+      "coverage90": 1
+    },
+    {
+      "station": "KMDW",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 3.200000000000003,
+      "maeF": 3.200000000000003,
+      "rmseF": 3.200000000000003,
+      "crpsF": 1.9955328059737867,
+      "coverage90": 1
+    },
+    {
+      "station": "KMSP",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 2,
+      "maeF": 2,
+      "rmseF": 2,
+      "crpsF": 1.2149632853967747,
+      "coverage90": 1
+    },
+    {
+      "station": "KSFO",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": -8.599999999999994,
+      "maeF": 8.599999999999994,
+      "rmseF": 8.599999999999994,
+      "crpsF": 6.918752962352392,
+      "coverage90": 0
+    },
+    {
+      "station": "KEWR",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 3.3999999999999986,
+      "maeF": 3.3999999999999986,
+      "rmseF": 3.3999999999999986,
+      "crpsF": 2.146752318168902,
+      "coverage90": 1
+    },
+    {
+      "station": "KDFW",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 4,
+      "maeF": 4,
+      "rmseF": 4,
+      "crpsF": 2.6245452443543975,
+      "coverage90": 1
+    },
+    {
+      "station": "KMSY",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": -1,
+      "maeF": 1,
+      "rmseF": 1,
+      "crpsF": 0.7923554734145783,
+      "coverage90": 1
+    },
+    {
+      "station": "KLAS",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": -0.20000000000000284,
+      "maeF": 0.20000000000000284,
+      "rmseF": 0.20000000000000284,
+      "crpsF": 0.6495976818476121,
+      "coverage90": 1
+    },
+    {
+      "station": "KMIA",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 2.4000000000000057,
+      "maeF": 2.4000000000000057,
+      "rmseF": 2.4000000000000057,
+      "crpsF": 1.4479903473699318,
+      "coverage90": 1
+    },
+    {
+      "station": "KHOU",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 3.200000000000003,
+      "maeF": 3.200000000000003,
+      "rmseF": 3.200000000000003,
+      "crpsF": 1.9955328059737867,
+      "coverage90": 1
+    },
+    {
+      "station": "KLAX",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 1.4000000000000057,
+      "maeF": 1.4000000000000057,
+      "rmseF": 1.4000000000000057,
+      "crpsF": 0.9321734838855229,
+      "coverage90": 1
+    },
+    {
+      "station": "KSAN",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": -1.4000000000000057,
+      "maeF": 1.4000000000000057,
+      "rmseF": 1.4000000000000057,
+      "crpsF": 0.932173481315568,
+      "coverage90": 1
+    },
+    {
+      "station": "KSGF",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": -1.3999999999999986,
+      "maeF": 1.3999999999999986,
+      "rmseF": 1.3999999999999986,
+      "crpsF": 0.9321734813155644,
+      "coverage90": 1
+    },
+    {
+      "station": "KPIT",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 1.2000000000000028,
+      "maeF": 1.2000000000000028,
+      "rmseF": 1.2000000000000028,
+      "crpsF": 0.8570620455124494,
+      "coverage90": 1
+    },
+    {
+      "station": "KPHX",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 0.4000000000000057,
+      "maeF": 0.4000000000000057,
+      "rmseF": 0.4000000000000057,
+      "crpsF": 0.6680208989447909,
+      "coverage90": 1
+    },
+    {
+      "station": "KMKE",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 2.4000000000000057,
+      "maeF": 2.4000000000000057,
+      "rmseF": 2.4000000000000057,
+      "crpsF": 1.4479903473699314,
+      "coverage90": 1
+    },
+    {
+      "station": "KCMH",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 2.6000000000000014,
+      "maeF": 2.6000000000000014,
+      "rmseF": 2.6000000000000014,
+      "crpsF": 1.5755491486935642,
+      "coverage90": 1
+    },
+    {
+      "station": "KCLL",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 4,
+      "maeF": 4,
+      "rmseF": 4,
+      "crpsF": 2.6245452443543975,
+      "coverage90": 1
+    },
+    {
+      "station": "KORD",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 3.200000000000003,
+      "maeF": 3.200000000000003,
+      "rmseF": 3.200000000000003,
+      "crpsF": 1.9955328059737867,
+      "coverage90": 1
+    },
+    {
+      "station": "KABQ",
+      "model": "nws-grid-hourly-v1",
+      "horizon": "0-3h",
+      "samples": 1,
+      "dates": 1,
+      "biasF": 0.20000000000000284,
+      "maeF": 0.20000000000000284,
+      "rmseF": 0.20000000000000284,
+      "crpsF": 0.6495976844175662,
+      "coverage90": 1
+    }
+  ],
+  "pending": 3330,
+  "parameters": {
+    "KSEA/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": -0.1454545454545456,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KTTN/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": -0.21818181818181806,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KPHL/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.39999999999999986,
+      "scaleMultiplier": 1.3632901378650102,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KAUS/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": -0.45454545454545453,
+      "scaleMultiplier": 1.5491933384829668,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KDCA/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.1454545454545456,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KMDW/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.2909090909090912,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KMSP/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.18181818181818182,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KSFO/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": -0.7818181818181813,
+      "scaleMultiplier": 2.664612542190701,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KEWR/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.30909090909090897,
+      "scaleMultiplier": 1.053451470168417,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KDFW/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.36363636363636365,
+      "scaleMultiplier": 1.2393546707863734,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KMSY/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": -0.09090909090909091,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KLAS/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": -0.01818181818181844,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KMIA/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.2181818181818187,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KHOU/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.2909090909090912,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KLAX/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.1272727272727278,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KSAN/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": -0.1272727272727278,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KSGF/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": -0.12727272727272715,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KPIT/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.10909090909090935,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KPHX/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.03636363636363688,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KMKE/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.2181818181818187,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KCMH/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.2363636363636365,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KCLL/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.36363636363636365,
+      "scaleMultiplier": 1.2393546707863734,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KORD/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.2909090909090912,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    },
+    "KABQ/nws-grid-hourly-v1/0-3h": {
+      "dates": 1,
+      "samples": 1,
+      "biasF": 0.01818181818181844,
+      "scaleMultiplier": 1,
+      "ready": false,
+      "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+      "truth": "NWS station observations"
+    }
+  },
+  "missingOutcomes": 0
+}

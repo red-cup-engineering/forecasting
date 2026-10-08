@@ -1,0 +1,33 @@
+{
+  "at": "2026-10-08T01:04:44.782Z",
+  "actualInstalledHostDeclaration": "/gnu/store/vpx1qghvayx293bdblxiigjvhc7k8n9c-cold-red-gate-deployment-1/deployment/host.json",
+  "receivingStateRoot": "/home/emsenn/.local/state/561-group/settlements/kalshi-services-section/weather",
+  "evidenceId": "2f1221abdbe4f4739bd9a69dfbb9549049d7a72cf1803e4cee7549f90dfb8987",
+  "sourceEvidenceId": "7a2a66523d13fb12f9c69bdb71bf55380b74e5b6f6f3f366817dffae8318518d",
+  "nativeWorkerAliveAtEarlyReceiving": true,
+  "earlyPublicationAt": "2026-10-08T01:02:51.213Z",
+  "collectionStartedAt": "2026-10-08T00:55:22.312Z",
+  "earlyPublicationDelaySeconds": 448.901,
+  "universeComplete": true,
+  "marketCount": 1529,
+  "earlyModels": 423,
+  "evidenceComplete": false,
+  "pendingSources": [
+    "NWS-stations",
+    "relational:nyc",
+    "relational:miami",
+    "ECMWF-AIFS-ENS"
+  ],
+  "requestedStations": 48,
+  "completedStations": 9,
+  "verifiedRawObservationPages": 18,
+  "identifiedCells": 110,
+  "physicalForecasts": 10257,
+  "newPhysicalForecasts": 1864,
+  "partialVenueAdmissionBorrowed": false,
+  "actualInstalledNativeEvidenceAndStatusReadersWorked": true,
+  "currentPublicationAt": "2026-10-08T01:02:51.213Z",
+  "httpTransportVerified": false,
+  "ordersPlaced": 0,
+  "sharedHouseRestarted": false
+}

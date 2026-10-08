@@ -1,0 +1,92 @@
+{
+  "at": "2026-10-07T22:47:49.997879+00:00",
+  "receiving": "passed",
+  "producer": {
+    "at": "2026-10-07T22:46:19.215Z",
+    "runtime": "/home/emsenn/.local/share/561-group/weather-research/releases/1325cb6bef5e4801bfa78e60352b37bec2ebf7602cff7fa5edbee4b7f2379da3",
+    "house": "/gnu/store/vpx1qghvayx293bdblxiigjvhc7k8n9c-cold-red-gate-deployment-1",
+    "evidenceId": "2d4fb234a06b7d5790e37dbe6584f9a92bde7604fab70567e839ff79cbabe835",
+    "evidenceRoundTrip": true,
+    "productionEngineExports": true,
+    "rows": [
+      {
+        "station": "KMIA",
+        "rawPagesVerified": 6,
+        "temperatureCount": 202,
+        "measurableWitnesses": 4,
+        "conflicts": 0,
+        "observationReceivedAt": "2026-10-07T22:46:04.501Z"
+      },
+      {
+        "station": "KABQ",
+        "rawPagesVerified": 6,
+        "temperatureCount": 175,
+        "measurableWitnesses": 0,
+        "conflicts": 0,
+        "observationReceivedAt": "2026-10-07T22:46:09.149Z"
+      }
+    ],
+    "sourceErrors": [],
+    "elapsedSeconds": 16.104,
+    "cpuSeconds": 3.157146,
+    "maxRssMiB": 468.625,
+    "evidenceJsonBytes": 8425984,
+    "observedHttpRequests": 29,
+    "admittedHouseForecastConsumerVerified": true,
+    "admittedHouseTools": [
+      "weather_ecmwf_evidence",
+      "weather_status",
+      "weather_cycle",
+      "weather_forecast",
+      "weather_evidence",
+      "weather_station_evidence",
+      "weather_station_skill",
+      "weather_index_evidence",
+      "weather_score",
+      "weather_allocate",
+      "weather_model_admit"
+    ],
+    "periodicUnitChanged": false,
+    "orderEffect": false
+  },
+  "stagedSemanticReceiving": {
+    "at": "2026-10-07T22:39:14.907Z",
+    "receiving": "passed",
+    "realArchivedSourceSha256": "71989946bc134558849d42a36bb2838cf67ddee1d4082345dd37689ad1ac0b1f",
+    "semanticProjectionAndRequestMultisetUnchanged": true,
+    "observationsStartBeforeDelayedGuidance": true,
+    "maxActiveSourceProviders": 3,
+    "declaredSerialFixtureMs": 830.629543,
+    "declaredConcurrentFixtureMs": 259.7749510000001,
+    "partialSourceFailurePreserved": true,
+    "rainModelsPreserved": true,
+    "performanceScope": "controlled producer delays and retained real NWS response bytes; not live latency estimate",
+    "assessor": "same primary, deterministic receiving; not independent certification"
+  },
+  "deployment": {
+    "deployedAt": "2026-10-07T22:45:05.114862+00:00",
+    "sourceArchive": "3cbed512b6f1b2e918fff9215084d59f48da465684ce1549c21081400f17f08a",
+    "hostRelease": "/gnu/store/vpx1qghvayx293bdblxiigjvhc7k8n9c-cold-red-gate-deployment-1",
+    "retainedRuntime": "/home/emsenn/.local/share/561-group/weather-research/releases/1325cb6bef5e4801bfa78e60352b37bec2ebf7602cff7fa5edbee4b7f2379da3",
+    "previousRuntime": "/home/emsenn/.local/share/561-group/weather-research/releases/80d0588f714a931319e8af272fb4d7d7a163cc4e95c8822c1f0fdf0211931cdb",
+    "retainedFiles": 207,
+    "sourcePathsChanged": [
+      "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-evidence.mjs"
+    ],
+    "patchsetMaterializer": "existing deterministic source-patchset materializer",
+    "retainedDependencyClosureVerified": true,
+    "sharedHouseWritten": false,
+    "houseRestartRequested": false,
+    "serviceConfigurationChanged": false,
+    "ordersPlaced": 0
+  },
+  "limits": [
+    "controlled concurrency improvement is demonstrated; live speedup versus identical network conditions is unproven",
+    "first shared-house mutation deployment failed against newly admitted read-only Guix release; no shared-house files changed; runtime-only pinned update then succeeded",
+    "admitted house native forecast reader verified; public HTTP activation not verified",
+    "admitted Guix catalog has 11 weather tools and omits newer participation and relational research tools; source/runtime reconciliation remains required",
+    "global market discovery/scoring latency and occasional nine-minute service timeout remain outside this source-barrier change"
+  ],
+  "orderEffect": false,
+  "actualArchivedBytesSha256": "2d4fb234a06b7d5790e37dbe6584f9a92bde7604fab70567e839ff79cbabe835"
+}

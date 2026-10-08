@@ -1,0 +1,131 @@
+{
+  "terminal": {
+    "at": "2026-10-08T04:13:24.910950+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 04:04:09 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 04:13:09 UTC",
+      "MemoryPeak": "171429888",
+      "MemorySwapPeak": "84799488",
+      "CPUUsageNSec": "36216108000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "collectionStartedAt": "2026-10-08T03:33:37.529Z",
+      "modelled": 634,
+      "marketCount": 1529,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "acquisition": {
+        "complete": false,
+        "requestedStations": 48,
+        "finishedStations": [
+          "KSAN",
+          "KMSP",
+          "KAUS",
+          "KSEA",
+          "KMDW",
+          "KMSY",
+          "KDCA",
+          "KTTN",
+          "KPHL",
+          "KNYC",
+          "KATL",
+          "KLAX",
+          "KSFO",
+          "KLAS",
+          "KSGF",
+          "KSAT",
+          "KPIT",
+          "KPVD",
+          "KOKC",
+          "KPHX",
+          "KMKE",
+          "KMIA",
+          "KLEX",
+          "KEWR",
+          "KDEN",
+          "KCMH",
+          "KDFW",
+          "KCLL",
+          "KORD",
+          "KBOS",
+          "KABQ",
+          "KHOU",
+          "KSDF",
+          "KHHR",
+          "KSMO",
+          "KLGB",
+          "KSNA",
+          "KLGA",
+          "KCDW",
+          "KTEB",
+          "KFRG",
+          "KHPN",
+          "KSMQ",
+          "KISP",
+          "KOPF",
+          "KFLL",
+          "KFXE",
+          "KPMP"
+        ],
+        "finishedSources": [
+          "NBM-NBH",
+          "NBM",
+          "NBM-QMD",
+          "climate-reports",
+          "LAMP",
+          "NWS-stations",
+          "relational:nyc",
+          "relational:miami"
+        ],
+        "pendingSources": [
+          "ECMWF-AIFS-ENS"
+        ],
+        "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+      },
+      "errors": [
+        {
+          "station": "KMSP",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-hourly",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KMSP",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KAUS",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        },
+        {
+          "station": "KSAN",
+          "source": "NWS-alerts",
+          "error": "The operation was aborted due to timeout"
+        }
+      ]
+    }
+  },
+  "newScientificBatchesObserved": 0,
+  "fullMarketPublicationCompleted": false,
+  "latestForecastPublicationAdvanced": false,
+  "interpretation": "live cycle timed out without reaching a new publication; does not prove a live archive memory reduction or isolate catalogue discovery from the city-index pre-acquisition dependency",
+  "limitsChanged": false,
+  "ordersPlaced": 0
+}

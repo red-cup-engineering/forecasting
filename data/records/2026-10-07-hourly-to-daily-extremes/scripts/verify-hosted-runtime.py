@@ -1,0 +1,14 @@
+import pathlib,json,datetime,subprocess,collections,gzip
+h=pathlib.Path.home();root=h/'.local/state/561-group/settlements/kalshi-services-section/weather';latest=json.loads((root/'latest.json').read_text());unit=subprocess.check_output(['systemctl','--user','show','weather-561-group.service','-p','ActiveState','-p','SubState','-p','Result','-p','ExecMainStatus','-p','MemoryPeak','-p','ExecMainStartTimestamp'],text=True)
+models=collections.Counter(m['id'] for r in latest['forecasts'] for m in r['models']);new={k:v for k,v in models.items() if k.startswith('nbm-nbh-comonotone')}
+if 'ActiveState=activating' in unit or not new:print(json.dumps({'status':'waiting','lastCycle':latest['at'],'service':unit,'newModels':new}));raise SystemExit(2)
+assert new.get('nbm-nbh-comonotone-high-v1',0)>0 and new.get('nbm-nbh-comonotone-low-v1',0)>0
+assert not latest['scoring']['errors'];assert 'ExecMainStatus=0' in unit
+assert any(k.startswith('weather-family-pool-high') for k in models);assert any(k.startswith('lamp-hourly-extreme-high') for k in models)
+rows=[(r,m) for r in latest['forecasts'] for m in r['models'] if m['id'].startswith('nbm-nbh-comonotone')]
+for r,m in rows:
+ b=m['details']['structuralProbabilityBounds'];assert b['low']<=m['p']<=b['high'];assert m['band']['low']<=b['low'] and m['band']['high']>=b['high'];assert not m['band']['admitted']
+ids={r['evidenceId'] for r,m in rows};assert len(ids)==1
+e=json.loads(gzip.decompress((root/'evidence'/f'{next(iter(ids))}.json.gz').read_bytes()))
+assert e['dailyExtremes']['forecasts'];r={'verifiedAt':datetime.datetime.now(datetime.timezone.utc).isoformat(),'latestCycleAt':latest['at'],'marketCount':latest['marketCount'],'modelled':latest['modelled'],'newModels':new,'sourceErrors':latest['errors'],'settlementErrors':latest['scoring']['errors'],'dailyDistributions':len(e['dailyExtremes']['forecasts']),'coverageGaps':e['dailyExtremes']['gaps'],'probabilityBoundsEnforced':True,'newModelsAdmitted':0,'examples':[{'ticker':c['ticker'],'station':c['station'],'targetDate':c['targetDate'],'id':m['id'],'p':m['p'],'bounds':m['details']['structuralProbabilityBounds'],'band':m['band'],'points':len(m['details']['points'])} for c,m in rows[:3]],'service':unit,'timer':subprocess.check_output(['systemctl','--user','is-active','weather-561-group.timer'],text=True).strip(),'currentHostRelease':str((h/'.local/share/561-group/releases/cold-red-gate.561.group/current').resolve()),'retainedWeatherRuntime':str((h/'.local/share/561-group/weather-research/current').resolve()),'orderEffect':False}
+dir=h/'.local/state/561-group/weather-extremes-demonstration';dir.mkdir(exist_ok=True);(dir/'live-runtime-receipt.json').write_text(json.dumps(r,indent=2)+'\n');print(json.dumps({**r,'coverageGaps':{'count':len(r['coverageGaps']),'reasons':dict(collections.Counter(g['reason'] for g in r['coverageGaps']))}}))

@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-07T16:36:15.364Z",
+  "checks": [
+    "exact empirical and mixed-law CRPS",
+    "atom CDF intervals and seeded PIT jitter",
+    "affine empirical-mixture transformation",
+    "prospective fit equals historical frozen fit at same cutoff",
+    "future outcomes cannot alter an earlier irregular-clock fit",
+    "first-receipt clocks precede entire target observation window",
+    "late publication refusal",
+    "hourly peer-gap refusal, actual-duration irregular learner, contradictory-current-peer refusal",
+    "actual station-science consumer retains first publication",
+    "same-outcome original-learner and NBH comparisons",
+    "scores once and cannot create venue calibration"
+  ],
+  "controlled": {
+    "forecasts": 34,
+    "routineScored": 33,
+    "comparisons": 10,
+    "venueEligible": 0
+  }
+}

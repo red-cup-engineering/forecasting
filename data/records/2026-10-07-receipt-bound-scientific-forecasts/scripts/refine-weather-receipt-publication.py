@@ -1,0 +1,13 @@
+from pathlib import Path
+import json,hashlib,subprocess,uuid,shutil,tarfile
+repo=Path('/home/emsenn/info');f=Path(Path('/tmp/weather-forecasting-root').read_text().strip());r=Path(Path('/tmp/weather-receipt-publication-record').read_text().strip());d=r/'publication-cleanup-order';d.mkdir(exist_ok=True);p=f/'src/station-weather-science.mjs';before=p.read_text();after=before;replacements=[]
+def replace(a,b):
+ global after
+ assert after.count(a)==1,a;after=after.replace(a,b);replacements.append({'before':a,'after':b})
+replace("if(e.code!=='EEXIST')throw e;}\n  // Date.now", "if(e.code!=='EEXIST')throw e;}\n  // Unlink the temporary name before the receipt: unlink changes inode ctime.\n  await rm(gz,{force:true});\n  // Date.now")
+replace('async function verifiedPublicationRecords(pending,{root,mode}){','async function verifiedPublicationRecords(pending,{root,mode,now=Infinity}){')
+replace('for(const [id,r] of Object.entries(pending)){const p=r.publication;',"for(const [id,r] of Object.entries(pending)){const due=Date.parse(r.validTime)+(r.verification==='routine-report-bin'?0:r.verification==='kalshi-index'?5*60000:15*60000);if(due>now)continue;const p=r.publication;")
+replace('verifiedPublicationRecords(state.publicationPending,{root:publicationRoot,mode:publicationMode})','verifiedPublicationRecords(state.publicationPending,{root:publicationRoot,mode:publicationMode,now})')
+name=str(p.relative_to(repo));sha=hashlib.sha256(before.encode()).hexdigest();clauses=['receipt-after-final-inode-change','verify-only-due-outcomes'];inventory={'kind':'source-patchset-input','version':1,'sourceRoot':str(repo),'files':{name:{'state':'present','sha256':sha}},'clauses':clauses};patch={'kind':'source-patchset','version':1,'disposition':'candidate','reason':'Sample the publication receipt after unlinking its temporary hard link, and read immutable batches only when an outcome is due for grading.','changes':[{'operation':'edit','path':name,'inputSha256':sha,'replacements':replacements,'clauses':clauses}]}
+(d/'input-inventory.json').write_text(json.dumps(inventory,indent=2)+'\n');(d/'source-patchset.json').write_text(json.dumps(patch,indent=2)+'\n');(d/'before.mjs').write_text(before);(d/'candidate.mjs').write_text(after);(r/'station-weather-science.candidate.mjs').write_text(after)
+stage=Path('/tmp/weather-receipt-refined-stage-'+uuid.uuid4().hex);tool=repo/Path('/tmp/weather-source-patchset-tool').read_text().strip();subprocess.run(['python3',str(tool),str(d/'input-inventory.json'),str(d/'source-patchset.json'),str(stage)],check=True);Path('/tmp/weather-receipt-refined-stage').write_text(str(stage));subprocess.run(['node','--check',str(stage/name)],check=True)

@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-07T22:39:53.059752+00:00",
+  "sourceRevalidated": true,
+  "receiving": "passed",
+  "sourceHashes": {
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-evidence.mjs": "bc0116ac1e39090fe94c96c9b5dd53655e939c945eebd4c11297e461fe815bc5"
+  },
+  "deployment": "passed",
+  "assessor": "same primary",
+  "nativeReceiving": "passed",
+  "retainedRuntime": "/home/emsenn/.local/share/561-group/weather-research/releases/1325cb6bef5e4801bfa78e60352b37bec2ebf7602cff7fa5edbee4b7f2379da3"
+}

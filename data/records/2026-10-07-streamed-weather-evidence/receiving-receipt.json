@@ -1,0 +1,18 @@
+{
+  "kind": "streamed-weather-evidence-receiving",
+  "effect": "one compressed canonical byte stream per archive; seven weather archive consumers migrated; duplicate complete-packet serialization and synchronous compression removed",
+  "controlledChecks": 8,
+  "controlledReceiving": "controlled-receiving.json",
+  "nativeBenchmark": "native-profile-receiving.json",
+  "nativeReader": "native-reader-receiving.json",
+  "runtimeDeployment": "runtime-only-receipt.json",
+  "wholeCycle": "whole-cycle-receiving.json",
+  "sameFullPacketBytes": 66952240,
+  "sameFullPacketEvidenceId": "a37a434c22f0987099ddbbb3564f9c238c3eadc7e9bfb26d9bc86003ac0eb59d",
+  "nativeBenchmarkScope": "isolated actual full archived packet, pre-operation GC in both runs; no claim of whole-cycle reliability",
+  "nativeReaderVerified": true,
+  "fullLiveCyclePublicationVerified": false,
+  "newForecastSkillEstablished": false,
+  "netAlphaEstablished": false,
+  "ordersPlaced": 0
+}

@@ -1,0 +1,82 @@
+{
+  "disposition": "Bounded ensemble acquisition and retained station geometry received; one complete native weather/science cycle observed",
+  "underlyingEffect": "Existing complete ensemble and scientific refinement become consumable within the unchanged weather worker deadline, with fewer resident field tasks and repeated field hashes; station-coordinate evidence remains available through existing readers.",
+  "sourcePatchset": "source-patchset.json",
+  "inputInventory": "input-inventory.json",
+  "sourceAdmissionPatch": "kalshi-owning-source.patch",
+  "controlledReceiving": "controlled-receiving.json",
+  "sourcePublicationReceiving": "source-publication-controlled-receiving.json",
+  "nativeDecoderReceiving": "native-decoder-receiving.json",
+  "nativeCycleReceiving": "whole-cycle-receiving.json",
+  "nativeReaderReceiving": "complete-native-reader-receiving.json",
+  "prospectiveCellOutcomesReceiving": "prospective-cell-outcomes-receiving.json",
+  "deployment": "runtime-only-receipt.json",
+  "runtime": "/home/emsenn/.local/share/561-group/weather-research/releases/0c6bc9aeb828015b2c1eff083019c71344f73de6f15bb3c022ccc0f728d0828d",
+  "completeNativeCycleResult": "success",
+  "fullPublicationDelaySeconds": 424.586,
+  "marketCount": 1529,
+  "modelled": 586,
+  "requestedStations": 48,
+  "finishedStationAcquisitionAttempts": 48,
+  "geometryVerifiedStations": 45,
+  "ensembleMembers": 51,
+  "ensembleStations": 45,
+  "verifiedRawNwsPages": 96,
+  "newScientificRegistrations": 2824,
+  "scoredPhysicalOutcomes": 1258,
+  "scoredReportCellForecastRecords": 96,
+  "exactPreWindowPriorForecastRecordsVerified": 94,
+  "distinctStationReportCells": 48,
+  "dates": [
+    "2026-10-07"
+  ],
+  "unverifiedPriorForecastRecords": 2,
+  "nativeDecoderMetrics": {
+    "status": "passed",
+    "same51Member45StationEnsemble": true,
+    "sameFieldBytesReceiptsMetadataAndProjection": true,
+    "sameImmutableAvailabilityClocks": true,
+    "ignoredOnlyActualCompletionAndFailedTransportObservationTimes": true,
+    "fieldHashesBefore": 2346,
+    "fieldHashesAfter": 102,
+    "cpuSecondsBefore": 4.187587,
+    "cpuSecondsAfter": 0.95489,
+    "peakRssMiBBefore": 103.63671875,
+    "peakRssMiBAfter": 82.3125,
+    "elapsedSecondsBefore": 8.278549212031066,
+    "elapsedSecondsAfter": 1.3162580542266369,
+    "fullWorkerReliabilityEstablished": false,
+    "ordersPlaced": 0
+  },
+  "unitConfigurationUnchanged": true,
+  "oneSuccessfulCycleEstablishesSustainedReliability": false,
+  "sourceErrors": [
+    {
+      "station": "KLAX",
+      "source": "NWS-hourly",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "station": "KSAN",
+      "source": "NWS-hourly",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "station": "KHOU",
+      "source": "NWS-hourly",
+      "error": "The operation was aborted due to timeout"
+    }
+  ],
+  "shortHorizonScientificPublicationClockFullyVerified": false,
+  "physicalGeneralizationEstablished": false,
+  "conditionalFillProbabilityIdentified": false,
+  "netExecutableAlphaEstablished": false,
+  "httpTransportVerified": false,
+  "sharedHouseRestarted": false,
+  "ordersPlaced": 0,
+  "goalComplete": false,
+  "newReportCellPublicationReceiving": "new-cell-publication-receiving.json",
+  "newReportCellForecastsAvailableBeforeEntireTargetWindow": 1934,
+  "newReportCellForecastObjects": 1934,
+  "publicationProofForAllLegacyScientificRecordsEstablished": false
+}

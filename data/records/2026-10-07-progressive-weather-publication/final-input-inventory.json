@@ -1,0 +1,23 @@
+{
+  "kind": "source-patchset-input",
+  "version": 1,
+  "sourceRoot": "/home/emsenn/info",
+  "files": {
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-engine.mjs": {
+      "state": "present",
+      "sha256": "1936d42d796006af1a08e5ff8ef6aa33b9457961f624b08b14f18d553eea42a2"
+    },
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/station-weather-science.mjs": {
+      "state": "present",
+      "sha256": "dfd8e6f5ccb8b2186841ff48497e095ed8d23780a5b3d2ae41a637e23d7cc31a"
+    }
+  },
+  "clauses": [
+    "publication-time-validity",
+    "previous-useful-publication-retained",
+    "state-format-preserved",
+    "no-whole-file-string-copy",
+    "atomic-state-publication",
+    "all-pending-and-score-data-preserved"
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=MIA&station=FLL&station=OPF&year1=2026&month1=7&day1=1&year2=2026&month2=10&day2=7&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+  "availableAt": "2026-10-07T14:05:18.165Z",
+  "sha256": "e77bac2068aacb39ef0284283bf164e7dd371613acc1548d0eb03a8f33797d19",
+  "bytes": 345524,
+  "observationFrom": "2026-07-01T00:00:00.000Z",
+  "observationBefore": "2026-10-07T00:00:00.000Z",
+  "archiveQuality": "IEM processed routine METAR; as-is collection, limited quality control; not an independent second sensor"
+}

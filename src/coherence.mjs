@@ -25,11 +25,11 @@
  * Prices are dollars on the YES side; `asks` ascending, `bids` descending.
  */
 import { solveLP } from './simplex.mjs';
+import { TAKER_COEFFICIENT, unroundedFee, orderFee } from '@red-cup-engineering/kalshi-services-section/fees';
+export { orderFee };
 
-export const KALSHI_THETA = 0.07;
-export const unitFee = (theta, p) => theta * p * (1 - p);
-/** Kalshi's per-order taker fee: theta * C * P * (1 - P), rounded up to the cent. */
-export const orderFee = (theta, count, price) => Math.ceil(theta * count * price * (1 - price) * 100 - 1e-9) / 100;
+export const KALSHI_THETA = TAKER_COEFFICIENT;
+export const unitFee = (theta, p) => unroundedFee(theta, 1, p);
 
 const EPS = 1e-9;
 

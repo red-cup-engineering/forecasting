@@ -1,0 +1,22 @@
+{
+  "kind": "source-patchset-stage",
+  "version": 1,
+  "inventorySha256": "448e7c5fb317c4ee0e69f6e4a9f41748da8e1397077c9c6081dd11c8a72b406d",
+  "candidateSha256": "ebcc191bad66d84f629ead911f72374b455d62d164997f885e4ea8f704de78d6",
+  "materializerSha256": "40e2f54798ff33e388191744000c934a7ff162cca800be84ead68ad964585f98",
+  "inputs": {
+    "apps/group-operations/src/weather-network.mjs": {
+      "state": "present",
+      "sha256": "6f64ad4cec940d899b1778380a25ad16e79650be59a116742ab2de851d5aa3c4",
+      "mode": 420
+    }
+  },
+  "outputs": {
+    "apps/group-operations/src/weather-network.mjs": {
+      "state": "present",
+      "sha256": "fbb265fe4555ca035c172b3f435c7fce824393fc9709d8511f2f8ace80627ef4",
+      "mode": 420
+    }
+  },
+  "disposition": "staged-unaccepted"
+}

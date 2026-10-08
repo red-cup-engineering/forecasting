@@ -1,0 +1,12 @@
+{
+  "conditions": [
+    "identical uncompressed bytes and SHA for actual archived full evidence",
+    "native JSON omission, escaping, key order and array behavior retained",
+    "source and derived archives use one canonical stream each",
+    "concurrent identical writes converge without mutable replacement",
+    "invalid serialization leaves no archive or temporary files",
+    "native CPU and peak RSS measured against the previous route",
+    "installed native reader retrieves streamed output",
+    "full producer cycle checked without changing resource limits"
+  ]
+}

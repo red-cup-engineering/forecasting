@@ -1,0 +1,712 @@
+{
+  "at": "2026-10-07T15:51:54.922Z",
+  "hostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/20c85f541736635aea44d11e6b7d8fff15e9f61bf9f137fd860a2999963c7408",
+  "node": "24.16.0",
+  "tools": 12,
+  "previousToolsRetained": true,
+  "networkHosts": [
+    "mesonet.agron.iastate.edu",
+    "mesonet.agron.iastate.edu"
+  ],
+  "kalshiReads": 0,
+  "experiments": [
+    {
+      "region": "nyc",
+      "evidenceId": "6e7b4fbb6168629bb5a4b69a41866f6eedce4c4418fda711d74aafa3aa62a7dd",
+      "studyId": "57da8b2b0a7bc24bb3eca0849e762c67b03fdb8be302c9046d5a1fef4dc89cf7",
+      "source": {
+        "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=JFK&station=LGA&station=EWR&station=HPN&year1=2026&month1=7&day1=1&year2=2026&month2=10&day2=7&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+        "availableAt": "2026-10-07T15:51:06.008Z",
+        "sha256": "83394e5e1ce98074f5d88ebe45e4082fff879ac9a31788dd3c7d89b1e406c962",
+        "bytes": 464901,
+        "observationFrom": "2026-07-01T00:00:00.000Z",
+        "observationBefore": "2026-10-07T00:00:00.000Z",
+        "archiveQuality": "IEM processed routine METAR; as-is collection, limited quality control; not an independent second sensor"
+      },
+      "stations": [
+        "KJFK",
+        "KLGA",
+        "KEWR",
+        "KHPN"
+      ],
+      "candidates": [
+        {
+          "specification": {
+            "id": "relational-ridge-10",
+            "ridge": 10,
+            "peerFeatures": "both"
+          },
+          "physicalSummary": {
+            "station": "all",
+            "samples": 3453,
+            "dates": 37,
+            "models": {
+              "persistence": {
+                "maeC": 0.6212954918428629,
+                "rmseC": 0.8722212128118817,
+                "crpsC": 0.4671583682319058,
+                "coverage90": 0.9252823631624674
+              },
+              "own": {
+                "maeC": 0.5365311841561596,
+                "rmseC": 0.7117112939913288,
+                "crpsC": 0.38851776520806175,
+                "coverage90": 0.8954532290761656
+              },
+              "relational": {
+                "maeC": 0.4922950140582859,
+                "rmseC": 0.6528332529212673,
+                "crpsC": 0.356416164373746,
+                "coverage90": 0.9015348971908486
+              }
+            },
+            "meanDayMaeGainOverOwnC": 0.04408459032892438,
+            "pairedDayInterval": {
+              "lower95C": 0.03815612686687249,
+              "upper95C": 0.04640990041025005,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            },
+            "meanDayCrpsGainOverOwnC": 0.03221191100726829,
+            "pairedDayCrpsInterval": {
+              "lower95C": 0.02841092582839,
+              "upper95C": 0.033089317855011256,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            }
+          }
+        },
+        {
+          "specification": {
+            "id": "relational-ridge-1",
+            "ridge": 1,
+            "peerFeatures": "both"
+          },
+          "physicalSummary": {
+            "station": "all",
+            "samples": 3453,
+            "dates": 37,
+            "models": {
+              "persistence": {
+                "maeC": 0.6212954918428629,
+                "rmseC": 0.8722212128118817,
+                "crpsC": 0.4671583682319058,
+                "coverage90": 0.9252823631624674
+              },
+              "own": {
+                "maeC": 0.5365311841561596,
+                "rmseC": 0.7117112939913288,
+                "crpsC": 0.38851776520806175,
+                "coverage90": 0.8954532290761656
+              },
+              "relational": {
+                "maeC": 0.49297058138927563,
+                "rmseC": 0.653312614229057,
+                "crpsC": 0.35681237733997084,
+                "coverage90": 0.9015348971908486
+              }
+            },
+            "meanDayMaeGainOverOwnC": 0.04341047029355544,
+            "pairedDayInterval": {
+              "lower95C": 0.03762434315393019,
+              "upper95C": 0.04565118570508846,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            },
+            "meanDayCrpsGainOverOwnC": 0.03182087789664493,
+            "pairedDayCrpsInterval": {
+              "lower95C": 0.02803716864997044,
+              "upper95C": 0.032717513860992885,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            }
+          }
+        },
+        {
+          "specification": {
+            "id": "relational-ridge-100",
+            "ridge": 100,
+            "peerFeatures": "both"
+          },
+          "physicalSummary": {
+            "station": "all",
+            "samples": 3453,
+            "dates": 37,
+            "models": {
+              "persistence": {
+                "maeC": 0.6212954918428629,
+                "rmseC": 0.8722212128118817,
+                "crpsC": 0.4671583682319058,
+                "coverage90": 0.9252823631624674
+              },
+              "own": {
+                "maeC": 0.5365311841561596,
+                "rmseC": 0.7117112939913288,
+                "crpsC": 0.38851776520806175,
+                "coverage90": 0.8954532290761656
+              },
+              "relational": {
+                "maeC": 0.48756797791304946,
+                "rmseC": 0.6501248431007619,
+                "crpsC": 0.3538346985379995,
+                "coverage90": 0.9038517231392992
+              }
+            },
+            "meanDayMaeGainOverOwnC": 0.04877603466421955,
+            "pairedDayInterval": {
+              "lower95C": 0.041783048540319494,
+              "upper95C": 0.0524282245585189,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            },
+            "meanDayCrpsGainOverOwnC": 0.0347379150840892,
+            "pairedDayCrpsInterval": {
+              "lower95C": 0.03030452814302292,
+              "upper95C": 0.03575167592807003,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            }
+          }
+        },
+        {
+          "specification": {
+            "id": "peer-increments",
+            "ridge": 10,
+            "peerFeatures": "increments"
+          },
+          "physicalSummary": {
+            "station": "all",
+            "samples": 3453,
+            "dates": 37,
+            "models": {
+              "persistence": {
+                "maeC": 0.6212954918428629,
+                "rmseC": 0.8722212128118817,
+                "crpsC": 0.4671583682319058,
+                "coverage90": 0.9252823631624674
+              },
+              "own": {
+                "maeC": 0.5365311841561596,
+                "rmseC": 0.7117112939913288,
+                "crpsC": 0.38851776520806175,
+                "coverage90": 0.8954532290761656
+              },
+              "relational": {
+                "maeC": 0.4995817489856552,
+                "rmseC": 0.6654400222757391,
+                "crpsC": 0.3620645922002642,
+                "coverage90": 0.8992180712423979
+              }
+            },
+            "meanDayMaeGainOverOwnC": 0.03686187606752894,
+            "pairedDayInterval": {
+              "lower95C": 0.03207570828103103,
+              "upper95C": 0.03864453611640556,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            },
+            "meanDayCrpsGainOverOwnC": 0.026489216306032903,
+            "pairedDayCrpsInterval": {
+              "lower95C": 0.022808794211641236,
+              "upper95C": 0.028128781601916158,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            }
+          }
+        },
+        {
+          "specification": {
+            "id": "peer-gradients",
+            "ridge": 10,
+            "peerFeatures": "gradients"
+          },
+          "physicalSummary": {
+            "station": "all",
+            "samples": 3453,
+            "dates": 37,
+            "models": {
+              "persistence": {
+                "maeC": 0.6212954918428629,
+                "rmseC": 0.8722212128118817,
+                "crpsC": 0.4671583682319058,
+                "coverage90": 0.9252823631624674
+              },
+              "own": {
+                "maeC": 0.5365311841561596,
+                "rmseC": 0.7117112939913288,
+                "crpsC": 0.38851776520806175,
+                "coverage90": 0.8954532290761656
+              },
+              "relational": {
+                "maeC": 0.5178607854691606,
+                "rmseC": 0.6837043590693195,
+                "crpsC": 0.3747251641747393,
+                "coverage90": 0.8986388647552852
+              }
+            },
+            "meanDayMaeGainOverOwnC": 0.01861482279013768,
+            "pairedDayInterval": {
+              "lower95C": 0.013959886853899772,
+              "upper95C": 0.021610938440255512,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            },
+            "meanDayCrpsGainOverOwnC": 0.01386022606931436,
+            "pairedDayCrpsInterval": {
+              "lower95C": 0.010085065415807892,
+              "upper95C": 0.016051328066038362,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            }
+          }
+        },
+        {
+          "specification": {
+            "id": "own-history",
+            "ridge": 10,
+            "peerFeatures": "none"
+          },
+          "physicalSummary": {
+            "station": "all",
+            "samples": 3453,
+            "dates": 37,
+            "models": {
+              "persistence": {
+                "maeC": 0.6212954918428629,
+                "rmseC": 0.8722212128118817,
+                "crpsC": 0.4671583682319058,
+                "coverage90": 0.9252823631624674
+              },
+              "own": {
+                "maeC": 0.5365311841561596,
+                "rmseC": 0.7117112939913288,
+                "crpsC": 0.38851776520806175,
+                "coverage90": 0.8954532290761656
+              },
+              "relational": {
+                "maeC": 0.5365311841561596,
+                "rmseC": 0.7117112939913288,
+                "crpsC": 0.38851776520806175,
+                "coverage90": 0.8954532290761656
+              }
+            },
+            "meanDayMaeGainOverOwnC": 0,
+            "pairedDayInterval": {
+              "lower95C": 0,
+              "upper95C": 0,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            },
+            "meanDayCrpsGainOverOwnC": 0,
+            "pairedDayCrpsInterval": {
+              "lower95C": 0,
+              "upper95C": 0,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            }
+          }
+        }
+      ],
+      "recursiveLearner": {
+        "samples": 3453,
+        "dates": 37,
+        "crpsC": 0.3543477895608567,
+        "baselineCrpsC": 0.356416164373746,
+        "meanDayCrpsGainC": 0.001980534107612023,
+        "improvedDates": 21,
+        "interval": null,
+        "intervalReason": "exploratory nested selection on one seasonal archive; no independent prospective confirmation or trading admission"
+      },
+      "resourceCost": {
+        "elapsedMs": 8381.768649,
+        "retainedHeapBytes": 92677600
+      },
+      "gamePlayCount": 189,
+      "sameInformationCopy": {
+        "rival": "same-information-copy",
+        "startingCashUsd": 100,
+        "endingCashUsd": 100,
+        "netPnlUsd": 0,
+        "trades": 0,
+        "wins": 0,
+        "expectedGainUnderOurModelUsd": 0,
+        "maxConcurrentCashConsumedUsd": 0,
+        "unfunded": 0,
+        "dates": 0,
+        "realVenue": false,
+        "quoteBasis": "rival-strategy-generated probabilities; hypothetical guaranteed displayed size, cent-rounded asks, fixed scenario spread and fee; no actual maker fill/latency model"
+      },
+      "retrospective": true,
+      "archiveRoundtrip": true,
+      "fullFrozenFitsRetained": true
+    },
+    {
+      "region": "miami",
+      "evidenceId": "752de20b53425c238634dc9cb183c32ceaae3b922c3b2bcb649c1c296f85298f",
+      "studyId": "abf31323d11c23a093d6a8b0037dd680eeb8f0e2ba3868c2d1c57e8aa19b2ea6",
+      "source": {
+        "url": "https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py?station=MIA&station=FLL&station=OPF&year1=2026&month1=7&day1=1&year2=2026&month2=10&day2=7&data=tmpf&tz=Etc%2FUTC&format=onlycomma&latlon=yes&elev=yes&missing=M&trace=T&direct=no&report_type=3",
+        "availableAt": "2026-10-07T15:51:19.204Z",
+        "sha256": "e77bac2068aacb39ef0284283bf164e7dd371613acc1548d0eb03a8f33797d19",
+        "bytes": 345524,
+        "observationFrom": "2026-07-01T00:00:00.000Z",
+        "observationBefore": "2026-10-07T00:00:00.000Z",
+        "archiveQuality": "IEM processed routine METAR; as-is collection, limited quality control; not an independent second sensor"
+      },
+      "stations": [
+        "KMIA",
+        "KFLL",
+        "KOPF"
+      ],
+      "candidates": [
+        {
+          "specification": {
+            "id": "relational-ridge-10",
+            "ridge": 10,
+            "peerFeatures": "both"
+          },
+          "physicalSummary": {
+            "station": "all",
+            "samples": 2651,
+            "dates": 37,
+            "models": {
+              "persistence": {
+                "maeC": 0.6908084999371468,
+                "rmseC": 1.1194623079876194,
+                "crpsC": 0.5418602686074896,
+                "coverage90": 0.938513768389287
+              },
+              "own": {
+                "maeC": 0.6920564834736516,
+                "rmseC": 1.0634326716031282,
+                "crpsC": 0.5160633092190623,
+                "coverage90": 0.9192757450018861
+              },
+              "relational": {
+                "maeC": 0.6286960031725265,
+                "rmseC": 0.9712088113248809,
+                "crpsC": 0.46937791050209365,
+                "coverage90": 0.918898528857035
+              }
+            },
+            "meanDayMaeGainOverOwnC": 0.06316555799800685,
+            "pairedDayInterval": {
+              "lower95C": 0.05445653687882482,
+              "upper95C": 0.07344183700590094,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            },
+            "meanDayCrpsGainOverOwnC": 0.04648208668539442,
+            "pairedDayCrpsInterval": {
+              "lower95C": 0.04032171115304765,
+              "upper95C": 0.05622964471713203,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            }
+          }
+        },
+        {
+          "specification": {
+            "id": "relational-ridge-1",
+            "ridge": 1,
+            "peerFeatures": "both"
+          },
+          "physicalSummary": {
+            "station": "all",
+            "samples": 2651,
+            "dates": 37,
+            "models": {
+              "persistence": {
+                "maeC": 0.6908084999371468,
+                "rmseC": 1.1194623079876194,
+                "crpsC": 0.5418602686074896,
+                "coverage90": 0.938513768389287
+              },
+              "own": {
+                "maeC": 0.6920564834736516,
+                "rmseC": 1.0634326716031282,
+                "crpsC": 0.5160633092190623,
+                "coverage90": 0.9192757450018861
+              },
+              "relational": {
+                "maeC": 0.6292231391339128,
+                "rmseC": 0.9714944881161648,
+                "crpsC": 0.4696343750438551,
+                "coverage90": 0.9192757450018861
+              }
+            },
+            "meanDayMaeGainOverOwnC": 0.06264329487412365,
+            "pairedDayInterval": {
+              "lower95C": 0.05394122111335971,
+              "upper95C": 0.07276601105072009,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            },
+            "meanDayCrpsGainOverOwnC": 0.04622686033669348,
+            "pairedDayCrpsInterval": {
+              "lower95C": 0.039976445302061486,
+              "upper95C": 0.05596899432674154,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            }
+          }
+        },
+        {
+          "specification": {
+            "id": "relational-ridge-100",
+            "ridge": 100,
+            "peerFeatures": "both"
+          },
+          "physicalSummary": {
+            "station": "all",
+            "samples": 2651,
+            "dates": 37,
+            "models": {
+              "persistence": {
+                "maeC": 0.6908084999371468,
+                "rmseC": 1.1194623079876194,
+                "crpsC": 0.5418602686074896,
+                "coverage90": 0.938513768389287
+              },
+              "own": {
+                "maeC": 0.6920564834736516,
+                "rmseC": 1.0634326716031282,
+                "crpsC": 0.5160633092190623,
+                "coverage90": 0.9192757450018861
+              },
+              "relational": {
+                "maeC": 0.6246117308001924,
+                "rmseC": 0.9699611770827359,
+                "crpsC": 0.4677847093436223,
+                "coverage90": 0.9196529611467371
+              }
+            },
+            "meanDayMaeGainOverOwnC": 0.06720631518615548,
+            "pairedDayInterval": {
+              "lower95C": 0.05834450725985338,
+              "upper95C": 0.07862318579485865,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            },
+            "meanDayCrpsGainOverOwnC": 0.048065486688540326,
+            "pairedDayCrpsInterval": {
+              "lower95C": 0.04221626753347686,
+              "upper95C": 0.0578052138941061,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            }
+          }
+        },
+        {
+          "specification": {
+            "id": "peer-increments",
+            "ridge": 10,
+            "peerFeatures": "increments"
+          },
+          "physicalSummary": {
+            "station": "all",
+            "samples": 2651,
+            "dates": 37,
+            "models": {
+              "persistence": {
+                "maeC": 0.6908084999371468,
+                "rmseC": 1.1194623079876194,
+                "crpsC": 0.5418602686074896,
+                "coverage90": 0.938513768389287
+              },
+              "own": {
+                "maeC": 0.6920564834736516,
+                "rmseC": 1.0634326716031282,
+                "crpsC": 0.5160633092190623,
+                "coverage90": 0.9192757450018861
+              },
+              "relational": {
+                "maeC": 0.6475446935216286,
+                "rmseC": 0.9975273358291671,
+                "crpsC": 0.48465222438925365,
+                "coverage90": 0.9177668804224821
+              }
+            },
+            "meanDayMaeGainOverOwnC": 0.044476462608617484,
+            "pairedDayInterval": {
+              "lower95C": 0.04027409350815869,
+              "upper95C": 0.05169450147235697,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            },
+            "meanDayCrpsGainOverOwnC": 0.031273905734050464,
+            "pairedDayCrpsInterval": {
+              "lower95C": 0.0286222906003234,
+              "upper95C": 0.036641577632477496,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            }
+          }
+        },
+        {
+          "specification": {
+            "id": "peer-gradients",
+            "ridge": 10,
+            "peerFeatures": "gradients"
+          },
+          "physicalSummary": {
+            "station": "all",
+            "samples": 2651,
+            "dates": 37,
+            "models": {
+              "persistence": {
+                "maeC": 0.6908084999371468,
+                "rmseC": 1.1194623079876194,
+                "crpsC": 0.5418602686074896,
+                "coverage90": 0.938513768389287
+              },
+              "own": {
+                "maeC": 0.6920564834736516,
+                "rmseC": 1.0634326716031282,
+                "crpsC": 0.5160633092190623,
+                "coverage90": 0.9192757450018861
+              },
+              "relational": {
+                "maeC": 0.6535164290726299,
+                "rmseC": 0.9956005637845416,
+                "crpsC": 0.484117855274649,
+                "coverage90": 0.9177668804224821
+              }
+            },
+            "meanDayMaeGainOverOwnC": 0.03828362260443625,
+            "pairedDayInterval": {
+              "lower95C": 0.028903971644892775,
+              "upper95C": 0.04805417754412114,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            },
+            "meanDayCrpsGainOverOwnC": 0.031814737398972004,
+            "pairedDayCrpsInterval": {
+              "lower95C": 0.024160723244064566,
+              "upper95C": 0.041546233679389144,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            }
+          }
+        },
+        {
+          "specification": {
+            "id": "own-history",
+            "ridge": 10,
+            "peerFeatures": "none"
+          },
+          "physicalSummary": {
+            "station": "all",
+            "samples": 2651,
+            "dates": 37,
+            "models": {
+              "persistence": {
+                "maeC": 0.6908084999371468,
+                "rmseC": 1.1194623079876194,
+                "crpsC": 0.5418602686074896,
+                "coverage90": 0.938513768389287
+              },
+              "own": {
+                "maeC": 0.6920564834736516,
+                "rmseC": 1.0634326716031282,
+                "crpsC": 0.5160633092190623,
+                "coverage90": 0.9192757450018861
+              },
+              "relational": {
+                "maeC": 0.6920564834736516,
+                "rmseC": 1.0634326716031282,
+                "crpsC": 0.5160633092190623,
+                "coverage90": 0.9192757450018861
+              }
+            },
+            "meanDayMaeGainOverOwnC": 0,
+            "pairedDayInterval": {
+              "lower95C": 0,
+              "upper95C": 0,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            },
+            "meanDayCrpsGainOverOwnC": 0,
+            "pairedDayCrpsInterval": {
+              "lower95C": 0,
+              "upper95C": 0,
+              "blockDays": 7,
+              "replicates": 1000,
+              "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+            }
+          }
+        }
+      ],
+      "recursiveLearner": {
+        "samples": 2651,
+        "dates": 37,
+        "crpsC": 0.46872033087966636,
+        "baselineCrpsC": 0.46937791050209365,
+        "meanDayCrpsGainC": 0.0006523441878111884,
+        "improvedDates": 16,
+        "interval": null,
+        "intervalReason": "exploratory nested selection on one seasonal archive; no independent prospective confirmation or trading admission"
+      },
+      "resourceCost": {
+        "elapsedMs": 6217.109729,
+        "retainedHeapBytes": 81649600
+      },
+      "gamePlayCount": 189,
+      "sameInformationCopy": {
+        "rival": "same-information-copy",
+        "startingCashUsd": 100,
+        "endingCashUsd": 100,
+        "netPnlUsd": 0,
+        "trades": 0,
+        "wins": 0,
+        "expectedGainUnderOurModelUsd": 0,
+        "maxConcurrentCashConsumedUsd": 0,
+        "unfunded": 0,
+        "dates": 0,
+        "realVenue": false,
+        "quoteBasis": "rival-strategy-generated probabilities; hypothetical guaranteed displayed size, cent-rounded asks, fixed scenario spread and fee; no actual maker fill/latency model"
+      },
+      "retrospective": true,
+      "archiveRoundtrip": true,
+      "fullFrozenFitsRetained": true
+    }
+  ],
+  "publicHealth": 200,
+  "orderEffect": false,
+  "finalHostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/20c85f541736635aea44d11e6b7d8fff15e9f61bf9f137fd860a2999963c7408",
+  "verifiedAt": "2026-10-07T15:54:30.676308+00:00",
+  "stationReplay": {
+    "packets": 0,
+    "skipped": 2,
+    "scored": 0,
+    "forecasted": 0,
+    "calibrationStateCreated": false
+  },
+  "webCheckedAt": "2026-10-07T15:59:39.733630+00:00",
+  "webServiceState": "MainPID=161183\nNRestarts=0\nSubState=running\nActiveEnterTimestamp=Wed 2026-10-07 15:54:10 UTC\n",
+  "finalPublicHealth": null,
+  "finalPublicHealthError": "The read operation timed out"
+}

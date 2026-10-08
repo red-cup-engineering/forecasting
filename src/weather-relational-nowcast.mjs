@@ -1,0 +1,51 @@
+/** Prospective, receipt-clocked routine-report forecasts from frozen relational learners.
+ * Physical verification only. This does not project to an exact venue settlement. */
+import {createHash,randomUUID} from 'node:crypto';
+import {readFile,mkdir,writeFile,link,rm} from 'node:fs/promises';
+import {join} from 'node:path';
+import {collectWeatherStrategyResearch,WEATHER_LEARNER_SPECS} from './weather-strategy-research.mjs';
+import {parseRelationalTemperatureCsv,relationalTemperaturePanel,relationalTemperatureFeatures,relationalIrregularTemperatureFeatures,fitRelationalTemperatureForIssuance,predictRelationalTemperature,RELATIONAL_REGIONS} from './weather-relational-temperature.mjs';
+const HOUR=3600000,DAY=24*HOUR,iso=t=>new Date(t).toISOString(),hash=v=>createHash('sha256').update(typeof v==='string'?v:JSON.stringify(v)).digest('hex');
+const mean=a=>a.reduce((s,v)=>s+v,0)/a.length;
+const conflictBin=(reading,t)=>reading.conflicts.some(c=>c.witnesses.some(r=>{const at=Date.parse(r.observedAt);return Math.ceil(at/HOUR)*HOUR===t&&t-at<=20*60000;}));
+export function prospectiveRelationalForecasts(training,reading,{region,now=Date.now()}={}){
+ const stations=RELATIONAL_REGIONS[region];if(!stations||!Number.isFinite(now)||Date.parse(training.generatedAt)>now)throw new TypeError('received frozen training and current clock required');
+ const before=Math.floor(now/DAY)*DAY;if(Date.parse(training.before)!==before)return {forecasts:[],gaps:[{region,reason:'frozen training day does not match issuance day'}]};
+ const admitted={...reading,accepted:reading.accepted.filter(r=>Date.parse(r.availableAt)<=now&&Date.parse(r.observedAt)<=now)},panel=new Map(relationalTemperaturePanel(admitted,{stations}).map(p=>[p.at,p.stations]));
+ const boundaries=[...panel.keys()].sort((a,b)=>b-a),t=boundaries.find(t=>t>=now-HOUR&&t<=now+20*60000&&t+HOUR-20*60000>now+5000&&[t,t-HOUR,t-2*HOUR].every(b=>!conflictBin(reading,b)&&stations.every(s=>panel.get(b)?.[s])));
+ 
+ const forecasts=[],gaps=[];
+ for(const station of stations){const cs=[];for(const spec of t===undefined?[]:WEATHER_LEARNER_SPECS){const fit=training.learners.find(g=>g.specification.id===spec.id)?.fits.find(x=>x.station===station);if(!fit){gaps.push({station,specification:spec.id,reason:'insufficient earlier train/calibration cases'});continue;}
+ const input=relationalTemperatureFeatures(panel,t,station,stations,true,spec.peerFeatures),m=fit.models.relational,center=input.anchorC+predictRelationalTemperature(m,input.x),pointsF=m.residualLaw.sorted.map(r=>(center+r)*9/5+32),meanF=mean(pointsF),scaleF=Math.max(.01,Math.sqrt(mean(pointsF.map(x=>(x-meanF)**2))*3/5));
+ const r={model:'relational-live/'+spec.id+'/v1',station:'K'+station,validTime:iso(t+HOUR),issuedAt:iso(now),availableAt:iso(now),earliestTargetObservationAt:iso(t+HOUR-20*60000),leadHours:(t+HOUR-now)/HOUR,horizon:'routine-next-bin',date:iso(t+HOUR).slice(0,10),meanF,scaleF,empirical:{kind:'signed-earlier-residuals-v1',pointsF},verification:'routine-report-bin',truth:'IEM routine METAR last report within 20 minutes at/before UTC boundary',source:reading.accepted[0]?.witness.sourceId,trainingId:training.id,trainingLabelBefore:fit.trainingLabelBefore,calibrationLabelBefore:fit.calibrationLabelBefore,fitAvailableAt:training.generatedAt,inputBinAt:iso(t),inputWitnesses:input.witnesses,inputLastObservedAt:iso(input.lastObservedAt),uncertainty:'full finite empirical residual law; scaleF is a variance summary only; unseen extremes are not represented',tradeEligible:false};cs.push(r);forecasts.push(r);}
+ if(cs.length===WEATHER_LEARNER_SPECS.length){const components=cs.map((r,i)=>({...r,model:r.model,weight:training.selection.selectedCandidateWeights[WEATHER_LEARNER_SPECS[i].id],family:'shared-IEM-relational-learner'})).filter(c=>c.weight>0),meanF=components.reduce((s,c)=>s+c.weight*c.meanF,0),variance=components.reduce((s,c)=>s+c.weight*(mean(c.empirical.pointsF.map(x=>(x-c.meanF)**2))+(c.meanF-meanF)**2),0);
+ forecasts.push({...cs[0],model:'relational-live/recursive-generator/v1',meanF,scaleF:Math.max(.01,Math.sqrt(variance*3/5)),empirical:undefined,mixture:{kind:'empirical-generated-learner-pool-v1',components},composition:components.map(c=>c.model+':'+c.weight.toFixed(8)).join('|'),selection:training.selection,comparators:[cs[0]]});}
+ }
+ const irregularT=boundaries.find(b=>b>=now-HOUR&&b<=now+20*60000&&b+HOUR-20*60000>now+5000&&[b,b-HOUR,b-2*HOUR,b-3*HOUR,b-4*HOUR].every(v=>!conflictBin(reading,v))&&stations.every(s=>panel.get(b)?.[s]));
+ if(irregularT!==undefined)for(const station of stations){const input=relationalIrregularTemperatureFeatures(panel,irregularT,station,stations),fit=training.irregularFits?.find(f=>f.station===station);if(!input||!fit)continue;
+ const center=input.anchorC+predictRelationalTemperature(fit.models.relational,input.x),pointsF=fit.models.relational.residualLaw.sorted.map(r=>(center+r)*9/5+32),meanF=mean(pointsF);
+ forecasts.push({model:'relational-live/irregular-clock-ridge-100/v1',station:'K'+station,validTime:iso(irregularT+HOUR),issuedAt:iso(now),availableAt:iso(now),earliestTargetObservationAt:iso(irregularT+HOUR-20*60000),leadHours:(irregularT+HOUR-now)/HOUR,horizon:'routine-next-bin',date:iso(irregularT+HOUR).slice(0,10),meanF,scaleF:Math.max(.01,Math.sqrt(mean(pointsF.map(x=>(x-meanF)**2))*3/5)),empirical:{kind:'signed-earlier-irregular-clock-residuals-v1',pointsF},verification:'routine-report-bin',truth:'IEM routine METAR last report within 20 minutes at/before UTC boundary',trainingId:training.id,trainingLabelBefore:fit.trainingLabelBefore,calibrationLabelBefore:fit.calibrationLabelBefore,fitAvailableAt:training.generatedAt,inputBinAt:iso(irregularT),inputWitnesses:input.witnesses,inputLastObservedAt:iso(input.lastObservedAt),reportSpansHours:input.reportSpansHours,featureOperator:input.operator,uncertainty:'separately trained irregular-report model; full finite earlier residual law; prospective skill unproven',tradeEligible:false});}
+ if(t===undefined)gaps.push({region,reason:'hourly learners withheld: incomplete fresh three-bin network or expired target window',conflicts:reading.conflicts.length});
+ if(!forecasts.length)gaps.push({region,reason:'no admitted future forecast from hourly or irregular-report learners'});
+ return {forecasts,gaps};
+}
+async function frozenTraining({region,cacheDir,now,fetchImpl}){
+ const before=iso(Math.floor(now/DAY)*DAY),file=cacheDir?join(cacheDir,region+'-'+before.slice(0,10)+'-irregular-v2.json'):null;
+ if(file){try{const r=JSON.parse(await readFile(file,'utf8'));if(r.before!==before||r.region!==region||r.id!==hash({...r,id:undefined}))throw new Error('invalid frozen relational training cache');return r;}catch(e){if(e.code!=='ENOENT')throw e;}}
+ let previous;if(cacheDir)try{previous=JSON.parse(await readFile(join(cacheDir,region+'-'+before.slice(0,10)+'.json'),'utf8'));if(previous.before!==before||previous.id!==hash({...previous,id:undefined}))throw new Error('invalid earlier frozen fit packet');}catch(e){if(e.code!=='ENOENT')throw e;}
+ const packet=previous?{rawSource:previous.rawSource,source:previous.source,study:{nextSelection:previous.selection}}:await collectWeatherStrategyResearch({region,now,fetchImpl}),stations=RELATIONAL_REGIONS[region],reading=parseRelationalTemperatureCsv(packet.rawSource,{stations,availableAt:packet.source.availableAt,sourceId:packet.source.sha256});
+ const selection=packet.study.nextSelection.truthAvailableBefore===before?packet.study.nextSelection:{truthAvailableBefore:before,selectedGenerator:'fixed-relational',selectedCandidateWeights:Object.fromEntries(WEATHER_LEARNER_SPECS.map((s,i)=>[s.id,i===0?1:0])),basis:'archive validation has no current-day selector; unchanged baseline fallback'};
+ const r={kind:'frozen-relational-learners-v1',region,before,source:packet.source,rawSource:packet.rawSource,selection,learners:WEATHER_LEARNER_SPECS.map(spec=>({specification:spec,fits:fitRelationalTemperatureForIssuance(reading,{stations,before,...spec})})),irregularFits:fitRelationalTemperatureForIssuance(reading,{stations,before,ridge:100,irregular:true}),generatedAt:iso(Date.now())};r.id=hash(r);
+ if(file){await mkdir(cacheDir,{recursive:true,mode:0o700});const temp=file+'.'+randomUUID()+'.tmp';try{await writeFile(temp,JSON.stringify(r),{mode:0o600});try{await link(temp,file);}catch(e){if(e.code!=='EEXIST')throw e;return JSON.parse(await readFile(file,'utf8'));}}finally{await rm(temp,{force:true});}}
+ return r;
+}
+export async function collectRelationalWeatherNowcast({region='nyc',cacheDir,now=Date.now(),fetchImpl=fetch}={}){
+ const stations=RELATIONAL_REGIONS[region];if(!stations||!Number.isFinite(now))throw new TypeError('known relational region and current clock required');
+ const training=await frozenTraining({region,cacheDir,now,fetchImpl}),url=new URL('https://mesonet.agron.iastate.edu/cgi-bin/request/asos.py');for(const s of stations)url.searchParams.append('station',s);
+ for(const [suffix,t] of [['1',Math.floor(now/DAY)*DAY-2*DAY],['2',Math.floor(now/DAY)*DAY+DAY]]){const d=new Date(t);for(const [k,v] of [['year',d.getUTCFullYear()],['month',d.getUTCMonth()+1],['day',d.getUTCDate()]])url.searchParams.set(k+suffix,String(v));}
+ for(const [k,v] of Object.entries({data:'tmpf',tz:'Etc/UTC',format:'onlycomma',latlon:'yes',elev:'yes',missing:'M',trace:'T',direct:'no',report_type:'3'}))url.searchParams.set(k,v);
+ const response=await fetchImpl(url,{signal:AbortSignal.timeout(20000)});if(!response.ok)throw new Error('IEM current routine reports '+response.status);const rawSource=await response.text();if(Buffer.byteLength(rawSource)>256*1024)throw new Error('current reports exceed bounded source size');
+ const receivedAt=iso(Date.now()),source={url:String(url),availableAt:receivedAt,sha256:hash(rawSource),bytes:Buffer.byteLength(rawSource),operator:'last routine report within 20 minutes at/before UTC boundary; no interpolation; same observational lineage as NWS'};
+ const reading=parseRelationalTemperatureCsv(rawSource,{stations,availableAt:receivedAt,sourceId:source.sha256}),issued=Date.now(),projection=prospectiveRelationalForecasts(training,reading,{region,now:issued});
+ return {kind:'prospective-relational-weather-v1',region,at:iso(issued),source,rawSource,reading,training,...projection,orderEffect:false};
+}

@@ -1,0 +1,101 @@
+{
+  "at": "2026-10-07T22:10:33.569843+00:00",
+  "nativeProducerReceiving": "passed",
+  "evidenceId": "71989946bc134558849d42a36bb2838cf67ddee1d4082345dd37689ad1ac0b1f",
+  "actualArchivedBytesSha256": "71989946bc134558849d42a36bb2838cf67ddee1d4082345dd37689ad1ac0b1f",
+  "rawSourcePagesVerified": 12,
+  "nativeEvidenceRoundTrip": true,
+  "rows": [
+    {
+      "ticker": "KXRAIN-26OCT07-MIA",
+      "status": "active",
+      "measurableWitnesses": 4,
+      "conflicts": 0,
+      "models": [
+        {
+          "id": "nws-measurable-rain-proxy-failure-1pct-v1",
+          "p": 0.99,
+          "probabilityIdentified": false,
+          "tradeEligible": false
+        },
+        {
+          "id": "nws-measurable-rain-proxy-failure-5pct-v1",
+          "p": 0.95,
+          "probabilityIdentified": false,
+          "tradeEligible": false
+        }
+      ]
+    },
+    {
+      "ticker": "KXRAIN-26OCT07-ABQ",
+      "status": "active",
+      "measurableWitnesses": 0,
+      "conflicts": 0,
+      "models": []
+    }
+  ],
+  "resourceCost": {
+    "elapsedSeconds": 17.996,
+    "cpuSeconds": 3.140112,
+    "maxRssMiB": 393.24609375,
+    "evidenceJsonBytes": 9054882
+  },
+  "limits": [
+    "one date and two sites; report witnesses are correlated, not independent validation trials",
+    "NWS raw messages do not always certify scheduled-versus-special report type; enclosing two-hour METAR accumulation interval remains an assumption",
+    "wet proxy and final TWC venue outcome are distinct; 1% and 5% proxy-failure rates are predeclared unfitted hypotheses",
+    "missing or trace past observations do not certify a dry climate day",
+    "future hourly guidance union bounds do not identify whole-day rain or calibration",
+    "shared web house catalog activation unverified; native retained runtime path verified"
+  ],
+  "deployment": {
+    "deployedAt": "2026-10-07T22:00:47.654741+00:00",
+    "sourceArchive": "d9840a53ef91268a53b06c491da1ecd926ca9febe64d5d2eb50044d4d6f46658",
+    "hostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/f347e42c5ebc6f7becf862373d0b3d19e7e6d57e7a928d60c886727c1aae6d4b",
+    "newTools": 15,
+    "weatherRuntime": "/home/emsenn/.local/share/561-group/weather-research/current",
+    "retainedRuntime": "/home/emsenn/.local/share/561-group/weather-research/releases/0475eb20cbf0b832d542cf67afbae444744f2c7c46060adef6f7640c19f5fc99",
+    "retainedFiles": 206,
+    "retainedBytes": 1207159,
+    "ordersPlaced": 0,
+    "houseRestartRequested": false,
+    "backup": "/home/emsenn/.local/state/561-group/weather-deployments/d9840a53ef91268a53b06c491da1ecd926ca9febe64d5d2eb50044d4d6f46658"
+  },
+  "publication": {
+    "at": "2026-10-07T22:17:59.998Z",
+    "cycleAt": "2026-10-07T22:17:46.826Z",
+    "marketCount": 1538,
+    "modelled": 634,
+    "sameDayRainRows": 29,
+    "sameDayRainModelled": 1,
+    "tickers": [
+      "KXRAIN-26OCT07-MIA"
+    ],
+    "wetModels": [
+      {
+        "id": "nws-measurable-rain-proxy-failure-1pct-v1",
+        "p": 0.99,
+        "admitted": false
+      },
+      {
+        "id": "nws-measurable-rain-proxy-failure-5pct-v1",
+        "p": 0.95,
+        "admitted": false
+      }
+    ],
+    "dryModels": 0,
+    "prospectivePendingRows": 1,
+    "sourceEvidenceId": "f5e084e1f893b2cb007c004661f7bae54d51700fc8654b2c42aaa7b48459c2be",
+    "oldAdmissionPreserved": true,
+    "orderEffect": false
+  },
+  "orderEffect": false,
+  "periodicWorkerFailure": {
+    "startedAt": "2026-10-07T22:02:04Z",
+    "failedAt": "2026-10-07T22:11:04Z",
+    "cause": "existing nine-minute systemd start timeout",
+    "status": "unresolved intermittent full-collection latency; neither service configuration nor shared house restarted"
+  },
+  "successfulPublicationRoute": "existing native weather_cycle with client retained until completion, 2026-10-07T22:13:24.276Z through 22:17:46.826Z",
+  "carryAssay": "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/data/records/2026-10-07-weather-fill-selection-bounds/native-receiving.json"
+}

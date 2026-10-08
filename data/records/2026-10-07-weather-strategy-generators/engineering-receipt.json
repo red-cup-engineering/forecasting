@@ -1,0 +1,119 @@
+{
+  "at": "2026-10-07T16:42:30.917Z",
+  "checks": [
+    "exact mixture CRPS cross-energy",
+    "existing gaming arena decoder and strategy judges",
+    "both rival/generation interleavings admissible",
+    "no publication after settlement arrival",
+    "cash conserved across simultaneous uses and maturity",
+    "nested weights learned only from earlier truth clocks",
+    "future data cannot change earlier generator decisions or forecasts",
+    "identical baseline is not counted as improved dates",
+    "shared-information copy removes modeled edge",
+    "actual compact tool and lossless archive consumers; no market reads/orders"
+  ],
+  "game": {
+    "kind": "game.strategy.report",
+    "validPlays": true,
+    "prefixClosed": {
+      "kind": "game.strategy.prefixClosed:witness"
+    },
+    "receptivity": {
+      "kind": "game.strategy.receptivity:witness"
+    },
+    "innocence": {
+      "kind": "game.strategy.innocence:witness"
+    },
+    "symmetryInvariance": {
+      "kind": "game.strategy.symmetryInvariance:witness"
+    },
+    "wellFormed": true,
+    "plays": 189
+  },
+  "summaries": {
+    "nyc": {
+      "recursive": {
+        "samples": 3453,
+        "dates": 37,
+        "crpsC": 0.3543477895608567,
+        "baselineCrpsC": 0.356416164373746,
+        "meanDayCrpsGainC": 0.001980534107612023,
+        "improvedDates": 21,
+        "interval": null,
+        "intervalReason": "exploratory nested selection on one seasonal archive; no independent prospective confirmation or trading admission"
+      },
+      "generators": [
+        {
+          "id": "fixed-relational",
+          "crpsC": 0.35641616437374607
+        },
+        {
+          "id": "slow-mixture",
+          "crpsC": 0.3567020611017779
+        },
+        {
+          "id": "adaptive-mixture",
+          "crpsC": 0.3563843525864179
+        },
+        {
+          "id": "sharp-mixture",
+          "crpsC": 0.35557379904307657
+        },
+        {
+          "id": "prior-winner",
+          "crpsC": 0.3542126456576587
+        }
+      ],
+      "resource": {
+        "elapsedMs": 2970.274746,
+        "retainedHeapBytes": 107613408
+      },
+      "copyingRival": {
+        "trades": 0,
+        "pnlUsd": 0
+      }
+    },
+    "miami": {
+      "recursive": {
+        "samples": 2651,
+        "dates": 37,
+        "crpsC": 0.46872033087966636,
+        "baselineCrpsC": 0.46937791050209365,
+        "meanDayCrpsGainC": 0.0006523441878111884,
+        "improvedDates": 16,
+        "interval": null,
+        "intervalReason": "exploratory nested selection on one seasonal archive; no independent prospective confirmation or trading admission"
+      },
+      "generators": [
+        {
+          "id": "fixed-relational",
+          "crpsC": 0.4693779105020938
+        },
+        {
+          "id": "slow-mixture",
+          "crpsC": 0.47098544405612286
+        },
+        {
+          "id": "adaptive-mixture",
+          "crpsC": 0.47047225100736023
+        },
+        {
+          "id": "sharp-mixture",
+          "crpsC": 0.4694660515375513
+        },
+        {
+          "id": "prior-winner",
+          "crpsC": 0.4681450738353151
+        }
+      ],
+      "resource": {
+        "elapsedMs": 1779.6054320000003,
+        "retainedHeapBytes": 147707416
+      },
+      "copyingRival": {
+        "trades": 0,
+        "pnlUsd": 0
+      }
+    }
+  }
+}

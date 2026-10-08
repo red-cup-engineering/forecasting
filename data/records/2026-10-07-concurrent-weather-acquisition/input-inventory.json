@@ -1,0 +1,17 @@
+{
+  "kind": "source-patchset-input",
+  "version": 1,
+  "sourceRoot": "/home/emsenn/info",
+  "files": {
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-evidence.mjs": {
+      "state": "present",
+      "sha256": "54729863d306c308a8e64c5987c3c436328130fb0434dcbe000af54ef61118e5"
+    }
+  },
+  "clauses": [
+    "independent-source-acquisition",
+    "bounded-pressure",
+    "causal-evidence-preserved",
+    "existing-forecast-consumers"
+  ]
+}

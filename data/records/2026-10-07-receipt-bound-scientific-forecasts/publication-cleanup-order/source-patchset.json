@@ -1,0 +1,35 @@
+{
+  "kind": "source-patchset",
+  "version": 1,
+  "disposition": "candidate",
+  "reason": "Sample the publication receipt after unlinking its temporary hard link, and read immutable batches only when an outcome is due for grading.",
+  "changes": [
+    {
+      "operation": "edit",
+      "path": "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/station-weather-science.mjs",
+      "inputSha256": "bf452a7a35ae2e61c848abac8a388428d8b26adfa82156e2c92e494472dffc05",
+      "replacements": [
+        {
+          "before": "if(e.code!=='EEXIST')throw e;}\n  // Date.now",
+          "after": "if(e.code!=='EEXIST')throw e;}\n  // Unlink the temporary name before the receipt: unlink changes inode ctime.\n  await rm(gz,{force:true});\n  // Date.now"
+        },
+        {
+          "before": "async function verifiedPublicationRecords(pending,{root,mode}){",
+          "after": "async function verifiedPublicationRecords(pending,{root,mode,now=Infinity}){"
+        },
+        {
+          "before": "for(const [id,r] of Object.entries(pending)){const p=r.publication;",
+          "after": "for(const [id,r] of Object.entries(pending)){const due=Date.parse(r.validTime)+(r.verification==='routine-report-bin'?0:r.verification==='kalshi-index'?5*60000:15*60000);if(due>now)continue;const p=r.publication;"
+        },
+        {
+          "before": "verifiedPublicationRecords(state.publicationPending,{root:publicationRoot,mode:publicationMode})",
+          "after": "verifiedPublicationRecords(state.publicationPending,{root:publicationRoot,mode:publicationMode,now})"
+        }
+      ],
+      "clauses": [
+        "receipt-after-final-inode-change",
+        "verify-only-due-outcomes"
+      ]
+    }
+  ]
+}

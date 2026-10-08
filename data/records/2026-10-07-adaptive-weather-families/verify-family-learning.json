@@ -1,0 +1,69 @@
+{
+  "protocol": {
+    "id": "paired-family-ewa-v1",
+    "windowDays": 14,
+    "priorDays": 10,
+    "etaPerF": 1,
+    "uniformShare": 0.1
+  },
+  "uniformInitialization": true,
+  "fullAtomLawPreserved": true,
+  "closedFormCrpsVerified": true,
+  "sameOutcomeMatching": true,
+  "futureReceiptsExcluded": true,
+  "configurationIsolation": true,
+  "unmatchedCountsExcluded": true,
+  "perDateWeighting": true,
+  "oldWindowExcluded": true,
+  "baselineComparatorFrozen": true,
+  "tradeEligible": false,
+  "syntheticRegimeShift": {
+    "days": 60,
+    "uniformCrps": 2.5,
+    "adaptiveCrps": 1.0581685255720712,
+    "interpretation": "controlled sequential simulation; no real forecast skill or alpha claim"
+  },
+  "realPastCaseFitDiagnostics": [
+    {
+      "station": "index:nyc",
+      "observedTarget": "2026-10-07T18:00:00.000Z",
+      "receivedAt": "2026-10-07T18:06:09.529Z",
+      "configurationVersion": "nyc-temperature-v1.0-cal-20261005",
+      "weights": {
+        "ecmwf-aifs": 0.33304299876240917,
+        "lamp": 0.3282582342041462,
+        "nbm": 0.3386987670334447
+      },
+      "matchedDates": 1,
+      "interpretation": "fit diagnostic from a received real case; future forecast means here are a fixture, not a published weather forecast or skill result"
+    },
+    {
+      "station": "index:miami",
+      "observedTarget": "2026-10-07T18:00:00.000Z",
+      "receivedAt": "2026-10-07T18:06:09.529Z",
+      "configurationVersion": "miami-temperature-v1.0-cal-20261005",
+      "weights": {
+        "ecmwf-aifs": 0.25825636617137837,
+        "lamp": 0.2503550684918654,
+        "nbm": 0.24391307714530705,
+        "nws": 0.2474754881914493
+      },
+      "matchedDates": 1,
+      "interpretation": "fit diagnostic from a received real case; future forecast means here are a fixture, not a published weather forecast or skill result"
+    },
+    {
+      "station": "index:la-coastal",
+      "observedTarget": "2026-10-07T18:00:00.000Z",
+      "receivedAt": "2026-10-07T18:06:09.529Z",
+      "configurationVersion": "la-coastal-temperature-v1.0-cal-20261005",
+      "weights": {
+        "ecmwf-aifs": 0.36667929655023573,
+        "lamp": 0.3602644308601854,
+        "nbm": 0.27305627258957893
+      },
+      "matchedDates": 1,
+      "interpretation": "fit diagnostic from a received real case; future forecast means here are a fixture, not a published weather forecast or skill result"
+    }
+  ],
+  "orderEffect": false
+}

@@ -1,0 +1,12 @@
+{
+  "deployedAt": "2026-10-07T13:03:51.721579+00:00",
+  "sourceArchive": "4644413e1ea524f92eef7c81c100bc5f84c80b3a78806d6d199bc8b00505ac10",
+  "hostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/2e9d5eeed892121c84d092bbff5e61a881b626d74ca9bf435c957cf1264a4bb4",
+  "newTools": 10,
+  "weatherRuntime": "/home/emsenn/.local/share/561-group/weather-research/current",
+  "retainedRuntime": "/home/emsenn/.local/share/561-group/weather-research/releases/ff82065a3838b0ce2d001efbcaf3097ceb5cb87ffdfc7cfc1b6c91e4cfd1e42b",
+  "retainedFiles": 47,
+  "retainedBytes": 367227,
+  "ordersPlaced": 0,
+  "backup": "/home/emsenn/.local/state/561-group/weather-deployments/4644413e1ea524f92eef7c81c100bc5f84c80b3a78806d6d199bc8b00505ac10"
+}

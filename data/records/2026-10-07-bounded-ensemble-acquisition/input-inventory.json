@@ -1,0 +1,22 @@
+{
+  "kind": "source-patchset-input",
+  "version": 1,
+  "sourceRoot": "/home/emsenn/info",
+  "files": {
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-ecmwf-decode.py": {
+      "state": "present",
+      "sha256": "0e48a3f01e62042e7924d31207937cfa4f9314dc8201669070a27c96a3d7e6da"
+    },
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/weather-evidence.mjs": {
+      "state": "present",
+      "sha256": "ea3a53b49b6400a51b0001bdfb3dd48a16b6ca7bf1f9100a2b2b478dbd403dbf"
+    }
+  },
+  "clauses": [
+    "all-members-sites-retained",
+    "bounded-field-residence",
+    "exact-operator-preserved",
+    "immutable-field-receipts",
+    "station-geometry-evidence"
+  ]
+}

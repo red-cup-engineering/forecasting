@@ -1,0 +1,23 @@
+{
+  "verifiedAt": "2026-10-07T12:33:24.604086+00:00",
+  "latestCycleAt": "2026-10-07T12:32:01.808Z",
+  "marketCount": 1241,
+  "modelled": 318,
+  "poolModels": {
+    "weather-family-pool-high-v1": 144,
+    "weather-family-pool-low-v1": 144,
+    "kalshi-index-family-pool-v1": 30,
+    "kalshi-index-family-pool-v1/recent-innovation-v1": 30
+  },
+  "sourceErrors": [],
+  "settlementErrors": [],
+  "pending": 10976,
+  "pendingPoolForecasts": 2448,
+  "actualDiagnosticSamples": 0,
+  "actualPairedComparisons": 0,
+  "service": "Result=success\nExecMainStartTimestamp=Wed 2026-10-07 12:27:35 UTC\nExecMainStatus=0\nMemoryPeak=162156544\nActiveState=inactive\nSubState=dead\n",
+  "timer": "active",
+  "currentHostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/3251fca2b8a0b592770d65a53adaf9d0f67fbd240d781a26dbbae07e08092a93",
+  "retainedWeatherRuntime": "/home/emsenn/.local/share/561-group/weather-research/releases/76e35490c30c6be0237828bf98ecbde79559da44248ffce959878e09535571aa",
+  "orderEffect": false
+}

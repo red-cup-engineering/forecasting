@@ -1,0 +1,23 @@
+{
+  "physicalCarrier": "canonical minute city index",
+  "initialUniformForecasts": 2,
+  "newPhysicalOutcomes": 4,
+  "pastKnownFallbackExcluded": true,
+  "onePastMatchedDateLearned": true,
+  "learnedWeights": {
+    "lamp": 0.3421397997868104,
+    "nbm": 0.6578602002131897
+  },
+  "equalProbability": 0.47550259610488343,
+  "adaptiveProbability": 0.3260414077875198,
+  "frozenLawReachedMarketConsumer": true,
+  "changedWeightsRetainedForFutureScoring": true,
+  "earlierPublicationPreserved": true,
+  "sourceReceiptDigestRetained": true,
+  "futureScienceExcluded": true,
+  "invalidFitClockExcluded": true,
+  "configurationMismatchExcluded": true,
+  "repeatScored": 0,
+  "interpretation": "controlled end-to-end carrier verification; no measured weather skill or alpha claim",
+  "orderEffect": false
+}

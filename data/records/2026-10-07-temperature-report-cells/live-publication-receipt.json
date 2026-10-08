@@ -1,0 +1,39 @@
+{
+  "protectedPendingCarrier": "measurementPending",
+  "noCellTargetsExposedToOlderPointScorers": true,
+  "at": "2026-10-08T00:05:45.217Z",
+  "route": "declared current retained weatherStationEvidence export and existing persistent station science carrier",
+  "evidenceId": "3770e330a1a72d1649364eb897420afb2c62ffd4bca9eeea312f22abc04f5a97",
+  "sourceEvidenceId": "8ef3208924ac3c22ad403c79899d042e874645de0929cfddb21e50b3f23f6a43",
+  "newPhysicalForecasts": 96,
+  "recordedPendingReportCellForecasts": 106,
+  "publicationStatus": "station science updated under existing lock",
+  "allNewForecastsProspective": true,
+  "reportCellSkillEstablished": false,
+  "matchedDates": [
+    0
+  ],
+  "cells": {
+    "KMIA/2026-10-07": {
+      "identified": 15,
+      "conflicted": 0,
+      "unidentified": 205,
+      "outsideWindowRawRows": 1944
+    },
+    "KABQ/2026-10-07": {
+      "identified": 10,
+      "conflicted": 0,
+      "unidentified": 181,
+      "outsideWindowRawRows": 1957
+    }
+  },
+  "verifiedRawPages": 12,
+  "receivedElapsedSeconds": 67.279694088,
+  "cpuSeconds": 7.961061,
+  "peakRssMiB": 447.1015625,
+  "httpReads": 29,
+  "httpWrites": 0,
+  "errors": [],
+  "ordersPlaced": 0,
+  "sharedHouseRestartRequested": false
+}

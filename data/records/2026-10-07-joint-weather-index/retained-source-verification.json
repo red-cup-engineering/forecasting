@@ -1,0 +1,7 @@
+{
+  "host": "cold-red-gate",
+  "file": "forecasting-service/src/weather-ecmwf-ensemble.mjs",
+  "sha256": "7e0df30aa7c17398f4c48027a72c21ba50b0da1401cdad47be74fb11fe0b9c6b",
+  "retainedRuntimeVerified": true,
+  "terminationSignalRetained": true
+}

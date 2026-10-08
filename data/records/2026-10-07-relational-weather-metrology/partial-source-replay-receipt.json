@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-07T14:22:30.708961+00:00",
+  "fixture": "one controlled NBM-only weather packet and one research packet",
+  "acceptedWeatherPackets": 1,
+  "excludedResearchPackets": 1,
+  "preservedWeatherForecasts": 1,
+  "liveStateModified": false
+}

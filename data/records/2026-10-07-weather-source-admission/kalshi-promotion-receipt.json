@@ -1,0 +1,43 @@
+{
+  "at": "2026-10-07T23:04:03.144650+00:00",
+  "owner": "kalshi",
+  "baseCommit": "08477292be28fa5f9df89716e9e6a4d8ee2e09c2",
+  "branch": "codex/receive-weather-capabilities",
+  "sourcePathsReceived": [
+    "services/forecasting-service/src/weather-index.mjs",
+    "services/forecasting-service/src/weather-precipitation.mjs",
+    "services/forecasting-service/src/weather-engine.mjs",
+    "services/forecasting-service/src/weather-family-learning.mjs",
+    "services/forecasting-service/src/weather-evidence.mjs",
+    "services/forecasting-service/src/station-observations.mjs",
+    "services/forecasting-service/src/station-weather-science.mjs",
+    "services/forecasting-service/apps/weather.mjs",
+    "services/forecasting-service/README-weather.md",
+    "src/weather-participation.mjs",
+    "src/weather-capital.mjs",
+    "src/fees.mjs",
+    "src/client.mjs",
+    "src/arena.mjs",
+    "package.json"
+  ],
+  "sourceHashes": {
+    "services/forecasting-service/src/weather-index.mjs": "639b74c20194cf4e59ff8c5fa1895922375dcf7fc1f62e67e41dcdefcd7f885a",
+    "services/forecasting-service/src/weather-precipitation.mjs": "a71b1e317a7b46aa903b7ab02a5ad7a8fd6913a31a5fada4c282ed319a8d4de3",
+    "services/forecasting-service/src/weather-engine.mjs": "13d54361e81dbeba407c55eb0e07f0793345288d6ac7caaed6d97db5790ff324",
+    "services/forecasting-service/src/weather-family-learning.mjs": "70df982962ce1edf400ec26bb91539d5592faa4a1c5c0009909cf18a312dffa6",
+    "services/forecasting-service/src/weather-evidence.mjs": "bc0116ac1e39090fe94c96c9b5dd53655e939c945eebd4c11297e461fe815bc5",
+    "services/forecasting-service/src/station-observations.mjs": "d2d3083f7a601a1cc000942fac1387ae66f04740d6ab2806365de3238a35cf56",
+    "services/forecasting-service/src/station-weather-science.mjs": "e3a94fbc24a904273dbe9f4f9cec9d0e3c79a1ea323df9557ad296623c158bda",
+    "services/forecasting-service/apps/weather.mjs": "7309d262311cd79d0ce6fad756eafba3e48e3c26139594291b59b457a3b4306e",
+    "services/forecasting-service/README-weather.md": "8a772d5e6f980eea4dcb012e826e65b81d256f37b3e30f20d13a31903a052246",
+    "src/weather-participation.mjs": "d3f03dec50075a9a95e6cea1b81c4006f49740c5c44bf2dc89b3e5eefe64bef1",
+    "src/weather-capital.mjs": "8b621b86026d6497aa2008c0afb0c233b9736a30ecbfb4bd7c09c96f0f6f9430",
+    "src/fees.mjs": "84f1a1ea0b48ed06038d640281238250f0faf3992107f54028ee5c4839cc9fc5",
+    "src/client.mjs": "d89f40afc700bb312865fb04dea8c4bcc0247c10ac9061e1145592abcd807b6b",
+    "src/arena.mjs": "9189ae2106972c2afd36de835680cae0e11b8b80fed9bba1eb18f7a7cd8941f3",
+    "package.json": "91d90144d9a20827b9bf9bc7e088aff3f750703e8b40b9a561990bbbf315cfd0"
+  },
+  "receiving": "passed under admitted host reader and dependencies",
+  "liveAdmission": false,
+  "assessor": "same primary; no independent certification"
+}

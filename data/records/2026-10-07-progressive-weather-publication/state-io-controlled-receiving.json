@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "byteIdenticalToOriginalSerializer": true,
+  "utf8AndEscapeBoundariesPreserved": true,
+  "unknownMapsAndPrototypeNamedKeysPreserved": true,
+  "strictMalformedJsonRefused": true,
+  "failedWritePreservesOriginal": true,
+  "temporaryFilesCleaned": true,
+  "rootMapRecordsParsedAndSerializedSeparately": true,
+  "ordersPlaced": 0
+}

@@ -1,0 +1,11 @@
+{
+  "repository": "red-cup-engineering/kalshi-engineering-services-section",
+  "base": "08477292be28fa5f9df89716e9e6a4d8ee2e09c2",
+  "branch": "codex/receive-weather-capabilities",
+  "patchSha256": "d6c7bfe91c98d80963bba0e74daf60564da13fb7e3f4af52ee793698943a8c1e",
+  "patchBytes": 140457,
+  "reverseApplicationVerified": true,
+  "committed": false,
+  "published": false,
+  "sourceReviewRequiredForNewCatalogTools": true
+}

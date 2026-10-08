@@ -1,0 +1,110 @@
+{
+  "at": "2026-10-07T16:42:17.852Z",
+  "checks": [
+    "exact discrete-law CRPS witnesses",
+    "real source hashes",
+    "chronological issuance/input/fit scopes",
+    "affine unit equivariance",
+    "independent station-reference equivariance",
+    "future evidence cannot change earlier predictions",
+    "duplicate reports add witnesses, not cases",
+    "contradictions retained and withheld",
+    "lossless archive through actual science/evidence consumers",
+    "physical station replay rejects other scientific carriers",
+    "one public archive request; no market reads or orders"
+  ],
+  "reports": {
+    "nyc": {
+      "sourceRows": 9391,
+      "heldout": {
+        "station": "all",
+        "samples": 3453,
+        "dates": 37,
+        "models": {
+          "persistence": {
+            "maeC": 0.6212954918428629,
+            "rmseC": 0.8722212128118817,
+            "crpsC": 0.4671583682319058,
+            "coverage90": 0.9252823631624674
+          },
+          "own": {
+            "maeC": 0.5365311841561596,
+            "rmseC": 0.7117112939913288,
+            "crpsC": 0.38851776520806175,
+            "coverage90": 0.8954532290761656
+          },
+          "relational": {
+            "maeC": 0.4922950140582859,
+            "rmseC": 0.6528332529212673,
+            "crpsC": 0.356416164373746,
+            "coverage90": 0.9015348971908486
+          }
+        },
+        "meanDayMaeGainOverOwnC": 0.04408459032892438,
+        "pairedDayInterval": {
+          "lower95C": 0.03815612686687249,
+          "upper95C": 0.04640990041025005,
+          "blockDays": 7,
+          "replicates": 1000,
+          "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+        },
+        "meanDayCrpsGainOverOwnC": 0.03221191100726829,
+        "pairedDayCrpsInterval": {
+          "lower95C": 0.02841092582839,
+          "upper95C": 0.033089317855011256,
+          "blockDays": 7,
+          "replicates": 1000,
+          "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+        }
+      },
+      "from": "2026-08-31T00:00:00.000Z",
+      "through": "2026-10-07T00:00:00.000Z"
+    },
+    "miami": {
+      "sourceRows": 7048,
+      "heldout": {
+        "station": "all",
+        "samples": 2651,
+        "dates": 37,
+        "models": {
+          "persistence": {
+            "maeC": 0.6908084999371468,
+            "rmseC": 1.1194623079876194,
+            "crpsC": 0.5418602686074896,
+            "coverage90": 0.938513768389287
+          },
+          "own": {
+            "maeC": 0.6920564834736516,
+            "rmseC": 1.0634326716031282,
+            "crpsC": 0.5160633092190623,
+            "coverage90": 0.9192757450018861
+          },
+          "relational": {
+            "maeC": 0.6286960031725265,
+            "rmseC": 0.9712088113248809,
+            "crpsC": 0.46937791050209365,
+            "coverage90": 0.918898528857035
+          }
+        },
+        "meanDayMaeGainOverOwnC": 0.06316555799800685,
+        "pairedDayInterval": {
+          "lower95C": 0.05445653687882482,
+          "upper95C": 0.07344183700590094,
+          "blockDays": 7,
+          "replicates": 1000,
+          "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+        },
+        "meanDayCrpsGainOverOwnC": 0.04648208668539442,
+        "pairedDayCrpsInterval": {
+          "lower95C": 0.04032171115304765,
+          "upper95C": 0.05622964471713203,
+          "blockDays": 7,
+          "replicates": 1000,
+          "method": "exploratory moving seven-day block bootstrap of paired UTC issuance-day means; assumes representative approximately stationary day blocks, not independent hours; no multiple-comparison or market-edge claim"
+        }
+      },
+      "from": "2026-08-31T00:00:00.000Z",
+      "through": "2026-10-07T00:00:00.000Z"
+    }
+  }
+}

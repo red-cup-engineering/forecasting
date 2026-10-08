@@ -1,0 +1,69 @@
+{
+  "kind": "source-patchset-input",
+  "version": 1,
+  "sourceRoot": "/tmp/weather-source-admission-83dec53aab404a86899c902c1ee3c345/kalshi",
+  "files": {
+    "services/forecasting-service/src/weather-index.mjs": {
+      "state": "present",
+      "sha256": "7cd7973e4a96a873e01cd706a6d4605d7d55f06b1dd89cdfb3323eb73e9770bb"
+    },
+    "services/forecasting-service/src/weather-precipitation.mjs": {
+      "state": "absent"
+    },
+    "services/forecasting-service/src/weather-engine.mjs": {
+      "state": "present",
+      "sha256": "495edf504f6c50a3248606075c7aefd8a5b91296a0ad1994d01ee5508b196321"
+    },
+    "services/forecasting-service/src/weather-family-learning.mjs": {
+      "state": "present",
+      "sha256": "486158c261582010abbda2170547366d937e49c2045abccc40cfa94a97d5b97c"
+    },
+    "services/forecasting-service/src/weather-evidence.mjs": {
+      "state": "present",
+      "sha256": "1688b04729dd2be6f76468b8e9454844b5549aeb8de9baf5780739b50b0a58ac"
+    },
+    "services/forecasting-service/src/station-observations.mjs": {
+      "state": "present",
+      "sha256": "70b015c90d111932de29b24433c9a785ec8f06f7dd1983e97d6ee31a22c63727"
+    },
+    "services/forecasting-service/src/station-weather-science.mjs": {
+      "state": "present",
+      "sha256": "c9b51214328d76e2246c83c3eba07eade17b4d03bc6d121daa1c7f539030f175"
+    },
+    "services/forecasting-service/apps/weather.mjs": {
+      "state": "present",
+      "sha256": "2c1639689497d0eb0c72cc88158bd5dcc2c98a9ab7ca751fc9459df6e70e7eed"
+    },
+    "services/forecasting-service/README-weather.md": {
+      "state": "present",
+      "sha256": "32d5063e4a51d0a07b9077593c5861357c88a94bef3537eabf8e5a42332c767f"
+    },
+    "src/weather-participation.mjs": {
+      "state": "absent"
+    },
+    "src/weather-capital.mjs": {
+      "state": "absent"
+    },
+    "src/fees.mjs": {
+      "state": "absent"
+    },
+    "src/client.mjs": {
+      "state": "present",
+      "sha256": "67703390904eefae179011f51a433d7ce7df309f1cc1152bf128cde342fe3453"
+    },
+    "src/arena.mjs": {
+      "state": "present",
+      "sha256": "2093829040fd449f3e7e7f9406138abdbe0b427b58f6cde0470ff16dcfdf7cd2"
+    },
+    "package.json": {
+      "state": "present",
+      "sha256": "e0984fbab59c6c87c02403323053cc7506cbe2dea2173cef5b7370f81dcd301e"
+    }
+  },
+  "clauses": [
+    "owning-source-weather-closure",
+    "native-capability-admission",
+    "canonical-venue-client-preserved",
+    "original-forecast-lane-retained"
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "at": "2026-10-08T02:17:10.164Z",
+  "collectionStartedAt": "2026-10-08T02:12:09.597Z",
+  "complete": true,
+  "evidenceComplete": false,
+  "forecastLane": "source-projection-v1",
+  "marketCount": 1529,
+  "modelled": 171,
+  "acquisition": {
+    "complete": false,
+    "requestedStations": 48,
+    "finishedStations": [],
+    "finishedSources": [
+      "NBM"
+    ],
+    "pendingSources": [
+      "NWS-stations",
+      "NBM-NBH",
+      "NBM-QMD",
+      "LAMP",
+      "climate-reports",
+      "relational:nyc",
+      "relational:miami",
+      "ECMWF-AIFS-ENS"
+    ],
+    "scope": "finished means the acquisition attempt ended; source errors and missing evidence remain explicit"
+  },
+  "families": {
+    "temperature": {
+      "markets": 79,
+      "modelled": 0,
+      "volume24h": 3280.2799999999997
+    },
+    "tropical": {
+      "markets": 276,
+      "modelled": 0,
+      "volume24h": 157499.31000000006
+    },
+    "snow": {
+      "markets": 172,
+      "modelled": 0,
+      "volume24h": 16576.739999999998
+    },
+    "hourly-temperature": {
+      "markets": 40,
+      "modelled": 0,
+      "volume24h": 5690.960000000001
+    },
+    "daily-temperature": {
+      "markets": 576,
+      "modelled": 144,
+      "volume24h": 2051016.7
+    },
+    "precipitation": {
+      "markets": 244,
+      "modelled": 0,
+      "volume24h": 42264.84
+    },
+    "other": {
+      "markets": 81,
+      "modelled": 0,
+      "volume24h": 4742.83
+    },
+    "daily-rain": {
+      "markets": 61,
+      "modelled": 27,
+      "volume24h": 470374.04000000004
+    }
+  },
+  "errors": [
+    {
+      "station": "KPHL",
+      "source": "NWS-hourly",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "station": "KDEN",
+      "source": "NWS-hourly",
+      "error": "The operation was aborted due to timeout"
+    },
+    {
+      "station": "KATL",
+      "source": "NWS-hourly",
+      "error": "The operation was aborted due to timeout"
+    }
+  ],
+  "receivedAt": "2026-10-08T02:17:11.967135+00:00",
+  "sha256": "8bfbd2e28efed2c44cebaf5f797b22a502d597b2c2e0dbd51d5e0ebef8adf082",
+  "worker": {
+    "MainPID": "2047684",
+    "Result": "success",
+    "ExecMainStartTimestamp": "Thu 2026-10-08 02:12:08 UTC",
+    "ExecMainExitTimestamp": "",
+    "MemoryPeak": "289914880",
+    "MemorySwapPeak": "108888064",
+    "CPUUsageNSec": "17859091000",
+    "ActiveState": "activating",
+    "SubState": "start"
+  },
+  "evidenceIds": [
+    "1a224b108730d495a59c49f5cee5b10399227f8980664def728abc4baf478fc8"
+  ]
+}

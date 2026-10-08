@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "denseRequiredPages": 3,
+  "scopePreserved": true,
+  "rewrittenScopeCannotWiden": true,
+  "originPathAndLoopsRefused": true,
+  "nativeFrozenProjections": [
+    {
+      "station": "KMIA",
+      "oldRequests": 6,
+      "newRequests": 2,
+      "requiredPointReadings": 220,
+      "requiredReportCells": 15,
+      "oldRawBytes": 8712575,
+      "newRawBytes": 909764
+    },
+    {
+      "station": "KABQ",
+      "oldRequests": 6,
+      "newRequests": 2,
+      "requiredPointReadings": 191,
+      "requiredReportCells": 10,
+      "oldRawBytes": 8368977,
+      "newRawBytes": 736126
+    }
+  ],
+  "clockScope": "projection comparison ignores separate controlled receiving instants; each implementation retains its actual receipt clocks",
+  "noSortedPageOrShortPageEarlyStop": true,
+  "ordersPlaced": 0
+}

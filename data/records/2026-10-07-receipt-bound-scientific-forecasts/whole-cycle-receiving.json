@@ -1,0 +1,35 @@
+{
+  "kind": "scientific-publication-whole-cycle-receiving",
+  "terminal": {
+    "at": "2026-10-08T03:42:51.869172+00:00",
+    "unit": {
+      "MainPID": "0",
+      "Result": "timeout",
+      "ExecMainStartTimestamp": "Thu 2026-10-08 03:33:35 UTC",
+      "ExecMainExitTimestamp": "Thu 2026-10-08 03:42:35 UTC",
+      "MemoryPeak": "402653184",
+      "MemorySwapPeak": "470962176",
+      "CPUUsageNSec": "55069938000",
+      "ActiveState": "failed",
+      "SubState": "failed"
+    },
+    "publications": [],
+    "latest": {
+      "at": "2026-10-08T03:39:04.537Z",
+      "evidenceId": null,
+      "evidenceComplete": false,
+      "forecastLane": "source-projection-v1",
+      "stationAcquisition": null,
+      "sourceAcquisition": null,
+      "markets": null
+    }
+  },
+  "fullMarketPublicationCompleted": false,
+  "failure": "nine-minute service start deadline",
+  "newScientificBatchPublished": true,
+  "newLearningStatePersisted": true,
+  "initialPublicationReceiptAccepted": false,
+  "receiptFailure": "temporary hard-link cleanup changed ctime after receipt sampling; preserved records cannot pass integrity admission",
+  "subsequentCorrection": "publication-cleanup-order/runtime-only-receipt.json",
+  "ordersPlaced": 0
+}

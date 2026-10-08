@@ -1,0 +1,67 @@
+{
+  "url": "https://cold-red-gate.561.group/healthz",
+  "status": 200,
+  "health": {
+    "ok": true,
+    "service": "cold-red-gate.561.group",
+    "state": "ready",
+    "phases": {
+      "metroplat-host": {
+        "name": "metroplat-host",
+        "optional": false,
+        "state": "started",
+        "attempts": 1
+      },
+      "entrance": {
+        "name": "entrance",
+        "optional": false,
+        "state": "started",
+        "attempts": 1
+      },
+      "http-listener": {
+        "name": "http-listener",
+        "optional": false,
+        "state": "started",
+        "attempts": 1
+      },
+      "federation": {
+        "name": "federation",
+        "optional": true,
+        "state": "started",
+        "attempts": 1
+      },
+      "enterprise-execution-worker": {
+        "name": "enterprise-execution-worker",
+        "optional": true,
+        "state": "started",
+        "attempts": 1
+      },
+      "work-clock": {
+        "name": "work-clock",
+        "optional": false,
+        "state": "started",
+        "attempts": 1
+      }
+    },
+    "federation": [
+      {
+        "prefix": "metroplat",
+        "reading": "alive",
+        "incarnation": 0,
+        "since": 1791376877053
+      },
+      {
+        "prefix": "fleet",
+        "reading": "alive",
+        "incarnation": 0,
+        "since": 1791376876983
+      },
+      {
+        "prefix": "weather",
+        "reading": "alive",
+        "incarnation": 0,
+        "since": 1791376876919
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-07T17:25:40.522Z",
+  "evidenceId": "6e272bb92b54ccd6ef112b04122fbb24c7cc25947d3eb82616f69bde9130d370",
+  "station": "KJFK",
+  "wallMs": 9326,
+  "sourceFamilies": {
+    "nws": true,
+    "nbm": true,
+    "nbh": true,
+    "lamp": true,
+    "relational": true,
+    "ecmwf": true
+  },
+  "forecasted": 1,
+  "ecmwfFields": 51,
+  "ecmwfRuntime": "2026-10-07T06:00:00Z",
+  "sourceAvailableAt": "2026-10-07T17:25:38.527419Z",
+  "fieldsAvailableAt": "2026-10-07T17:16:40.526806Z",
+  "pooledForecasts": [
+    {
+      "station": "KJFK",
+      "validTime": "2026-10-07T18:00:00.000Z",
+      "availableAt": "2026-10-07T17:25:39.494Z",
+      "kind": "mixed-law-family-pool-v2",
+      "families": [
+        "ecmwf-aifs",
+        "lamp",
+        "nbm"
+      ],
+      "fullAtoms": 51
+    }
+  ],
+  "errors": [],
+  "orderEffect": false
+}

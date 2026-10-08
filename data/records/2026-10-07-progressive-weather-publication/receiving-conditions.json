@@ -1,0 +1,37 @@
+{
+  "effect": "A slow source does not prevent a useful frozen forecast publication through existing readers.",
+  "clauses": [
+    "frozen-receiving",
+    "bounded-publication",
+    "full-acquisition",
+    "honest-completeness",
+    "existing-admission"
+  ],
+  "required": [
+    "Snapshots never share mutable acquisition objects.",
+    "Publication callbacks are serialized and bounded to one attempt per minute; zero-model projections do not consume the publication interval.",
+    "Every previously requested station, date and provider remains acquired.",
+    "The final projection preserves original source/model values apart from added acquisition metadata.",
+    "Partial and full completeness are explicit, independent of universe completeness.",
+    "Pending forecasts, rule changes, fresh quote receipts, scoring and trade admission use the existing path.",
+    "Native receiving must show a useful latest publication while acquisition is still active.",
+    "Partial venue publications use a distinct during-acquisition-v1 stage; completed-cycle admission cannot be borrowed, and original completed-cycle admission remains available.",
+    "A partial snapshot with zero models at publication time leaves the previous latest publication intact.",
+    "Station-state JSON retains every field and row while eliminating file-sized read/write strings."
+  ],
+  "ordersAllowed": false,
+  "amendments": [
+    {
+      "capability": "source-projection-v1",
+      "reason": "Native receiving demonstrated that incremental publication still awaited whole scientific updates and venue requests.",
+      "required": [
+        "Partial source laws publish without science fitting, old-outcome venue requests, quote refresh, experiments, books or allocation offers.",
+        "Existing venue participation consumers capture fresh market metadata, prices, fees and books independently.",
+        "Direct source laws and late-listing projections use their own source-projection-v1 prospective calibration cohort.",
+        "Partial source laws create immutable evidence and prospective venue grading records.",
+        "Complete acquisition retains all providers, stations and original scientific refinement and model values.",
+        "Native receiving shows a useful real-root publication while providers remain unfinished and the worker is alive."
+      ]
+    }
+  ]
+}

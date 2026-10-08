@@ -1,0 +1,1018 @@
+{
+  "scored": {
+    "measurementMetrics": [
+      {
+        "key": "KMIA/station-family-pool-v1/paired-family-cell-ewa-v1/0-3h/publication:30-60m",
+        "station": "KMIA",
+        "model": "station-family-pool-v1/paired-family-cell-ewa-v1",
+        "horizon": "0-3h",
+        "publicationLeadBin": "30-60m",
+        "date": "2026-10-07",
+        "truth": "first received validated NWS METAR temperature cell; nearest identified report within 15 minutes",
+        "measurementOperator": "nws-metar-temperature-cell-v1",
+        "n": 1,
+        "crpsLowSumF": 0.4555555555555624,
+        "crpsHighSumF": 0.4555555555555624,
+        "scoreAvailableAt": "2026-10-07T13:20:00.000Z",
+        "sourceEvidenceId": "synthetic",
+        "crpsCellLowF": 0.4555555555555624,
+        "crpsCellHighF": 0.4555555555555624
+      }
+    ],
+    "at": "2026-10-07T13:20:00.000Z",
+    "truth": "NWS station observations, canonical Kalshi city-index observations and IEM routine-report bins; separate carriers and venue binary settlement",
+    "scoring": "first available forecast per location/valid hour/model/lead cohort; adaptive family forecasts additionally retain each frozen learning fit in 5-15m, 15-30m and 30-60m publication windows; repeated target updates are correlated forecast publications and do not add independent dates; NWS nearest hour within 15 minutes; city index latest canonical minute at/before target within 60 minutes; routine bins use the last uncontradicted report within 20 minutes before the boundary; exact empirical-atom CRPS and 41-point Student-t quadrature; weighted mixture CRPS",
+    "metrics": [
+      {
+        "station": "KMIA",
+        "model": "station-family-pool-v1",
+        "horizon": "0-3h",
+        "publicationLeadBin": null,
+        "truth": "NWS station observations",
+        "samples": 1,
+        "dates": 1,
+        "biasF": 0.4000000000000057,
+        "maeF": 0.4000000000000057,
+        "rmseF": 0.4000000000000057,
+        "crpsF": 0.45555555555555527,
+        "coverage90": 1,
+        "pit": {
+          "samples": 1,
+          "mean": 0.5,
+          "variance": 0,
+          "bins": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ],
+          "idealMean": 0.5,
+          "idealVariance": 0.08333333333333333,
+          "note": "seeded randomized PIT for empirical atoms; continuous CDF for continuous components; correlated hours and ensemble members are not independent calibration trials"
+        }
+      }
+    ],
+    "comparisons": [
+      {
+        "station": "KMIA",
+        "pool": "station-family-pool-v1",
+        "component": "b",
+        "family": "nbm",
+        "horizon": "0-3h",
+        "publicationLeadBin": null,
+        "composition": "nbm:b|nws:a",
+        "configurationVersion": null,
+        "truth": "NWS station observations",
+        "scoreAvailableAt": "2026-10-07T13:20:00.000Z",
+        "sourceEvidenceId": "synthetic",
+        "dates": 1,
+        "samples": 1,
+        "meanCrpsGainF": 0.05555555555554925,
+        "lower95": null,
+        "upper95": null,
+        "supportedPhysicalGain": false,
+        "method": "component and pool frozen together and scored on identical outcomes; equal day means; approximate date-cluster interval after 30 dates; no market-edge inference"
+      },
+      {
+        "station": "KMIA",
+        "pool": "station-family-pool-v1",
+        "component": "a",
+        "family": "nws",
+        "horizon": "0-3h",
+        "publicationLeadBin": null,
+        "composition": "nbm:b|nws:a",
+        "configurationVersion": null,
+        "truth": "NWS station observations",
+        "scoreAvailableAt": "2026-10-07T13:20:00.000Z",
+        "sourceEvidenceId": "synthetic",
+        "dates": 1,
+        "samples": 1,
+        "meanCrpsGainF": 0.8555555555555594,
+        "lower95": null,
+        "upper95": null,
+        "supportedPhysicalGain": false,
+        "method": "component and pool frozen together and scored on identical outcomes; equal day means; approximate date-cluster interval after 30 dates; no market-edge inference"
+      }
+    ],
+    "measurementPending": 0,
+    "pending": 0,
+    "parameters": {
+      "KMIA/station-family-pool-v1/0-3h": {
+        "dates": 1,
+        "samples": 1,
+        "biasF": 0.03636363636363688,
+        "scaleMultiplier": 1,
+        "ready": false,
+        "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+        "truth": "NWS station observations"
+      }
+    },
+    "missingOutcomes": 0,
+    "scored": 2,
+    "forecasted": 0,
+    "forecasts": [],
+    "outcomes": [
+      {
+        "id": "point",
+        "forecast": {
+          "meanF": 73,
+          "scaleF": 0.7848566748139437,
+          "nu": 5,
+          "mixture": {
+            "kind": "mixed-law-family-pool-v2",
+            "components": [
+              {
+                "family": "nbm",
+                "model": "b",
+                "weight": 0.5,
+                "meanF": 74,
+                "scaleF": 1,
+                "nu": 5,
+                "source": "synthetic",
+                "issuedAt": "2026-10-07T11:00:00Z",
+                "empirical": {
+                  "pointsF": [
+                    73.8,
+                    74,
+                    74.2
+                  ]
+                }
+              },
+              {
+                "family": "nws",
+                "model": "a",
+                "weight": 0.5,
+                "meanF": 72,
+                "scaleF": 1,
+                "nu": 5,
+                "source": "synthetic",
+                "issuedAt": "2026-10-07T11:00:00Z",
+                "empirical": {
+                  "pointsF": [
+                    71.8,
+                    72,
+                    72.2
+                  ]
+                }
+              }
+            ]
+          },
+          "composition": "nbm:b|nws:a",
+          "withinVarianceF2": 0.026666666666667425,
+          "betweenVarianceF2": 1,
+          "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+          "model": "station-family-pool-v1",
+          "station": "KMIA",
+          "validTime": "2026-10-07T13:00:00Z",
+          "availableAt": "2026-10-07T12:00:00.000Z",
+          "issuedAt": "2026-10-07T12:00:00.000Z",
+          "date": "2026-10-07",
+          "horizon": "0-3h",
+          "leadHours": 1
+        },
+        "observation": {
+          "at": "2026-10-07T12:53:00Z",
+          "temperatureF": 73.4,
+          "source": "synthetic"
+        },
+        "errorF": 0.4000000000000057,
+        "crpsF": 0.45555555555555527,
+        "sourceEvidenceId": "synthetic"
+      },
+      {
+        "id": "cell",
+        "forecast": {
+          "meanF": 73,
+          "scaleF": 0.7848566748139437,
+          "nu": 5,
+          "mixture": {
+            "kind": "mixed-law-family-pool-v2",
+            "components": [
+              {
+                "family": "nbm",
+                "model": "b",
+                "weight": 0.5,
+                "meanF": 74,
+                "scaleF": 1,
+                "nu": 5,
+                "source": "synthetic",
+                "issuedAt": "2026-10-07T11:00:00Z",
+                "empirical": {
+                  "pointsF": [
+                    73.8,
+                    74,
+                    74.2
+                  ]
+                }
+              },
+              {
+                "family": "nws",
+                "model": "a",
+                "weight": 0.5,
+                "meanF": 72,
+                "scaleF": 1,
+                "nu": 5,
+                "source": "synthetic",
+                "issuedAt": "2026-10-07T11:00:00Z",
+                "empirical": {
+                  "pointsF": [
+                    71.8,
+                    72,
+                    72.2
+                  ]
+                }
+              }
+            ]
+          },
+          "composition": "nbm:b|nws:a",
+          "withinVarianceF2": 0.026666666666667425,
+          "betweenVarianceF2": 1,
+          "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+          "model": "station-family-pool-v1/paired-family-cell-ewa-v1",
+          "station": "KMIA",
+          "validTime": "2026-10-07T13:00:00Z",
+          "availableAt": "2026-10-07T12:00:00.000Z",
+          "issuedAt": "2026-10-07T12:00:00.000Z",
+          "date": "2026-10-07",
+          "horizon": "0-3h",
+          "leadHours": 1,
+          "verification": "nws-report-cell-v1",
+          "truth": "first received validated NWS METAR temperature cell; nearest identified report within 15 minutes",
+          "earliestTargetObservationAt": "2026-10-07T12:45:00.000Z",
+          "publicationLeadBin": "30-60m",
+          "tradeEligible": false,
+          "comparators": [
+            {
+              "meanF": 73,
+              "scaleF": 0.7848566748139437,
+              "nu": 5,
+              "mixture": {
+                "kind": "mixed-law-family-pool-v2",
+                "components": [
+                  {
+                    "family": "nbm",
+                    "model": "b",
+                    "weight": 0.5,
+                    "meanF": 74,
+                    "scaleF": 1,
+                    "nu": 5,
+                    "source": "synthetic",
+                    "issuedAt": "2026-10-07T11:00:00Z",
+                    "empirical": {
+                      "pointsF": [
+                        73.8,
+                        74,
+                        74.2
+                      ]
+                    }
+                  },
+                  {
+                    "family": "nws",
+                    "model": "a",
+                    "weight": 0.5,
+                    "meanF": 72,
+                    "scaleF": 1,
+                    "nu": 5,
+                    "source": "synthetic",
+                    "issuedAt": "2026-10-07T11:00:00Z",
+                    "empirical": {
+                      "pointsF": [
+                        71.8,
+                        72,
+                        72.2
+                      ]
+                    }
+                  }
+                ]
+              },
+              "composition": "nbm:b|nws:a",
+              "withinVarianceF2": 0.026666666666667425,
+              "betweenVarianceF2": 1,
+              "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+              "model": "station-family-pool-v1",
+              "station": "KMIA",
+              "validTime": "2026-10-07T13:00:00Z",
+              "availableAt": "2026-10-07T12:00:00.000Z",
+              "issuedAt": "2026-10-07T12:00:00.000Z",
+              "date": "2026-10-07",
+              "horizon": "0-3h",
+              "leadHours": 1
+            }
+          ],
+          "learning": {
+            "id": "paired-family-cell-ewa-v1",
+            "windowDays": 14,
+            "priorDays": 10,
+            "etaPerF": 1,
+            "uniformShare": 0.1,
+            "lossBasis": "upper paired component excess CRPS over one common reported-temperature cell",
+            "measurementOperator": "nws-metar-temperature-cell-v1",
+            "weights": {
+              "nbm": 0.5,
+              "nws": 0.5
+            },
+            "regularizedMeanComponentExcessCrpsF": {
+              "nbm": 0,
+              "nws": 0
+            },
+            "matchedDates": 0,
+            "matchedSamples": 0,
+            "fitAvailableAt": "2026-10-07T12:00:00.000Z",
+            "outcomeReceiptBoundAt": "2026-10-07T12:00:00.000Z",
+            "sourceDigest": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+            "witnesses": [],
+            "status": "forward experiment; partial-day updates remain one date contribution; fixed learning rate, prior and window untrained; no calibration, regret-bound, market-edge or profit claim"
+          },
+          "details": {
+            "meanF": 73,
+            "scaleF": 0.7848566748139437,
+            "nu": 5,
+            "mixture": {
+              "kind": "mixed-law-family-pool-v2",
+              "components": [
+                {
+                  "family": "nbm",
+                  "model": "b",
+                  "weight": 0.5,
+                  "meanF": 74,
+                  "scaleF": 1,
+                  "nu": 5,
+                  "source": "synthetic",
+                  "issuedAt": "2026-10-07T11:00:00Z",
+                  "empirical": {
+                    "pointsF": [
+                      73.8,
+                      74,
+                      74.2
+                    ]
+                  }
+                },
+                {
+                  "family": "nws",
+                  "model": "a",
+                  "weight": 0.5,
+                  "meanF": 72,
+                  "scaleF": 1,
+                  "nu": 5,
+                  "source": "synthetic",
+                  "issuedAt": "2026-10-07T11:00:00Z",
+                  "empirical": {
+                    "pointsF": [
+                      71.8,
+                      72,
+                      72.2
+                    ]
+                  }
+                }
+              ]
+            },
+            "composition": "nbm:b|nws:a",
+            "withinVarianceF2": 0.026666666666667425,
+            "betweenVarianceF2": 1,
+            "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+            "mean": 73,
+            "scale": 0.7848566748139437,
+            "status": "past-only paired-family exponential weights; physical and market skill unproven"
+          }
+        },
+        "observation": {
+          "at": "2026-10-07T12:53:00.000Z",
+          "status": "identified",
+          "lowF": 72.59,
+          "highF": 72.77000000000001,
+          "temperatureF": 72.68,
+          "availableAt": "2026-10-07T13:10:00Z",
+          "source": "https://api.weather.gov/stations/KMIA/observations",
+          "measurementOperator": "nws-metar-temperature-cell-v1",
+          "witnesses": [
+            {
+              "featureId": "w",
+              "pageSha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "source": "https://api.weather.gov/stations/KMIA/observations",
+              "availableAt": "2026-10-07T13:10:00Z",
+              "station": "KMIA",
+              "at": "2026-10-07T12:53:00.000Z",
+              "rawTemperature": {
+                "value": 23,
+                "unitCode": "wmoUnit:degC",
+                "qualityControl": "V"
+              },
+              "rawMessage": "KMIA 071253Z 00000KT 10SM CLR 23/20 A3000 RMK AO2 T02260200",
+              "status": "identified",
+              "cell": {
+                "lowF": 72.59,
+                "highF": 72.77000000000001,
+                "resolutionBasis": "tenths-Celsius-remark"
+              },
+              "encodings": [
+                {
+                  "kind": "whole-Celsius-body",
+                  "valueC": 23,
+                  "resolutionC": 1,
+                  "lowC": 22.5,
+                  "highC": 23.5
+                },
+                {
+                  "kind": "tenths-Celsius-remark",
+                  "valueC": 22.6,
+                  "resolutionC": 0.1,
+                  "lowC": 22.55,
+                  "highC": 22.650000000000002
+                }
+              ],
+              "decodedApiF": 73.4
+            }
+          ]
+        },
+        "cellScores": {
+          "lowF": 0.4555555555555624,
+          "highF": 0.4555555555555624,
+          "gains": [],
+          "measurementCell": {
+            "lowF": 72.59,
+            "highF": 72.77000000000001
+          },
+          "method": "all piecewise-linear knots in common report cell; exact empirical law / existing 41-node Student-t CRPS approximation"
+        },
+        "sourceEvidenceId": "synthetic"
+      }
+    ]
+  },
+  "state": {
+    "pending": {},
+    "history": {
+      "KMIA/station-family-pool-v1/0-3h/2026-10-07": {
+        "key": "KMIA/station-family-pool-v1/0-3h",
+        "station": "KMIA",
+        "model": "station-family-pool-v1",
+        "horizon": "0-3h",
+        "publicationLeadBin": null,
+        "date": "2026-10-07",
+        "truth": "NWS station observations",
+        "discrete": true,
+        "n": 1,
+        "errorSum": 0.4000000000000057,
+        "error2Sum": 0.16000000000000456,
+        "z2Sum": 0.2597402597402668,
+        "absSum": 0.4000000000000057,
+        "crpsSum": 0.45555555555555527,
+        "covered90": 1,
+        "diagnosticSamples": 1,
+        "pitSum": 0.5,
+        "pit2Sum": 0.25,
+        "pitBins": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "comparisons": {
+      "56faabf90faf1dfdb61e8a83cfabcd146e31523bc8fe6716dcd6a409723077ca/2026-10-07": {
+        "key": "56faabf90faf1dfdb61e8a83cfabcd146e31523bc8fe6716dcd6a409723077ca",
+        "station": "KMIA",
+        "pool": "station-family-pool-v1",
+        "component": "b",
+        "family": "nbm",
+        "horizon": "0-3h",
+        "publicationLeadBin": null,
+        "composition": "nbm:b|nws:a",
+        "configurationVersion": null,
+        "truth": "NWS station observations",
+        "date": "2026-10-07",
+        "n": 1,
+        "gainSum": 0.05555555555554925,
+        "scoreAvailableAt": "2026-10-07T13:20:00.000Z",
+        "sourceEvidenceId": "synthetic"
+      },
+      "94655f1567138d1aa4a464302d963440026b62754988b0d894007c39f911703f/2026-10-07": {
+        "key": "94655f1567138d1aa4a464302d963440026b62754988b0d894007c39f911703f",
+        "station": "KMIA",
+        "pool": "station-family-pool-v1",
+        "component": "a",
+        "family": "nws",
+        "horizon": "0-3h",
+        "publicationLeadBin": null,
+        "composition": "nbm:b|nws:a",
+        "configurationVersion": null,
+        "truth": "NWS station observations",
+        "date": "2026-10-07",
+        "n": 1,
+        "gainSum": 0.8555555555555594,
+        "scoreAvailableAt": "2026-10-07T13:20:00.000Z",
+        "sourceEvidenceId": "synthetic"
+      }
+    },
+    "missingOutcomes": 0,
+    "measurementPending": {},
+    "measurementHistory": {
+      "KMIA/station-family-pool-v1/paired-family-cell-ewa-v1/0-3h/publication:30-60m/2026-10-07": {
+        "key": "KMIA/station-family-pool-v1/paired-family-cell-ewa-v1/0-3h/publication:30-60m",
+        "station": "KMIA",
+        "model": "station-family-pool-v1/paired-family-cell-ewa-v1",
+        "horizon": "0-3h",
+        "publicationLeadBin": "30-60m",
+        "date": "2026-10-07",
+        "truth": "first received validated NWS METAR temperature cell; nearest identified report within 15 minutes",
+        "measurementOperator": "nws-metar-temperature-cell-v1",
+        "n": 1,
+        "crpsLowSumF": 0.4555555555555624,
+        "crpsHighSumF": 0.4555555555555624,
+        "scoreAvailableAt": "2026-10-07T13:20:00.000Z",
+        "sourceEvidenceId": "synthetic"
+      }
+    },
+    "measurementComparisons": {
+      "f38f2e6284d24d98e1fac12807202a07dfb1cd1b0ff4081420d4ce30fd66b834/2026-10-07": {
+        "key": "f38f2e6284d24d98e1fac12807202a07dfb1cd1b0ff4081420d4ce30fd66b834",
+        "station": "KMIA",
+        "pool": "station-family-pool-v1",
+        "component": "b",
+        "family": "nbm",
+        "horizon": "0-3h",
+        "composition": "nbm:b|nws:a",
+        "configurationVersion": null,
+        "truth": "first received validated NWS METAR temperature cell; nearest identified report within 15 minutes",
+        "measurementOperator": "nws-metar-temperature-cell-v1",
+        "date": "2026-10-07",
+        "n": 1,
+        "gainLowSumF": 0.6855555555555377,
+        "gainUpperSumF": 0.8655555555555445,
+        "scoreAvailableAt": "2026-10-07T13:20:00.000Z",
+        "sourceEvidenceId": "synthetic"
+      },
+      "c5f571aa3d820d9e214afe4f821ad009d96d8447583536d998ad7a3048714e14/2026-10-07": {
+        "key": "c5f571aa3d820d9e214afe4f821ad009d96d8447583536d998ad7a3048714e14",
+        "station": "KMIA",
+        "pool": "station-family-pool-v1",
+        "component": "a",
+        "family": "nws",
+        "horizon": "0-3h",
+        "composition": "nbm:b|nws:a",
+        "configurationVersion": null,
+        "truth": "first received validated NWS METAR temperature cell; nearest identified report within 15 minutes",
+        "measurementOperator": "nws-metar-temperature-cell-v1",
+        "date": "2026-10-07",
+        "n": 1,
+        "gainLowSumF": 0.04555555555555013,
+        "gainUpperSumF": 0.22555555555555695,
+        "scoreAvailableAt": "2026-10-07T13:20:00.000Z",
+        "sourceEvidenceId": "synthetic"
+      }
+    },
+    "parameters": {
+      "KMIA/station-family-pool-v1/0-3h": {
+        "dates": 1,
+        "samples": 1,
+        "biasF": 0.03636363636363688,
+        "scaleMultiplier": 1,
+        "ready": false,
+        "method": "date-weighted residual bias shrunk toward zero by 10 prior days; spread only widens",
+        "truth": "NWS station observations"
+      }
+    },
+    "at": "2026-10-07T13:20:00.000Z"
+  },
+  "pointLearned": {
+    "meanF": 73.0327128551089,
+    "scaleF": 0.7844475262669741,
+    "nu": 5,
+    "mixture": {
+      "kind": "mixed-law-family-pool-v2",
+      "components": [
+        {
+          "family": "nbm",
+          "model": "b",
+          "weight": 0.5163564275544478,
+          "meanF": 74,
+          "scaleF": 1,
+          "nu": 5,
+          "source": "synthetic",
+          "issuedAt": "2026-10-07T11:00:00Z",
+          "empirical": {
+            "pointsF": [
+              73.8,
+              74,
+              74.2
+            ]
+          }
+        },
+        {
+          "family": "nws",
+          "model": "a",
+          "weight": 0.4836435724455522,
+          "meanF": 72,
+          "scaleF": 1,
+          "nu": 5,
+          "source": "synthetic",
+          "issuedAt": "2026-10-07T11:00:00Z",
+          "empirical": {
+            "pointsF": [
+              71.8,
+              72,
+              72.2
+            ]
+          }
+        }
+      ]
+    },
+    "composition": "nbm:b|nws:a",
+    "withinVarianceF2": 0.02666666666666742,
+    "betweenVarianceF2": 0.9989298691106243,
+    "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+    "model": "station-family-pool-v1/paired-family-ewa-v1",
+    "station": "KMIA",
+    "validTime": "2026-10-07T14:00:00Z",
+    "availableAt": "2026-10-07T13:25:00.000Z",
+    "issuedAt": "2026-10-07T12:00:00.000Z",
+    "date": "2026-10-07",
+    "horizon": "0-3h",
+    "leadHours": 1,
+    "publicationLeadBin": "30-60m",
+    "tradeEligible": false,
+    "comparators": [
+      {
+        "meanF": 73,
+        "scaleF": 0.7848566748139437,
+        "nu": 5,
+        "mixture": {
+          "kind": "mixed-law-family-pool-v2",
+          "components": [
+            {
+              "family": "nbm",
+              "model": "b",
+              "weight": 0.5,
+              "meanF": 74,
+              "scaleF": 1,
+              "nu": 5,
+              "source": "synthetic",
+              "issuedAt": "2026-10-07T11:00:00Z",
+              "empirical": {
+                "pointsF": [
+                  73.8,
+                  74,
+                  74.2
+                ]
+              }
+            },
+            {
+              "family": "nws",
+              "model": "a",
+              "weight": 0.5,
+              "meanF": 72,
+              "scaleF": 1,
+              "nu": 5,
+              "source": "synthetic",
+              "issuedAt": "2026-10-07T11:00:00Z",
+              "empirical": {
+                "pointsF": [
+                  71.8,
+                  72,
+                  72.2
+                ]
+              }
+            }
+          ]
+        },
+        "composition": "nbm:b|nws:a",
+        "withinVarianceF2": 0.026666666666667425,
+        "betweenVarianceF2": 1,
+        "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+        "model": "station-family-pool-v1",
+        "station": "KMIA",
+        "validTime": "2026-10-07T14:00:00Z",
+        "availableAt": "2026-10-07T13:25:00.000Z",
+        "issuedAt": "2026-10-07T12:00:00.000Z",
+        "date": "2026-10-07",
+        "horizon": "0-3h",
+        "leadHours": 1
+      }
+    ],
+    "learning": {
+      "id": "paired-family-ewa-v1",
+      "windowDays": 14,
+      "priorDays": 10,
+      "etaPerF": 1,
+      "uniformShare": 0.1,
+      "weights": {
+        "nbm": 0.5163564275544478,
+        "nws": 0.4836435724455522
+      },
+      "regularizedMeanComponentExcessCrpsF": {
+        "nbm": 0.005050505050504478,
+        "nws": 0.07777777777777813
+      },
+      "matchedDates": 1,
+      "matchedSamples": 1,
+      "fitAvailableAt": "2026-10-07T13:25:00.000Z",
+      "outcomeReceiptBoundAt": "2026-10-07T13:20:00.000Z",
+      "sourceDigest": "1a32fce3f5475cd7403bce029f6fceae6fb986c777ecfdb787ded9598fc36fb3",
+      "witnesses": [
+        {
+          "date": "2026-10-07",
+          "samples": 1,
+          "components": [
+            {
+              "family": "nbm",
+              "model": "b",
+              "gainSumF": 0.05555555555554925,
+              "scoreAvailableAt": "2026-10-07T13:20:00.000Z",
+              "sourceEvidenceId": "synthetic"
+            },
+            {
+              "family": "nws",
+              "model": "a",
+              "gainSumF": 0.8555555555555594,
+              "scoreAvailableAt": "2026-10-07T13:20:00.000Z",
+              "sourceEvidenceId": "synthetic"
+            }
+          ]
+        }
+      ],
+      "status": "forward experiment; partial-day updates remain one date contribution; fixed learning rate, prior and window untrained; no calibration, regret-bound, market-edge or profit claim"
+    },
+    "details": {
+      "meanF": 73.0327128551089,
+      "scaleF": 0.7844475262669741,
+      "nu": 5,
+      "mixture": {
+        "kind": "mixed-law-family-pool-v2",
+        "components": [
+          {
+            "family": "nbm",
+            "model": "b",
+            "weight": 0.5163564275544478,
+            "meanF": 74,
+            "scaleF": 1,
+            "nu": 5,
+            "source": "synthetic",
+            "issuedAt": "2026-10-07T11:00:00Z",
+            "empirical": {
+              "pointsF": [
+                73.8,
+                74,
+                74.2
+              ]
+            }
+          },
+          {
+            "family": "nws",
+            "model": "a",
+            "weight": 0.4836435724455522,
+            "meanF": 72,
+            "scaleF": 1,
+            "nu": 5,
+            "source": "synthetic",
+            "issuedAt": "2026-10-07T11:00:00Z",
+            "empirical": {
+              "pointsF": [
+                71.8,
+                72,
+                72.2
+              ]
+            }
+          }
+        ]
+      },
+      "composition": "nbm:b|nws:a",
+      "withinVarianceF2": 0.02666666666666742,
+      "betweenVarianceF2": 0.9989298691106243,
+      "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+      "mean": 73.0327128551089,
+      "scale": 0.7844475262669741,
+      "status": "past-only paired-family exponential weights; physical and market skill unproven"
+    }
+  },
+  "cellLearned": {
+    "meanF": 72.97382556504391,
+    "scaleF": 0.7845947612448338,
+    "nu": 5,
+    "mixture": {
+      "kind": "mixed-law-family-pool-v2",
+      "components": [
+        {
+          "family": "nbm",
+          "model": "b",
+          "weight": 0.4869127825219489,
+          "meanF": 74,
+          "scaleF": 1,
+          "nu": 5,
+          "source": "synthetic",
+          "issuedAt": "2026-10-07T11:00:00Z",
+          "empirical": {
+            "pointsF": [
+              73.8,
+              74,
+              74.2
+            ]
+          }
+        },
+        {
+          "family": "nws",
+          "model": "a",
+          "weight": 0.5130872174780512,
+          "meanF": 72,
+          "scaleF": 1,
+          "nu": 5,
+          "source": "synthetic",
+          "issuedAt": "2026-10-07T11:00:00Z",
+          "empirical": {
+            "pointsF": [
+              71.8,
+              72,
+              72.2
+            ]
+          }
+        }
+      ]
+    },
+    "composition": "nbm:b|nws:a",
+    "withinVarianceF2": 0.026666666666667428,
+    "betweenVarianceF2": 0.9993148989547289,
+    "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+    "model": "station-family-pool-v1/paired-family-cell-ewa-v1",
+    "station": "KMIA",
+    "validTime": "2026-10-07T14:00:00Z",
+    "availableAt": "2026-10-07T13:25:00.000Z",
+    "issuedAt": "2026-10-07T12:00:00.000Z",
+    "date": "2026-10-07",
+    "horizon": "0-3h",
+    "leadHours": 1,
+    "verification": "nws-report-cell-v1",
+    "truth": "first received validated NWS METAR temperature cell; nearest identified report within 15 minutes",
+    "earliestTargetObservationAt": "2026-10-07T13:45:00.000Z",
+    "publicationLeadBin": "30-60m",
+    "tradeEligible": false,
+    "comparators": [
+      {
+        "meanF": 73,
+        "scaleF": 0.7848566748139437,
+        "nu": 5,
+        "mixture": {
+          "kind": "mixed-law-family-pool-v2",
+          "components": [
+            {
+              "family": "nbm",
+              "model": "b",
+              "weight": 0.5,
+              "meanF": 74,
+              "scaleF": 1,
+              "nu": 5,
+              "source": "synthetic",
+              "issuedAt": "2026-10-07T11:00:00Z",
+              "empirical": {
+                "pointsF": [
+                  73.8,
+                  74,
+                  74.2
+                ]
+              }
+            },
+            {
+              "family": "nws",
+              "model": "a",
+              "weight": 0.5,
+              "meanF": 72,
+              "scaleF": 1,
+              "nu": 5,
+              "source": "synthetic",
+              "issuedAt": "2026-10-07T11:00:00Z",
+              "empirical": {
+                "pointsF": [
+                  71.8,
+                  72,
+                  72.2
+                ]
+              }
+            }
+          ]
+        },
+        "composition": "nbm:b|nws:a",
+        "withinVarianceF2": 0.026666666666667425,
+        "betweenVarianceF2": 1,
+        "uncertainty": "equal weights across available forecast families; NBH replaces NBS within NBM; full mixture preserves disagreement; weights and calibration untrained",
+        "model": "station-family-pool-v1",
+        "station": "KMIA",
+        "validTime": "2026-10-07T14:00:00Z",
+        "availableAt": "2026-10-07T13:25:00.000Z",
+        "issuedAt": "2026-10-07T12:00:00.000Z",
+        "date": "2026-10-07",
+        "horizon": "0-3h",
+        "leadHours": 1
+      }
+    ],
+    "learning": {
+      "id": "paired-family-cell-ewa-v1",
+      "windowDays": 14,
+      "priorDays": 10,
+      "etaPerF": 1,
+      "uniformShare": 0.1,
+      "lossBasis": "upper paired component excess CRPS over one common reported-temperature cell",
+      "measurementOperator": "nws-metar-temperature-cell-v1",
+      "weights": {
+        "nbm": 0.4869127825219489,
+        "nws": 0.5130872174780512
+      },
+      "regularizedMeanComponentExcessCrpsF": {
+        "nbm": 0.07868686868686768,
+        "nws": 0.020505050505050634
+      },
+      "matchedDates": 1,
+      "matchedSamples": 1,
+      "fitAvailableAt": "2026-10-07T13:25:00.000Z",
+      "outcomeReceiptBoundAt": "2026-10-07T13:20:00.000Z",
+      "sourceDigest": "655d6ff94bfab699314af38a205403c75327c4e272ee382e9e3aca56252b813f",
+      "witnesses": [
+        {
+          "date": "2026-10-07",
+          "samples": 1,
+          "components": [
+            {
+              "family": "nbm",
+              "model": "b",
+              "gainLowSumF": 0.6855555555555377,
+              "gainUpperSumF": 0.8655555555555445,
+              "measurementOperator": "nws-metar-temperature-cell-v1",
+              "scoreAvailableAt": "2026-10-07T13:20:00.000Z",
+              "sourceEvidenceId": "synthetic"
+            },
+            {
+              "family": "nws",
+              "model": "a",
+              "gainLowSumF": 0.04555555555555013,
+              "gainUpperSumF": 0.22555555555555695,
+              "measurementOperator": "nws-metar-temperature-cell-v1",
+              "scoreAvailableAt": "2026-10-07T13:20:00.000Z",
+              "sourceEvidenceId": "synthetic"
+            }
+          ]
+        }
+      ],
+      "status": "forward experiment; partial-day updates remain one date contribution; fixed learning rate, prior and window untrained; no calibration, regret-bound, market-edge or profit claim"
+    },
+    "details": {
+      "meanF": 72.97382556504391,
+      "scaleF": 0.7845947612448338,
+      "nu": 5,
+      "mixture": {
+        "kind": "mixed-law-family-pool-v2",
+        "components": [
+          {
+            "family": "nbm",
+            "model": "b",
+            "weight": 0.4869127825219489,
+            "meanF": 74,
+            "scaleF": 1,
+            "nu": 5,
+            "source": "synthetic",
+            "issuedAt": "2026-10-07T11:00:00Z",
+            "empirical": {
+              "pointsF": [
+                73.8,
+                74,
+                74.2
+              ]
+            }
+          },
+          {
+            "family": "nws",
+            "model": "a",
+            "weight": 0.5130872174780512,
+            "meanF": 72,
+            "scaleF": 1,
+            "nu": 5,
+            "source": "synthetic",
+            "issuedAt": "2026-10-07T11:00:00Z",
+            "empirical": {
+              "pointsF": [
+                71.8,
+                72,
+                72.2
+              ]
+            }
+          }
+        ]
+      },
+      "composition": "nbm:b|nws:a",
+      "withinVarianceF2": 0.026666666666667428,
+      "betweenVarianceF2": 0.9993148989547289,
+      "uncertainty": "learned family weights; NBH replaces NBS within NBM; full mixture preserves disagreement; calibration and forecast gain unproven",
+      "mean": 72.97382556504391,
+      "scale": 0.7845947612448338,
+      "status": "past-only paired-family exponential weights; physical and market skill unproven"
+    }
+  }
+}

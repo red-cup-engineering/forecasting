@@ -1,0 +1,17 @@
+{
+  "deployedAt": "2026-10-08T00:03:43.633849+00:00",
+  "sourceArchive": "be38174ced12ea4235aec61d69d978dd295dbad591c582d2554e75a53e38c9d7",
+  "hostRelease": "/gnu/store/vpx1qghvayx293bdblxiigjvhc7k8n9c-cold-red-gate-deployment-1",
+  "retainedRuntime": "/home/emsenn/.local/share/561-group/weather-research/releases/7da74f82dd70ddb77c7caeff085e362cf4136a4a64d3ad77da3143e43f842fbb",
+  "previousRuntime": "/home/emsenn/.local/share/561-group/weather-research/releases/dbe2b4be52dfd4b5275cf4f8c6b688615d46026536a01cd80fd12b77006826f7",
+  "retainedFiles": 207,
+  "sourcePathsChanged": [
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/station-weather-science.mjs"
+  ],
+  "patchsetMaterializer": "existing deterministic source-patchset materializer",
+  "retainedDependencyClosureVerified": true,
+  "sharedHouseWritten": false,
+  "houseRestartRequested": false,
+  "serviceConfigurationChanged": false,
+  "ordersPlaced": 0
+}

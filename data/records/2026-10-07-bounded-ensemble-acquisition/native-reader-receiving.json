@@ -1,0 +1,32 @@
+{
+  "at": "2026-10-08T02:48:23.187Z",
+  "installedHouse": "/gnu/store/vpx1qghvayx293bdblxiigjvhc7k8n9c-cold-red-gate-deployment-1",
+  "evidenceId": "0a2de8b1cd38339d0ecea5108d5c9c7fe9350d6c1cf03005d7cb0210460d44cb",
+  "sourceEvidenceId": "03c62c8575cd383fdf58e6d954f03d3d269ffb4f406855691f780b15cee0d2e3",
+  "publicationAt": "2026-10-08T02:48:14.573Z",
+  "delaySeconds": 242.582,
+  "marketCount": 1529,
+  "modelled": 171,
+  "requestedStations": 48,
+  "finishedStations": 0,
+  "pendingSources": [
+    "NWS-stations",
+    "NBM-NBH",
+    "NBM-QMD",
+    "LAMP",
+    "climate-reports",
+    "relational:nyc",
+    "relational:miami",
+    "ECMWF-AIFS-ENS"
+  ],
+  "forecastLane": "source-projection-v1",
+  "nativeReaderVerified": true,
+  "retainedStationGeometryCount": 0,
+  "stationGeometryNativeReaderVerified": true,
+  "publicationWhileWorkerActive": true,
+  "scientificRefinementDeferred": true,
+  "venuePricesNotClaimed": true,
+  "partialAdmissionBorrowed": false,
+  "httpTransportVerified": false,
+  "ordersPlaced": 0
+}

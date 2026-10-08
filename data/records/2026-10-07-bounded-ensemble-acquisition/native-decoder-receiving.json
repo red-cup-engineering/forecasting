@@ -1,0 +1,17 @@
+{
+  "status": "passed",
+  "same51Member45StationEnsemble": true,
+  "sameFieldBytesReceiptsMetadataAndProjection": true,
+  "sameImmutableAvailabilityClocks": true,
+  "ignoredOnlyActualCompletionAndFailedTransportObservationTimes": true,
+  "fieldHashesBefore": 2346,
+  "fieldHashesAfter": 102,
+  "cpuSecondsBefore": 4.187587,
+  "cpuSecondsAfter": 0.95489,
+  "peakRssMiBBefore": 103.63671875,
+  "peakRssMiBAfter": 82.3125,
+  "elapsedSecondsBefore": 8.278549212031066,
+  "elapsedSecondsAfter": 1.3162580542266369,
+  "fullWorkerReliabilityEstablished": false,
+  "ordersPlaced": 0
+}

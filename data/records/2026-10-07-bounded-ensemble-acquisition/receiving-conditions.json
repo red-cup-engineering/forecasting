@@ -1,0 +1,12 @@
+{
+  "effect": "All 51 members and station projections remain consumable with fewer resident field buffers and no repeated station-wise field hashing.",
+  "required": [
+    "Original and candidate return the same complete ensemble fields, geometry, member/site/time scenarios and clocks except actual execution completion time.",
+    "No more than three field tasks are admitted and input order survives out-of-order completion.",
+    "Source failures terminate without accepting a partial or different ensemble.",
+    "Field integrity, metadata, projection and archive checks remain unchanged.",
+    "Geometry inputs survive frozen source snapshots and the native reader.",
+    "Native whole-cycle outcome and memory usage must be observed separately; isolated decoder savings do not establish full-worker reliability."
+  ],
+  "ordersPlaced": 0
+}

@@ -1,0 +1,15 @@
+{
+  "kind": "source-patchset-input",
+  "version": 1,
+  "sourceRoot": "/home/emsenn/info",
+  "files": {
+    "lib/emsenn/services/561-group/services/engineering-services-section/services/computer-engineering-services-section/services/computer-systems-engineering-services-section/services/computer-web-engineering-services-section/services/web-platform-services-section/services/web3-platform-services-section/web3-gambling-platform-services-section/services/kalshi-services-section/services/forecasting-service/src/station-weather-science.mjs": {
+      "state": "present",
+      "sha256": "bf452a7a35ae2e61c848abac8a388428d8b26adfa82156e2c92e494472dffc05"
+    }
+  },
+  "clauses": [
+    "receipt-after-final-inode-change",
+    "verify-only-due-outcomes"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "intent": "Supplement the old day-before rain model with causal same-day measurable precipitation evidence and explicit dependence/partial-hour bounds. Recover omitted same-day live contracts without using market-relative skill as a gate on forming predictions.",
+  "carrier": "station/date climate-standard-time interval, NWS accumulation fields and raw METAR, NOAA NBH P01 marginals, certified KXRAIN rule, immutable weather evidence, prospective venue grader",
+  "remaining": "existing fitted rain coefficients and original trading-admission controls; numeric hypotheses separate from proven physical/venue truth",
+  "retired": "discarding precipitation/source response pages in an already-paid-for observation fetch; blanket lack of same-day experiments",
+  "clauses": [
+    "retained-rain-carrier",
+    "interval-metrology",
+    "dependence-bounds",
+    "same-day-experiment",
+    "original-lane-retained"
+  ],
+  "precommittedReceiving": [
+    "temperature values and bounds unchanged",
+    "actual response bytes preserved with gzip/base64 and SHA256; no additional observation network request",
+    "measurable validated mm or P0001 witness wholly within day; P0000 trace and null/missing do not become dry",
+    "cross-boundary or future/foreign station witnesses do not force wet; contradictory duplicates retained and excluded",
+    "overlapping 1/3/6-hour windows never summed",
+    "fully future hourly probabilities .2/.3 give bounds .3.. .5 and independence scenario .44; partially elapsed hour remains unidentified",
+    "wet same-day creates fixed .95/.99 uncalibrated proxy experiments, independently of day-before guidance; causal receipt and strict date required",
+    "dry/unknown past produces no invented whole-day point probability; report future bounds and missingness",
+    "old day-before lane still forms original model; new same-day candidates have no trading authority"
+  ],
+  "assessor": "same primary author and receiver using existing deterministic pinned patchset materializer; not independent agent certification"
+}

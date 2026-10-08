@@ -1,0 +1,275 @@
+{
+  "at": "2026-10-07T13:04:14.658Z",
+  "hostRelease": "/home/emsenn/.local/share/561-group/releases/cold-red-gate.561.group/2e9d5eeed892121c84d092bbff5e61a881b626d74ca9bf435c957cf1264a4bb4",
+  "tools": 10,
+  "station": "KSEA",
+  "kalshiReads": 0,
+  "evidenceId": "59652949c6eaaa1a4bd855c71bef4340b10c28f7eab0fbf5cbaa149df7fddfa8",
+  "sourceEvidenceId": "d5fe1127b84b070e3a74d10cbdeac7654be4634faffba7b8604c132b2c0d2a5e",
+  "dailyExtremes": {
+    "forecasts": [
+      {
+        "station": "KSEA",
+        "timeZone": "America/Los_Angeles",
+        "targetDate": "2026-10-07",
+        "kind": "high",
+        "model": "nbm-nbh-comonotone-high-v1",
+        "availableAt": "2026-10-07T13:04:14.315Z",
+        "runtime": "2026-10-07T11:00:00.000Z",
+        "source": "https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20261007/11/text/blend_nbhtx.t11z",
+        "dayStart": "2026-10-07T08:00:00.000Z",
+        "dayEndExclusive": "2026-10-08T08:00:00.000Z",
+        "points": [
+          {
+            "at": "2026-10-07T13:04:14.315Z",
+            "meanF": 53,
+            "scaleF": 1.5491933384829668,
+            "boundary": "linear interpolation of location and Student-t scale"
+          },
+          {
+            "at": "2026-10-07T14:00:00.000Z",
+            "meanF": 53,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T15:00:00.000Z",
+            "meanF": 53,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T16:00:00.000Z",
+            "meanF": 54,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-07T17:00:00.000Z",
+            "meanF": 56,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-07T18:00:00.000Z",
+            "meanF": 58,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T19:00:00.000Z",
+            "meanF": 60,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T20:00:00.000Z",
+            "meanF": 63,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T21:00:00.000Z",
+            "meanF": 65,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T22:00:00.000Z",
+            "meanF": 66,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T23:00:00.000Z",
+            "meanF": 66,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-08T00:00:00.000Z",
+            "meanF": 65,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-08T01:00:00.000Z",
+            "meanF": 63,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-08T02:00:00.000Z",
+            "meanF": 60,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-08T03:00:00.000Z",
+            "meanF": 58,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-08T04:00:00.000Z",
+            "meanF": 57,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-08T05:00:00.000Z",
+            "meanF": 56,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-08T06:00:00.000Z",
+            "meanF": 55,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-08T07:00:00.000Z",
+            "meanF": 54,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-08T07:59:59.999Z",
+            "meanF": 54,
+            "scaleF": 1,
+            "boundary": "linear interpolation of location and Student-t scale"
+          }
+        ],
+        "observedBound": 54,
+        "observedSource": {
+          "source": "NWS station observations",
+          "url": "https://api.weather.gov/stations/KSEA/observations?start=2026-10-07T08%3A00%3A00.000Z&end=2026-10-07T13%3A04%3A09.065Z&limit=500",
+          "latest": "2026-10-07T12:50:00.000Z",
+          "count": 58,
+          "interpretation": "loose whole-degree observed-day proxy bound"
+        },
+        "sourceDisagreementPrior": 0.01,
+        "distributionKind": "extreme of piecewise-linear hourly Student-t marginals with one common rank shock",
+        "uncertainty": "NBH TSD converted from standard deviation to t(5) scale, with 1 F scale floor; uncalibrated",
+        "status": "experimental daily-extreme proxy; dependence bounds conditional on declared marginals; subhour extremes and source/station mismatch are not resolved; no independent daily physical grade"
+      },
+      {
+        "station": "KSEA",
+        "timeZone": "America/Los_Angeles",
+        "targetDate": "2026-10-07",
+        "kind": "low",
+        "model": "nbm-nbh-comonotone-low-v1",
+        "availableAt": "2026-10-07T13:04:14.315Z",
+        "runtime": "2026-10-07T11:00:00.000Z",
+        "source": "https://noaa-nbm-grib2-pds.s3.amazonaws.com/blend.20261007/11/text/blend_nbhtx.t11z",
+        "dayStart": "2026-10-07T08:00:00.000Z",
+        "dayEndExclusive": "2026-10-08T08:00:00.000Z",
+        "points": [
+          {
+            "at": "2026-10-07T13:04:14.315Z",
+            "meanF": 53,
+            "scaleF": 1.5491933384829668,
+            "boundary": "linear interpolation of location and Student-t scale"
+          },
+          {
+            "at": "2026-10-07T14:00:00.000Z",
+            "meanF": 53,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T15:00:00.000Z",
+            "meanF": 53,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T16:00:00.000Z",
+            "meanF": 54,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-07T17:00:00.000Z",
+            "meanF": 56,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-07T18:00:00.000Z",
+            "meanF": 58,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T19:00:00.000Z",
+            "meanF": 60,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T20:00:00.000Z",
+            "meanF": 63,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T21:00:00.000Z",
+            "meanF": 65,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T22:00:00.000Z",
+            "meanF": 66,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-07T23:00:00.000Z",
+            "meanF": 66,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-08T00:00:00.000Z",
+            "meanF": 65,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-08T01:00:00.000Z",
+            "meanF": 63,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-08T02:00:00.000Z",
+            "meanF": 60,
+            "scaleF": 1.5491933384829668
+          },
+          {
+            "at": "2026-10-08T03:00:00.000Z",
+            "meanF": 58,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-08T04:00:00.000Z",
+            "meanF": 57,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-08T05:00:00.000Z",
+            "meanF": 56,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-08T06:00:00.000Z",
+            "meanF": 55,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-08T07:00:00.000Z",
+            "meanF": 54,
+            "scaleF": 1
+          },
+          {
+            "at": "2026-10-08T07:59:59.999Z",
+            "meanF": 54,
+            "scaleF": 1,
+            "boundary": "linear interpolation of location and Student-t scale"
+          }
+        ],
+        "observedBound": 55,
+        "observedSource": {
+          "source": "NWS station observations",
+          "url": "https://api.weather.gov/stations/KSEA/observations?start=2026-10-07T08%3A00%3A00.000Z&end=2026-10-07T13%3A04%3A09.065Z&limit=500",
+          "latest": "2026-10-07T12:50:00.000Z",
+          "count": 58,
+          "interpretation": "loose whole-degree observed-day proxy bound"
+        },
+        "sourceDisagreementPrior": 0.01,
+        "distributionKind": "extreme of piecewise-linear hourly Student-t marginals with one common rank shock",
+        "uncertainty": "NBH TSD converted from standard deviation to t(5) scale, with 1 F scale floor; uncalibrated",
+        "status": "experimental daily-extreme proxy; dependence bounds conditional on declared marginals; subhour extremes and source/station mismatch are not resolved; no independent daily physical grade"
+      }
+    ],
+    "gaps": []
+  },
+  "physicalPoolForecasts": 48,
+  "errors": [],
+  "archiveRoundtrip": true,
+  "rawSourceRetained": true,
+  "orderEffect": false
+}

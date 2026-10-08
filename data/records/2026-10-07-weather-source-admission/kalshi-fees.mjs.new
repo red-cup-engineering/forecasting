@@ -1,0 +1,42 @@
+/** Kalshi fee law and observed series terms. General schedule effective 2026-07-07:
+ * https://kalshi.com/docs/kalshi-fee-schedule.pdf . The schedule says cost+fee
+ * rounds to a centicent; legacy whole-cent consumers use a conservative upper
+ * bound, explicitly, rather than asserting that bound is the charged fee.
+ * Event overrides/waivers must be supplied from the actual contract metadata.
+ */
+export const TAKER_COEFFICIENT = 0.07;
+export const MAKER_COEFFICIENT = 0.0175;
+export function feeTerms(series, override = {}) {
+  if (!['quadratic', 'quadratic_with_maker_fees'].includes(series?.fee_type)) throw new TypeError(`unknown Kalshi fee type ${series?.fee_type}`);
+  const multiplier = Number(series.fee_multiplier);
+  if (!Number.isFinite(multiplier) || multiplier < 0) throw new TypeError('observed Kalshi fee multiplier required');
+  return { taker: TAKER_COEFFICIENT * multiplier, maker: series.fee_type === 'quadratic_with_maker_fees' ? MAKER_COEFFICIENT * multiplier : 0, ...override };
+}
+export function unroundedFee(theta, count, price) {
+  if (![theta, count, price].every(Number.isFinite) || theta < 0 || count <= 0 || price <= 0 || price >= 1) throw new RangeError('invalid Kalshi fee inputs');
+  return theta * count * price * (1 - price);
+}
+const rational = (value) => {
+  const match = /^(\d+)(?:\.(\d+))?(?:e([+-]?\d+))?$/u.exec(String(value).toLowerCase());
+  if (!match) throw new TypeError('nonnegative decimal fee input required');
+  const fraction = match[2] ?? '', exponent = Number(match[3] ?? 0) - fraction.length;
+  if (Math.abs(exponent) > 30) throw new RangeError('fee input precision exceeds supported units');
+  return exponent >= 0 ? [BigInt(match[1] + fraction) * 10n ** BigInt(exponent), 1n] : [BigInt(match[1] + fraction), 10n ** BigInt(-exponent)];
+};
+const multiply = ([a, b], [c, d]) => [a * c, b * d];
+const rawFee = (theta, count, price) => {
+  unroundedFee(theta, count, price); // validation
+  const [p, den] = rational(price);
+  return multiply(multiply(rational(theta), rational(count)), [p * (den - p), den * den]);
+};
+const ceiling = (numerator, denominator) => (numerator + denominator - 1n) / denominator;
+/** Conservative whole-cent bound retained for integer-cent allocation. */
+export const orderFee = (theta, count, price) => { const [n, d] = rawFee(theta, count, price); return Number(ceiling(n * 100n, d)) / 100; };
+/** Scheduled fee, combining cost and fee before centicent rounding. Monetary
+ * codecs remain in pips/hundredths; callers may conservatively reserve more. */
+export function scheduledFee(theta, count, price) {
+  const [cost, costDen] = multiply(rational(count), rational(price));
+  const [fee, feeDen] = rawFee(theta, count, price);
+  const totalPips = ceiling((cost * feeDen + fee * costDen) * 10000n, costDen * feeDen);
+  return Number(totalPips * costDen - cost * 10000n) / Number(10000n * costDen);
+}
