@@ -12,7 +12,7 @@ import {latestLampGuidance} from './lamp-station-guidance.mjs';
 import { latestStationGuidance, guidanceForExtreme } from './nbm-station-guidance.mjs';
 import { NWS_API, NWS_USER_AGENT, climateDayStart, observedExtremes, activeTemperatureHazards } from './station-observations.mjs';
 import { TEMPERATURE_MARKETS } from './temperature-market-model.mjs';
-import { forecastScale, bracketProbability, studentTCdf } from './temperature-distribution.mjs';
+import { forecastScale, bracketProbability, bracketBounds, studentTCdf } from './temperature-distribution.mjs';
 import { priceRainMarket,priceRainPoolMarket } from './rain-market-model.mjs';
 import {climateReportEvidence} from './weather-settlement-source.mjs';
 import {latestStationQuantiles,priceStationQuantiles} from './weather-quantiles.mjs';
@@ -137,8 +137,63 @@ export function weatherEstimates(c,e,now) {
   const pool=makeBracketProbabilityPool(candidates);
   if(pool)out.push({id:`weather-family-pool-${b.kind}-v1`,p:pool.p,details:{...pool,proxy:b.proxy,status:'prospective daily-extreme ensemble experiment; NBM quantiles preferred over NBM location-scale model within one family'}});
   out.push(...softObservationEstimates(c,e,out));
+  out.push(...observedExtremeEstimates(c,e,now));
   // Observations and hazards remain witnesses; proxy observations never force a TWC outcome to zero.
   return out;
+}
+/**
+ * The day's extreme as the extreme of two parts: what the station has already recorded and what the rest
+ * of the climate day still holds. The recorded part carries only the error between hourly observations and
+ * the climate report (the report reads the continuous record, so its high sits at or above the hourly
+ * maximum and its low at or below the hourly minimum); the rest carries forecast error growing with lead.
+ * Once the day is over the rest is empty and the uncertainty is the observation-to-report error alone,
+ * which the fixed 2.5 F floors of the forecast-only models above never reach.
+ *
+ * The observation bound is structural: the report's high cannot fall under the station's one-degree-loose
+ * floor (nor its low above the ceiling), so a bracket entirely on the far side is impossible and a
+ * one-sided tail entirely on the near side is certain. A report read through a proxy (TWC) keeps a
+ * source-disagreement margin instead of an exact bound: the posterior mean (0+1)/(240+2) = 0.4% from the
+ * dead-bracket meter, where the precise bound ruled out 430 brackets on 240 settled events (2026-10-02..06,
+ * 48 series) and none settled yes; the event is the unit, since a source error would hit a whole ladder.
+ */
+/**
+ * What the day's readings so far rule in or out for one bracket, exactly: the report's whole-degree high K is at
+ * least the precise floor (its low at most the precise ceiling), so a bracket wholly on the far side cannot
+ * settle yes and a one-sided tail wholly on the near side must. A proxy-read report keeps `margin`.
+ * @returns {{structural: {low: number, high: number}|null, bound: number|null}}
+ */
+export function observedBracketBound({kind,proxy,bracket},obs,margin=OBSERVED_EXTREME.proxyMargin){
+  const [lo,hi]=bracketBounds(bracket),m=proxy?margin:0;
+  const bound=kind==='high'?(Number.isFinite(obs?.floorPrecise)?obs.floorPrecise:obs?.floor):(Number.isFinite(obs?.ceilingPrecise)?obs.ceilingPrecise:obs?.ceiling);
+  if(!Number.isFinite(bound))return {structural:null,bound:null};
+  let structural=null;
+  const ruled=(low,high)=>({low,high,kind:'station-observation'});
+  if(kind==='high'){if(hi<=bound)structural=ruled(0,m);else if(hi===Infinity&&lo<bound)structural=ruled(1-m,1);}
+  else{if(lo>=bound)structural=ruled(0,m);else if(lo===-Infinity&&hi>bound)structural=ruled(1-m,1);}
+  return {structural,bound};
+}
+export const OBSERVED_EXTREME = Object.freeze({reportShiftF:0.5,reportScaleF:0.8,restScaleF:1.5,restScalePerHourF:0.1,restScaleMaxF:4,nu:5,maxObservationAgeMinutes:90,proxyMargin:0.004});
+export function observedExtremeEstimates(c,e,now,model=OBSERVED_EXTREME){
+  const b=c.binding;if(!b||!['high','low'].includes(b.kind)||!['less','greater','between'].includes(c.strike_type))return [];
+  const obs=e.observations?.[`${b.station}/${b.targetDate}`];if(!obs?.count)return [];
+  const start=climateDayStart(b.targetDate,b.timeZone).getTime(),end=start+86400000,latest=Date.parse(obs.latest);
+  if(now<start||!Number.isFinite(latest)||Math.min(now,end)-latest>model.maxObservationAgeMinutes*60000)return [];
+  const high=b.kind==='high',sign=high?1:-1,observed=high?obs.maxF:obs.minF;
+  const remaining=(e.local?.[b.station]?.periods??[]).flatMap(p=>{const t=Date.parse(p.startTime);return t>latest&&t<end&&Number.isFinite(p.temperature)&&['C','F'].includes(p.temperatureUnit)?[{t,f:p.temperatureUnit==='C'?p.temperature*9/5+32:p.temperature}]:[];});
+  const hoursLeft=Math.max(0,(end-Math.max(latest,now))/3600000);
+  if(hoursLeft>1&&!remaining.length)return [];
+  const rest=remaining.reduce((best,r)=>!best||sign*r.f>sign*best.f?r:best,null);
+  const restScale=rest?Math.min(model.restScaleMaxF,model.restScaleF+model.restScalePerHourF*Math.max(0,(rest.t-now)/3600000)):null;
+  const reportCenter=observed+sign*model.reportShiftF;
+  const T=(x,center,scale)=>studentTCdf((x-center)/scale,model.nu);
+  // CDF of the report's extreme: a max of independent parts multiplies CDFs, a min multiplies survivals.
+  const F=high?x=>T(x,reportCenter,model.reportScaleF)*(rest?T(x,rest.f,restScale):1):x=>1-(1-T(x,reportCenter,model.reportScaleF))*(rest?1-T(x,rest.f,restScale):1);
+  const bracket={strikeType:c.strike_type,floorStrike:c.floor_strike,capStrike:c.cap_strike},[lo,hi]=bracketBounds(bracket);
+  let p=(hi===Infinity?1:F(hi))-(lo===-Infinity?0:F(lo));
+  const {structural,bound}=observedBracketBound({kind:b.kind,proxy:b.proxy,bracket},obs,model.proxyMargin);
+  const floor=bound,ceiling=bound;
+  p=Math.min(structural?.high??1,Math.max(structural?.low??0,Math.min(1,Math.max(0,p))));
+  return [{id:`observed-extreme-${b.kind}-v1`,p,details:{observedF:observed,boundF:high?floor:ceiling,observationLatest:obs.latest,observationCount:obs.count,observationSource:obs.source,reportCenterF:reportCenter,reportScaleF:model.reportScaleF,restExtremeF:rest?.f??null,restLeadHours:rest?(rest.t-now)/3600000:null,restScaleF:restScale,hoursLeft,nu:model.nu,proxy:b.proxy,...(structural?{structuralProbabilityBounds:structural}:{}),status:'forward experiment: report shift and scales are priors until settlement grades fit them'}}];
 }
 /** Hourly station guidance gives a competing daily-extreme proxy. Its uncertainty is a local experiment. */
 export function lampDailyEstimates(c,e,now){

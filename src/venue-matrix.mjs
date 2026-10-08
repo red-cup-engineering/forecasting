@@ -23,6 +23,7 @@
  *               live from each market's feeSchedule (NFL/CFB 0.03; other sports 0.05 as the fee page documents).
  * The per-share continuous form is used here; cent rounding is a per-order effect that vanishes at size.
  */
+import { THETA } from '@red-cup-engineering/kalshi-services-section/fees';
 import { readingOfSides, sidesOfReading } from '@red-cup-engineering/computer-data-services-section/four';
 
 const EPS = 1e-9;
@@ -50,7 +51,7 @@ export function devig(raw) {
 
 // ---------------------------------------------------------------- fees
 
-export const KALSHI_RATE = 0.07;
+export const KALSHI_RATE = THETA;
 /** Fee per share bought at price p on a venue whose fee is `{rate}` (quadratic: rate * p * (1 - p)). */
 export const feePerShare = (fee, p) => (fee ? fee.rate * p * (1 - p) : 0);
 export const kalshiFee = (multiplier = 1) => ({ venue: 'kalshi', rate: KALSHI_RATE * multiplier });

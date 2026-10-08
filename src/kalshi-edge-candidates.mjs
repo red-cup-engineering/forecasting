@@ -9,6 +9,7 @@
 // one week of settled markets is a short window, so a candidate is a hypothesis to forward-test,
 // not a proven edge. The test half is chosen after seeing the data's time span, not the results.
 
+import { orderFeePerContract } from '@red-cup-engineering/kalshi-services-section/fees';
 export const HORIZONS_HOURS = [1, 2, 6, 24];
 /** Price paid per contract, in whole cents, grouped into bands (inclusive). */
 export const PRICE_BUCKETS = [[1, 5], [6, 10], [11, 20], [21, 35], [36, 50], [51, 65], [66, 80], [81, 90], [91, 95], [96, 99]];
@@ -16,15 +17,10 @@ export const MODES = ['taker', 'maker'];
 export const SIDES = ['yes', 'no'];
 
 /** Kalshi taker fee for one order of `count` contracts at `price` dollars: ceil-to-cent of 0.07*mult*C*P*(1-P); per contract. */
-export function kalshiTakerFee(price, { count = 10, multiplier = 1 } = {}) {
-  return Math.ceil(0.07 * multiplier * count * price * (1 - price) * 100 - 1e-9) / 100 / count;
-}
+export const kalshiTakerFee = (price, { count = 10, multiplier = 1 } = {}) => orderFeePerContract(count, price, { multiplier });
 
 /** Maker fee per contract: free on plain 'quadratic' series, 0.0175*mult*P*(1-P) (ceil-to-cent per order) where the series charges makers. */
-export function kalshiMakerFee(price, { count = 10, multiplier = 1, feeType = 'quadratic' } = {}) {
-  if (feeType !== 'quadratic_with_maker_fees') return 0;
-  return Math.ceil(0.0175 * multiplier * count * price * (1 - price) * 100 - 1e-9) / 100 / count;
-}
+export const kalshiMakerFee = (price, { count = 10, multiplier = 1, feeType = 'quadratic' } = {}) => orderFeePerContract(count, price, { multiplier, maker: true, feeType });
 
 /** Index into PRICE_BUCKETS for a price in dollars, or -1. */
 export function priceBucketIndex(price) {

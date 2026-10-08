@@ -1,10 +1,11 @@
 import { studentTCdf } from './temperature-distribution.mjs';
 /** Streaming event/date statistics; full immutable outcomes remain in the source journal. */
-export function createModelGradeAccumulator({minDates=30}={}) {
+/** The pooled group: one model on one family and stage across every station and rule, where dates (not stations) are the independent unit. */
+export const pooledGradeKey=(family,stage,modelId)=>`${family}/*/*/*/${stage}/${modelId}`;
+export function createModelGradeAccumulator({minDates=30,pooledMinDates=10}={}) {
   const groups=new Map();
   function add(row){
-    for(const model of row.models){
-      const key=`${row.family}/${row.source}/${row.station}/${row.ruleKey}/${row.stage}/${model.id}`;
+    for(const model of row.models)for(const key of [`${row.family}/${row.source}/${row.station}/${row.ruleKey}/${row.stage}/${model.id}`,pooledGradeKey(row.family,row.stage,model.id)]){
       let g=groups.get(key);if(!g){g={events:new Map(),bins:Array.from({length:10},()=>new Map())};groups.set(key,g);}
       const event=`${row.eventTicker}/${row.stage}`,date=row.targetDate??row.closeTime.slice(0,10);
       let r=g.events.get(event);if(!r){r={date,n:0,delta:0};g.events.set(event,r);}
@@ -29,7 +30,8 @@ export function createModelGradeAccumulator({minDates=30}={}) {
         const half=z*Math.sqrt(rate*(1-rate)/count+z*z/(4*count*count))/den;
         return {n:count,rate,low:Math.max(0,center-half),high:Math.min(1,center+half)};
       });
-      report[key]={dates:n,events:g.events.size,brierImprovement:mean,improvementLower95:lower,admitted:n>=minDates&&lower>0,bins};
+      const need=key.includes('/*/')?pooledMinDates:minDates;
+      report[key]={dates:n,events:g.events.size,brierImprovement:mean,improvementLower95:lower,admitted:n>=need&&lower>0,minDates:need,bins};
     }
     return report;
   }
@@ -38,11 +40,13 @@ export function createModelGradeAccumulator({minDates=30}={}) {
 /** Independent unit is an event on a target date; repeating forecasts or ladder rungs cannot grow n. */
 export function gradeModels(resolved,options={}){const accumulator=createModelGradeAccumulator(options);for(const row of resolved)accumulator.add(row);return accumulator.report();}
 export function probabilityBand(contract, model, grades) {
-  const g=grades[`${contract.family}/${contract.source}/${contract.station}/${contract.ruleKey}/${contract.stage}/${model.id}`];
+  // The station's own grade when it is admitted, else the model's pooled grade on the family and stage.
+  const own=grades[`${contract.family}/${contract.source}/${contract.station}/${contract.ruleKey}/${contract.stage}/${model.id}`];
+  const g=own?.admitted?own:grades[pooledGradeKey(contract.family,contract.stage,model.id)]??own;
   const b=g?.bins[Math.min(9,Math.floor(model.p*10))];
   const structural=model.details?.structuralProbabilityBounds;
   const valid=!structural||(Number.isFinite(structural.low)&&Number.isFinite(structural.high)&&structural.low>=0&&structural.high<=1&&structural.low<=model.p&&structural.high>=model.p);
-  return {low:valid?Math.min(b?.low??0,structural?.low??1):0, high:valid?Math.max(b?.high??1,structural?.high??0):1,admitted:valid&&Boolean(g?.admitted)&&Boolean(b?.n>=30),grade:g??null,...(structural?{structuralProbabilityBounds:structural}: {})};
+  return {low:valid?Math.min(b?.low??0,structural?.low??1):0, high:valid?Math.max(b?.high??1,structural?.high??0):1,admitted:valid&&Boolean(g?.admitted)&&Boolean(b?.n>=(g?.minDates??30)),grade:g??null,...(structural?{structuralProbabilityBounds:structural}: {})};
 }
 /** Cash is a consumable resource. Allocate it once, with same-event and same-date exposure limits. */
 export function allocateWeather(rows, {capitalUsd=0,encumberedUsd=0,kellyShare=0.25,maxEventShare=0.1,maxDateShare=0.5}={}) {

@@ -5,12 +5,17 @@
  *
  * The Daily Climate Report's day runs midnight to midnight local STANDARD
  * time, so under daylight time it starts at 01:00 on the clock. Hourly and
- * special observations carry temperature in tenths of a degree C; the
- * report's extreme comes from the station's continuous record in whole
- * degrees F, so it can only be at or beyond what the observations show. The
- * bounds returned are one degree looser than the observations, to cover
- * conversion and rounding: the day's maximum is at least `floor`, its
- * minimum at most `ceiling`.
+ * special METARs carry temperature in tenths of a degree C (the remark's
+ * T-group) and synoptic METARs the exact six-hour maximum and minimum (the
+ * 1sTTT and 2sTTT groups); the five-minute readings between them carry WHOLE
+ * degrees C, so "22" is anywhere in 21.5-22.5 C (70.7-72.5 F). The report's
+ * extreme comes from the station's continuous record in whole degrees F.
+ *
+ * Two bounds are returned. `floor`/`ceiling` are one degree looser than the
+ * readings read as exact (the original rule). `floorPrecise`/`ceilingPrecise`
+ * read each reading as the interval its precision allows: the day's maximum is
+ * at least the highest LOWER end of any reading, so the report's whole-degree
+ * high is at least that rounded; the minimum mirrors it.
  */
 export const NWS_API = 'https://api.weather.gov';
 export const NWS_USER_AGENT = '(561 Group weather desk, ops@561.group)';
@@ -31,6 +36,18 @@ export function climateDayStart(date, timeZone) {
 }
 
 /**
+ * The whole-degree bounds the readings force on the report: its high is at least the round of the highest
+ * lower end of any reading (each widened by its precision), its low at most the round of the lowest upper end.
+ * Rounding half away matches a report that rounds its continuous extreme to whole degrees F.
+ */
+export function preciseBounds(readings,synoptic=[]){
+  let lowEnd=-Infinity,highEnd=Infinity;
+  for(const r of readings){if(r.qualityControl==='qc:X'||r.qualityControl==='qc:Q')continue;lowEnd=Math.max(lowEnd,r.temperatureF-r.precisionF);highEnd=Math.min(highEnd,r.temperatureF+r.precisionF);}
+  for(const r of synoptic){if(r.kind==='max6h')lowEnd=Math.max(lowEnd,r.temperatureF-r.precisionF);else highEnd=Math.min(highEnd,r.temperatureF+r.precisionF);}
+  return {floorPrecise:Number.isFinite(lowEnd)?Math.ceil(lowEnd-0.5):null,ceilingPrecise:Number.isFinite(highEnd)?Math.floor(highEnd+0.5):null};
+}
+
+/**
  * The extremes observed at `station` from the start of its climate day on
  * `date` until now.
  * @param {{station: string, date: string, timeZone: string, now?: Date|string|number}} request
@@ -40,13 +57,13 @@ export function climateDayStart(date, timeZone) {
 export async function observedExtremes({ station, date, timeZone, now = Date.now() }, { fetchImpl = fetch, baseUrl = NWS_API, userAgent = NWS_USER_AGENT } = {}) {
   const from = climateDayStart(date, timeZone);
   const until = new Date(Math.min(new Date(now).getTime(), from.getTime() + 24 * 3600_000));
-  const empty = { station, date, from: from.toISOString(), count: 0, maxF: null, minF: null, floor: null, ceiling: null, latest: null, readings: [], source: null };
+  const empty = { station, date, from: from.toISOString(), count: 0, maxF: null, minF: null, floor: null, ceiling: null, floorPrecise: null, ceilingPrecise: null, latest: null, readings: [], synoptic: [], source: null };
   if (until <= from) return empty;
   const url = new URL(`${baseUrl}/stations/${station}/observations`);
   url.searchParams.set('start', from.toISOString());
   url.searchParams.set('end', until.toISOString());
   url.searchParams.set('limit','500');
-  const readings=new Map(),visited=new Set();let next=url.href;
+  const readings=new Map(),visited=new Set(),synoptic=[];let next=url.href;
   while(next){
     const pageUrl=new URL(next,url);if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname||visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');
     visited.add(pageUrl.href);
@@ -60,14 +77,25 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
     if(!['wmoUnit:degC','wmoUnit:degF'].includes(unit))continue;
     const temperatureF=unit==='wmoUnit:degC'?temperature.value*9/5+32:temperature.value;
     if(temperatureF< -150||temperatureF>180)continue;
-    const row={at:new Date(epoch).toISOString(),temperatureF,qualityControl:temperature.qualityControl??null};
-    const old=readings.get(row.at);if(!old||row.qualityControl==='qc:V')readings.set(row.at,row);
+    const raw=typeof p.rawMessage==='string'?p.rawMessage:'';
+    // Tenths when the METAR's T-group is present or the value is not whole; otherwise half a degree either way.
+    const precisionF=/\sT[01]\d{3}[01]\d{3}(\s|$)/u.test(raw)||!Number.isInteger(temperature.value)?0.09:unit==='wmoUnit:degC'?0.9:0.5;
+    const row={at:new Date(epoch).toISOString(),temperatureF,precisionF,qualityControl:temperature.qualityControl??null};
+    const old=readings.get(row.at);if(!old||row.qualityControl==='qc:V'||old.precisionF>row.precisionF)readings.set(row.at,row);
+    // Synoptic six-hour extremes (remarks 1sTTT max, 2sTTT min, tenths C) count when the six hours lie inside the day.
+    const remarks=raw.split(' RMK ')[1]??'';
+    if(epoch-6*3600000>=from.getTime())for(const token of remarks.split(/\s+/u)){
+      const m=/^([12])([01])(\d{3})$/u.exec(token);if(!m)continue;
+      const c=(m[2]==='1'?-1:1)*Number(m[3])/10,f=c*9/5+32,kind=m[1]==='1'?'max6h':'min6h';
+      synoptic.push({at:row.at,kind,temperatureF:f,precisionF:0.09});
+    }
   }
   }
   const trace=[...readings.values()].sort((a,b)=>a.at.localeCompare(b.at));
   if(!trace.length)return {...empty,source:url.href};
   const temps=trace.map(r=>r.temperatureF),maxF=Math.max(...temps),minF=Math.min(...temps);
-  return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,latest:trace.at(-1).at,readings:trace,source:url.href};
+  const {floorPrecise,ceilingPrecise}=preciseBounds(trace,synoptic);
+  return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,floorPrecise,ceilingPrecise,latest:trace.at(-1).at,readings:trace,synoptic,source:url.href};
 }
 
 /**

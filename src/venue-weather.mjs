@@ -2,7 +2,8 @@
 // No I/O here: ladder -> implied median, forecast window features, fee, clustered OLS, rule P&L.
 
 /** Taker fee per contract in dollars at price p (large-size limit, no cent rounding). */
-export const feePerContract = (p, mult = 1) => 0.07 * mult * p * (1 - p);
+import { feePerContract as unroundedFee } from '@red-cup-engineering/kalshi-services-section/fees';
+export const feePerContract = (p, mult = 1) => unroundedFee(p, { multiplier: mult });
 
 /** "KXMLBTOTAL-26OCT071600CLECWS-14" -> { series, event, suffix, date: '2026-10-07', hhmm|null, codes } */
 export function parseTicker(ticker) {

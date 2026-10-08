@@ -24,12 +24,13 @@
  *     markets: [{ id, venue, cells, bids: [{price,size}], asks: [{price,size}], theta }] }
  * Prices are dollars on the YES side; `asks` ascending, `bids` descending.
  */
+import { THETA, orderFee as kalshiOrderFee } from '@red-cup-engineering/kalshi-services-section/fees';
 import { solveLP } from './simplex.mjs';
 
-export const KALSHI_THETA = 0.07;
+export const KALSHI_THETA = THETA;
 export const unitFee = (theta, p) => theta * p * (1 - p);
 /** Kalshi's per-order taker fee: theta * C * P * (1 - P), rounded up to the cent. */
-export const orderFee = (theta, count, price) => Math.ceil(theta * count * price * (1 - price) * 100 - 1e-9) / 100;
+export const orderFee = (theta, count, price) => kalshiOrderFee(count, price, { multiplier: theta / THETA });
 
 const EPS = 1e-9;
 

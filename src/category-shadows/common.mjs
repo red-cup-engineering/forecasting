@@ -1,4 +1,5 @@
 // Shared pieces for the log-only category shadows. No orders, no credentials: public reads only.
+import { THETA, orderFeePerContract } from '@red-cup-engineering/kalshi-services-section/fees';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';
@@ -18,7 +19,7 @@ export function Phi(x) {
 }
 
 // Kalshi taker fee per contract for an n-lot at price p (dollars): ceil(0.07*n*p*(1-p) to the cent)/n.
-export const fee = (p, n = 10, rate = 0.07) => Math.ceil(rate * n * p * (1 - p) * 100 - 1e-9) / 100 / n;
+export const fee = (p, n = 10, rate = THETA) => orderFeePerContract(n, p, { multiplier: rate / THETA });
 
 /** Book at the touch from a market record (dollars + _fp sizes). */
 export function touch(m) {
