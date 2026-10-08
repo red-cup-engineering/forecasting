@@ -183,3 +183,49 @@ ladder monotonicity, by bisection on the multiplier.
 game pairs. Liquid baskets carry mids residuals of a few hundredths, for example NFL playoff seats
 14.04 against 14 and league wins 208.44 against 208. Thin futures carry residuals of 0.5–1.8, too
 wide to trade but large for the projection.
+
+## Measurement 4: three backfilled weekends (872,018 prints, about 4,000 games)
+
+Source: `scripts/combo-backfill.mjs` (public history), then `combo-rigidity-measure.mjs` unchanged.
+Reports: `measure-2026-09-*.json`. Maker P&L is per contract at the print; errors are delete-one-game
+jackknife.
+
+**1. Zones do not separate maker P&L.** Prints above the pinned interval earn makers no more than
+prints inside it:
+
+| weekend | above | inside |
+| --- | --- | --- |
+| 09-26..28 | −0.0¢ ± 1.6 | +1.4¢ ± 1.7 |
+| 09-19..21 | +1.9¢ ± 2.4 | +4.3¢ ± 1.7 |
+| 09-12..14 | +1.6¢ ± 1.5 | +1.6¢ ± 2.6 |
+
+That prediction of frame 1 is falsified.
+
+**2. The parlay premium rises with flex width, on every weekend.** These are same-game clusters by
+flex-width tercile:
+
+| weekend | narrow | middle | wide |
+| --- | --- | --- | --- |
+| 09-26..28 | +0.5¢ ± 0.6 | +2.0¢ ± 1.5 | +4.3¢ ± 2.7 |
+| 09-19..21 | +1.4¢ ± 0.5 | +3.0¢ ± 1.1 | +5.3¢ ± 1.0 |
+| 09-12..14 | +0.5¢ ± 1.3 | +1.3¢ ± 0.9 | +3.9¢ ± 1.5 |
+| pooled, inverse-variance | **+1.0¢ ± 0.4** | | **+4.8¢ ± 0.8** |
+
+The wide-minus-narrow gap is about 3.8¢ ± 0.9. The winner's-curse prediction (makers do worse where
+the flex is wide) is reversed: takers pay the largest premium where the legs pin the price least. This
+reads as frame 12, the erasure premium: the parlay premium scales with the information its legs leave
+unpriced.
+
+**Not yet a lane:**
+- These are print prices, so they belong to the winning maker. We would have to win RFQs.
+- Combo maker fees are not modelled.
+- Collateral is posted per RFQ.
+
+**Pre-registered forward test F1** (committed 2026-10-08, before any October weekend is backfilled):
+- **Data:** run `combo-backfill.mjs` then `combo-rigidity-measure.mjs`, both unchanged, on the
+  weekends 2026-10-10..12, 10-17..19 and 10-24..26.
+- **Same-game clusters:** the wide-tercile cut is fixed at width > 0.35, the pooled boundary above.
+- **Pass:** maker P&L > 0 with t > 2 pooled over the three weekends, and wide > narrow
+  (width ≤ 0.05) with t > 2.
+- **Next step on a pass:** a shadow RFQ-quoting design for wide-flex same-game parlays. It needs the
+  combo maker fee schedule and collateral sizing, sized per house theory: one cluster is one bet.
