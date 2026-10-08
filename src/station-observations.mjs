@@ -98,6 +98,57 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
   return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,floorPrecise,ceilingPrecise,latest:trace.at(-1).at,readings:trace,synoptic,source:url.href};
 }
 
+export const METAR_FEED = 'https://tgftp.nws.noaa.gov/data/observations/metar/stations';
+
+/**
+ * A raw METAR's temperature at tenths of a degree C (the remark T-group, else the body's whole degrees) and its
+ * synoptic six-hour extremes (remarks 1sTTT max, 2sTTT min). Pure.
+ * @param {string} raw e.g. "KOKC 081452Z 00000KT 10SM CLR 24/13 A3010 RMK AO2 SLP179 T02390133 51015"
+ * @param {Date|number} issued the bulletin's time, to date the day-and-hour group
+ */
+export function parseMetar(raw, issued) {
+  const m = /^([A-Z0-9]{4})\s+(?:METAR\s+|SPECI\s+)?(\d{2})(\d{2})(\d{2})Z\b/u.exec(raw.trim());
+  if (!m) return null;
+  const ref = new Date(issued);
+  let at = Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth(), Number(m[2]), Number(m[3]), Number(m[4]));
+  if (at - ref.getTime() > 2 * 86400000) at = Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth() - 1, Number(m[2]), Number(m[3]), Number(m[4]));
+  const c = (sign, digits) => (sign === '1' ? -1 : 1) * Number(digits) / 10, f = (x) => x * 9 / 5 + 32;
+  const [body, remarks = ''] = raw.split(' RMK ');
+  const tenths = /\sT([01])(\d{3})[01]\d{3}(\s|$)/u.exec(` ${remarks}`);
+  const whole = /\s(M?\d{2})\/(M?\d{2})?(\s|$)/u.exec(` ${body}`);
+  const temperatureF = tenths ? f(c(tenths[1], tenths[2])) : whole ? f(Number(whole[1].replace('M', '-'))) : null;
+  const synoptic = [];
+  for (const token of remarks.split(/\s+/u)) {
+    const g = /^([12])([01])(\d{3})$/u.exec(token);
+    if (g) synoptic.push({ at: new Date(at).toISOString(), kind: g[1] === '1' ? 'max6h' : 'min6h', temperatureF: f(c(g[2], g[3])), precisionF: 0.09 });
+  }
+  return { station: m[1], at: new Date(at).toISOString(), temperatureF, precisionF: tenths ? 0.09 : 0.9, synoptic, raw };
+}
+
+/** The station's latest METAR from NWS's feed, which publishes each report about 2.5 minutes after it is taken (the observation API lags 15-35). */
+export async function latestMetar({ station }, { fetchImpl = fetch, feed = METAR_FEED, userAgent = NWS_USER_AGENT } = {}) {
+  const res = await fetchImpl(`${feed}/${station}.TXT`, { headers: { 'user-agent': userAgent }, signal: AbortSignal.timeout(10000) });
+  if (!res.ok) throw new Error(`metar ${station}: ${res.status}`);
+  const [stamp, raw] = (await res.text()).trim().split('\n');
+  return raw ? parseMetar(raw, Date.parse(`${stamp.replace(/\//gu, '-').replace(' ', 'T')}:00Z`)) : null;
+}
+
+/**
+ * The day's extremes with a METAR folded in: its reading when it falls inside the climate day, and its six-hour
+ * extremes when their six hours do. Returns the observations unchanged when the METAR adds nothing.
+ */
+export function withMetar(obs, metar) {
+  if (!obs || !metar || !Number.isFinite(metar.temperatureF)) return obs;
+  const from = Date.parse(obs.from), until = from + 86400000, at = Date.parse(metar.at);
+  if (!(at >= from && at < until)) return obs;
+  const known = obs.readings.find((r) => r.at === metar.at);
+  const readings = known && known.precisionF <= metar.precisionF ? obs.readings
+    : [...obs.readings.filter((r) => r.at !== metar.at), { at: metar.at, temperatureF: metar.temperatureF, precisionF: metar.precisionF, qualityControl: null, source: 'metar' }].sort((a, b) => a.at.localeCompare(b.at));
+  const synoptic = [...(obs.synoptic ?? []), ...metar.synoptic.filter((g) => at - 6 * 3600000 >= from && !(obs.synoptic ?? []).some((o) => o.at === g.at && o.kind === g.kind))];
+  const temps = readings.map((r) => r.temperatureF), maxF = Math.max(...temps), minF = Math.min(...temps);
+  return { ...obs, count: readings.length, readings, synoptic, maxF, minF, floor: Math.floor(maxF) - 1, ceiling: Math.ceil(minF) + 1, ...preciseBounds(readings, synoptic), latest: readings.at(-1).at };
+}
+
 /**
  * NWS products that announce a temperature regime the station's guidance error model was not fitted on.
  * Under one, the far tail on its side is the regime's risk, not a mispriced premium (2026-10-04: KSAN and
