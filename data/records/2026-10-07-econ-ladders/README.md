@@ -306,3 +306,18 @@ R1: at 24 h before close, buy NO at 1 - bid on every market with yes bid in [0.0
 | events | markets | Brier market mid | Brier nowcast | Brier 50/50 blend | nowcast - mid (SE) | blend - mid (SE) |
 |---|---|---|---|---|---|---|
 | 40 | 148 | 0.0916 | 0.1231 | 0.0951 | 0.03149 (0.01772) | 0.00350 (0.00683) |
+
+## Pre-registered prospective test: weekly jobless claims (committed 2026-10-07, before any later release)
+
+The claims anomaly above (thresholds priced 0.12–0.70 resolve YES 10–18 points less often than
+priced; 58 events, all 2025–26) was found by inspecting bands, so it is a hypothesis, not evidence. It
+is tested forward only, on releases after this commit.
+
+- **Rule C1:** for each `KXJOBLESSCLAIMS` event, at 24 h before close, for every threshold market whose
+  YES ask lies in [0.15, 0.65], buy NO at 1 − bid and hold to settlement.
+- **Fees:** Kalshi taker fee, 0.07 × fee_multiplier × P × (1 − P) per contract, cent-rounded per
+  order at C = 10.
+- **Unit and errors:** one event is one cluster; standard errors are delete-one-event jackknife.
+- **Verdict criterion, fixed now:** after at least 12 new weekly events, the mean net P&L per
+  contract must be > 0 with t > 2. Otherwise the anomaly is dropped.
+- **Shadow only:** no order until the verdict passes and the desk's owner admits the lane.
