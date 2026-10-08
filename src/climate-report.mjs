@@ -36,3 +36,14 @@ export async function latestClimateReport({ site, date }, { fetchImpl = fetch, b
   }
   return null;
 }
+
+/**
+ * The day's extremes with a climate report folded in: the report's maximum is the official whole-degree high so
+ * far, so the final high is at least it (and the final low at most the report's minimum). Exact, unlike readings.
+ */
+export function withClimateReport(obs, report) {
+  if (!obs || !report || report.date !== obs.date) return obs;
+  const floorPrecise = Number.isFinite(report.max) ? Math.max(obs.floorPrecise ?? -Infinity, report.max) : obs.floorPrecise;
+  const ceilingPrecise = Number.isFinite(report.min) ? Math.min(obs.ceilingPrecise ?? Infinity, report.min) : obs.ceilingPrecise;
+  return { ...obs, floorPrecise, ceilingPrecise, climateReport: { max: report.max, min: report.min, issued: report.issued, final: report.final } };
+}
