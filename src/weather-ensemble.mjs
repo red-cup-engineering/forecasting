@@ -24,30 +24,13 @@ export function postprocessTemperature(r,{biasF,scaleMultiplier}){
  if(r.mixture)out.mixture={...r.mixture,components:r.mixture.components.map(c=>({...c,model:c.model+'/pool-postprocess-v1',meanF:r.meanF+biasF+(c.meanF-r.meanF)*scaleMultiplier,scaleF:c.scaleF*scaleMultiplier,...(c.empirical?{empirical:{...c.empirical,pointsF:empiricalPoints(c).map(x=>out.meanF+(x-r.meanF)*scaleMultiplier)}}:{})}))};
  return out;
 }
-function scoringPoints(r){return components(r).flatMap(c=>c.empirical?empiricalPoints(c).map(x=>({x,w:c.weight/c.empirical.pointsF.length})):nodes.map(z=>({x:c.meanF+c.scaleF*z,w:c.weight/nodes.length}))).sort((a,b)=>a.x-b.x);}
 /** 41 nodes per component, sorted weighted identity: O(n log n), including cross-component distance. */
 export function temperatureDistributionCrps(r,observedF){
- const points=scoringPoints(r);
+ const points=components(r).flatMap(c=>c.empirical?empiricalPoints(c).map(x=>({x,w:c.weight/c.empirical.pointsF.length})):nodes.map(z=>({x:c.meanF+c.scaleF*z,w:c.weight/nodes.length}))).sort((a,b)=>a.x-b.x);
  let absolute=0,pairHalf=0,prefixWeight=0,prefixMoment=0;
  for(const p of points){absolute+=p.w*Math.abs(p.x-observedF);pairHalf+=p.w*(p.x*prefixWeight-prefixMoment);prefixWeight+=p.w;prefixMoment+=p.w*p.x;}
  return Math.max(0,absolute-pairHalf);
 }
-/** Exact piecewise-linear extrema for the law used by the existing CRPS
- * scorer: exact empirical atoms, 41-node approximation for Student-t components.
- * Paired gains use ONE common report cell, rather than independent labels. */
-export function temperatureDistributionCellScores(r,{lowF,highF},{comparators=[]}={}){
- if(!Number.isFinite(lowF)||!Number.isFinite(highF)||lowF>highF||!Array.isArray(comparators)||comparators.length>16)throw new TypeError('finite ordered reporting cell and bounded comparators required');
- const summarize=law=>{
-  const points=scoringPoints(law),weights=[0],moments=[0];let pairHalf=0;
-  for(const p of points){if(!Number.isFinite(p.x)||!Number.isFinite(p.w)||p.w<0)throw new TypeError('finite nonnegative scoring law required');const w=weights.at(-1),m=moments.at(-1);pairHalf+=p.w*(p.x*w-m);weights.push(w+p.w);moments.push(m+p.w*p.x);}
-  const total=weights.at(-1),moment=moments.at(-1);if(Math.abs(total-1)>1e-8)throw new TypeError('normalized scoring law required');
-  const score=y=>{let lo=0,hi=points.length;while(lo<hi){const mid=(lo+hi)>>1;if(points[mid].x<=y)lo=mid+1;else hi=mid;}return Math.max(0,y*weights[lo]-moments[lo]+moment-moments[lo]-y*(total-weights[lo])-pairHalf);};
-  const knots=points.filter(p=>p.x>lowF&&p.x<highF).map(p=>p.x);return {score,knots};
- };
- const pool=summarize(r),values=[lowF,highF,...pool.knots].map(pool.score),gains=comparators.map(c=>{const component=summarize({...c,weight:1}),knots=[lowF,highF,...pool.knots,...component.knots],values=knots.map(y=>component.score(y)-pool.score(y));return {model:c.model,family:c.family??null,lowF:Math.min(...values),highF:Math.max(...values)};});
- return {lowF:Math.min(...values),highF:Math.max(...values),gains,measurementCell:{lowF,highF},method:'all piecewise-linear knots in common report cell; exact empirical law / existing 41-node Student-t CRPS approximation'};
-}
-
 export function temperatureDiagnostics(r,y,{tieUniform=.5}={}){const upper=Math.max(0,Math.min(1,temperatureCdf(r,y))),discrete=components(r).some(c=>c.empirical),lower=discrete?Math.max(0,Math.min(upper,temperatureCdf(r,y,{left:true}))):upper;if(!Number.isFinite(tieUniform)||tieUniform<0||tieUniform>1)throw new TypeError('PIT tie position in [0,1] required');return {pit:lower+tieUniform*(upper-lower),...(discrete?{pitInterval:[lower,upper],pitMethod:'seeded randomized PIT within atom CDF interval; no independent-time calibration guarantee'}:{}),covered90:upper>=.05&&lower<=.95,crpsF:temperatureDistributionCrps(r,y)};}
 
 /** Pool probabilities for a common contract, preserving non-Student-t component CDFs. */

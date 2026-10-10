@@ -1,0 +1,180 @@
+{
+ "at": "2026-10-08T05:17:42.830Z",
+ "days": 6,
+ "events": 240,
+ "gapHistogram": {
+  "0": 76,
+  "1": 34,
+  "2": 8,
+  "3": 2,
+  "4": 1,
+  "-Infinity": 16,
+  "-1": 85,
+  "-2": 17,
+  "-3": 1
+ },
+ "summary": {
+  "floor(M)-1": {
+   "deadBrackets": 302,
+   "violations": [],
+   "contracts": 539740,
+   "grossUsd": 5397.4,
+   "netUsd": 5023.36,
+   "byLag": {
+    "0": {
+     "netUsd": 5512.22,
+     "contractsOver1c": 2399
+    },
+    "2": {
+     "netUsd": 5301.74,
+     "contractsOver1c": 1071
+    },
+    "5": {
+     "netUsd": 5170.93,
+     "contractsOver1c": 0
+    },
+    "10": {
+     "netUsd": 5070.22,
+     "contractsOver1c": 0
+    },
+    "15": {
+     "netUsd": 5023.36,
+     "contractsOver1c": 0
+    },
+    "30": {
+     "netUsd": 4839.27,
+     "contractsOver1c": 0
+    }
+   },
+   "days": 5,
+   "netUsdPerDay": 1004.67
+  },
+  "floor(M)": {
+   "deadBrackets": 402,
+   "violations": [],
+   "contracts": 1075669,
+   "grossUsd": 10759.17,
+   "netUsd": 10013.57,
+   "byLag": {
+    "0": {
+     "netUsd": 14369.94,
+     "contractsOver1c": 38787
+    },
+    "2": {
+     "netUsd": 11291.55,
+     "contractsOver1c": 12744
+    },
+    "5": {
+     "netUsd": 10346.09,
+     "contractsOver1c": 284
+    },
+    "10": {
+     "netUsd": 10181.61,
+     "contractsOver1c": 80
+    },
+    "15": {
+     "netUsd": 10013.57,
+     "contractsOver1c": 80
+    },
+    "30": {
+     "netUsd": 9390.91,
+     "contractsOver1c": 80
+    }
+   },
+   "days": 5,
+   "netUsdPerDay": 2002.71
+  },
+  "round(M)": {
+   "deadBrackets": 458,
+   "violations": [
+    "KXHIGHAUS-26OCT03-T79",
+    "KXHIGHMIA-26OCT03-B86.5",
+    "KXHIGHPHIL-26OCT02-B86.5",
+    "KXHIGHTBOS-26OCT05-B70.5",
+    "KXHIGHTDAL-26OCT02-B79.5",
+    "KXHIGHTHOU-26OCT03-B88.5",
+    "KXHIGHTMIN-26OCT04-B68.5",
+    "KXHIGHTMIN-26OCT03-B70.5",
+    "KXHIGHTOKC-26OCT02-B70.5",
+    "KXHIGHTPHX-26OCT06-B97.5",
+    "KXHIGHTSEA-26OCT02-B70.5",
+    "KXHIGHTSFO-26OCT06-T81",
+    "KXHIGHTTTN-26OCT05-B70.5",
+    "KXLOWTBOS-26OCT06-B47.5",
+    "KXLOWTCHI-26OCT05-B49.5",
+    "KXLOWTCHI-26OCT03-B49.5",
+    "KXLOWTEWR-26OCT04-B56.5",
+    "KXLOWTHOU-26OCT02-B76.5",
+    "KXLOWTNOLA-26OCT03-B76.5",
+    "KXLOWTSAN-26OCT04-B74.5",
+    "KXLOWTSAN-26OCT02-B67.5"
+   ],
+   "contracts": 1594825,
+   "grossUsd": 141894.05,
+   "netUsd": 25992.12,
+   "byLag": {
+    "0": {
+     "netUsd": 34294.28,
+     "contractsOver1c": 129755
+    },
+    "2": {
+     "netUsd": 30374.22,
+     "contractsOver1c": 99924
+    },
+    "5": {
+     "netUsd": 28019.24,
+     "contractsOver1c": 76986
+    },
+    "10": {
+     "netUsd": 26968.37,
+     "contractsOver1c": 70205
+    },
+    "15": {
+     "netUsd": 25992.12,
+     "contractsOver1c": 58373
+    },
+    "30": {
+     "netUsd": 24000.28,
+     "contractsOver1c": 45531
+    }
+   },
+   "days": 5,
+   "netUsdPerDay": 5198.42
+  },
+  "precise": {
+   "deadBrackets": 430,
+   "violations": [],
+   "contracts": 1217838,
+   "grossUsd": 12180.14,
+   "netUsd": 11336.06,
+   "byLag": {
+    "0": {
+     "netUsd": 14643.67,
+     "contractsOver1c": 36030
+    },
+    "2": {
+     "netUsd": 13174.74,
+     "contractsOver1c": 14262
+    },
+    "5": {
+     "netUsd": 11819.74,
+     "contractsOver1c": 380
+    },
+    "10": {
+     "netUsd": 11572.49,
+     "contractsOver1c": 176
+    },
+    "15": {
+     "netUsd": 11336.06,
+     "contractsOver1c": 176
+    },
+    "30": {
+     "netUsd": 10826.06,
+     "contractsOver1c": 176
+    }
+   },
+   "days": 5,
+   "netUsdPerDay": 2267.21
+  }
+ }
+}

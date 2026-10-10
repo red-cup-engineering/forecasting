@@ -1,0 +1,38 @@
+{
+  "id": "weather-totals-r3",
+  "title": "MLB totals: forecast temperature >= 85 F, buy YES",
+  "record": "data/records/2026-10-07-weather-totals/README.md#forward-hypotheses-committed-2026-10-07-before-any-later-game",
+  "registeredAt": "2026-10-08T04:28:08Z",
+  "status": "forward",
+  "universe": {
+    "series": [
+      "KXNFLTOTAL",
+      "KXNCAAFTOTAL",
+      "KXMLBTOTAL"
+    ]
+  },
+  "entry": null,
+  "evaluator": "weather-totals-rule",
+  "params": {
+    "rule": "R3",
+    "sports": [
+      "mlb"
+    ]
+  },
+  "judgeAfter": "2026-12-31T23:59:59Z",
+  "cluster": "game",
+  "fee": {
+    "theta": 0.07,
+    "multiplier": 1,
+    "count": 1,
+    "rounding": "none"
+  },
+  "verdict": {
+    "minClusters": 30,
+    "k": 2,
+    "holdout": {
+      "lastMonth": true
+    }
+  },
+  "notes": "Pre-registration commit 792c785. Re-run unchanged after December 2026. Supported only if the pooled mean net is > 0 at 2 SE and the holdout (last calendar month with trades) has the same sign; the record states no minimum, 30 is the engine floor. Rows come from weather-totals-study.mjs rows (roof parks excluded)."
+}

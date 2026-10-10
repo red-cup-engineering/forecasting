@@ -15,11 +15,12 @@
  * K((1+1/K)^n - 1), the point estimate used when K is supplied.
  */
 
+import { THETA } from './fees.mjs';
 import { legMeta } from './combo-pricer.mjs';
 
 export const CLIFF = 0.25;
 export const MIN_SCORE = 0.01;
-export const COMBO_TAKER_RATE = 0.07;
+export const COMBO_TAKER_RATE = THETA;
 export const COMBO_MAKER_RATE = 0.035;
 
 /** A leg is an eligible component when it is a sports market that is not a winner, spread, total or BTTS. */

@@ -1,0 +1,43 @@
+{
+  "id": "ncaaf-overs-o1",
+  "title": "NCAAF overs: buy YES at the ask on the KXNCAAFTOTAL rung nearest 0.50 at start - 60 min",
+  "record": "data/records/2026-10-07-weather-totals/README.md#forward-hypotheses-committed-2026-10-07-before-any-later-game",
+  "registeredAt": "2026-10-08T04:28:08Z",
+  "status": "forward",
+  "universe": {
+    "series": [
+      "KXNCAAFTOTAL"
+    ]
+  },
+  "entry": {
+    "snapshot": {
+      "anchor": "start",
+      "offsetMinutes": -60,
+      "toleranceMinutes": 60
+    },
+    "side": "yes",
+    "price": {
+      "field": "fill"
+    },
+    "choose": {
+      "nearest": {
+        "field": "yes_mid",
+        "target": 0.5
+      }
+    },
+    "oncePer": "event",
+    "hold": "settlement"
+  },
+  "cluster": "game",
+  "fee": {
+    "theta": 0.07,
+    "multiplier": "series",
+    "count": 1,
+    "rounding": "none"
+  },
+  "verdict": {
+    "minClusters": 150,
+    "k": 2
+  },
+  "notes": "Pre-registration commit 6bcaa47. Start is the market's occurrence_datetime. Games from 2026-10-08. Fee unrounded (per contract) as in the study."
+}

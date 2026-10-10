@@ -1,7 +1,6 @@
 """Bounded, losslessly retained ECMWF AIFS ENS 2m-temperature fields. ecCodes 2.49."""
 import concurrent.futures, datetime as dt, hashlib, json, math, os, pathlib, sys, tempfile, urllib.request, urllib.error, threading
 import eccodes
-from collections import deque
 RESERVE=512*1024*1024
 UTC=dt.timezone.utc
 BASE="https://ecmwf-forecasts.s3.amazonaws.com/"
@@ -121,9 +120,9 @@ def decode(b,record,run,valid,stations):
     finally: eccodes.codes_release(g)
 
 def decode_cached(root,b,record,run,valid,stations):
-    paths={};projected={};metadata=None;missing=[];field_sha256=sha(b)
+    paths={};projected={};metadata=None;missing=[]
     for station in stations:
-        key=sha(json.dumps({"field":field_sha256,"run":str(run),"valid":str(valid),"member":record["member"],"type":record["type"],"station":station["station"],"lat":station["latitude"],"lon":station["longitude"],"operator":"bilinear-v1","decoder":eccodes.codes_get_api_version()},sort_keys=True).encode())
+        key=sha(json.dumps({"field":sha(b),"run":str(run),"valid":str(valid),"member":record["member"],"type":record["type"],"station":station["station"],"lat":station["latitude"],"lon":station["longitude"],"operator":"bilinear-v1","decoder":eccodes.codes_get_api_version()},sort_keys=True).encode())
         path=root/"projections"/(key+".json");paths[station["station"]]=path
         if path.exists():
             cached=json.loads(path.read_text());metadata=cached["metadata"];projected[station["station"]]=cached["projection"]
@@ -132,22 +131,6 @@ def decode_cached(root,b,record,run,valid,stations):
         metadata,new=decode(b,record,run,valid,missing);projected.update(new)
         for station,projection in new.items():retain(paths[station],json.dumps({"metadata":metadata,"projection":projection},allow_nan=False).encode())
     return metadata,projected
-
-def acquired_records(pool,records,download):
-    # Keep three admitted field tasks, rather than materializing every member's
-    # bytes in completed futures while projection consumes the ensemble in order.
-    records=iter(records);pending=deque()
-    for _ in range(3):
-        try: record=next(records)
-        except StopIteration: break
-        pending.append(pool.submit(download,record))
-    while pending:
-        future=pending.popleft();result=future.result();del future
-        yield result
-        del result
-        try: record=next(records)
-        except StopIteration: continue
-        pending.append(pool.submit(download,record))
 
 def assemble(root,run,records,indices,valids,options):
     need=sum(r["length"] for r in records)
@@ -162,7 +145,7 @@ def assemble(root,run,records,indices,valids,options):
         return r,b,receipt
     fields=[];rows={s["station"]:{v.isoformat().replace("+00:00","Z"):[] for v in valids} for s in options["stations"]}
     with concurrent.futures.ThreadPoolExecutor(max_workers=3) as pool:
-        for record,b,receipt in acquired_records(pool,records,download):
+        for record,b,receipt in pool.map(download,records):
             valid=dt.datetime.fromisoformat(record["validTime"].replace("Z","+00:00"))
             metadata,projected=decode_cached(root,b,record,run,valid,options["stations"])
             fields.append({**receipt,"member":record["member"],"validTime":record["validTime"],"indexSha256":record["indexSha256"],"metadata":metadata})

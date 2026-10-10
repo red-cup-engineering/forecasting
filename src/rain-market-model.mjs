@@ -120,6 +120,31 @@ export function priceRainMarket(market, { guidance, maxGuidanceAgeHours = 8, now
   };
 }
 
+/**
+ * The side of the market's long-shot bias a priced rain market falls on, if either, and the loss rate a bet on that
+ * side is sized on (rain-markets.json `sides`): `tail` (rain very unlikely: a NO holder's bet) or `favourite` (rain
+ * near certain: a YES holder's bet). Never smaller than the model's own probability of losing.
+ * @returns {{side: 'tail'|'favourite', lossRate: number} | null}
+ */
+export function rainSide(priced, sides = RAIN_MARKETS.sides) {
+  if (!priced?.priced) return null;
+  if (priced.probability <= sides.tail.maxModelProbability) return { side: 'tail', lossRate: Math.max(priced.probability, sides.tail.lossRate) };
+  if (priced.probability >= sides.favourite.minModelProbability) return { side: 'favourite', lossRate: Math.max(1 - priced.probability, sides.favourite.lossRate) };
+  return null;
+}
+
+/**
+ * The market's own long-shot-corrected probability of rain, from its book: the mid read through the measured
+ * recalibration (rain-markets.json `marketPrior`: P(yes | mid) = sigmoid(a + b logit(mid)), b ~ 1.22). A second opinion
+ * beside the NBS model, independent of it; null without a two-sided book. It prices and sizes nothing.
+ * @param {{bidCents: number|null, askCents: number|null}} book  best YES bid and ask in whole cents
+ */
+export function rainMarketPrior({ bidCents, askCents }, prior = RAIN_MARKETS.marketPrior) {
+  if (!(bidCents >= 1 && askCents <= 99 && bidCents <= askCents)) return null;
+  const mid = (bidCents + askCents) / 200;
+  return { midCents: mid * 100, probability: sigmoid(prior.a + prior.b * logit(mid, RAIN_MARKETS.eps)), fit: { a: prior.a, b: prior.b } };
+}
+
 /** Supplementary forward experiment from the chronological daily-rain research. Never alters the frozen lane. */
 export function rainMarketPoolProbability(weatherP,marketP){
   if(![weatherP,marketP].every(p=>Number.isFinite(p)&&p>=0&&p<=1))throw new TypeError('finite weather and market probabilities required');

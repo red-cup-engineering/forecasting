@@ -28,7 +28,7 @@ test("a kalshi.weather.* question with no matching settled market stays Open", a
 test("a kalshi.weather.* question resolves YES (outcome 1) from a settled result=yes market, matched by recomputing the ticker->id transform", async () => {
   const [resolution] = await resolveSetOfForecastQuestions(
     { questions: [{ id: "kxhighny-26sep04-t86", sourcePlatform: "kalshi.weather.KXHIGHNY" }], now: NOW },
-    { fetchImpl: kalshiFetch([{ ticker: "KXHIGHNY-26SEP04-T86", result: "yes" }]) },
+    { fetchImpl: kalshiFetch([{ ticker: "KXHIGHNY-26SEP04-T86", result: "yes", status:"finalized", market_type:"binary", settlement_ts:"2026-09-05T07:00:00Z" }]) },
   );
   assert.equal(resolution.type, "Resolved");
   assert.equal(resolution.outcome, 1);
@@ -39,7 +39,7 @@ test("a kalshi.weather.* question resolves YES (outcome 1) from a settled result
 test("a kalshi.weather.* question resolves NO (outcome 0) from a settled result=no market, including a decimal bracket ticker", async () => {
   const [resolution] = await resolveSetOfForecastQuestions(
     { questions: [{ id: "kxhighchi-26sep04-b89-5", sourcePlatform: "kalshi.weather.KXHIGHCHI" }], now: NOW },
-    { fetchImpl: kalshiFetch([{ ticker: "KXHIGHCHI-26SEP04-B89.5", result: "no" }]) },
+    { fetchImpl: kalshiFetch([{ ticker: "KXHIGHCHI-26SEP04-B89.5", result: "no", status:"finalized", market_type:"binary", settlement_ts:"2026-09-05T07:00:00Z" }]) },
   );
   assert.equal(resolution.type, "Resolved");
   assert.equal(resolution.outcome, 0);
@@ -222,4 +222,9 @@ test("throws when request.now is missing", async () => {
 
 test("throws when a question lacks sourcePlatform", async () => {
   await assert.rejects(() => resolveSetOfForecastQuestions({ questions: [{ id: "x" }], now: NOW }), TypeError);
+});
+
+test("a merely determined Kalshi result stays open", async () => {
+ const [resolution]=await resolveSetOfForecastQuestions({questions:[{id:"kxhighny-26sep04-t86",sourcePlatform:"kalshi.weather.KXHIGHNY"}],now:NOW},{fetchImpl:kalshiFetch([{ticker:"KXHIGHNY-26SEP04-T86",result:"yes",status:"determined",market_type:"binary",settlement_ts:"2026-09-05T07:00:00Z"}])});
+ assert.equal(resolution.type,"Open");
 });

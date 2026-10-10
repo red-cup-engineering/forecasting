@@ -363,5 +363,101 @@
       "validated": true,
       "alias": "CLL"
     }
+  },
+  "sides": {
+    "description": "Where the frozen NBS P06 logistic is measured to beat the market's long-shot bias, and the loss rate a bet on each side is sized on (data/records/2026-10-04-weather-coverage, results/rain-model.md and rain-edges.md; 1524 settled KXRAIN markets 2026-07-26..10-02, cross-fit by date so every row is out of sample). The thresholds were read off the calibration table, so the loss rates are the record's upper bounds, not its point rates. Prices, fees and edge are the desk's.",
+    "tail": {
+      "maxModelProbability": 0.02,
+      "lossRate": 0.014,
+      "outOfSample": {
+        "markets": 221,
+        "settledYes": 1,
+        "takingEvPerContractCents": 3.3
+      },
+      "basis": "p <= 2%: 1 of 221 settled yes; the rule-of-three style upper bound 3/221 = 1.4%."
+    },
+    "favourite": {
+      "minModelProbability": 0.97,
+      "lossRate": 0.055,
+      "outOfSample": {
+        "markets": 54,
+        "settledNo": 0,
+        "takingEvPerContractCents": 7.4
+      },
+      "basis": "p >= 97%: 0 of 54 settled no; rule of three 3/54 = 5.5%."
+    }
+  },
+  "marketPrior": {
+    "description": "The market's own favourite-longshot bias, measured: P(settles yes | mid) = sigmoid(a + b logit(mid)), fitted by maximum likelihood (lenticule-science gambling-services-section src/odds.mjs fitLogitRecalibration) to the 2026-10-04 weather-coverage record's market-mid calibration table (results/rain-model.md, test dates >= 2026-09-02, every decision time). b > 1 is the long-shot bias: a 3c market settles yes about 1.15% of the time and a 97c market about 98.2%. It is a second opinion beside the NBS model, recorded on each rain target; it sizes nothing.",
+    "a": -0.22021177088613275,
+    "b": 1.2185917753899076,
+    "se": {
+      "a": 0.054456389731647195,
+      "b": 0.04004447671382072
+    },
+    "n": 4537,
+    "caveat": "Rows are (market, decision time): one market enters up to three times and one date's markets share their weather, so the standard errors are optimistic and the fit is in-sample on the record's test half.",
+    "bins": [
+      [
+        863,
+        0.012,
+        0.0
+      ],
+      [
+        940,
+        0.033,
+        0.011
+      ],
+      [
+        504,
+        0.073,
+        0.024
+      ],
+      [
+        472,
+        0.144,
+        0.112
+      ],
+      [
+        477,
+        0.297,
+        0.252
+      ],
+      [
+        390,
+        0.501,
+        0.421
+      ],
+      [
+        405,
+        0.705,
+        0.659
+      ],
+      [
+        164,
+        0.854,
+        0.902
+      ],
+      [
+        79,
+        0.927,
+        0.975
+      ],
+      [
+        56,
+        0.967,
+        0.982
+      ],
+      [
+        187,
+        0.993,
+        1.0
+      ]
+    ],
+    "binsColumns": [
+      "n",
+      "meanMid",
+      "settledYesShare"
+    ]
   }
 }

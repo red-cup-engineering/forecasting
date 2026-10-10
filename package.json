@@ -14,6 +14,7 @@
     "./package.json": "./package.json",
     "./temperature-distribution": "./src/temperature-distribution.mjs",
     "./temperature-market-model": "./src/temperature-market-model.mjs",
+    "./temperature-tail-prediction": "./src/temperature-tail-prediction.mjs",
     "./nbm-station-guidance": "./src/nbm-station-guidance.mjs",
     "./station-observations": "./src/station-observations.mjs",
     "./rain-market-model": "./src/rain-market-model.mjs",
@@ -21,33 +22,35 @@
     "./weather-quantiles": "./src/weather-quantiles.mjs",
     "./lamp-station-guidance": "./src/lamp-station-guidance.mjs",
     "./station-weather-science": "./src/station-weather-science.mjs",
-    "./weather-cli": "./apps/weather.mjs",
-    "./weather-replay": "./apps/replay-station-weather-science.mjs",
     "./weather-index": "./src/weather-index.mjs",
     "./nbm-hourly-guidance": "./src/nbm-hourly-guidance.mjs",
+    "./weather-cli": "./apps/weather.mjs",
+    "./weather-replay": "./apps/replay-station-weather-science.mjs",
     "./weather-ensemble": "./src/weather-ensemble.mjs",
     "./weather-temperature-extremes": "./src/weather-temperature-extremes.mjs",
     "./weather-relational-temperature": "./src/weather-relational-temperature.mjs",
     "./weather-strategy-research": "./src/weather-strategy-research.mjs",
     "./weather-relational-nowcast": "./src/weather-relational-nowcast.mjs",
-    "./weather-ecmwf-ensemble": "./src/weather-ecmwf-ensemble.mjs"
+    "./forecast-surface": "./src/forecast-surface.mjs",
+    "./hypotheses": "./src/hypotheses/run.mjs",
+    "./hypotheses-admitted": "./src/hypotheses/admit.mjs",
+    "./fees": "./src/fees.mjs",
+    "./climate-report": "./src/climate-report.mjs"
   },
   "scripts": {
     "check": "node --check src/forecasting.mjs && node --check src/evidence-fusion.mjs && node --check scripts/ingest-forecasting-question.mjs && node --check scripts/fuse-forecast.mjs && node --check scripts/record-forecast.mjs && node --check scripts/score-forecast.mjs && node --check scripts/derive-calibration-record.mjs && node --check scripts/resolve-set-of-forecast-questions.mjs && node --check apps/forecasting-cli.mjs && node --check apps/forecast-weather-markets-cli.mjs && node --check apps/forecasting-daily-cycle.mjs",
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
-    "@red-cup-engineering/metrologic": "0.3.0",
-    "@red-cup-engineering/semiotic-eavt-services-section": "0.1.0",
-    "@red-cup-engineering/computer-data-engineering-services-section": "0.1.0",
-    "@red-cup-engineering/computer-text-content-engineering-services-section": "0.1.0",
-    "@red-cup-engineering/javascript-file-services-section": "0.1.0",
-    "@red-cup-engineering/javascript-node-services-section": "0.3.0",
-    "@red-cup-engineering/kalshi-services-section": "0.1.0",
-    "@red-cup-engineering/position-sizing-service": "0.3.1",
-    "@red-cup-engineering/witness-journal-document-service": "0.1.0",
-    "@red-cup-engineering/signcell": "0.1.0",
-    "@red-cup-engineering/signchain": "0.1.0"
+    "@red-cup-engineering/semiotic-eavt-services-section": "workspace:*",
+    "@red-cup-engineering/computer-text-content-engineering-services-section": "workspace:*",
+    "@red-cup-engineering/javascript-file-services-section": "workspace:*",
+    "@red-cup-engineering/javascript-node-services-section": "workspace:*",
+    "@red-cup-engineering/kalshi-services-section": "workspace:*",
+    "@red-cup-engineering/position-sizing-service": "workspace:*",
+    "@red-cup-engineering/signcell": "workspace:*",
+    "@red-cup-engineering/signchain": "workspace:*",
+    "@red-cup-engineering/computer-data-engineering-services-section": "workspace:*"
   },
   "engines": {
     "node": ">=22"

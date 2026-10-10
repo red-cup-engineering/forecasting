@@ -1,0 +1,1474 @@
+{
+ "type": "KalshiRainMidBinReturns",
+ "version": 1,
+ "question": "What did taking each side of a daily-rain market return, by the mid at the lane's day-before decision times, on Kalshi's own settled results?",
+ "series": "KXRAIN",
+ "decisionTimes": [
+  "D-1 15h",
+  "D-1 21h"
+ ],
+ "bins": [
+  [
+   0.0,
+   0.02
+  ],
+  [
+   0.02,
+   0.05
+  ],
+  [
+   0.05,
+   0.1
+  ],
+  [
+   0.1,
+   0.2
+  ],
+  [
+   0.2,
+   0.4
+  ],
+  [
+   0.4,
+   0.6
+  ],
+  [
+   0.6,
+   0.8
+  ],
+  [
+   0.8,
+   0.9
+  ],
+  [
+   0.9,
+   0.95
+  ],
+  [
+   0.95,
+   0.98
+  ],
+  [
+   0.98,
+   1.0
+  ]
+ ],
+ "feeRule": "Kalshi quadratic taker fee: ceil(0.07 x 10 x p(1-p)) cents per 10-lot order, a tenth per contract",
+ "provenance": {
+  "countedBy": "kalshi-engineering-services-section forecasting-service data/records/2026-10-10-rain-mid-bin-returns/scripts/mid_bins.py",
+  "script": "4fe9aed1d1de4d8cfc820726dd0a67b42e748457ce43e6c6484ac5f5388b0ec9",
+  "inputs": {
+   "settled": "0ae4669a0835192db8583baa20e2382206b5a73c707a50838fb2eb03c8e000a5",
+   "candles": "3952b159494270032e5974321d3ceb95e9ae31429deb54fd49746831ba9fdce5"
+  },
+  "fetchedBy": "data/records/2026-10-04-weather-coverage/scripts/fetch_settled.py, fetch_candles.py (public Kalshi API, no auth)",
+  "dateRange": [
+   "2026-08-02",
+   "2026-10-08"
+  ]
+ },
+ "all": {
+  "rows": 2798,
+  "markets": 1435,
+  "dates": 68,
+  "settledYes": 694,
+  "bins": [
+   {
+    "lower": 0.0,
+    "upper": 0.02,
+    "rows": 369,
+    "markets": 253,
+    "dates": 63,
+    "datesWithYes": 0,
+    "datesWithNo": 63,
+    "settledYes": 0,
+    "yesRate": 0.0,
+    "meanMid": 0.015433604336043358,
+    "likelihoods": {
+     "yes": 0.0,
+     "no": 0.17538022813688212
+    },
+    "takeYes": {
+     "n": 369,
+     "gross": -1.0,
+     "net": -1.0
+    },
+    "takeNo": {
+     "n": 369,
+     "gross": 0.010101010101010041,
+     "net": 0.009081735620585325
+    }
+   },
+   {
+    "lower": 0.02,
+    "upper": 0.05,
+    "rows": 677,
+    "markets": 430,
+    "dates": 67,
+    "datesWithYes": 6,
+    "datesWithNo": 67,
+    "settledYes": 8,
+    "yesRate": 0.011816838995568686,
+    "meanMid": 0.033670605612998526,
+    "likelihoods": {
+     "yes": 0.011527377521613832,
+     "no": 0.3179657794676806
+    },
+    "takeYes": {
+     "n": 677,
+     "gross": -0.689807976366322,
+     "net": -0.7149538044732301
+    },
+    "takeNo": {
+     "n": 677,
+     "gross": 0.015927428252606686,
+     "net": 0.013263524531839353
+    }
+   },
+   {
+    "lower": 0.05,
+    "upper": 0.1,
+    "rows": 341,
+    "markets": 260,
+    "dates": 63,
+    "datesWithYes": 8,
+    "datesWithNo": 63,
+    "settledYes": 9,
+    "yesRate": 0.026392961876832845,
+    "meanMid": 0.07303519061583578,
+    "likelihoods": {
+     "yes": 0.012968299711815562,
+     "no": 0.15779467680608364
+    },
+    "takeYes": {
+     "n": 341,
+     "gross": -0.6572659989082277,
+     "net": -0.6794201804595759
+    },
+    "takeNo": {
+     "n": 341,
+     "gross": 0.03478937190816037,
+     "net": 0.029994725046965483
+    }
+   },
+   {
+    "lower": 0.1,
+    "upper": 0.2,
+    "rows": 306,
+    "markets": 235,
+    "dates": 62,
+    "datesWithYes": 22,
+    "datesWithNo": 62,
+    "settledYes": 37,
+    "yesRate": 0.12091503267973856,
+    "meanMid": 0.14321895424836603,
+    "likelihoods": {
+     "yes": 0.053314121037463975,
+     "no": 0.12785171102661597
+    },
+    "takeYes": {
+     "n": 306,
+     "gross": -0.22719158339831427,
+     "net": -0.2716037808318982
+    },
+    "takeNo": {
+     "n": 306,
+     "gross": 0.007841719914260784,
+     "net": -0.0015565073144882548
+    }
+   },
+   {
+    "lower": 0.2,
+    "upper": 0.4,
+    "rows": 293,
+    "markets": 214,
+    "dates": 59,
+    "datesWithYes": 41,
+    "datesWithNo": 56,
+    "settledYes": 82,
+    "yesRate": 0.27986348122866894,
+    "meanMid": 0.298259385665529,
+    "likelihoods": {
+     "yes": 0.11815561959654179,
+     "no": 0.1002851711026616
+    },
+    "takeYes": {
+     "n": 293,
+     "gross": -0.09394591848480388,
+     "net": -0.13726216581080203
+    },
+    "takeNo": {
+     "n": 293,
+     "gross": 0.0035798607458214665,
+     "net": -0.016573244720203925
+    }
+   },
+   {
+    "lower": 0.4,
+    "upper": 0.6,
+    "rows": 269,
+    "markets": 194,
+    "dates": 60,
+    "datesWithYes": 44,
+    "datesWithNo": 51,
+    "settledYes": 127,
+    "yesRate": 0.4721189591078067,
+    "meanMid": 0.5005762081784386,
+    "likelihoods": {
+     "yes": 0.1829971181556196,
+     "no": 0.06749049429657794
+    },
+    "takeYes": {
+     "n": 269,
+     "gross": -0.09433781622313141,
+     "net": -0.12468801686296319
+    },
+    "takeNo": {
+     "n": 269,
+     "gross": 0.015305354097851753,
+     "net": -0.01874878253378132
+    }
+   },
+   {
+    "lower": 0.6,
+    "upper": 0.8,
+    "rows": 309,
+    "markets": 211,
+    "dates": 63,
+    "datesWithYes": 58,
+    "datesWithNo": 39,
+    "settledYes": 209,
+    "yesRate": 0.6763754045307443,
+    "meanMid": 0.7093851132686084,
+    "likelihoods": {
+     "yes": 0.3011527377521614,
+     "no": 0.04752851711026616
+    },
+    "takeYes": {
+     "n": 309,
+     "gross": -0.07068288856907928,
+     "net": -0.08872023258775338
+    },
+    "takeNo": {
+     "n": 309,
+     "gross": 0.05978827030564903,
+     "net": 0.008903523897841716
+    }
+   },
+   {
+    "lower": 0.8,
+    "upper": 0.9,
+    "rows": 113,
+    "markets": 81,
+    "dates": 46,
+    "datesWithYes": 43,
+    "datesWithNo": 7,
+    "settledYes": 103,
+    "yesRate": 0.911504424778761,
+    "meanMid": 0.8507964601769912,
+    "likelihoods": {
+     "yes": 0.1484149855907781,
+     "no": 0.004752851711026616
+    },
+    "takeYes": {
+     "n": 113,
+     "gross": 0.05952287055543409,
+     "net": 0.04878279791656281
+    },
+    "takeNo": {
+     "n": 113,
+     "gross": -0.41745870000753693,
+     "net": -0.451528913551377
+    }
+   },
+   {
+    "lower": 0.9,
+    "upper": 0.95,
+    "rows": 57,
+    "markets": 42,
+    "dates": 26,
+    "datesWithYes": 25,
+    "datesWithNo": 2,
+    "settledYes": 55,
+    "yesRate": 0.9649122807017544,
+    "meanMid": 0.9279824561403509,
+    "likelihoods": {
+     "yes": 0.0792507204610951,
+     "no": 0.0009505703422053232
+    },
+    "takeYes": {
+     "n": 57,
+     "gross": 0.027579809166137986,
+     "net": 0.022733770359563265
+    },
+    "takeNo": {
+     "n": 57,
+     "gross": -0.6650717703349281,
+     "net": -0.6860911764994402
+    }
+   },
+   {
+    "lower": 0.95,
+    "upper": 0.98,
+    "rows": 38,
+    "markets": 26,
+    "dates": 18,
+    "datesWithYes": 18,
+    "datesWithNo": 0,
+    "settledYes": 38,
+    "yesRate": 1.0,
+    "meanMid": 0.9663157894736841,
+    "likelihoods": {
+     "yes": 0.05475504322766571,
+     "no": 0.0
+    },
+    "takeYes": {
+     "n": 38,
+     "gross": 0.02764585544505706,
+     "net": 0.024948599951987824
+    },
+    "takeNo": {
+     "n": 38,
+     "gross": -1.0,
+     "net": -1.0
+    }
+   },
+   {
+    "lower": 0.98,
+    "upper": 1.0,
+    "rows": 26,
+    "markets": 20,
+    "dates": 9,
+    "datesWithYes": 9,
+    "datesWithNo": 0,
+    "settledYes": 26,
+    "yesRate": 1.0,
+    "meanMid": 0.985,
+    "likelihoods": {
+     "yes": 0.037463976945244955,
+     "no": 0.0
+    },
+    "takeYes": {
+     "n": 26,
+     "gross": 0.010101010101010104,
+     "net": 0.009081735620585264
+    },
+    "takeNo": {
+     "n": 26,
+     "gross": -1.0,
+     "net": -1.0
+    }
+   }
+  ]
+ },
+ "halves": {
+  "splitDate": "2026-09-05",
+  "early": {
+   "rows": 1276,
+   "markets": 656,
+   "dates": 34,
+   "settledYes": 320,
+   "bins": [
+    {
+     "lower": 0.0,
+     "upper": 0.02,
+     "rows": 129,
+     "markets": 91,
+     "dates": 29,
+     "datesWithYes": 0,
+     "datesWithNo": 29,
+     "settledYes": 0,
+     "yesRate": 0.0,
+     "meanMid": 0.015271317829457363,
+     "likelihoods": {
+      "yes": 0.0,
+      "no": 0.13493723849372385
+     },
+     "takeYes": {
+      "n": 129,
+      "gross": -1.0,
+      "net": -1.0
+     },
+     "takeNo": {
+      "n": 129,
+      "gross": 0.0101010101010101,
+      "net": 0.009081735620585249
+     }
+    },
+    {
+     "lower": 0.02,
+     "upper": 0.05,
+     "rows": 257,
+     "markets": 169,
+     "dates": 34,
+     "datesWithYes": 1,
+     "datesWithNo": 34,
+     "settledYes": 2,
+     "yesRate": 0.007782101167315175,
+     "meanMid": 0.03391050583657587,
+     "likelihoods": {
+      "yes": 0.00625,
+      "no": 0.26673640167364016
+     },
+     "takeYes": {
+      "n": 257,
+      "gross": -0.7405966277561608,
+      "net": -0.7641787525056006
+     },
+     "takeNo": {
+      "n": 257,
+      "gross": 0.01971380828334568,
+      "net": 0.017065865966548376
+     }
+    },
+    {
+     "lower": 0.05,
+     "upper": 0.1,
+     "rows": 168,
+     "markets": 129,
+     "dates": 31,
+     "datesWithYes": 1,
+     "datesWithNo": 31,
+     "settledYes": 1,
+     "yesRate": 0.005952380952380952,
+     "meanMid": 0.07258928571428572,
+     "likelihoods": {
+      "yes": 0.003125,
+      "no": 0.17468619246861924
+     },
+     "takeYes": {
+      "n": 168,
+      "gross": -0.9404761904761905,
+      "net": -0.9443702714730752
+     },
+     "takeNo": {
+      "n": 168,
+      "gross": 0.05195511940091646,
+      "net": 0.04733229915509213
+     }
+    },
+    {
+     "lower": 0.1,
+     "upper": 0.2,
+     "rows": 163,
+     "markets": 126,
+     "dates": 32,
+     "datesWithYes": 12,
+     "datesWithNo": 32,
+     "settledYes": 18,
+     "yesRate": 0.11042944785276074,
+     "meanMid": 0.14122699386503068,
+     "likelihoods": {
+      "yes": 0.05625,
+      "no": 0.151673640167364
+     },
+     "takeYes": {
+      "n": 163,
+      "gross": -0.2810815188782646,
+      "net": -0.3226820911460284
+     },
+     "takeNo": {
+      "n": 163,
+      "gross": 0.016047739161264545,
+      "net": 0.006791142990411018
+     }
+    },
+    {
+     "lower": 0.2,
+     "upper": 0.4,
+     "rows": 155,
+     "markets": 113,
+     "dates": 30,
+     "datesWithYes": 24,
+     "datesWithNo": 27,
+     "settledYes": 49,
+     "yesRate": 0.3161290322580645,
+     "meanMid": 0.2938064516129032,
+     "likelihoods": {
+      "yes": 0.153125,
+      "no": 0.1108786610878661
+     },
+     "takeYes": {
+      "n": 155,
+      "gross": 0.014362729306803532,
+      "net": -0.034106252143973614
+     },
+     "takeNo": {
+      "n": 155,
+      "gross": -0.06174479514249139,
+      "net": -0.07982338478940659
+     }
+    },
+    {
+     "lower": 0.4,
+     "upper": 0.6,
+     "rows": 158,
+     "markets": 113,
+     "dates": 32,
+     "datesWithYes": 26,
+     "datesWithNo": 27,
+     "settledYes": 68,
+     "yesRate": 0.43037974683544306,
+     "meanMid": 0.5031645569620253,
+     "likelihoods": {
+      "yes": 0.2125,
+      "no": 0.09414225941422594
+     },
+     "takeYes": {
+      "n": 158,
+      "gross": -0.18723135232720348,
+      "net": -0.21401235725507142
+     },
+     "takeNo": {
+      "n": 158,
+      "gross": 0.09626932866650285,
+      "net": 0.05950595948765733
+     }
+    },
+    {
+     "lower": 0.6,
+     "upper": 0.8,
+     "rows": 181,
+     "markets": 122,
+     "dates": 31,
+     "datesWithYes": 29,
+     "datesWithNo": 21,
+     "settledYes": 124,
+     "yesRate": 0.6850828729281768,
+     "meanMid": 0.7065469613259668,
+     "likelihoods": {
+      "yes": 0.3875,
+      "no": 0.0596234309623431
+     },
+     "takeYes": {
+      "n": 181,
+      "gross": -0.058685415072026674,
+      "net": -0.07694969830936332
+     },
+     "takeNo": {
+      "n": 181,
+      "gross": 0.009035914044245632,
+      "net": -0.03902262082296909
+     }
+    },
+    {
+     "lower": 0.8,
+     "upper": 0.9,
+     "rows": 45,
+     "markets": 30,
+     "dates": 18,
+     "datesWithYes": 17,
+     "datesWithNo": 3,
+     "settledYes": 40,
+     "yesRate": 0.8888888888888888,
+     "meanMid": 0.8536666666666667,
+     "likelihoods": {
+      "yes": 0.125,
+      "no": 0.005230125523012552
+     },
+     "takeYes": {
+      "n": 45,
+      "gross": 0.03235597072941289,
+      "net": 0.021881364459167992
+     },
+     "takeNo": {
+      "n": 45,
+      "gross": -0.2676563202878992,
+      "net": -0.3102157667137832
+     }
+    },
+    {
+     "lower": 0.9,
+     "upper": 0.95,
+     "rows": 12,
+     "markets": 11,
+     "dates": 9,
+     "datesWithYes": 8,
+     "datesWithNo": 2,
+     "settledYes": 10,
+     "yesRate": 0.8333333333333334,
+     "meanMid": 0.9183333333333333,
+     "likelihoods": {
+      "yes": 0.03125,
+      "no": 0.0020920502092050207
+     },
+     "takeYes": {
+      "n": 12,
+      "gross": -0.11134972012404128,
+      "net": -0.11562330886601913
+     },
+     "takeNo": {
+      "n": 12,
+      "gross": 0.5909090909090909,
+      "net": 0.4910669116276593
+     }
+    },
+    {
+     "lower": 0.95,
+     "upper": 0.98,
+     "rows": 8,
+     "markets": 5,
+     "dates": 3,
+     "datesWithYes": 3,
+     "datesWithNo": 0,
+     "settledYes": 8,
+     "yesRate": 1.0,
+     "meanMid": 0.963125,
+     "likelihoods": {
+      "yes": 0.025,
+      "no": 0.0
+     },
+     "takeYes": {
+      "n": 8,
+      "gross": 0.03095523003015639,
+      "net": 0.027905864149741885
+     },
+     "takeNo": {
+      "n": 8,
+      "gross": -1.0,
+      "net": -1.0
+     }
+    },
+    {
+     "lower": 0.98,
+     "upper": 1.0,
+     "rows": 0,
+     "markets": 0,
+     "dates": 0,
+     "datesWithYes": 0,
+     "datesWithNo": 0,
+     "settledYes": 0,
+     "yesRate": null,
+     "meanMid": null,
+     "likelihoods": {
+      "yes": 0.0,
+      "no": 0.0
+     },
+     "takeYes": {
+      "n": 0,
+      "gross": null,
+      "net": null
+     },
+     "takeNo": {
+      "n": 0,
+      "gross": null,
+      "net": null
+     }
+    }
+   ]
+  },
+  "late": {
+   "rows": 1522,
+   "markets": 779,
+   "dates": 34,
+   "settledYes": 374,
+   "bins": [
+    {
+     "lower": 0.0,
+     "upper": 0.02,
+     "rows": 240,
+     "markets": 162,
+     "dates": 34,
+     "datesWithYes": 0,
+     "datesWithNo": 34,
+     "settledYes": 0,
+     "yesRate": 0.0,
+     "meanMid": 0.015520833333333334,
+     "likelihoods": {
+      "yes": 0.0,
+      "no": 0.20905923344947736
+     },
+     "takeYes": {
+      "n": 240,
+      "gross": -1.0,
+      "net": -1.0
+     },
+     "takeNo": {
+      "n": 240,
+      "gross": 0.010101010101010091,
+      "net": 0.009081735620585257
+     }
+    },
+    {
+     "lower": 0.02,
+     "upper": 0.05,
+     "rows": 420,
+     "markets": 261,
+     "dates": 33,
+     "datesWithYes": 5,
+     "datesWithNo": 33,
+     "settledYes": 6,
+     "yesRate": 0.014285714285714285,
+     "meanMid": 0.033523809523809525,
+     "likelihoods": {
+      "yes": 0.016042780748663103,
+      "no": 0.3606271777003484
+     },
+     "takeYes": {
+      "n": 420,
+      "gross": -0.6587301587301586,
+      "net": -0.6848328243677081
+     },
+     "takeNo": {
+      "n": 420,
+      "gross": 0.013610524281416275,
+      "net": 0.010936853701553147
+     }
+    },
+    {
+     "lower": 0.05,
+     "upper": 0.1,
+     "rows": 173,
+     "markets": 131,
+     "dates": 32,
+     "datesWithYes": 7,
+     "datesWithNo": 32,
+     "settledYes": 8,
+     "yesRate": 0.046242774566473986,
+     "meanMid": 0.07346820809248555,
+     "likelihoods": {
+      "yes": 0.0213903743315508,
+      "no": 0.1437282229965157
+     },
+     "takeYes": {
+      "n": 173,
+      "gross": -0.38224107299251814,
+      "net": -0.42212760652739145
+     },
+     "takeNo": {
+      "n": 173,
+      "gross": 0.018119744285137088,
+      "net": 0.013158236895721119
+     }
+    },
+    {
+     "lower": 0.1,
+     "upper": 0.2,
+     "rows": 143,
+     "markets": 109,
+     "dates": 30,
+     "datesWithYes": 10,
+     "datesWithNo": 30,
+     "settledYes": 19,
+     "yesRate": 0.13286713286713286,
+     "meanMid": 0.14548951048951048,
+     "likelihoods": {
+      "yes": 0.05080213903743316,
+      "no": 0.10801393728222997
+     },
+     "takeYes": {
+      "n": 143,
+      "gross": -0.16576459400508411,
+      "net": -0.2133816508934141
+     },
+     "takeNo": {
+      "n": 143,
+      "gross": -0.001511994332323929,
+      "net": -0.011071661158534266
+     }
+    },
+    {
+     "lower": 0.2,
+     "upper": 0.4,
+     "rows": 138,
+     "markets": 101,
+     "dates": 29,
+     "datesWithYes": 17,
+     "datesWithNo": 29,
+     "settledYes": 33,
+     "yesRate": 0.2391304347826087,
+     "meanMid": 0.3032608695652174,
+     "likelihoods": {
+      "yes": 0.08823529411764706,
+      "no": 0.09146341463414634
+     },
+     "takeYes": {
+      "n": 138,
+      "gross": -0.21559693593189913,
+      "net": -0.2531256920307905
+     },
+     "takeNo": {
+      "n": 138,
+      "gross": 0.07695175685225977,
+      "net": 0.05446857927056716
+     }
+    },
+    {
+     "lower": 0.4,
+     "upper": 0.6,
+     "rows": 111,
+     "markets": 81,
+     "dates": 28,
+     "datesWithYes": 18,
+     "datesWithNo": 24,
+     "settledYes": 59,
+     "yesRate": 0.5315315315315315,
+     "meanMid": 0.4968918918918919,
+     "likelihoods": {
+      "yes": 0.15775401069518716,
+      "no": 0.04529616724738676
+     },
+     "takeYes": {
+      "n": 111,
+      "gross": 0.037889018952034365,
+      "net": 0.0024583415330107386
+     },
+     "takeNo": {
+      "n": 111,
+      "gross": -0.0999406637566245,
+      "net": -0.13013841532105427
+     }
+    },
+    {
+     "lower": 0.6,
+     "upper": 0.8,
+     "rows": 128,
+     "markets": 89,
+     "dates": 32,
+     "datesWithYes": 29,
+     "datesWithNo": 18,
+     "settledYes": 85,
+     "yesRate": 0.6640625,
+     "meanMid": 0.7133984375,
+     "likelihoods": {
+      "yes": 0.22727272727272727,
+      "no": 0.037456445993031356
+     },
+     "takeYes": {
+      "n": 128,
+      "gross": -0.08764806593600526,
+      "net": -0.10536450371578923
+     },
+     "takeNo": {
+      "n": 128,
+      "gross": 0.13155527408153972,
+      "net": 0.07667408791711323
+     }
+    },
+    {
+     "lower": 0.8,
+     "upper": 0.9,
+     "rows": 68,
+     "markets": 51,
+     "dates": 28,
+     "datesWithYes": 26,
+     "datesWithNo": 4,
+     "settledYes": 63,
+     "yesRate": 0.9264705882352942,
+     "meanMid": 0.8488970588235294,
+     "likelihoods": {
+      "yes": 0.16844919786096257,
+      "no": 0.004355400696864111
+     },
+     "takeYes": {
+      "n": 68,
+      "gross": 0.07750096602853632,
+      "net": 0.06658521711630935
+     },
+     "takeNo": {
+      "n": 68,
+      "gross": -0.5165926277631796,
+      "net": -0.545044966605667
+     }
+    },
+    {
+     "lower": 0.9,
+     "upper": 0.95,
+     "rows": 45,
+     "markets": 31,
+     "dates": 17,
+     "datesWithYes": 17,
+     "datesWithNo": 0,
+     "settledYes": 45,
+     "yesRate": 1.0,
+     "meanMid": 0.9305555555555556,
+     "likelihoods": {
+      "yes": 0.12032085561497326,
+      "no": 0.0
+     },
+     "takeYes": {
+      "n": 45,
+      "gross": 0.06462768364351913,
+      "net": 0.059628991486385244
+     },
+     "takeNo": {
+      "n": 45,
+      "gross": -1.0,
+      "net": -1.0
+     }
+    },
+    {
+     "lower": 0.95,
+     "upper": 0.98,
+     "rows": 30,
+     "markets": 21,
+     "dates": 15,
+     "datesWithYes": 15,
+     "datesWithNo": 0,
+     "settledYes": 30,
+     "yesRate": 1.0,
+     "meanMid": 0.9671666666666667,
+     "likelihoods": {
+      "yes": 0.08021390374331551,
+      "no": 0.0
+     },
+     "takeYes": {
+      "n": 30,
+      "gross": 0.026763355555697237,
+      "net": 0.02415999616592008
+     },
+     "takeNo": {
+      "n": 30,
+      "gross": -1.0,
+      "net": -1.0
+     }
+    },
+    {
+     "lower": 0.98,
+     "upper": 1.0,
+     "rows": 26,
+     "markets": 20,
+     "dates": 9,
+     "datesWithYes": 9,
+     "datesWithNo": 0,
+     "settledYes": 26,
+     "yesRate": 1.0,
+     "meanMid": 0.985,
+     "likelihoods": {
+      "yes": 0.06951871657754011,
+      "no": 0.0
+     },
+     "takeYes": {
+      "n": 26,
+      "gross": 0.010101010101010104,
+      "net": 0.009081735620585264
+     },
+     "takeNo": {
+      "n": 26,
+      "gross": -1.0,
+      "net": -1.0
+     }
+    }
+   ]
+  }
+ },
+ "caveats": [
+  "A row is a (market, decision time): one market enters up to twice; one date's markets share their weather. The effective sample of a bin is its distinct dates, not its rows.",
+  "Taking at the touch assumes the displayed size was there; depth is not read. Returns are per contract, unweighted by size.",
+  "Descriptive, not a forecast: a bin's return is what was earned on these dates."
+ ],
+ "gameModels": {
+  "takeYes": {
+   "kind": "scenario-likelihood-model",
+   "side": "yes",
+   "source": "urn:kalshi:KXRAIN:mid",
+   "path": [
+    "mid"
+   ],
+   "lossRecords": [
+    {
+     "kind": "binary-loss-rate",
+     "trials": 63,
+     "losses": 63,
+     "rows": 369,
+     "rowLosses": 369,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 67,
+     "losses": 67,
+     "rows": 677,
+     "rowLosses": 669,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 63,
+     "losses": 62,
+     "rows": 341,
+     "rowLosses": 332,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 62,
+     "losses": 55,
+     "rows": 306,
+     "rowLosses": 269,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 59,
+     "losses": 43,
+     "rows": 293,
+     "rowLosses": 211,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 60,
+     "losses": 32,
+     "rows": 269,
+     "rowLosses": 142,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 63,
+     "losses": 21,
+     "rows": 309,
+     "rowLosses": 100,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 46,
+     "losses": 5,
+     "rows": 113,
+     "rowLosses": 10,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 26,
+     "losses": 1,
+     "rows": 57,
+     "rowLosses": 2,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 18,
+     "losses": 0,
+     "rows": 38,
+     "rowLosses": 0,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 9,
+     "losses": 0,
+     "rows": 26,
+     "rowLosses": 0,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    }
+   ],
+   "bins": [
+    {
+     "lower": 0.0,
+     "upper": 0.02,
+     "likelihoods": {
+      "yes": 0.0,
+      "no": 0.17538022813688212
+     }
+    },
+    {
+     "lower": 0.02,
+     "upper": 0.05,
+     "likelihoods": {
+      "yes": 0.011527377521613832,
+      "no": 0.3179657794676806
+     }
+    },
+    {
+     "lower": 0.05,
+     "upper": 0.1,
+     "likelihoods": {
+      "yes": 0.012968299711815562,
+      "no": 0.15779467680608364
+     }
+    },
+    {
+     "lower": 0.1,
+     "upper": 0.2,
+     "likelihoods": {
+      "yes": 0.053314121037463975,
+      "no": 0.12785171102661597
+     }
+    },
+    {
+     "lower": 0.2,
+     "upper": 0.4,
+     "likelihoods": {
+      "yes": 0.11815561959654179,
+      "no": 0.1002851711026616
+     }
+    },
+    {
+     "lower": 0.4,
+     "upper": 0.6,
+     "likelihoods": {
+      "yes": 0.1829971181556196,
+      "no": 0.06749049429657794
+     }
+    },
+    {
+     "lower": 0.6,
+     "upper": 0.8,
+     "likelihoods": {
+      "yes": 0.3011527377521614,
+      "no": 0.04752851711026616
+     }
+    },
+    {
+     "lower": 0.8,
+     "upper": 0.9,
+     "likelihoods": {
+      "yes": 0.1484149855907781,
+      "no": 0.004752851711026616
+     }
+    },
+    {
+     "lower": 0.9,
+     "upper": 0.95,
+     "likelihoods": {
+      "yes": 0.0792507204610951,
+      "no": 0.0009505703422053232
+     }
+    },
+    {
+     "lower": 0.95,
+     "upper": 0.98,
+     "likelihoods": {
+      "yes": 0.05475504322766571,
+      "no": 0.0
+     }
+    },
+    {
+     "lower": 0.98,
+     "upper": 1.000000001,
+     "likelihoods": {
+      "yes": 0.037463976945244955,
+      "no": 0.0
+     }
+    }
+   ],
+   "expectedReturns": [
+    {
+     "trainingSamples": 63,
+     "rows": 369,
+     "gross": -1.0,
+     "net": -1.0
+    },
+    {
+     "trainingSamples": 67,
+     "rows": 677,
+     "gross": -0.689807976366322,
+     "net": -0.7149538044732301
+    },
+    {
+     "trainingSamples": 63,
+     "rows": 341,
+     "gross": -0.6572659989082277,
+     "net": -0.6794201804595759
+    },
+    {
+     "trainingSamples": 62,
+     "rows": 306,
+     "gross": -0.22719158339831427,
+     "net": -0.2716037808318982
+    },
+    {
+     "trainingSamples": 59,
+     "rows": 293,
+     "gross": -0.09394591848480388,
+     "net": -0.13726216581080203
+    },
+    {
+     "trainingSamples": 60,
+     "rows": 269,
+     "gross": -0.09433781622313141,
+     "net": -0.12468801686296319
+    },
+    {
+     "trainingSamples": 63,
+     "rows": 309,
+     "gross": -0.07068288856907928,
+     "net": -0.08872023258775338
+    },
+    {
+     "trainingSamples": 46,
+     "rows": 113,
+     "gross": 0.05952287055543409,
+     "net": 0.04878279791656281
+    },
+    {
+     "trainingSamples": 26,
+     "rows": 57,
+     "gross": 0.027579809166137986,
+     "net": 0.022733770359563265
+    },
+    {
+     "trainingSamples": 18,
+     "rows": 38,
+     "gross": 0.02764585544505706,
+     "net": 0.024948599951987824
+    },
+    {
+     "trainingSamples": 9,
+     "rows": 26,
+     "gross": 0.010101010101010104,
+     "net": 0.009081735620585264
+    }
+   ]
+  },
+  "takeNo": {
+   "kind": "scenario-likelihood-model",
+   "side": "no",
+   "source": "urn:kalshi:KXRAIN:mid",
+   "path": [
+    "mid"
+   ],
+   "lossRecords": [
+    {
+     "kind": "binary-loss-rate",
+     "trials": 63,
+     "losses": 0,
+     "rows": 369,
+     "rowLosses": 0,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 67,
+     "losses": 1,
+     "rows": 677,
+     "rowLosses": 8,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 63,
+     "losses": 2,
+     "rows": 341,
+     "rowLosses": 9,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 62,
+     "losses": 8,
+     "rows": 306,
+     "rowLosses": 37,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 59,
+     "losses": 17,
+     "rows": 293,
+     "rowLosses": 82,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 60,
+     "losses": 29,
+     "rows": 269,
+     "rowLosses": 127,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 63,
+     "losses": 43,
+     "rows": 309,
+     "rowLosses": 209,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 46,
+     "losses": 42,
+     "rows": 113,
+     "rowLosses": 103,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 26,
+     "losses": 26,
+     "rows": 57,
+     "rowLosses": 55,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 18,
+     "losses": 18,
+     "rows": 38,
+     "rowLosses": 38,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    },
+    {
+     "kind": "binary-loss-rate",
+     "trials": 9,
+     "losses": 9,
+     "rows": 26,
+     "rowLosses": 26,
+     "method": "design effect: trials = distinct dates, losses = ceil(row loss rate x dates)"
+    }
+   ],
+   "bins": [
+    {
+     "lower": 0.0,
+     "upper": 0.02,
+     "likelihoods": {
+      "yes": 0.0,
+      "no": 0.17538022813688212
+     }
+    },
+    {
+     "lower": 0.02,
+     "upper": 0.05,
+     "likelihoods": {
+      "yes": 0.011527377521613832,
+      "no": 0.3179657794676806
+     }
+    },
+    {
+     "lower": 0.05,
+     "upper": 0.1,
+     "likelihoods": {
+      "yes": 0.012968299711815562,
+      "no": 0.15779467680608364
+     }
+    },
+    {
+     "lower": 0.1,
+     "upper": 0.2,
+     "likelihoods": {
+      "yes": 0.053314121037463975,
+      "no": 0.12785171102661597
+     }
+    },
+    {
+     "lower": 0.2,
+     "upper": 0.4,
+     "likelihoods": {
+      "yes": 0.11815561959654179,
+      "no": 0.1002851711026616
+     }
+    },
+    {
+     "lower": 0.4,
+     "upper": 0.6,
+     "likelihoods": {
+      "yes": 0.1829971181556196,
+      "no": 0.06749049429657794
+     }
+    },
+    {
+     "lower": 0.6,
+     "upper": 0.8,
+     "likelihoods": {
+      "yes": 0.3011527377521614,
+      "no": 0.04752851711026616
+     }
+    },
+    {
+     "lower": 0.8,
+     "upper": 0.9,
+     "likelihoods": {
+      "yes": 0.1484149855907781,
+      "no": 0.004752851711026616
+     }
+    },
+    {
+     "lower": 0.9,
+     "upper": 0.95,
+     "likelihoods": {
+      "yes": 0.0792507204610951,
+      "no": 0.0009505703422053232
+     }
+    },
+    {
+     "lower": 0.95,
+     "upper": 0.98,
+     "likelihoods": {
+      "yes": 0.05475504322766571,
+      "no": 0.0
+     }
+    },
+    {
+     "lower": 0.98,
+     "upper": 1.000000001,
+     "likelihoods": {
+      "yes": 0.037463976945244955,
+      "no": 0.0
+     }
+    }
+   ],
+   "expectedReturns": [
+    {
+     "trainingSamples": 63,
+     "rows": 369,
+     "gross": 0.010101010101010041,
+     "net": 0.009081735620585325
+    },
+    {
+     "trainingSamples": 67,
+     "rows": 677,
+     "gross": 0.015927428252606686,
+     "net": 0.013263524531839353
+    },
+    {
+     "trainingSamples": 63,
+     "rows": 341,
+     "gross": 0.03478937190816037,
+     "net": 0.029994725046965483
+    },
+    {
+     "trainingSamples": 62,
+     "rows": 306,
+     "gross": 0.007841719914260784,
+     "net": -0.0015565073144882548
+    },
+    {
+     "trainingSamples": 59,
+     "rows": 293,
+     "gross": 0.0035798607458214665,
+     "net": -0.016573244720203925
+    },
+    {
+     "trainingSamples": 60,
+     "rows": 269,
+     "gross": 0.015305354097851753,
+     "net": -0.01874878253378132
+    },
+    {
+     "trainingSamples": 63,
+     "rows": 309,
+     "gross": 0.05978827030564903,
+     "net": 0.008903523897841716
+    },
+    {
+     "trainingSamples": 46,
+     "rows": 113,
+     "gross": -0.41745870000753693,
+     "net": -0.451528913551377
+    },
+    {
+     "trainingSamples": 26,
+     "rows": 57,
+     "gross": -0.6650717703349281,
+     "net": -0.6860911764994402
+    },
+    {
+     "trainingSamples": 18,
+     "rows": 38,
+     "gross": -1.0,
+     "net": -1.0
+    },
+    {
+     "trainingSamples": 9,
+     "rows": 26,
+     "gross": -1.0,
+     "net": -1.0
+    }
+   ]
+  }
+ }
+}

@@ -1,4 +1,3 @@
-import {sameDayRainModels} from './weather-precipitation.mjs';
 import {collectEcmwfEnsemble} from './weather-ecmwf-ensemble.mjs';
 import {access} from 'node:fs/promises';
 import {homedir} from 'node:os';
@@ -13,7 +12,7 @@ import {latestLampGuidance} from './lamp-station-guidance.mjs';
 import { latestStationGuidance, guidanceForExtreme } from './nbm-station-guidance.mjs';
 import { NWS_API, NWS_USER_AGENT, climateDayStart, observedExtremes, activeTemperatureHazards } from './station-observations.mjs';
 import { TEMPERATURE_MARKETS } from './temperature-market-model.mjs';
-import { forecastScale, bracketProbability, studentTCdf } from './temperature-distribution.mjs';
+import { forecastScale, bracketProbability, bracketBounds, studentTCdf } from './temperature-distribution.mjs';
 import { priceRainMarket,priceRainPoolMarket } from './rain-market-model.mjs';
 import {climateReportEvidence} from './weather-settlement-source.mjs';
 import {latestStationQuantiles,priceStationQuantiles} from './weather-quantiles.mjs';
@@ -26,7 +25,7 @@ async function nws(url, fetchImpl) {
   return r.json();
 }
 /** Public station evidence for research and forecasting, independent of any market. */
-export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.now(),fetchImpl=fetch,marketCollection=false,onEvidence}={}) {
+export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.now(),fetchImpl=fetch,marketCollection=false}={}) {
   if(!Array.isArray(requests)||requests.length<1||(!marketCollection&&requests.length>16))throw new TypeError('provide 1..16 station requests');
   const normalized=requests.map(r=>{
     if(!r||!/^[A-Z0-9]{4}$/.test(r.station)||typeof r.timeZone!=='string')throw new TypeError('station ICAO and IANA time zone required');
@@ -39,28 +38,13 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
   });
   if(new Set(normalized.map(r=>r.station)).size!==normalized.length)throw new TypeError('combine target dates into one request per station');
   const stations=normalized.map(r=>r.station),errors=[];
-  let guidance=null,quantiles=null,lamp=null,hourlyGuidance=null,settlement=null;
-  const observations={},local={},stationMetadata={},relational={regions:[]};let ecmwfEnsemble=null;
-  if(onEvidence!==undefined&&typeof onEvidence!=='function')throw new TypeError('onEvidence must be a receiving function');
-  const sourceNames=['NWS-stations','NBM','NBM-NBH','NBM-QMD','LAMP','climate-reports'],finishedSources=[],finishedStations=[];
-  const regions=Object.entries(RELATIONAL_REGIONS).filter(([_,peers])=>stations.some(station=>peers.includes(station.slice(1))));
-  const plannedSources=[...sourceNames,...regions.map(([region])=>'relational:'+region),'ECMWF-AIFS-ENS'];
-  const snapshot=complete=>({at:new Date(now).toISOString(),stations:normalized,guidance,hourlyGuidance,quantiles,lamp,settlement,local,observations,stationMetadata,relational,ecmwfEnsemble,errors,
-    acquisition:{complete,requestedStations:stations.length,finishedStations:[...finishedStations],finishedSources:[...finishedSources],pendingSources:plannedSources.filter(s=>!finishedSources.includes(s)),scope:'finished means the acquisition attempt ended; source errors and missing evidence remain explicit'}});
-  let publication=null,timer=null,dirty=false,closed=false,lastAttempt=-Infinity;
-  const drain=()=>{
-    if(closed||!onEvidence||publication||!dirty)return;
-    const wait=60000-(Date.now()-lastAttempt);
-    if(wait>0){if(!timer){timer=setTimeout(()=>{timer=null;drain();},wait);timer.unref();}return;}
-    dirty=false;const frozen=structuredClone(snapshot(false));lastAttempt=Date.now();
-    publication=Promise.resolve().then(()=>onEvidence(frozen)).then(published=>{if(published===false)lastAttempt=-Infinity;})
-      .catch(e=>errors.push({source:'incremental-publication',error:e.message})).finally(()=>{publication=null;drain();});
-  };
-  const emit=()=>{dirty=true;drain();};
-  emit();
-  // These sources do not depend on one another. Keep the existing station
-  // request bound while overlapping acquisition across independent providers.
-  const collectors=[async()=>{
+  let guidance=null,quantiles=null,lamp=null,hourlyGuidance=null;
+  try{guidance=await latestStationGuidance({stations,cacheDir,now},{fetchImpl});}catch(e){errors.push({source:'NBM',error:e.message});}
+  try{hourlyGuidance=await latestHourlyGuidance({stations,cacheDir,now},{fetchImpl});for(const station of hourlyGuidance.missingStations??[])if(stations.includes(station))errors.push({station,source:'NBM-NBH',error:'no complete hourly block in selected run'});}catch(e){errors.push({source:'NBM-NBH',error:e.message});}
+  try{quantiles=await latestStationQuantiles({stations,cacheDir,now,fetchImpl});}catch(e){errors.push({source:'NBM-QMD',error:e.message});}
+  try{lamp=await latestLampGuidance({stations,cacheDir,now,fetchImpl});for(const station of lamp.missingStations??[])errors.push({station,source:'LAMP',error:'no complete station block in the selected run'});}catch(e){errors.push({source:'LAMP',error:e.message});}
+  const settlement=await climateReportEvidence({dates:normalized.flatMap(r=>r.targetDates),now,fetchImpl});errors.push(...settlement.errors);
+  const observations={},local={},stationMetadata={};
   await mapLimit(normalized,3,async b=>{
     const station=b.station;
     try{
@@ -84,28 +68,16 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
       try{observations[`${station}/${date}`]=await observedExtremes({station,date,timeZone:b.timeZone,now:Math.min(now,start+86400000)},{fetchImpl});}
       catch(e){errors.push({station,date,source:'NWS-observations',error:e.message});}
     }
-    finishedStations.push(station);emit();
   });
-  },
-    async()=>{try{guidance=await latestStationGuidance({stations,cacheDir,now},{fetchImpl});}catch(e){errors.push({source:'NBM',error:e.message});}},
-    async()=>{try{hourlyGuidance=await latestHourlyGuidance({stations,cacheDir,now},{fetchImpl});for(const station of hourlyGuidance.missingStations??[])if(stations.includes(station))errors.push({station,source:'NBM-NBH',error:'no complete hourly block in selected run'});}catch(e){errors.push({source:'NBM-NBH',error:e.message});}},
-    async()=>{try{quantiles=await latestStationQuantiles({stations,cacheDir,now,fetchImpl});}catch(e){errors.push({source:'NBM-QMD',error:e.message});}},
-    async()=>{try{lamp=await latestLampGuidance({stations,cacheDir,now,fetchImpl});for(const station of lamp.missingStations??[])errors.push({station,source:'LAMP',error:'no complete station block in the selected run'});}catch(e){errors.push({source:'LAMP',error:e.message});}},
-    async()=>{settlement=await climateReportEvidence({dates:normalized.flatMap(r=>r.targetDates),now,fetchImpl});errors.push(...settlement.errors);}
-  ];
-  try{await mapLimit(collectors,3,async(collect,i)=>{await collect();finishedSources.push(sourceNames[i]);emit();});
-  for(const [region] of regions){
-    try{relational.regions.push(await collectRelationalWeatherNowcast({region,cacheDir:cacheDir?join(cacheDir,'relational'):undefined,now:Date.now(),fetchImpl}));}catch(e){errors.push({source:'relational-nowcast',region,error:e.message});}
-    finishedSources.push('relational:'+region);emit();
-  }
+  const relational={regions:[]};
+  for(const [region,peers] of Object.entries(RELATIONAL_REGIONS))if(stations.some(station=>peers.includes(station.slice(1))))try{relational.regions.push(await collectRelationalWeatherNowcast({region,cacheDir:cacheDir?join(cacheDir,'relational'):undefined,now:Date.now(),fetchImpl}));}catch(e){errors.push({source:'relational-nowcast',region,error:e.message});}
+  let ecmwfEnsemble=null;
   const python=process.env.WEATHER_ECCODES_PYTHON??join(homedir(),'.local/share/561-group/weather-research/eccodes/bin/python');
   if(cacheDir&&process.env.WEATHER_ECMWF_ENABLED!=='0'&&Object.keys(stationMetadata).length){
    let decoderAvailable=false;try{await access(python);decoderAvailable=true;}catch{}
    if(decoderAvailable)try{ecmwfEnsemble=await collectEcmwfEnsemble(normalized.filter(r=>stationMetadata[r.station]),{cacheDir:join(cacheDir,'..','ecmwf'),now:Date.now(),fetchImpl,python,stationMetadata});}catch(e){errors.push({source:'ECMWF-AIFS-ENS',error:e.message});}
   }
-  finishedSources.push('ECMWF-AIFS-ENS');
-  return snapshot(true);
-  }finally{closed=true;if(timer)clearTimeout(timer);if(publication)await publication;}
+  return {at:new Date(now).toISOString(),stations:normalized,guidance,hourlyGuidance,quantiles,lamp,settlement,local,observations,relational,ecmwfEnsemble,errors};
 }
 export async function collectWeatherEvidence(contracts,options={}) {
   const requests=new Map(),now=options.now??Date.now(),cities=[...new Set(contracts.filter(c=>c.binding?.kind==='index-at').map(c=>c.binding.city))];
@@ -118,19 +90,18 @@ export async function collectWeatherEvidence(contracts,options={}) {
    const targetTimes=[configurationAvailableAt,...cityContracts.map(c=>Date.parse(c.binding.targetTime)).filter(Number.isFinite),...(packet.calibrations?.calibrations??[]).filter(c=>c.published_at_ms<=configurationAvailableAt&&c.effective_at_ms<=configurationAvailableAt+24*3600000&&c.effective_at_ms>configurationAvailableAt).map(c=>c.effective_at_ms)];
    for(const targetTime of new Set(targetTimes)){const cfg=indexConfiguration(packet,city,targetTime,configurationAvailableAt);if(!cfg)continue;for(const member of cfg.stations)for(const date of dates)request(member.station_id.slice(0,4),INDEX_CITIES[city].timeZone,date);}
   }
-  const receive=options.onEvidence?packet=>options.onEvidence({...packet,indices:structuredClone(indexEvidence.cities),errors:[...packet.errors,...indexEvidence.errors]}):undefined;
-  const evidence=requests.size?await collectStationWeatherEvidence([...requests.values()],{...options,now,marketCollection:true,onEvidence:receive}):{at:new Date(now).toISOString(),stations:[],guidance:null,quantiles:null,settlement:null,local:{},observations:{},errors:[],acquisition:{complete:true,requestedStations:0,finishedStations:[],finishedSources:[],pendingSources:[]}};
+  const evidence=requests.size?await collectStationWeatherEvidence([...requests.values()],{...options,now,marketCollection:true}):{at:new Date(now).toISOString(),stations:[],guidance:null,quantiles:null,settlement:null,local:{},observations:{},errors:[]};
   evidence.indices=indexEvidence.cities;evidence.errors.push(...indexEvidence.errors);return evidence;
 }
 export function weatherEstimates(c,e,now) {
   const b=c.binding;if(!b)return [];
   if(b.kind==='index-at')return priceWeatherIndex(c,e,now);
   if(b.kind==='rain') {
-    const out=sameDayRainModels(c,e,now);
-    const r=e.guidance?priceRainMarket(c,{guidance:e.guidance,now}):{priced:false};
-    if(r.priced)out.unshift({id:'nbm-rain-logistic-2026-10-04',p:r.probability,details:r});
+    if(!e.guidance)return [];
+    const r=priceRainMarket(c,{guidance:e.guidance,now});
+    const out=r.priced?[{id:'nbm-rain-logistic-2026-10-04',p:r.probability,details:r}]:[];
     const a=Number(c.yes_ask_dollars),bid=Number(c.yes_bid_dollars);
-    const pooled=e.guidance&&priceRainPoolMarket(c,{guidance:e.guidance,marketProbability:a>bid&&a<=1&&bid>=0?(a+bid)/2:null,now});if(pooled)out.push(pooled);
+    const pooled=priceRainPoolMarket(c,{guidance:e.guidance,marketProbability:a>bid&&a<=1&&bid>=0?(a+bid)/2:null,now});if(pooled)out.push(pooled);
     return out;
   }
   const bracket={strikeType:c.strike_type,floorStrike:c.floor_strike,capStrike:c.cap_strike};
@@ -166,8 +137,65 @@ export function weatherEstimates(c,e,now) {
   const pool=makeBracketProbabilityPool(candidates);
   if(pool)out.push({id:`weather-family-pool-${b.kind}-v1`,p:pool.p,details:{...pool,proxy:b.proxy,status:'prospective daily-extreme ensemble experiment; NBM quantiles preferred over NBM location-scale model within one family'}});
   out.push(...softObservationEstimates(c,e,out));
+  out.push(...observedExtremeEstimates(c,e,now));
   // Observations and hazards remain witnesses; proxy observations never force a TWC outcome to zero.
   return out;
+}
+/**
+ * The day's extreme as the extreme of two parts: what the station has already recorded and what the rest
+ * of the climate day still holds. The recorded part carries only the error between hourly observations and
+ * the climate report (the report reads the continuous record, so its high sits at or above the hourly
+ * maximum and its low at or below the hourly minimum); the rest carries forecast error growing with lead.
+ * Once the day is over the rest is empty and the uncertainty is the observation-to-report error alone,
+ * which the fixed 2.5 F floors of the forecast-only models above never reach.
+ *
+ * The observation bound is structural: the report's high cannot fall under the station's one-degree-loose
+ * floor (nor its low above the ceiling), so a bracket entirely on the far side is impossible and a
+ * one-sided tail entirely on the near side is certain. A report read through a proxy (TWC) keeps a
+ * source-disagreement margin instead of an exact bound: the posterior mean (0+1)/(240+2) = 0.4% from the
+ * dead-bracket meter, where the precise bound ruled out 430 brackets on 240 settled events (2026-10-02..06,
+ * 48 series) and none settled yes; the event is the unit, since a source error would hit a whole ladder.
+ */
+/**
+ * What the day's readings so far rule in or out for one bracket, exactly: the report's whole-degree high K is at
+ * least the precise floor (its low at most the precise ceiling), so a bracket wholly on the far side cannot
+ * settle yes and a one-sided tail wholly on the near side must. A proxy-read report keeps `margin`.
+ * @returns {{structural: {low: number, high: number}|null, bound: number|null}}
+ */
+export function observedBracketBound({kind,proxy,bracket},obs,margin=OBSERVED_EXTREME.proxyMargin){
+  const [lo,hi]=bracketBounds(bracket),m=proxy?margin:0;
+  const bound=kind==='high'?(Number.isFinite(obs?.floorPrecise)?obs.floorPrecise:obs?.floor):(Number.isFinite(obs?.ceilingPrecise)?obs.ceilingPrecise:obs?.ceiling);
+  if(!Number.isFinite(bound))return {structural:null,bound:null};
+  let structural=null;
+  const ruled=(low,high)=>({low,high,kind:'station-observation'});
+  if(kind==='high'){if(hi<=bound)structural=ruled(0,m);else if(hi===Infinity&&lo<bound)structural=ruled(1-m,1);}
+  else{if(lo>=bound)structural=ruled(0,m);else if(lo===-Infinity&&hi>bound)structural=ruled(1-m,1);}
+  return {structural,bound};
+}
+// Fitted 2026-10-08 (forecasting-service scripts/climate-report-meter.mjs, 140 station-days with full readings): the final
+// report's extreme minus the observed hourly extreme centres on 0 (62 of 140 exactly) with a spread of about 0.6 F.
+export const OBSERVED_EXTREME = Object.freeze({reportShiftF:0,reportScaleF:0.6,restScaleF:1.5,restScalePerHourF:0.1,restScaleMaxF:4,nu:5,maxObservationAgeMinutes:90,proxyMargin:0.004});
+export function observedExtremeEstimates(c,e,now,model=OBSERVED_EXTREME){
+  const b=c.binding;if(!b||!['high','low'].includes(b.kind)||!['less','greater','between'].includes(c.strike_type))return [];
+  const obs=e.observations?.[`${b.station}/${b.targetDate}`];if(!obs?.count)return [];
+  const start=climateDayStart(b.targetDate,b.timeZone).getTime(),end=start+86400000,latest=Date.parse(obs.latest);
+  if(now<start||!Number.isFinite(latest)||Math.min(now,end)-latest>model.maxObservationAgeMinutes*60000)return [];
+  const high=b.kind==='high',sign=high?1:-1,observed=high?obs.maxF:obs.minF;
+  const remaining=(e.local?.[b.station]?.periods??[]).flatMap(p=>{const t=Date.parse(p.startTime);return t>latest&&t<end&&Number.isFinite(p.temperature)&&['C','F'].includes(p.temperatureUnit)?[{t,f:p.temperatureUnit==='C'?p.temperature*9/5+32:p.temperature}]:[];});
+  const hoursLeft=Math.max(0,(end-Math.max(latest,now))/3600000);
+  if(hoursLeft>1&&!remaining.length)return [];
+  const rest=remaining.reduce((best,r)=>!best||sign*r.f>sign*best.f?r:best,null);
+  const restScale=rest?Math.min(model.restScaleMaxF,model.restScaleF+model.restScalePerHourF*Math.max(0,(rest.t-now)/3600000)):null;
+  const reportCenter=observed+sign*model.reportShiftF;
+  const T=(x,center,scale)=>studentTCdf((x-center)/scale,model.nu);
+  // CDF of the report's extreme: a max of independent parts multiplies CDFs, a min multiplies survivals.
+  const F=high?x=>T(x,reportCenter,model.reportScaleF)*(rest?T(x,rest.f,restScale):1):x=>1-(1-T(x,reportCenter,model.reportScaleF))*(rest?1-T(x,rest.f,restScale):1);
+  const bracket={strikeType:c.strike_type,floorStrike:c.floor_strike,capStrike:c.cap_strike},[lo,hi]=bracketBounds(bracket);
+  let p=(hi===Infinity?1:F(hi))-(lo===-Infinity?0:F(lo));
+  const {structural,bound}=observedBracketBound({kind:b.kind,proxy:b.proxy,bracket},obs,model.proxyMargin);
+  const floor=bound,ceiling=bound;
+  p=Math.min(structural?.high??1,Math.max(structural?.low??0,Math.min(1,Math.max(0,p))));
+  return [{id:`observed-extreme-${b.kind}-v1`,p,details:{observedF:observed,boundF:high?floor:ceiling,observationLatest:obs.latest,observationCount:obs.count,observationSource:obs.source,reportCenterF:reportCenter,reportScaleF:model.reportScaleF,restExtremeF:rest?.f??null,restLeadHours:rest?(rest.t-now)/3600000:null,restScaleF:restScale,hoursLeft,nu:model.nu,proxy:b.proxy,...(structural?{structuralProbabilityBounds:structural}:{}),status:'forward experiment: report shift and scales are priors until settlement grades fit them'}}];
 }
 /** Hourly station guidance gives a competing daily-extreme proxy. Its uncertainty is a local experiment. */
 export function lampDailyEstimates(c,e,now){

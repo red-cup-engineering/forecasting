@@ -46,7 +46,7 @@
  * ## The bids consumer contract: allocator opportunity
  *
  * The desk's lanes (kalshi-stake-path-service; lane table in
- * content/config/weather-desk-policy.json) consume `brief.opportunities[]`.
+ * content/config/kalshi-desk-policy.json) consume `brief.opportunities[]`.
  * One entry is one contract the house would hold to settlement, on one side of
  * one market; the lane decides size, the allocator decides whether it fits the
  * envelope. Fields (all per contract, whole cents):

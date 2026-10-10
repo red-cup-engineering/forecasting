@@ -15,9 +15,9 @@ files.sort((a,b)=>a.mtime-b.mtime||a.name.localeCompare(b.name));
 let packets=0,skipped=0,scored=0,forecasted=0;const outcomes=[];
 for(const {name,mtime} of files){
  const e=JSON.parse(gunzipSync(await readFile(join(options.archives,name))));
- if(e.science||![e.local,e.guidance,e.hourlyGuidance,e.lamp,e.indices,e.observations,e.ecmwfEnsemble||e.relational].some(v=>v&&typeof v==='object'&&!Array.isArray(v))||Date.parse(e.at)>mtime){skipped++;continue;}
+ if(e.science||![e.local,e.guidance,e.hourlyGuidance,e.lamp,e.indices,e.observations].some(v=>v&&typeof v==='object'&&!Array.isArray(v))||Date.parse(e.at)>mtime){skipped++;continue;}
  e.stations??=[...bindings.values()].filter(r=>e.local?.[r.station]||e.guidance?.stations?.[r.station]);
- const result=await updateStationScience(e,{root:options.output,now:mtime,sourceEvidenceId:name.slice(0,64),publicationMode:'replay'});
+ const result=await updateStationScience(e,{root:options.output,now:mtime,sourceEvidenceId:name.slice(0,64)});
  packets++;scored+=result.scored;forecasted+=result.forecasted;outcomes.push(...result.outcomes);
 }
 const report={evaluation:'retrospective replay of immutable archived forecasts; filesystem write time conservatively defines availability; latest contracts supply only station time zones; does not qualify trading or seed production calibration',packets,skipped,scored,forecasted,...await readStationScience({root:options.output})};

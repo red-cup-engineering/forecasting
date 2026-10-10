@@ -5,57 +5,20 @@
  *
  * The Daily Climate Report's day runs midnight to midnight local STANDARD
  * time, so under daylight time it starts at 01:00 on the clock. Hourly and
- * special observations carry temperature in tenths of a degree C; the
- * report's extreme comes from the station's continuous record in whole
- * degrees F, so it can only be at or beyond what the observations show. The
- * bounds returned are one degree looser than the observations, to cover
- * conversion and rounding: the day's maximum is at least `floor`, its
- * minimum at most `ceiling`.
+ * special METARs carry temperature in tenths of a degree C (the remark's
+ * T-group) and synoptic METARs the exact six-hour maximum and minimum (the
+ * 1sTTT and 2sTTT groups); the five-minute readings between them carry WHOLE
+ * degrees C, so "22" is anywhere in 21.5-22.5 C (70.7-72.5 F). The report's
+ * extreme comes from the station's continuous record in whole degrees F.
+ *
+ * Two bounds are returned. `floor`/`ceiling` are one degree looser than the
+ * readings read as exact (the original rule). `floorPrecise`/`ceilingPrecise`
+ * read each reading as the interval its precision allows: the day's maximum is
+ * at least the highest LOWER end of any reading, so the report's whole-degree
+ * high is at least that rounded; the minimum mirrors it.
  */
-import {createHash} from 'node:crypto';
-import {gzipSync} from 'node:zlib';
-import {precipitationWitnesses} from './weather-precipitation.mjs';
 export const NWS_API = 'https://api.weather.gov';
 export const NWS_USER_AGENT = '(561 Group weather desk, ops@561.group)';
-
-export const NWS_REPORT_CELL_VERSION='nws-metar-temperature-cell-v1';
-export const NWS_REPORT_CELL_TRUTH='first received validated NWS METAR temperature cell; nearest identified report within 15 minutes';
-/** Reporting quantization only: neither instrument error nor a final climate
- * extreme is identified. API numeric formatting/cadence supplies no precision. */
-export function temperatureReportCells(pages,{station,start,end,receivedAt}){
- if(!Array.isArray(pages)||pages.length>8||!Number.isFinite(start)||!Number.isFinite(end)||end<=start||!Number.isFinite(Date.parse(receivedAt)))throw new TypeError('bounded observation pages, interval and receipt required');
- const witnesses=[],groups=new Map();let outsideWindowRows=0;
- for(const page of pages)for(const feature of page.packet.features??[]){
-  const p=feature?.properties??{},q=p.temperature,epoch=Date.parse(p.timestamp),receipt=Date.parse(page.receivedAt),raw=typeof p.rawMessage==='string'?p.rawMessage.trim():'',featureStation=typeof p.station==='string'?p.station.split('/').at(-1):null;
-  if(Number.isFinite(epoch)&&(epoch<start||epoch>=end)){outsideWindowRows++;continue;}
-  const w={featureId:feature.id??p['@id']??null,pageSha256:page.sha256,source:page.url,availableAt:page.receivedAt,station,at:Number.isFinite(epoch)?new Date(epoch).toISOString():null,rawTemperature:q??null,rawMessage:raw,status:'precision-unidentified',cell:null};
-  witnesses.push(w);
-  if(!Number.isFinite(epoch)||epoch<start||epoch>=end){w.status='invalid-observation-time';continue;}
-  if(!Number.isFinite(receipt)||receipt>Date.parse(receivedAt)||epoch>receipt){w.status='noncausal-report';continue;}
-  if(featureStation&&featureStation!==station){w.status='station-mismatch';continue;}
-  if(!['V','qc:V'].includes(q?.qualityControl)||!Number.isFinite(q?.value)||!['wmoUnit:degC','wmoUnit:degF'].includes(q?.unitCode)){w.status='missing-or-untrusted';continue;}
-  if(!raw)continue;
-  const header=/^(?:(?:METAR|SPECI)\s+)?([A-Z0-9]{4})\s+(\d{2})(\d{2})(\d{2})Z\b/.exec(raw),at=new Date(epoch);
-  if(!header||header[1]!==station||Number(header[2])!==at.getUTCDate()||Number(header[3])!==at.getUTCHours()||Number(header[4])!==at.getUTCMinutes()||at.getUTCSeconds()!==0){w.status='report-header-mismatch';continue;}
-  const [body,remarks='']=raw.split(/\bRMK\b/,2),whole=/\b(M?\d{2})\/(?:M?\d{2}|\/\/)?(?=\s|$)/.exec(body),tenths=[...remarks.matchAll(/(?:^|\s)T([01])(\d{3})(?:[01]\d{3}|\/\/\/\/)(?=\s|$)/g)];
-  const encoded=[];if(whole){const value=Number(whole[1].replace('M',''))*(whole[1].startsWith('M')?-1:1);encoded.push({kind:'whole-Celsius-body',valueC:value,resolutionC:1,lowC:value-.5,highC:value+.5});}
-  for(const match of tenths){const value=Number(match[2])/10*(match[1]==='1'?-1:1);encoded.push({kind:'tenths-Celsius-remark',valueC:value,resolutionC:.1,lowC:value-.05,highC:value+.05});}
-  if(!encoded.length)continue;
-  const lowC=Math.max(...encoded.map(c=>c.lowC)),highC=Math.min(...encoded.map(c=>c.highC)),apiC=q.unitCode==='wmoUnit:degF'?(q.value-32)*5/9:q.value,apiEnvelope=whole?encoded[0]:{lowC,highC};
-  const incompatible=lowC>highC||lowC*9/5+32< -150||highC*9/5+32>180||(apiEnvelope&&(apiC<apiEnvelope.lowC-1e-8||apiC>apiEnvelope.highC+1e-8));
-  w.encodings=encoded;w.decodedApiF=q.unitCode==='wmoUnit:degF'?q.value:q.value*9/5+32;
-  if(incompatible){w.status='contradictory-encoding';}
-  else{w.status='identified';w.cell={lowF:lowC*9/5+32,highF:highC*9/5+32,resolutionBasis:encoded.some(c=>c.resolutionC===.1)?'tenths-Celsius-remark':'whole-Celsius-body'};}
-  const group=groups.get(w.at)??[];group.push(w);groups.set(w.at,group);
- }
- const readings=[];
- for(const [at,rows] of groups){
-  const cells=rows.filter(w=>w.cell),lowF=cells.length?Math.max(...cells.map(w=>w.cell.lowF)):null,highF=cells.length?Math.min(...cells.map(w=>w.cell.highF)):null,conflicted=rows.some(w=>w.status==='contradictory-encoding')||lowF===null||lowF>highF;
-  readings.push({at,status:conflicted?'conflicted':'identified',lowF:conflicted?null:lowF,highF:conflicted?null:highF,temperatureF:conflicted?null:(lowF+highF)/2,availableAt:rows.reduce((a,w)=>a<w.availableAt?w.availableAt:a,''),source:rows[0].source,measurementOperator:NWS_REPORT_CELL_VERSION,witnesses:rows});
- }
- readings.sort((a,b)=>a.at.localeCompare(b.at));
- return {operator:NWS_REPORT_CELL_VERSION,truth:NWS_REPORT_CELL_TRUTH,receivedAt,outsideWindowRows,witnesses,readings,identified:readings.filter(r=>r.status==='identified').length,conflicted:readings.filter(r=>r.status==='conflicted').length,unidentified:witnesses.filter(w=>w.status==='precision-unidentified').length,scope:'closed inverse-rounding envelopes conditional on validated raw METAR encoding; no cadence-derived precision, instrument-error bound, independent-trial count or settlement certification'};
-}
 
 /** The UTC instant of local standard-time midnight starting `date` in `timeZone`. */
 export function climateDayStart(date, timeZone) {
@@ -73,6 +36,18 @@ export function climateDayStart(date, timeZone) {
 }
 
 /**
+ * The whole-degree bounds the readings force on the report: its high is at least the round of the highest
+ * lower end of any reading (each widened by its precision), its low at most the round of the lowest upper end.
+ * Rounding half away matches a report that rounds its continuous extreme to whole degrees F.
+ */
+export function preciseBounds(readings,synoptic=[]){
+  let lowEnd=-Infinity,highEnd=Infinity;
+  for(const r of readings){if(r.qualityControl==='qc:X'||r.qualityControl==='qc:Q')continue;lowEnd=Math.max(lowEnd,r.temperatureF-r.precisionF);highEnd=Math.min(highEnd,r.temperatureF+r.precisionF);}
+  for(const r of synoptic){if(r.kind==='max6h')lowEnd=Math.max(lowEnd,r.temperatureF-r.precisionF);else highEnd=Math.min(highEnd,r.temperatureF+r.precisionF);}
+  return {floorPrecise:Number.isFinite(lowEnd)?Math.ceil(lowEnd-0.5):null,ceilingPrecise:Number.isFinite(highEnd)?Math.floor(highEnd+0.5):null};
+}
+
+/**
  * The extremes observed at `station` from the start of its climate day on
  * `date` until now.
  * @param {{station: string, date: string, timeZone: string, now?: Date|string|number}} request
@@ -82,25 +57,19 @@ export function climateDayStart(date, timeZone) {
 export async function observedExtremes({ station, date, timeZone, now = Date.now() }, { fetchImpl = fetch, baseUrl = NWS_API, userAgent = NWS_USER_AGENT } = {}) {
   const from = climateDayStart(date, timeZone);
   const until = new Date(Math.min(new Date(now).getTime(), from.getTime() + 24 * 3600_000));
-  const empty = { station, date, from: from.toISOString(), count: 0, maxF: null, minF: null, floor: null, ceiling: null, latest: null, readings: [], source: null };
+  const empty = { station, date, from: from.toISOString(), count: 0, maxF: null, minF: null, floor: null, ceiling: null, floorPrecise: null, ceilingPrecise: null, latest: null, readings: [], synoptic: [], source: null };
   if (until <= from) return empty;
   const url = new URL(`${baseUrl}/stations/${station}/observations`);
   url.searchParams.set('start', from.toISOString());
   url.searchParams.set('end', until.toISOString());
   url.searchParams.set('limit','500');
-  const readings=new Map(),visited=new Set(),pages=[];let next=url.href;
+  const readings=new Map(),visited=new Set(),synoptic=[];let next=url.href;
   while(next){
-    const pageUrl=new URL(next,url);
-    if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname)throw new Error('station-observations: invalid or excessive observation pagination');
-    // NWS continuation links can omit the original interval. The opaque cursor
-    // advances within our request; it does not widen the requested evidence.
-    for(const key of ['start','end','limit'])pageUrl.searchParams.set(key,url.searchParams.get(key));
-    if(visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');
+    const pageUrl=new URL(next,url);if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname||visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');
     visited.add(pageUrl.href);
     const res=await fetchImpl(pageUrl,{headers:{'user-agent':userAgent,accept:'application/geo+json'},signal:AbortSignal.timeout(30000)});
     if(!res.ok)throw new Error(`station-observations: GET ${pageUrl} answered ${res.status}`);
-    const rawText=typeof res.text==='function'?await res.text():JSON.stringify(await res.json()),rawBytes=Buffer.from(rawText),page=JSON.parse(rawText),receivedAt=new Date().toISOString();
-    pages.push({url:pageUrl.href,receivedAt,sha256:createHash('sha256').update(rawBytes).digest('hex'),bytes:rawBytes.length,encoding:'gzip-base64',body:gzipSync(rawBytes).toString('base64'),serializationBasis:typeof res.text==='function'?'received response body':'reconstructed supplied-client JSON',packet:page});next=page.pagination?.next??null;
+    const page=await res.json();next=page.pagination?.next??null;
     for(const feature of page.features??[]) {
     const p=feature?.properties,temperature=p?.temperature,at=p?.timestamp,epoch=Date.parse(at);
     if(!Number.isFinite(epoch)||epoch<from.getTime()||epoch>until.getTime()||epoch>=from.getTime()+86400000||typeof temperature?.value!=='number'||!Number.isFinite(temperature.value))continue;
@@ -108,16 +77,76 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
     if(!['wmoUnit:degC','wmoUnit:degF'].includes(unit))continue;
     const temperatureF=unit==='wmoUnit:degC'?temperature.value*9/5+32:temperature.value;
     if(temperatureF< -150||temperatureF>180)continue;
-    const row={at:new Date(epoch).toISOString(),temperatureF,qualityControl:temperature.qualityControl??null};
-    const old=readings.get(row.at);if(!old||row.qualityControl==='qc:V')readings.set(row.at,row);
+    const raw=typeof p.rawMessage==='string'?p.rawMessage:'';
+    // Tenths when the METAR's T-group is present or the value is not whole; otherwise half a degree either way.
+    const precisionF=/\sT[01]\d{3}[01]\d{3}(\s|$)/u.test(raw)||!Number.isInteger(temperature.value)?0.09:unit==='wmoUnit:degC'?0.9:0.5;
+    const row={at:new Date(epoch).toISOString(),temperatureF,precisionF,qualityControl:temperature.qualityControl??null};
+    const old=readings.get(row.at);if(!old||row.qualityControl==='qc:V'||old.precisionF>row.precisionF)readings.set(row.at,row);
+    // Synoptic six-hour extremes (remarks 1sTTT max, 2sTTT min, tenths C) count when the six hours lie inside the day.
+    const remarks=raw.split(' RMK ')[1]??'';
+    if(epoch-6*3600000>=from.getTime())for(const token of remarks.split(/\s+/u)){
+      const m=/^([12])([01])(\d{3})$/u.exec(token);if(!m)continue;
+      const c=(m[2]==='1'?-1:1)*Number(m[3])/10,f=c*9/5+32,kind=m[1]==='1'?'max6h':'min6h';
+      synoptic.push({at:row.at,kind,temperatureF:f,precisionF:0.09});
+    }
   }
   }
-  const receivedAt=new Date().toISOString(),precipitation=precipitationWitnesses(pages,{station,start:from.getTime(),end:from.getTime()+86400000,receivedAt}),rawPages=pages.map(({packet,...raw})=>raw);
-  const temperatureMetrology=temperatureReportCells(pages,{station,start:from.getTime(),end:from.getTime()+86400000,receivedAt});
   const trace=[...readings.values()].sort((a,b)=>a.at.localeCompare(b.at));
-  if(!trace.length)return {...empty,source:url.href,precipitation,rawPages,temperatureMetrology};
+  if(!trace.length)return {...empty,source:url.href};
   const temps=trace.map(r=>r.temperatureF),maxF=Math.max(...temps),minF=Math.min(...temps);
-  return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,latest:trace.at(-1).at,readings:trace,source:url.href,precipitation,rawPages,temperatureMetrology};
+  const {floorPrecise,ceilingPrecise}=preciseBounds(trace,synoptic);
+  return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,floorPrecise,ceilingPrecise,latest:trace.at(-1).at,readings:trace,synoptic,source:url.href};
+}
+
+export const METAR_FEED = 'https://tgftp.nws.noaa.gov/data/observations/metar/stations';
+
+/**
+ * A raw METAR's temperature at tenths of a degree C (the remark T-group, else the body's whole degrees) and its
+ * synoptic six-hour extremes (remarks 1sTTT max, 2sTTT min). Pure.
+ * @param {string} raw e.g. "KOKC 081452Z 00000KT 10SM CLR 24/13 A3010 RMK AO2 SLP179 T02390133 51015"
+ * @param {Date|number} issued the bulletin's time, to date the day-and-hour group
+ */
+export function parseMetar(raw, issued) {
+  const m = /^([A-Z0-9]{4})\s+(?:METAR\s+|SPECI\s+)?(\d{2})(\d{2})(\d{2})Z\b/u.exec(raw.trim());
+  if (!m) return null;
+  const ref = new Date(issued);
+  let at = Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth(), Number(m[2]), Number(m[3]), Number(m[4]));
+  if (at - ref.getTime() > 2 * 86400000) at = Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth() - 1, Number(m[2]), Number(m[3]), Number(m[4]));
+  const c = (sign, digits) => (sign === '1' ? -1 : 1) * Number(digits) / 10, f = (x) => x * 9 / 5 + 32;
+  const [body, remarks = ''] = raw.split(' RMK ');
+  const tenths = /\sT([01])(\d{3})[01]\d{3}(\s|$)/u.exec(` ${remarks}`);
+  const whole = /\s(M?\d{2})\/(M?\d{2})?(\s|$)/u.exec(` ${body}`);
+  const temperatureF = tenths ? f(c(tenths[1], tenths[2])) : whole ? f(Number(whole[1].replace('M', '-'))) : null;
+  const synoptic = [];
+  for (const token of remarks.split(/\s+/u)) {
+    const g = /^([12])([01])(\d{3})$/u.exec(token);
+    if (g) synoptic.push({ at: new Date(at).toISOString(), kind: g[1] === '1' ? 'max6h' : 'min6h', temperatureF: f(c(g[2], g[3])), precisionF: 0.09 });
+  }
+  return { station: m[1], at: new Date(at).toISOString(), temperatureF, precisionF: tenths ? 0.09 : 0.9, synoptic, raw };
+}
+
+/** The station's latest METAR from NWS's feed, which publishes each report about 2.5 minutes after it is taken (the observation API lags 15-35). */
+export async function latestMetar({ station }, { fetchImpl = fetch, feed = METAR_FEED, userAgent = NWS_USER_AGENT } = {}) {
+  const res = await fetchImpl(`${feed}/${station}.TXT`, { headers: { 'user-agent': userAgent }, signal: AbortSignal.timeout(10000) });
+  if (!res.ok) throw new Error(`metar ${station}: ${res.status}`);
+  const [stamp, raw] = (await res.text()).trim().split('\n');
+  return raw ? parseMetar(raw, Date.parse(`${stamp.replace(/\//gu, '-').replace(' ', 'T')}:00Z`)) : null;
+}
+
+/**
+ * The day's extremes with a METAR folded in: its reading when it falls inside the climate day, and its six-hour
+ * extremes when their six hours do. Returns the observations unchanged when the METAR adds nothing.
+ */
+export function withMetar(obs, metar) {
+  if (!obs || !metar || !Number.isFinite(metar.temperatureF)) return obs;
+  const from = Date.parse(obs.from), until = from + 86400000, at = Date.parse(metar.at);
+  if (!(at >= from && at < until)) return obs;
+  const known = obs.readings.find((r) => r.at === metar.at);
+  const readings = known && known.precisionF <= metar.precisionF ? obs.readings
+    : [...obs.readings.filter((r) => r.at !== metar.at), { at: metar.at, temperatureF: metar.temperatureF, precisionF: metar.precisionF, qualityControl: null, source: 'metar' }].sort((a, b) => a.at.localeCompare(b.at));
+  const synoptic = [...(obs.synoptic ?? []), ...metar.synoptic.filter((g) => at - 6 * 3600000 >= from && !(obs.synoptic ?? []).some((o) => o.at === g.at && o.kind === g.kind))];
+  const temps = readings.map((r) => r.temperatureF), maxF = Math.max(...temps), minF = Math.min(...temps);
+  return { ...obs, count: readings.length, readings, synoptic, maxF, minF, floor: Math.floor(maxF) - 1, ceiling: Math.ceil(minF) + 1, ...preciseBounds(readings, synoptic), latest: readings.at(-1).at };
 }
 
 /**

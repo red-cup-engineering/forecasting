@@ -19,7 +19,7 @@ import { createReadStream, existsSync, mkdirSync, appendFileSync, readFileSync, 
 import { createInterface } from 'node:readline';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createKalshiClient } from '../../../src/client.mjs';
+import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
 import { comboStateDir, isComboTicker, legMeta, rfqSize, correlationModel, priceCombo, tetrachoric, wilson, pairClass } from '../src/combo-pricer.mjs';
 
 const dir = comboStateDir();

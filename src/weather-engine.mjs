@@ -1,27 +1,24 @@
-import {sameDayRainEvidence} from './weather-precipitation.mjs';
-import {weatherCarryAllocation} from '../../../src/weather-capital.mjs';
-import {weatherParticipationActions,reviewWeatherParticipation,readWeatherParticipationFees,verifyWeatherParticipationProposal} from '../../../src/weather-participation.mjs';
 import {collectEcmwfEnsemble} from './weather-ecmwf-ensemble.mjs';
 import {collectRelationalWeatherNowcast} from './weather-relational-nowcast.mjs';
 import {collectWeatherStrategyResearch} from './weather-strategy-research.mjs';
 import {collectRelationalTemperatureScience} from './weather-relational-temperature.mjs';
 import {deriveDailyTemperatureExtremes} from './weather-temperature-extremes.mjs';
 import {INDEX_CITIES} from './weather-index.mjs';
-import { binarySettlement } from '../../../src/market-facts.mjs';
+import { binarySettlement } from '@red-cup-engineering/kalshi-services-section/market-facts';
 import {randomUUID,createHash} from 'node:crypto';
-import {updateStationScience,readStationScience,stationPointForecasts,stationScienceReport} from './station-weather-science.mjs';
+import {updateStationScience,readStationScience,stationPointForecasts} from './station-weather-science.mjs';
 import { readFile, writeFile, mkdir, rename, readdir, appendFile, rm, stat, link } from 'node:fs/promises';
-import { createReadStream, createWriteStream } from 'node:fs';
-import { Readable } from 'node:stream';
-import { pipeline } from 'node:stream/promises';
+import { createReadStream } from 'node:fs';
 import { createInterface } from 'node:readline';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
-import { createGzip, gunzipSync } from 'node:zlib';
-import { createKalshiClient } from '../../../src/client.mjs';
-import { digest, discoverWeather, weatherContract, weatherRuleKey, mapLimit } from './weather-universe.mjs';
+import { gzipSync, gunzipSync } from 'node:zlib';
+import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
+import { digest, discoverWeather, weatherRuleKey, mapLimit } from './weather-universe.mjs';
 import { collectWeatherEvidence, collectStationWeatherEvidence, weatherEstimates, forecastCell } from './weather-evidence.mjs';
 import { createModelGradeAccumulator, probabilityBand, allocateWeather } from './weather-learning.mjs';
+import { fuseForecast } from './forecast-surface.mjs';
+import { orderFee } from './fees.mjs';
 import {sourceReport} from './weather-settlement-source.mjs';
 import { bracketSettlesYes } from './temperature-distribution.mjs';
 
@@ -80,50 +77,32 @@ export async function weatherCashBudget({client=createKalshiClient(),exchangeInd
   }
   return {capitalUsd,encumberedUsd:Math.ceil(reserved*100-1e-8)/100,exchangeIndex,observedAt:new Date().toISOString(),source:'weather-shard cash minus gross resting-order commitments (conservative)',orderEffect:false};
 }
-// Weather packets are JSON trees. Split their maps and arrays into records;
-// never retain another packet-sized JSON string beside the live evidence tree.
-// Native JSON serialization at each leaf preserves numbers, escaping and omission.
-function* packetJsonRecords(value,key='',depth=0){
- const container=value!==null&&typeof value==='object'&&(Array.isArray(value)||[Object.prototype,null].includes(Object.getPrototypeOf(value)))&&!('toJSON' in value);
- if(!container||depth>=3){
-  // The wrapper supplies the original property/index key to native toJSON.
-  const encoded=JSON.stringify({[key]:value});if(encoded!=='{}')yield encoded.slice(JSON.stringify(key).length+2,-1);return;
- }
- if(Array.isArray(value)){
-  const length=value.length;yield '[';for(let i=0;i<length;i++){if(i)yield ',';const parts=packetJsonRecords(value[i],String(i),depth+1),first=parts.next();if(first.done)yield 'null';else{yield first.value;yield* parts;}}yield ']';
- }else{
-  const keys=Object.keys(value);yield '{';let comma=false;for(const name of keys){const parts=packetJsonRecords(value[name],name,depth+1),first=parts.next();if(first.done)continue;if(comma)yield ',';comma=true;yield JSON.stringify(name)+':';yield first.value;yield* parts;}yield '}';
- }
+async function archivePacket(path,evidence){
+  const tmp=`${path}.${process.pid}.${randomUUID()}.tmp`;
+  try{await writeFile(tmp,gzipSync(JSON.stringify(evidence)),{mode:0o600,flag:'wx'});try{await link(tmp,path);}catch(e){if(e.code!=='EEXIST')throw e;}}
+  finally{await rm(tmp,{force:true});}
 }
-async function archivePacket(root,evidence){
- const tmp=join(root,`.packet-${process.pid}-${randomUUID()}.tmp`),hash=createHash('sha256');
- async function* bytes(){let chunks=[],size=0,written=0;for(const text of packetJsonRecords(evidence)){chunks.push(text);size+=text.length;if(size>=65536){const b=Buffer.from(chunks.join(''));chunks=[];size=0;written+=b.length;hash.update(b);yield b;}}if(chunks.length){const b=Buffer.from(chunks.join(''));written+=b.length;hash.update(b);yield b;}if(!written)throw new TypeError('weather packet must have a JSON representation');}
- try{
-  await pipeline(Readable.from(bytes()),createGzip(),createWriteStream(tmp,{mode:0o600,flags:'wx'}));const evidenceId=hash.digest('hex');try{await link(tmp,join(root,evidenceId+'.json.gz'));}catch(e){if(e.code!=='EEXIST')throw e;}return evidenceId;
- }finally{await rm(tmp,{force:true});}
-}
-async function archiveWeatherEvidence(evidence,root,{sourceProjection=false}={}) {
+async function archiveWeatherEvidence(evidence,root) {
   await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
-  const sourceEvidenceId=await archivePacket(join(root,'evidence'),evidence);
+  const sourceEvidenceId=digest(evidence);await archivePacket(join(root,'evidence',`${sourceEvidenceId}.json.gz`),evidence);
   evidence.dailyExtremes=deriveDailyTemperatureExtremes(evidence,{now:Date.now()});
-  if(sourceProjection)evidence.science={status:'source projection; scientific outcome scoring and refinement await complete acquisition',parameters:{},forecasts:[],outcomes:[]};
-  else try{evidence.science=await locked(join(root,'station-science'),()=>updateStationScience(evidence,{root:join(root,'station-science'),now:Date.now(),sourceEvidenceId,publicationRoot:join(root,'evidence')}));}
-  catch(e){if(e.code!=='WEATHER_CYCLE_RUNNING')throw e;const learningState=await read(join(root,'station-science','state.json'),{}),report=stationScienceReport(learningState);evidence.science={...report,status:'another station-science update is running; read-only publication from the last atomic paired outcome state',learningStateAt:learningState.at??null,forecasts:stationPointForecasts(evidence,{parameters:learningState.parameters??{},learningState}),outcomes:[]};}
+  try{evidence.science=await locked(join(root,'station-science'),()=>updateStationScience(evidence,{root:join(root,'station-science'),now:Date.now(),sourceEvidenceId}));}
+  catch(e){if(e.code!=='WEATHER_CYCLE_RUNNING')throw e;const report=await readStationScience({root:join(root,'station-science')});evidence.science={...report,status:'another station-science update is running',forecasts:stationPointForecasts(evidence,{parameters:report.parameters}),outcomes:[]};}
   evidence.sourceEvidenceId=sourceEvidenceId;
-  return archivePacket(join(root,'evidence'),evidence);
+  const evidenceId=digest(evidence);await archivePacket(join(root,'evidence',`${evidenceId}.json.gz`),evidence);return evidenceId;
 }
 /** Independent, empirical metrology experiment; raw archive retained by content address. */
 export async function weatherRelationalScience({region='nyc',root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
  const packet=await collectRelationalTemperatureScience({region,now,fetchImpl});
  await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
- const evidenceId=await archivePacket(join(root,'evidence'),packet);
+ const evidenceId=digest(packet);await archivePacket(join(root,'evidence',`${evidenceId}.json.gz`),packet);
  const {rawSource,...report}=packet;return {evidenceId,...report};
 }
 /** A generated-learner study with lossless fits/plays archived and a bounded public summary. */
 export async function weatherStrategyResearch({region='nyc',root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
  const packet=await collectWeatherStrategyResearch({region,now,fetchImpl});
  await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
- const evidenceId=await archivePacket(join(root,'evidence'),packet);
+ const evidenceId=digest(packet);await archivePacket(join(root,'evidence',`${evidenceId}.json.gz`),packet);
  const {rawSource,...report}=packet;
  return {...report,evidenceId,study:{...packet.study,generatedLearners:packet.study.generatedLearners.map(({lastFrozenFits,...learner})=>learner),game:{arena:packet.study.game.arena,semantics:packet.study.game.semantics,scope:packet.study.game.scope,admittedPlayCount:packet.study.game.strategy.plays.length}}};
 }
@@ -259,15 +238,16 @@ async function experiments(root,contracts,now){
   }
   return out;
 }
-async function quoteWeatherContract(c,models,evidence,client) {
+async function quoteWeatherContract(c,models,evidence,client,surface) {
   if(c.blocker&&!models.some(m=>m.directContractForecast))return [];
-  const qualified=models.filter(m=>m.band.admitted&&(!m.details?.validUntil||Date.parse(m.details.validUntil)>Date.now()));
-  if(!qualified.length)return [];
-  const lo=Math.min(...qualified.map(m=>Math.min(m.p,m.band.low))),hi=Math.max(...qualified.map(m=>Math.max(m.p,m.band.high)));
-  if(c.family==='hourly-temperature'&&c.binding){
+  if(!surface||(!surface.admitted.length&&!surface.structural.length))return [];
+  const qualified=models.filter(m=>surface.admitted.includes(m.id)||surface.structural.includes(m.id));
+  const lo=surface.low,hi=surface.high;
+  // A hazard is a regime the statistical models were not fitted on; a structural bound holds in every regime.
+  if(surface.admitted.length&&c.family==='hourly-temperature'&&c.binding){
     for(const row of qualified.flatMap(m=>m.details?.stationForecasts??[])){const hazards=evidence.local[row.station.slice(0,4)]?.alerts;if(!hazards||hazards.warm.length||hazards.cold.length)return [];}
   }
-  if(c.family==='daily-temperature'&&c.binding){
+  if(surface.admitted.length&&c.family==='daily-temperature'&&c.binding){
     const hazards=evidence.local[c.binding.station]?.alerts;
     if(!hazards||hazards.warm.length||hazards.cold.length)return [];
   }
@@ -279,7 +259,7 @@ async function quoteWeatherContract(c,models,evidence,client) {
     if(!levels.length||c.feeType!=='quadratic'||!Number.isFinite(c.feeMultiplier))continue;
     const {price,depth}=levels[0];
     // One-lot rounding overestimates aggregate fees; custody execution applies the actual live fee.
-    const fee=Math.ceil(100*0.07*c.feeMultiplier*price*(1-price))/100,edge=side.p-price-fee;
+    const fee=orderFee(1,price,{multiplier:c.feeMultiplier}),edge=side.p-price-fee;
     if(edge>0)out.push({ticker:c.ticker,eventTicker:c.event_ticker,targetDate:c.binding?.targetDate,closeTime:fresh.close_time,exchangeIndex:c.exchange_index,side:side.side,price,depth,fee,edge,winLower:side.p,admitted:true,modelIds:qualified.map(m=>m.id),rulesHash:c.rulesHash,observedAt:new Date().toISOString(),quoteExpiresAt:new Date(Date.now()+60000).toISOString()});
   }
   return out;
@@ -304,16 +284,31 @@ export async function allocateLiveWeather({root=weatherRoot(),capitalUsd,encumbe
   return {...allocateWeather(quotes,budget),evidenceAt:state.at,observedAt:new Date().toISOString(),budgetSource:budget.source??'explicit scenario',errors};
 }
 
+/**
+ * The desk's read of the cycle: every contract whose surface the house knows better than the book (an
+ * admitted model or a structural bound), in a few kilobytes instead of latest.json's megabytes.
+ */
+export function forecastSurface(rows,contracts,at){
+  const byTicker=new Map(contracts.map(c=>[c.ticker,c]));
+  return {type:'KalshiForecastSurface',version:SURFACE_VERSION,at,contracts:rows.filter(r=>r.surface&&(r.surface.admitted.length||r.surface.structural.length)&&!r.blocker).map(r=>{const c=byTicker.get(r.ticker);
+    return {ticker:r.ticker,eventTicker:r.eventTicker,seriesTicker:c?.seriesTicker??r.ticker.split('-')[0],family:r.family,targetDate:r.targetDate,closeTime:r.closeTime,rulesHash:r.rulesHash,feeMultiplier:c?.feeMultiplier??1,feeType:c?.feeType??'quadratic',station:r.station,...r.surface};})};
+}
+/** Version 2: structural bounds are observation-derived only (forecast-surface STRUCTURAL_KINDS). */
+export const SURFACE_VERSION=2;
+/** The latest surface, or null when it is older than `maxAgeMs` or of another version. */
+export async function readForecastSurface({root=weatherRoot(),now=Date.now(),maxAgeMs=20*60000}={}){
+  const s=await read(join(root,'surface.json'),null);
+  return s&&s.version===SURFACE_VERSION&&now-Date.parse(s.at)<=maxAgeMs?s:null;
+}
 export async function runWeatherCycle({root=weatherRoot(),client=weatherClient(),now=Date.now(),fetchImpl=fetch,capitalUsd=0,encumberedUsd=0}={}) {
   return locked(root,async()=>{
-    let scoring={settled:0,pending:null,errors:[],grades:await read(join(root,'grades.json'),{}),status:'venue outcome scoring awaits completed acquisition'};
+    const scoring=await scorePending(root,client,now);
     const universe=await discoverWeather(client);
-    const publish=async (evidence,{sourceProjection=false}={})=>{
-    const evidenceId=await archiveWeatherEvidence(evidence,root,{sourceProjection});
-    if(!sourceProjection)scoring=await scorePending(root,client,Date.now());
+    const evidence=await collectWeatherEvidence(universe.markets,{cacheDir:join(root,'nbm'),now:Date.now(),fetchImpl});
+    const evidenceId=await archiveWeatherEvidence(evidence,root);
     const quoteTimes=new Map(),freshQuotes=new Map();
     const quoted=universe.markets;
-    for(let i=0;!sourceProjection&&i<quoted.length;i+=100){
+    for(let i=0;i<quoted.length;i+=100){
       const batch=quoted.slice(i,i+100);
       try{for(const m of await client.getMarkets({tickers:batch.map(c=>c.ticker).join(',')})){freshQuotes.set(m.ticker,m);quoteTimes.set(m.ticker,new Date().toISOString());}}
       catch(e){evidence.errors.push({source:'fresh-market-quotes',error:e.message});}
@@ -321,142 +316,32 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
     const decisionNow=Date.now();
     const contracts=universe.markets.map(c=>{const fresh=freshQuotes.get(c.ticker);if(!fresh)return c;const changed=digest({primary:c.rules_primary,secondary:c.rules_secondary})!==digest({primary:fresh.rules_primary,secondary:fresh.rules_secondary});return {...c,...fresh,...(changed?{ruleKey:weatherRuleKey(fresh,c.seriesTicker,c.source,c.stationRule),binding:null,blocker:'rules changed during collection; rebind next cycle'}:{})};}).map(c=>({...c,rulesHash:digest({primary:c.rules_primary,secondary:c.rules_secondary})}));
     for(const c of contracts)if(c.binding?.kind==='index-at'&&evidence.indices?.[c.binding.city]?.blocker)c.blocker=evidence.indices[c.binding.city].blocker;
-    const ex=sourceProjection?new Map():await experiments(root,contracts,decisionNow),pending=await read(join(root,'pending.json'),{}),rows=[],opportunities=[];
+    const ex=await experiments(root,contracts,decisionNow),pending=await read(join(root,'pending.json'),{}),rows=[],opportunities=[];
     await mapLimit(contracts,3,async c=>{
-      const s=stage(c,decisionNow)+(sourceProjection?'/source-projection-v1':evidence.acquisition?.complete===false?'/during-acquisition-v1':''),models=weatherEstimates(c,evidence,decisionNow);
+      const s=stage(c,decisionNow),models=weatherEstimates(c,evidence,decisionNow);
       models.push(...(ex.get(c.ticker)?.values()??[]));
       const midpoint=quoteTimes.has(c.ticker)?mid(c):null,b=c.binding,modelBands=models.map(m=>({...m,band:probabilityBand({...c,station:b?.station??null,stage:s},m,scoring.grades)}));
+      const surface=fuseForecast({mid:midpoint,models:modelBands});
       const support=forecastCell(c,models);
-      const row={ticker:c.ticker,eventTicker:c.event_ticker,title:c.title,family:c.family,source:c.source,stage:s,targetDate:b?.targetDate??null,closeTime:c.close_time,ruleKey:c.ruleKey,rulesHash:c.rulesHash,station:b?.station??null,...(b?.kind==='rain'?{rainNowcast:sameDayRainEvidence(c,evidence,decisionNow)}:{}),mid:midpoint,marketObservedAt:quoteTimes.get(c.ticker)??null,models:modelBands,evidenceId,settlementReport:sourceReport(c,evidence.settlement),...support,blocker:c.blocker};
+      const row={ticker:c.ticker,eventTicker:c.event_ticker,title:c.title,family:c.family,source:c.source,stage:s,targetDate:b?.targetDate??null,closeTime:c.close_time,ruleKey:c.ruleKey,rulesHash:c.rulesHash,station:b?.station??null,mid:midpoint,marketObservedAt:quoteTimes.get(c.ticker)??null,models:modelBands,evidenceId,settlementReport:sourceReport(c,evidence.settlement),...support,blocker:c.blocker,surface};
       rows.push(row);
-      if(models.length&&(sourceProjection||midpoint!==null)&&c.status==='active'&&Date.parse(c.close_time)>Date.now()){
-        const forecast={at:new Date().toISOString(),...row,models:models.map(m=>({id:m.id,p:m.p,details:m.details}))};
-        const id=digest({ticker:c.ticker,stage:s,rules:c.rulesHash,models:models.map(m=>m.id).sort()});
+      if(models.length&&midpoint!==null&&c.status==='active'&&Date.parse(c.close_time)>Date.now()){
+        // The surface is graded like any model: house-surface-v1 against the mid is the house's own skill.
+        const graded=[...models.map(m=>({id:m.id,p:m.p,details:m.details})),...(surface?[{id:'house-surface-v1',p:surface.p,details:{admitted:surface.admitted,structural:surface.structural,low:surface.low,high:surface.high}}]:[])];
+        const forecast={at:new Date().toISOString(),...row,models:graded};
+        const id=digest({ticker:c.ticker,stage:s,rules:c.rulesHash,models:graded.map(m=>m.id).sort()});
         pending[id]??=forecast;
       }
-      if(!sourceProjection)try{opportunities.push(...await quoteWeatherContract(c,modelBands,evidence,client));}catch(e){row.bookError=e.message;}
+      try{opportunities.push(...await quoteWeatherContract(c,modelBands,evidence,client,surface));}catch(e){row.bookError=e.message;}
 
     });
-    if(evidence.acquisition?.complete===false&&!rows.some(row=>row.models.length))return false;
     await atomic(join(root,'pending.json'),pending);
     const families={};for(const c of contracts){families[c.family]??={markets:0,modelled:0,volume24h:0};families[c.family].markets++;families[c.family].volume24h+=Number(c.volume_24h_fp??0);if(rows.find(r=>r.ticker===c.ticker)?.models.length)families[c.family].modelled++;}
     const research=Object.entries(families).filter(([_,v])=>v.modelled<v.markets).sort((a,b)=>b[1].volume24h-a[1].volume24h).map(([family,v])=>({family,...v,nextEffect:family==='hourly-temperature'?'bind official station/time and score short-horizon observation-conditioned forecasts':family==='precipitation'?'bind interval totals; validate probabilistic accumulation forecasts':family==='tropical'?'bind NHC event definitions and calibrate track/intensity ensembles':family==='snow'?'bind reporting station and validate snow accumulation ensembles':'bind settlement transformation and submit versioned forecasts'}));
     const {forecasts:physicalForecasts,outcomes:physicalOutcomes,...science}=evidence.science??{};
-    const result={science,...(sourceProjection?{forecastLane:'source-projection-v1'}:{}),at:new Date().toISOString(),collectionStartedAt:new Date(now).toISOString(),complete:universe.complete,evidenceComplete:evidence.acquisition?.complete??true,acquisition:evidence.acquisition,series:universe.series,marketCount:contracts.length,modelled:rows.filter(r=>r.models.length).length,families,errors:[...universe.errors,...evidence.errors],scoring:{settled:scoring.settled,pending:Object.keys(pending).length,errors:scoring.errors},grades:scoring.grades,forecasts:rows,contracts,opportunities,research,allocation:allocateWeather(opportunities.filter(o=>Date.parse(o.quoteExpiresAt)>Date.now()),{capitalUsd,encumberedUsd}),orderEffect:false};
-    await atomic(join(root,'latest.json'),result);return result;
-    };
-    const evidence=await collectWeatherEvidence(universe.markets,{cacheDir:join(root,'nbm'),now:Date.now(),fetchImpl,onEvidence:async packet=>{
-      // A frozen, useful projection can reach existing consumers while slower
-      // providers continue. Empty projections leave the prior publication intact.
-      if(!universe.markets.some(c=>weatherEstimates(c,packet,Date.now()).length))return false;
-      return Boolean(await publish(packet,{sourceProjection:true}));
-    }});
-    return publish(evidence);
+    const result={science,at:new Date().toISOString(),collectionStartedAt:new Date(now).toISOString(),complete:universe.complete,series:universe.series,marketCount:contracts.length,modelled:rows.filter(r=>r.models.length).length,families,errors:[...universe.errors,...evidence.errors],scoring:{settled:scoring.settled,pending:Object.keys(pending).length,errors:scoring.errors},grades:scoring.grades,forecasts:rows,contracts,opportunities,research,allocation:allocateWeather(opportunities.filter(o=>Date.parse(o.quoteExpiresAt)>Date.now()),{capitalUsd,encumberedUsd}),orderEffect:false};
+    await atomic(join(root,'latest.json'),result);
+    await atomic(join(root,'surface.json'),forecastSurface(rows,contracts,result.at));
+    return result;
   });
-}
-
-/** Market participation consumes frozen forecast evidence; it never generates
- * physical forecasts or changes their admission. Capture and review are read-only
- * venue operations, retained in the existing content-addressed evidence carrier. */
-export async function weatherParticipation({root=weatherRoot(),client=weatherClient(),tickers,maxMarkets,quoteIntents,capitalUsd,encumberedUsd=0,contracts=1,windowSeconds=60,snapshotId,proposalActionIds,carryPolicy,now=Date.now()}={}){
- if(snapshotId!==undefined){
-  if(tickers!==undefined||maxMarkets!==undefined||quoteIntents!==undefined||capitalUsd!==undefined||encumberedUsd!==0||contracts!==1||windowSeconds!==60)throw new TypeError('review uses only snapshotId and optional proposalActionIds or carryPolicy');
-  const snapshot=await weatherEvidence({root,evidenceId:snapshotId});if(digest(snapshot)!==snapshotId)throw new TypeError('participation snapshot hash mismatch');if(snapshot.kind!=='weather-participation-snapshot-v1')throw new TypeError('market participation snapshot required');
-  if(carryPolicy!==undefined){
-   if(proposalActionIds!==undefined)throw new TypeError('choose carryPolicy or proposalActionIds');
-   const evaluatedAt=Date.now(),allocation=weatherCarryAllocation(snapshot,carryPolicy,{now:evaluatedAt});
-   const proposal=allocation.selectedActionIds.length?verifyWeatherParticipationProposal({...snapshot,availableCapitalUsd:allocation.carryBudgetUsd},{actionIds:allocation.selectedActionIds},{now:evaluatedAt}):null;
-   const packet={...allocation,snapshotId,policy:carryPolicy,proposal};const evidenceId=await archivePacket(join(root,'evidence'),packet);return {evidenceId,...packet};
-  }
-  if(proposalActionIds!==undefined)return {snapshotId,...verifyWeatherParticipationProposal(snapshot,{actionIds:proposalActionIds},{now})};
-  const rows=await mapLimit(snapshot.rows,2,async row=>{
-   const pages=[],trades=[];let cursor,error=null;const end=Math.min(now,Date.parse(row.actions.expiresAt));
-   try {for(let page=0;page<3;page++){
-    const packet=await client.call('GET','/markets/trades',{signed:false,query:{ticker:row.ticker,min_ts:Math.floor(Date.parse(row.actions.observedAt)/1000),max_ts:Math.ceil(end/1000),is_block_trade:false,limit:1000,cursor}});
-    pages.push({receivedAt:new Date().toISOString(),packet});if(!Array.isArray(packet.trades))throw new TypeError('trade tape missing');trades.push(...packet.trades);cursor=packet.cursor;if(!cursor)break;
-   }}catch(e){error=e.message;}
-   const market=await client.getMarket(row.ticker),receivedAt=new Date().toISOString(),rulesMatch=digest({primary:market.rules_primary,secondary:market.rules_secondary})===row.rulesHash;
-   const label=binarySettlement(market),outcome=label&&rulesMatch&&Date.parse(label.settledAt)>=Date.parse(row.actions.observedAt)&&Date.parse(label.settledAt)<=Date.parse(receivedAt)?label:null;
-   const review=reviewWeatherParticipation(row.actions,{trades,complete:!error&&!cursor,reviewedAt:new Date(Math.min(now,Date.parse(receivedAt))).toISOString(),outcome,marketType:row.market.market_type,notionalValueUsd:Number(row.market.notional_value_dollars)});
-   return {ticker:row.ticker,tradePages:pages,market,marketReceivedAt:receivedAt,rulesMatch,errors:error?[error]:[],review};
-  });
-  const packet={kind:'weather-participation-review-v1',at:new Date().toISOString(),snapshotId,rows,orderEffect:false,tradeAuthority:false};const evidenceId=await archivePacket(join(root,'evidence'),packet);return {evidenceId,...packet};
- }
- if(proposalActionIds!==undefined||carryPolicy!==undefined)throw new TypeError('proposal or carry policy needs a captured snapshotId');
- if(!Number.isFinite(capitalUsd)||capitalUsd<0||!Number.isFinite(encumberedUsd)||encumberedUsd<0||!Number.isInteger(contracts)||contracts<1||contracts>10000||!Number.isInteger(windowSeconds)||windowSeconds<5||windowSeconds>300)throw new TypeError('explicit scenario capital, whole contracts and 5..300-second window required');
- if(tickers!==undefined&&(!Array.isArray(tickers)||tickers.length<1||tickers.length>2000||new Set(tickers).size!==tickers.length||tickers.some(t=>typeof t!=='string'||t.length>120)))throw new TypeError('1..2000 distinct weather tickers required');
- if(quoteIntents!==undefined&&(!Array.isArray(quoteIntents)||quoteIntents.length<1||quoteIntents.length>4000||quoteIntents.some(q=>!q||typeof q.ticker!=='string'||q.ticker.length>120||!['yes','no'].includes(q.side)||!Number.isFinite(q.price)||q.price<=0||q.price>=1||(q.quantity!==undefined&&(!Number.isInteger(q.quantity)||q.quantity<1||q.quantity>10000)))))throw new TypeError('scoped quote intents require a ticker, side, finite price and optional whole quantity');
- if(maxMarkets!==undefined&&(!Number.isInteger(maxMarkets)||maxMarkets<1||maxMarkets>2000||tickers!==undefined))throw new TypeError('maxMarkets must be 1..2000 for automatic selection');
- const state=await weatherStatus({root});if(!Number.isFinite(Date.parse(state.at))||Date.parse(state.at)>now||now-Date.parse(state.at)>15*60000)throw new TypeError('weather evidence needs a causal receipt within fifteen minutes');
- const byTicker=new Map((state.contracts??[]).map(c=>[c.ticker,c]));let forecasts=(state.forecasts??[]).filter(r=>r.models?.some(m=>Number.isFinite(m.p))&&Date.parse(r.closeTime)>now),availableCapitalUsd=Math.max(0,capitalUsd-encumberedUsd);
- const liveIndexDiscovery=[],discoveryErrors=[];
- if(tickers===undefined){
-  // New hourly listings can appear between physical collection cycles. Bind
-  // them now against already-received weather evidence; no new weather model fit.
-  const indexSeries=[...new Map([...byTicker.values()].filter(c=>c.binding?.kind==='index-at'&&['nyc','miami','la-coastal'].includes(c.binding.city)).map(c=>[c.seriesTicker,c])).values()].slice(0,3),sourceId=forecasts.find(r=>r.evidenceId)?.evidenceId;
-  if(sourceId&&indexSeries.length){
-   const evidence=await weatherEvidence({root,evidenceId:sourceId});
-   await mapLimit(indexSeries,2,async template=>{try{
-    const series=await client.getSeries(template.seriesTicker),markets=await client.getMarkets({series_ticker:template.seriesTicker,status:'open'}),receivedAt=new Date().toISOString();liveIndexDiscovery.push({series,markets,receivedAt});
-    for(const market of markets){
-     if(forecasts.some(r=>r.ticker===market.ticker)||Date.parse(market.close_time)<=Date.parse(receivedAt))continue;
-     const c=weatherContract(market,series);c.rulesHash=digest({primary:c.rules_primary,secondary:c.rules_secondary});
-     const models=weatherEstimates(c,evidence,Date.parse(receivedAt));if(!models.length)continue;
-     const b=c.binding,stageValue=stage(c,Date.parse(receivedAt))+(state.forecastLane==='source-projection-v1'?'/source-projection-v1':state.evidenceComplete===false?'/during-acquisition-v1':''),bands=models.map(m=>({...m,band:probabilityBand({...c,station:b?.station??null,stage:stageValue},m,state.grades??{})}));byTicker.set(c.ticker,c);
-     forecasts.push({ticker:c.ticker,eventTicker:c.event_ticker,closeTime:c.close_time,family:c.family,station:'index:'+b.city,rulesHash:c.rulesHash,ruleKey:c.ruleKey,stage:stageValue,mid:mid(c),models:bands,evidenceId:sourceId,derivedAt:receivedAt,...forecastCell(c,models)});
-    }
-   }catch(e){discoveryErrors.push({series:template.seriesTicker,error:e.message});}});
-  }
- }
- let selected;
- if(tickers)selected=tickers.map(t=>{const r=forecasts.find(r=>r.ticker===t);if(!r)throw new TypeError('no prospective weather probabilities for '+t);return r;});
- else {
-  const sorted=[...forecasts].sort((a,b)=>Date.parse(a.closeTime)-Date.parse(b.closeTime)||Math.abs((a.mid??0)-.5)-Math.abs((b.mid??0)-.5)),groups=new Map();
-  for(const r of sorted){const group=r.station??r.family;if(!groups.has(group))groups.set(group,[]);groups.get(group).push(r);}
-  selected=[];const selectionLimit=maxMarkets??Infinity;while(selected.length<selectionLimit&&[...groups.values()].some(g=>g.length))for(const g of groups.values()){if(g.length&&selected.length<selectionLimit)selected.push(g.shift());}
- }
- if(quoteIntents?.some(q=>!selected.some(r=>r.ticker===q.ticker)))throw new TypeError('proposed quote ticker is outside the selected capture');
- const errors=[...discoveryErrors],marketBatches=[],marketObservations=new Map(),seriesObservations=new Map(),eventObservations=new Map();
- const chunks=rows=>Array.from({length:Math.ceil(rows.length/100)},(_,i)=>rows.slice(i*100,(i+1)*100));
- await mapLimit(chunks(selected),2,async batch=>{try{
-  const packet=await client.call('GET','/markets',{signed:false,query:{tickers:batch.map(r=>r.ticker).join(','),limit:1000}}),receivedAt=new Date().toISOString(),requested=new Set(batch.map(r=>r.ticker));
-  marketBatches.push({requestedTickers:[...requested],receivedAt,packet});
-  if(!Array.isArray(packet.markets)||packet.cursor||new Set(packet.markets.map(m=>m.ticker)).size!==packet.markets.length||packet.markets.some(m=>!requested.has(m.ticker)))throw new TypeError('complete unique scoped market metadata required');
-  for(const market of packet.markets)marketObservations.set(market.ticker,{market,receivedAt});
- }catch(e){errors.push({source:'batch-markets',tickers:batch.map(r=>r.ticker),error:e.message});}});
- const scoped=[];for(const r of selected){try{
-  const c=byTicker.get(r.ticker);if(!c||c.rulesHash!==r.rulesHash)throw new TypeError('forecast rules scope missing');
-  const observation=marketObservations.get(r.ticker);if(!observation)throw new TypeError('requested market missing from metadata receipt');
-  const {market,receivedAt:marketReceivedAt}=observation;if(digest({primary:market.rules_primary,secondary:market.rules_secondary})!==r.rulesHash||market.event_ticker!==c.event_ticker||market.exchange_index!==c.exchange_index)throw new TypeError('fresh market changed rules, event or exchange');
-  const existing=eventObservations.get(c.event_ticker);if(existing&&existing.contract.seriesTicker!==c.seriesTicker)throw new TypeError('event has conflicting series fee scope');
-  if(!existing)eventObservations.set(c.event_ticker,{contract:c});scoped.push({r,c,market,marketReceivedAt});
- }catch(e){errors.push({ticker:r.ticker,error:e.message});}}
- await mapLimit([...eventObservations.values()],2,async observation=>{try{
-  observation.terms=await readWeatherParticipationFees(client,observation.contract,{seriesObservations});
- }catch(e){observation.error=e.message;}});
- const prepared=scoped.filter(({r,c})=>{const observation=eventObservations.get(c.event_ticker);if(observation.error){errors.push({ticker:r.ticker,error:observation.error});return false;}return true;});
- const bookBatches=[],rows=[];
- await mapLimit(chunks(prepared),2,async batch=>{try{
-  // Metadata/fees precede fresh books. Every batch keeps its own actual receipt;
-  // neither concurrent requests nor a common receipt imply exchange atomicity.
-  const packet=await client.call('GET','/markets/orderbooks',{signed:false,query:new URLSearchParams(batch.map(({r})=>['tickers',r.ticker]))}),receivedAt=new Date().toISOString(),requested=new Set(batch.map(({r})=>r.ticker));
-  bookBatches.push({requestedTickers:[...requested],receivedAt,packet});
-  if(!Array.isArray(packet.orderbooks)||new Set(packet.orderbooks.map(b=>b.ticker)).size!==packet.orderbooks.length||packet.orderbooks.some(b=>!requested.has(b.ticker)))throw new TypeError('unique scoped batch books required');
-  const books=new Map(packet.orderbooks.map(b=>[b.ticker,b.orderbook_fp]));
-  for(const {r,c,market,marketReceivedAt} of batch){try{
-   const book=books.get(r.ticker),observedAt=receivedAt,terms=eventObservations.get(c.event_ticker).terms;
-   if(!book)throw new TypeError('requested market missing from batch book receipt');
-   if(Date.parse(observedAt)-Date.parse(state.at)>15*60000)throw new TypeError('forecast receipt expired during market preparation');
-   const models=r.models.filter(m=>Number.isFinite(m.p)&&m.p>=0&&m.p<=1&&(!m.details?.validUntil||Date.parse(m.details.validUntil)>Date.parse(observedAt)));
-   const expiresAt=new Date(Math.min(Date.parse(observedAt)+windowSeconds*1000,Date.parse(market.close_time),terms.nextFeeChangeAt?Date.parse(terms.nextFeeChangeAt):Infinity)).toISOString();
-   const actions=weatherParticipationActions({market,book,series:terms.effective,models,capitalUsd:availableCapitalUsd,contracts,observedAt,expiresAt,quoteIntents:quoteIntents?.filter(q=>q.ticker===r.ticker)});
-   rows.push({ticker:r.ticker,eventTicker:r.eventTicker,family:r.family,station:r.station,rulesHash:r.rulesHash,sourceEvidenceId:r.evidenceId,frozenForecastAt:state.at,contractProbabilityDerivedAt:r.derivedAt??state.at,marketReceivedAt,market,book,feeObservations:terms,frozenModels:models,actions});
-  }catch(e){errors.push({ticker:r.ticker,error:e.message});}}
- }catch(e){errors.push({source:'batch-orderbooks',tickers:batch.map(({r})=>r.ticker),error:e.message});}});
- // Keep deterministic selection order without rewriting individual receipt clocks.
- const positions=new Map(selected.map((r,i)=>[r.ticker,i]));rows.sort((a,b)=>positions.get(a.ticker)-positions.get(b.ticker));
- const bookBatch=bookBatches.length===1?bookBatches[0].packet:null,bookBatchReceivedAt=bookBatches.length===1?bookBatches[0].receivedAt:null;
- const coverage={forecastCandidates:forecasts.length,selected:selected.length,captured:rows.length,selectionLimit:maxMarkets??null,selectionTruncated:selected.length<forecasts.length,feeEvents:eventObservations.size,feeSeries:seriesObservations.size};
- const packet={kind:'weather-participation-snapshot-v1',at:new Date().toISOString(),captureStartedAt:new Date(now).toISOString(),forecastEvidenceAt:state.at,capitalUsd,encumberedUsd,availableCapitalUsd,coverage,quoteIntents:quoteIntents??[],liveIndexDiscovery,marketBatches,bookBatches,bookBatchReceivedAt,bookBatch,bookBatchAtomicity:'not guaranteed; common receipt only',rows,errors,scope:'mutually exclusive alternatives per contract side; capital feasibility is per alternative until a joint proposal is verified; existing forecast admission unchanged',orderEffect:false,tradeAuthority:false};
- await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});const evidenceId=await archivePacket(join(root,'evidence'),packet);return {evidenceId,...packet};
 }

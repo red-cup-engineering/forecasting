@@ -1,0 +1,47 @@
+{
+  "id": "combo-flex-f1",
+  "title": "Same-game parlays: maker P&L > 0 pooled, and wide-flex (width > 0.35) beats narrow (<= 0.05)",
+  "record": "data/records/2026-10-07-combo-rigidity/README.md#measurement-4-three-backfilled-weekends-872018-prints-about-4000-games",
+  "registeredAt": "2026-10-08T14:57:12Z",
+  "status": "forward",
+  "universe": {
+    "series": []
+  },
+  "entry": null,
+  "evaluator": "combo-flex",
+  "params": {
+    "weekends": [
+      [
+        "2026-10-10",
+        "2026-10-12"
+      ],
+      [
+        "2026-10-17",
+        "2026-10-19"
+      ],
+      [
+        "2026-10-24",
+        "2026-10-26"
+      ]
+    ],
+    "wideAbove": 0.35,
+    "narrowAtMost": 0.05
+  },
+  "cluster": "game",
+  "fee": {
+    "theta": 0.07,
+    "multiplier": 1,
+    "count": 1,
+    "rounding": "none"
+  },
+  "verdict": {
+    "minClusters": 30,
+    "k": 2,
+    "comparison": {
+      "arm": "wide",
+      "against": "narrow",
+      "k": 2
+    }
+  },
+  "notes": "Pre-registration commit 16cd826. P&L is the maker's per contract at the print (maker fee not modelled, as in Measurement 4); data comes from combo-backfill + combo-rigidity-measure --rows, which are heavy and run outside the engine. The record states no minimum cluster count; 30 is the engine floor for a t-test."
+}

@@ -1,0 +1,112 @@
+{
+ "type": "KalshiTemperatureTailDays",
+ "version": 1,
+ "lane": "weather-tail-premium",
+ "question": "How many settlement days carried certified temperature tails, and on how many did one settle yes?",
+ "kinds": {
+  "high": {
+   "selection": {
+    "maxModelProbability": 0.01,
+    "biasUncertainty": 0.6,
+    "maxAsk": 0.05
+   },
+   "fit": {
+    "quotes": 225,
+    "markets": 150,
+    "marketsSettledYes": 0,
+    "days": 31,
+    "daysWithLoss": 0,
+    "dateRange": [
+     "2026-08-04",
+     "2026-09-03"
+    ],
+    "lossRecord": {
+     "kind": "binary-loss-rate",
+     "trials": 31,
+     "losses": 0,
+     "method": "design effect: trials = distinct settlement days, losses = ceil(market loss rate x days)"
+    }
+   },
+   "outOfSample": {
+    "quotes": 474,
+    "markets": 298,
+    "marketsSettledYes": 0,
+    "days": 32,
+    "daysWithLoss": 0,
+    "dateRange": [
+     "2026-09-04",
+     "2026-10-05"
+    ],
+    "lossRecord": {
+     "kind": "binary-loss-rate",
+     "trials": 32,
+     "losses": 0,
+     "method": "design effect: trials = distinct settlement days, losses = ceil(market loss rate x days)"
+    }
+   }
+  },
+  "low": {
+   "selection": {
+    "maxModelProbability": 0.005,
+    "biasUncertainty": 0.6,
+    "maxAsk": 0.05
+   },
+   "fit": {
+    "quotes": 346,
+    "markets": 253,
+    "marketsSettledYes": 1,
+    "days": 31,
+    "daysWithLoss": 1,
+    "dateRange": [
+     "2026-08-04",
+     "2026-09-03"
+    ],
+    "lossRecord": {
+     "kind": "binary-loss-rate",
+     "trials": 31,
+     "losses": 1,
+     "method": "design effect: trials = distinct settlement days, losses = ceil(market loss rate x days)"
+    }
+   },
+   "outOfSample": {
+    "quotes": 255,
+    "markets": 204,
+    "marketsSettledYes": 0,
+    "days": 32,
+    "daysWithLoss": 0,
+    "dateRange": [
+     "2026-09-04",
+     "2026-10-05"
+    ],
+    "lossRecord": {
+     "kind": "binary-loss-rate",
+     "trials": 32,
+     "losses": 0,
+     "method": "design effect: trials = distinct settlement days, losses = ceil(market loss rate x days)"
+    }
+   }
+  }
+ },
+ "provenance": {
+  "countedBy": "kalshi-engineering-services-section forecasting-service data/records/2026-10-10-temperature-tail-days/scripts/count_tails.py",
+  "scripts": {
+   "fetch.py": "d94377c262e6ec48c875c5c65522bf56fb819cdf7bdb3d69f1dad38806e45ad7",
+   "fetch_candles.py": "57cb1fa78d297b4fdb638867d60fd9c681472f30b459dd34b5aad81cb2fabb22",
+   "fetch_iem.py": "fb3396ceae81fe2acf0af45d8c6c26db6e0d07c664d99efa1f75ed8e254d8cc9",
+   "backtest.py": "8b9d12f104b8d26408d604678a6b3c5046cb883cb90d11b70fa2b3f2ef2a6498",
+   "common.py": "5fdc48f8afa37dd6fad227f400695de41af029eb7cd80242eeed1be9e8d35251",
+   "tail.py": "86cf5dfd9d7d895982cde2bf150d0fed59ebaa8806dfe21ff65ab99e3763f218",
+   "count_tails.py": "ea21892f4e892a9f4b1cbc2b4cfb412d96082ba94012b48583ab9ac1f024942a"
+  },
+  "inputs": {
+   "files": 97,
+   "manifest": "b16afac154f9a72c0505a35fcbcd8e86339e8501644e6006ff2132ce33e1d551"
+  },
+  "fetchedBy": "data/records/2026-10-03-kalshi-temperature-tail-backtest fetch.py, fetch_candles.py, fetch_iem.py (public Kalshi API and IEM, no auth); backtest.py high|low fits the models",
+  "source": "a backtest, kept apart from the desk's live shadow scores so the game can weigh the two separately"
+ },
+ "caveats": [
+  "Backtest evidence on one season (August into early October); the out-of-sample window is the month from 2026-09-04.",
+  "The run re-fetches public data; Kalshi listings and IEM archives can change, so the manifest digest identifies the exact inputs counted."
+ ]
+}

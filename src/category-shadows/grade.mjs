@@ -1,4 +1,5 @@
 // Scoring and admission for the category shadows. Admission bars are fixed IN ADVANCE here and in the README; change them only by a dated amendment.
+import { binarySettlement } from '@red-cup-engineering/kalshi-services-section/market-facts';
 import { existsSync, readFileSync, appendFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { familyDir, readRows, round } from './common.mjs';
@@ -58,7 +59,7 @@ export function gradeFamily(family, rows, results) {
 // Settlement lookups (cached in results.jsonl; one line per settled ticker).
 export function loadResults(root) {
   const f = join(root, 'results.jsonl'); const m = new Map();
-  if (existsSync(f)) for (const line of readFileSync(f, 'utf8').split('\n')) { if (line) { try { const o = JSON.parse(line); m.set(o.ticker, o.result); } catch { /* torn */ } } }
+  if (existsSync(f)) for (const line of readFileSync(f, 'utf8').split('\n')) { if (line) { try { const o = JSON.parse(line); const admitted=binarySettlement(o.market); if(admitted&&Number(o.market.notional_value_dollars)===1&&admitted.ticker===o.ticker&&admitted.result===o.result)m.set(o.ticker, o.result); } catch { /* torn */ } } }
   return m;
 }
 export async function settle(client, tickers, results, root, { maxCalls = 400 } = {}) {
@@ -68,8 +69,8 @@ export async function settle(client, tickers, results, root, { maxCalls = 400 } 
     calls += 1;
     try {
       const m = await client.getMarket(ticker);
-      if ((m.result === 'yes' || m.result === 'no') && ['finalized', 'settled', 'determined'].includes(m.status)) {
-        results.set(ticker, m.result); appendFileSync(join(root, 'results.jsonl'), JSON.stringify({ ticker, result: m.result, t: new Date().toISOString() }) + '\n');
+      if (binarySettlement(m) && Number(m.notional_value_dollars)===1) {
+        results.set(ticker, m.result); appendFileSync(join(root, 'results.jsonl'), JSON.stringify({ ticker, result: m.result, market: {ticker:m.ticker,status:m.status,market_type:m.market_type,result:m.result,settlement_ts:m.settlement_ts,settlement_value_dollars:m.settlement_value_dollars,notional_value_dollars:m.notional_value_dollars,is_provisional:m.is_provisional}, t: new Date().toISOString() }) + '\n');
       }
     } catch { /* retry next grade */ }
     await new Promise((r) => setTimeout(r, 120));

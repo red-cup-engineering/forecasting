@@ -142,6 +142,13 @@ export function teamSide(meta) {
   const tail = (/^\d{2}[A-Z]{3}\d{2}(?:\d{4})?([A-Z]+)$/u.exec(meta.game) ?? [])[1];
   if (!tail) return null;
   const s = meta.suffix;
+  // a game-line suffix is a whole team code plus an optional strike: match it exactly first, since
+  // prefixes alone misread codes that share one (MIA and MIN in MIAMIN)
+  const code = s.replace(/\d+$/u, '');
+  for (let k = 2; k <= 4 && k < tail.length; k += 1) {
+    const a = code === tail.slice(0, k); const h = code === tail.slice(k);
+    if (a !== h) return a ? 0 : 1;
+  }
   for (let k = 2; k <= 4 && k < tail.length; k += 1) {
     const away = tail.slice(0, k); const home = tail.slice(k);
     const a = s.startsWith(away); const h = s.startsWith(home);
