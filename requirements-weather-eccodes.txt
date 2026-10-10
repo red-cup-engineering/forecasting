@@ -1,9 +1,0 @@
-# Exact installed public decoder environment, observed 2026-10-07.
-eccodes==2.49.0
-eccodeslib==2.49.0.30
-eckitlib==2.3.0.30
-numpy==2.5.3
-attrs==26.1.0
-cffi==2.1.1
-findlibs==0.1.3
-pycparser==3.0
