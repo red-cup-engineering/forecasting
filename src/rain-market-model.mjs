@@ -120,6 +120,19 @@ export function priceRainMarket(market, { guidance, maxGuidanceAgeHours = 8, now
   };
 }
 
+/**
+ * The side of the market's long-shot bias a priced rain market falls on, if either, and the loss rate a bet on that
+ * side is sized on (rain-markets.json `sides`): `tail` (rain very unlikely: a NO holder's bet) or `favourite` (rain
+ * near certain: a YES holder's bet). Never smaller than the model's own probability of losing.
+ * @returns {{side: 'tail'|'favourite', lossRate: number} | null}
+ */
+export function rainSide(priced, sides = RAIN_MARKETS.sides) {
+  if (!priced?.priced) return null;
+  if (priced.probability <= sides.tail.maxModelProbability) return { side: 'tail', lossRate: Math.max(priced.probability, sides.tail.lossRate) };
+  if (priced.probability >= sides.favourite.minModelProbability) return { side: 'favourite', lossRate: Math.max(1 - priced.probability, sides.favourite.lossRate) };
+  return null;
+}
+
 /** Supplementary forward experiment from the chronological daily-rain research. Never alters the frozen lane. */
 export function rainMarketPoolProbability(weatherP,marketP){
   if(![weatherP,marketP].every(p=>Number.isFinite(p)&&p>=0&&p<=1))throw new TypeError('finite weather and market probabilities required');

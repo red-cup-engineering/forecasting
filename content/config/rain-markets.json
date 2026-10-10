@@ -363,5 +363,28 @@
       "validated": true,
       "alias": "CLL"
     }
+  },
+  "sides": {
+    "description": "Where the frozen NBS P06 logistic is measured to beat the market's long-shot bias, and the loss rate a bet on each side is sized on (data/records/2026-10-04-weather-coverage, results/rain-model.md and rain-edges.md; 1524 settled KXRAIN markets 2026-07-26..10-02, cross-fit by date so every row is out of sample). The thresholds were read off the calibration table, so the loss rates are the record's upper bounds, not its point rates. Prices, fees and edge are the desk's.",
+    "tail": {
+      "maxModelProbability": 0.02,
+      "lossRate": 0.014,
+      "outOfSample": {
+        "markets": 221,
+        "settledYes": 1,
+        "takingEvPerContractCents": 3.3
+      },
+      "basis": "p <= 2%: 1 of 221 settled yes; the rule-of-three style upper bound 3/221 = 1.4%."
+    },
+    "favourite": {
+      "minModelProbability": 0.97,
+      "lossRate": 0.055,
+      "outOfSample": {
+        "markets": 54,
+        "settledNo": 0,
+        "takingEvPerContractCents": 7.4
+      },
+      "basis": "p >= 97%: 0 of 54 settled no; rule of three 3/54 = 5.5%."
+    }
   }
 }

@@ -418,5 +418,55 @@
         "KTTN": 0.03
       }
     }
+  },
+  "tails": {
+    "description": "Where the fitted model is a measured specialist: far tails. It loses to Kalshi's mid overall (fit.validation) but certifies which cheap brackets are truly far tails (data/records/2026-10-03-kalshi-temperature-tail-backtest, tail.py with TAU=0.6). The prediction is the bracket's eligibility and the loss rate a bet on it is sized on; the price, fee and edge are the desk's.",
+    "maxModelProbability": {
+      "high": 0.01,
+      "low": 0.005
+    },
+    "windows": {
+      "high": {
+        "dayBeforeFrom": "12:00",
+        "sameDayUntil": "11:00"
+      },
+      "low": {
+        "dayBeforeFrom": "12:00",
+        "dayBeforeUntil": "23:00"
+      },
+      "basis": "The backtest's decision times: the day before at 15h and 21h local, and for highs also the day itself at 07h and 10h."
+    },
+    "lossRatePosterior": {
+      "high": {
+        "losses": 0,
+        "clusters": 61,
+        "unit": "settlement day",
+        "basis": "Certified high tails settled yes on 0 of at most 59 settlement days in the backtest (422 markets; tails on one day share its weather, so the day is the independent trial), and no live loss outside a heat hazard (2026-10-04 KSAN, KOKC). The 2026-10-05 KLAX loss was a tail under an Extreme Heat Warning, which the hazard rule now excludes. Mean (0+1)/(61+2)."
+      },
+      "low": {
+        "losses": 1,
+        "clusters": 59,
+        "unit": "settlement day",
+        "basis": "Certified low tails settled yes on 1 of at most 59 settlement days (448 markets). Mean (1+1)/(59+2)."
+      }
+    },
+    "outOfSample": {
+      "high": {
+        "markets": 272,
+        "settledYes": 0,
+        "restingEvPerContractCents": 2.7,
+        "takingEvPerContractCents": 1.2,
+        "window": "2026-09-04..10-02"
+      },
+      "low": {
+        "markets": 195,
+        "settledYes": 0,
+        "restingEvPerContractCents": 3.6,
+        "takingEvPerContractCents": 1.1,
+        "window": "2026-09-04..10-02"
+      },
+      "basis": "The model fitted on 2026-08-05..09-03 and scored on September on Kalshi's own results; the taking column charges Kalshi's fee on a 10-lot."
+    },
+    "hazards": "No tail is eligible on the side of an NWS temperature hazard active at its station, nor at a station whose hazards could not be read: the error model was fitted on ordinary days, and under a heat or cold product the tails move together (station-observations WARM_HAZARDS / COLD_HAZARDS)."
   }
 }
