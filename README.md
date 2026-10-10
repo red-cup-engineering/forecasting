@@ -72,7 +72,7 @@ ruling:
   this forecasting pipeline currently has no admitted inference customer or
   model execution contract. A source note is an attribution claim, not
   independent verification of its contents.
-- `@red-cup-engineering/eavt` — no hand-rolled EAVT-shaped rows anywhere in
+- `@red-cup-engineering/eavt-services-section` — no hand-rolled EAVT-shaped rows anywhere in
   `src/` or `scripts/`; none needed.
 - `@red-cup-engineering/image-generation-inference-team` — this package does
   no image generation anywhere; none needed.
