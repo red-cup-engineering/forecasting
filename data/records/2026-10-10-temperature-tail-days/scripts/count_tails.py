@@ -19,7 +19,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 FS = os.path.normpath(os.path.join(HERE, '..', '..', '..', '..'))           # forecasting-service
 SRC = os.path.join(FS, 'data', 'records', '2026-10-03-kalshi-temperature-tail-backtest')
 RUN = os.path.abspath(sys.argv[1])
-sys.path.insert(0, RUN)                                                        # the run's copy of the 10-03 scripts (common.py)
+os.chdir(RUN); sys.path.insert(0, RUN)                                          # the run's copy of the 10-03 scripts (common.py opens series.txt from the cwd)
 from common import prob, dt                                                    # noqa: E402  (the backtest's own bracket probability)
 OUT = os.path.join(HERE, '..', 'results')
 sha = lambda path: hashlib.sha256(open(path, 'rb').read()).hexdigest()
