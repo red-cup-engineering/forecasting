@@ -69,6 +69,7 @@ def summarize(rs):
         b = [r for r in rs if lo < r['mid'] <= hi] if lo > 0 else [r for r in rs if r['mid'] <= hi]
         yes = sum(r['y'] for r in b)
         bins.append(dict(lower=lo, upper=hi, rows=len(b), markets=len({r['ticker'] for r in b}), dates=len({r['date'] for r in b}),
+                         datesWithYes=len({r['date'] for r in b if r['y'] == 1}), datesWithNo=len({r['date'] for r in b if r['y'] == 0}),
                          settledYes=yes, yesRate=yes / len(b) if b else None, meanMid=sum(r['mid'] for r in b) / len(b) if b else None,
                          likelihoods=dict(yes=yes / yes_total if yes_total else None, no=(len(b) - yes) / no_total if no_total else None),
                          takeYes=side_returns(b, 'yes'), takeNo=side_returns(b, 'no')))
@@ -94,7 +95,16 @@ record = dict(
 # scored gross return and its effective sample (distinct dates, never rows).
 def game_model(side):
     key = 'takeYes' if side == 'yes' else 'takeNo'
+    # The side's counted loss record per bin, for the game's 'binary-loss-rate' form. One date's markets share their
+    # weather, so the effective sample is the bin's distinct dates: trials = dates, and losses = the bin's per-row loss
+    # rate on that sample, rounded up (the mean kept, the sample shrunk to what is independent). datesWithYes/No beside
+    # it count the dates with any loss, for the reader.
+    def loss_record(b):
+        lost = b['settledYes'] if side == 'no' else b['rows'] - b['settledYes']
+        return dict(kind='binary-loss-rate', trials=b['dates'], losses=math.ceil(b['dates'] * lost / b['rows'] - 1e-12) if b['rows'] else 0,
+                    rows=b['rows'], rowLosses=lost, method='design effect: trials = distinct dates, losses = ceil(row loss rate x dates)')
     return dict(kind='scenario-likelihood-model', side=side, source='urn:kalshi:KXRAIN:mid', path=['mid'],
+                lossRecords=[loss_record(b) for b in record['all']['bins']],
                 bins=[dict(lower=b['lower'], upper=b['upper'] + (1e-9 if b['upper'] == 1.0 else 0), likelihoods=b['likelihoods']) for b in record['all']['bins']],
                 expectedReturns=[dict(trainingSamples=b['dates'], rows=b['rows'], gross=b[key]['gross'], net=b[key]['net']) for b in record['all']['bins']])
 record['gameModels'] = dict(takeYes=game_model('yes'), takeNo=game_model('no'))
