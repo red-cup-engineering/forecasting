@@ -300,9 +300,22 @@ export async function readForecastSurface({root=weatherRoot(),now=Date.now(),max
   const s=await read(join(root,'surface.json'),null);
   return s&&s.version===SURFACE_VERSION&&now-Date.parse(s.at)<=maxAgeMs?s:null;
 }
+/** A run killed mid-write leaves `<file>.<pid>.tmp` behind; remove those whose writer is gone. */
+async function removeDeadTemporaries(root){
+  for(const dir of [root,join(root,'station-science')]){
+    let names=[];try{names=await readdir(dir);}catch(e){if(e.code!=='ENOENT')throw e;}
+    for(const name of names){const m=/\.(\d+)\.tmp$/.exec(name);if(m&&Number(m[1])!==process.pid&&await processStart(Number(m[1]))===null)await rm(join(dir,name),{force:true});}
+  }
+}
+/**
+ * The desk trades surface.json, so the cycle fuses it from the grades already learned and writes it before
+ * scoring: an overrun then costs scoring time, never the desk's surface. Scoring resumes next cycle (score files
+ * make it idempotent).
+ */
 export async function runWeatherCycle({root=weatherRoot(),client=weatherClient(),now=Date.now(),fetchImpl=fetch,capitalUsd=0,encumberedUsd=0}={}) {
   return locked(root,async()=>{
-    const scoring=await scorePending(root,client,now);
+    await removeDeadTemporaries(root);
+    const grades=await read(join(root,'grades.json'),{});
     const universe=await discoverWeather(client);
     const evidence=await collectWeatherEvidence(universe.markets,{cacheDir:join(root,'nbm'),now:Date.now(),fetchImpl});
     const evidenceId=await archiveWeatherEvidence(evidence,root);
@@ -320,7 +333,7 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
     await mapLimit(contracts,3,async c=>{
       const s=stage(c,decisionNow),models=weatherEstimates(c,evidence,decisionNow);
       models.push(...(ex.get(c.ticker)?.values()??[]));
-      const midpoint=quoteTimes.has(c.ticker)?mid(c):null,b=c.binding,modelBands=models.map(m=>({...m,band:probabilityBand({...c,station:b?.station??null,stage:s},m,scoring.grades)}));
+      const midpoint=quoteTimes.has(c.ticker)?mid(c):null,b=c.binding,modelBands=models.map(m=>({...m,band:probabilityBand({...c,station:b?.station??null,stage:s},m,grades)}));
       const surface=fuseForecast({mid:midpoint,models:modelBands});
       const support=forecastCell(c,models);
       const row={ticker:c.ticker,eventTicker:c.event_ticker,title:c.title,family:c.family,source:c.source,stage:s,targetDate:b?.targetDate??null,closeTime:c.close_time,ruleKey:c.ruleKey,rulesHash:c.rulesHash,station:b?.station??null,mid:midpoint,marketObservedAt:quoteTimes.get(c.ticker)??null,models:modelBands,evidenceId,settlementReport:sourceReport(c,evidence.settlement),...support,blocker:c.blocker,surface};
@@ -335,13 +348,15 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
       try{opportunities.push(...await quoteWeatherContract(c,modelBands,evidence,client,surface));}catch(e){row.bookError=e.message;}
 
     });
+    const at=new Date().toISOString();
+    await atomic(join(root,'surface.json'),forecastSurface(rows,contracts,at));
     await atomic(join(root,'pending.json'),pending);
+    const scoring=await scorePending(root,client,Date.now());
     const families={};for(const c of contracts){families[c.family]??={markets:0,modelled:0,volume24h:0};families[c.family].markets++;families[c.family].volume24h+=Number(c.volume_24h_fp??0);if(rows.find(r=>r.ticker===c.ticker)?.models.length)families[c.family].modelled++;}
     const research=Object.entries(families).filter(([_,v])=>v.modelled<v.markets).sort((a,b)=>b[1].volume24h-a[1].volume24h).map(([family,v])=>({family,...v,nextEffect:family==='hourly-temperature'?'bind official station/time and score short-horizon observation-conditioned forecasts':family==='precipitation'?'bind interval totals; validate probabilistic accumulation forecasts':family==='tropical'?'bind NHC event definitions and calibrate track/intensity ensembles':family==='snow'?'bind reporting station and validate snow accumulation ensembles':'bind settlement transformation and submit versioned forecasts'}));
     const {forecasts:physicalForecasts,outcomes:physicalOutcomes,...science}=evidence.science??{};
-    const result={science,at:new Date().toISOString(),collectionStartedAt:new Date(now).toISOString(),complete:universe.complete,series:universe.series,marketCount:contracts.length,modelled:rows.filter(r=>r.models.length).length,families,errors:[...universe.errors,...evidence.errors],scoring:{settled:scoring.settled,pending:Object.keys(pending).length,errors:scoring.errors},grades:scoring.grades,forecasts:rows,contracts,opportunities,research,allocation:allocateWeather(opportunities.filter(o=>Date.parse(o.quoteExpiresAt)>Date.now()),{capitalUsd,encumberedUsd}),orderEffect:false};
+    const result={science,at,collectionStartedAt:new Date(now).toISOString(),complete:universe.complete,series:universe.series,marketCount:contracts.length,modelled:rows.filter(r=>r.models.length).length,families,errors:[...universe.errors,...evidence.errors],scoring:{settled:scoring.settled,pending:scoring.pending,errors:scoring.errors},grades:scoring.grades,forecasts:rows,contracts,opportunities,research,allocation:allocateWeather(opportunities.filter(o=>Date.parse(o.quoteExpiresAt)>Date.now()),{capitalUsd,encumberedUsd}),orderEffect:false};
     await atomic(join(root,'latest.json'),result);
-    await atomic(join(root,'surface.json'),forecastSurface(rows,contracts,result.at));
     return result;
   });
 }
