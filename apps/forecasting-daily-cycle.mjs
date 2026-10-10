@@ -15,7 +15,7 @@ import { deriveCalibrationRecord } from "../scripts/derive-calibration-record.mj
 import { FORECAST_CATEGORY, FORECAST_OBJECT_KIND, NODE_ROOT } from "../scripts/record-forecast.mjs";
 import { brierScore, DATA_ROOT_ENV_VAR } from "../src/forecasting.mjs";
 
-const QUESTIONS_DIR = new URL("../content/questions", import.meta.url);
+const QUESTIONS_DIR = new URL("../content/questions/", import.meta.url);
 
 /** Kalshi weather series this cycle knows how to route (matches the brief's cohort; KXDENHIGH in content/config/weather-markets.json is not yet part of it). */
 export const KNOWN_KALSHI_SERIES = ["KXHIGHCHI", "KXHIGHNY", "KXHIGHTHOU"];

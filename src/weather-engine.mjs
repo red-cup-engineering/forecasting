@@ -165,12 +165,14 @@ async function* resolvedRows(root){
   try{const lines=createInterface({input:createReadStream(join(root,'resolved.jsonl')),crlfDelay:Infinity});for await(const line of lines)if(line)yield JSON.parse(line);}
   catch(e){if(e.code!=='ENOENT')throw e;}
 }
+/** A resolved row grades a model only when its settlement evidence is verified and it was issued before settlement. */
+const gradable=r=>r.settlementEvidenceVersion===1&&Date.parse(r.at)<Date.parse(r.settlement?.settledAt);
 async function gradeHistory(root){
   // Keep only the earliest timestamp per contract/horizon/model; never retain full history objects.
   const first=new Map(),key=(r,m)=>`${r.ticker}/${r.stage}/${r.ruleKey}/${m.id}`;
-  for await(const r of resolvedRows(root))for(const m of r.models){const k=key(r,m),at=first.get(k);if(at===undefined||r.at.localeCompare(at)<0)first.set(k,r.at);}
+  for await(const r of resolvedRows(root))if(gradable(r))for(const m of r.models){const k=key(r,m),at=first.get(k);if(at===undefined||r.at.localeCompare(at)<0)first.set(k,r.at);}
   const accumulator=createModelGradeAccumulator();
-  for await(const r of resolvedRows(root))for(const m of r.models){const k=key(r,m);if(first.get(k)!==r.at)continue;first.delete(k);accumulator.add({...r,models:[m]});}
+  for await(const r of resolvedRows(root))if(gradable(r))for(const m of r.models){const k=key(r,m);if(first.get(k)!==r.at)continue;first.delete(k);accumulator.add({...r,models:[m]});}
   return accumulator.report();
 }
 async function scorePending(root,client,now) {

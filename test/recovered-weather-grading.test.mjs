@@ -12,6 +12,7 @@ test('recovered hourly weather capability keeps unverified and post-settlement r
   const unverified={...row,id:'unverified',ticker:'UNVERIFIED',eventTicker:'UNVERIFIED',settlementEvidenceVersion:undefined};
   await writeFile(join(root,'resolved.jsonl'),[late,unverified,row].map(x=>JSON.stringify(x)).join('\n')+'\n');
   const result=await scoreWeather({root,client:{getMarkets:async()=>{throw Error('unexpected market request');}},now:Date.parse('2026-10-07T00:00:00Z')});
-  const grades=Object.values(result.grades);assert.equal(grades.length,1);assert.equal(grades[0].events,1);assert.equal(grades[0].dates,1);assert.equal(grades[0].admitted,false);
+  // One valid row grades its station key and the pooled family/stage key; the late and unverified rows grade nothing.
+  const grades=Object.values(result.grades);assert.equal(grades.length,2);for(const g of grades){assert.equal(g.events,1);assert.equal(g.dates,1);assert.equal(g.admitted,false);}
  }finally{await rm(root,{recursive:true,force:true});}
 });
