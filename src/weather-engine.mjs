@@ -22,7 +22,9 @@ import { orderFee } from './fees.mjs';
 import {sourceReport} from './weather-settlement-source.mjs';
 import { bracketSettlesYes } from './temperature-distribution.mjs';
 
-export const weatherRoot=(env=process.env)=>env.KALSHI_WEATHER_STATE_DIR??join(homedir(),'.local/state/561-group/settlements/kalshi-services-section/weather');
+import {settlementRoot,stateDirectory} from '@red-cup-engineering/kalshi-services-section/data-layout';
+/** The weather engine's state: one object-state directory of the Kalshi settlement, data/state/weather-state. */
+export const weatherRoot=(env=process.env)=>env.KALSHI_WEATHER_STATE_DIR??stateDirectory(settlementRoot(env),'weather');
 export function weatherClient({fetchImpl=fetch}={}) {
   let next=0;
   const paced=async(url,options)=>{

@@ -78,7 +78,6 @@ export async function runHypotheses({ requestBudget, mode = 'all', only = null, 
     }
     report.sync = { ...sync, requests: f.spent, budget: requestBudget };
     report.partial = Boolean(sync.partial);
-    store.pack(nowIso.slice(0, 10));
   }
 
   for (const h of live) {

@@ -1,7 +1,7 @@
 /**
  * The observation store: raw facts (settled markets, series fees, quotes, ESPN-derived live entries) as SEAVT
- * rows in the Kalshi section's flat-file journal layout (src/seavt-log.mjs), one feed, packed by day when the
- * day closes. Only what cannot be derived is stored. Entries, ledgers and verdicts are derived from these
+ * rows in the house journal layout (the Kalshi section's src/seavt-log.mjs), one feed, one plain file a day. Only what
+ * cannot be derived is stored. Entries, ledgers and verdicts are derived from these
  * observations and the hypothesis specs, and live as discardable indexes (see run.mjs).
  *
  *   e  entity   a market ticker, a series ticker, a game id
@@ -12,9 +12,9 @@
 import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { isDeepStrictEqual } from 'node:util';
-import { appendLogRows, feedRows, mark, packClosedLogs, unmark } from '@red-cup-engineering/kalshi-services-section/seavt-log';
+import { appendLogRows, feedRows, mark, unmark } from '@red-cup-engineering/kalshi-services-section/seavt-log';
 
-export const FEED = 'hypotheses-observations';
+export const FEED = 'hypotheses-observation';
 export const stateRoot = (env = process.env) => env.HYPOTHESES_STATE_DIR ?? join(env.HOME ?? homedir(), '.local', 'state', '561-group', 'settlements', 'forecasting-service', 'hypotheses');
 export const cacheDir = (root) => join(root, 'cache');
 
