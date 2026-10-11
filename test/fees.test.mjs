@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { BALANCE_GRID_CENTS, orderFeeCents, orderFeeCentsOfFills, orderFee } from '../src/fees.mjs';
+import { netPerContract } from '../src/hypotheses/stats.mjs';
+import { fee as categoryShadowFee } from '../src/category-shadows/common.mjs';
 
 // Every fill on the house account on 2026-10-11 (GET /portfolio/fills), by order: count_fp, yes_price_dollars as
 // whole cents (the fee is symmetric in P), and Kalshi's fee_cost in dollars. Each order's fee_cost sums to its model
@@ -53,4 +55,11 @@ test('makers pay nothing on a plain quadratic series and the maker rate where th
   assert.equal(orderFeeCents(13, 96, { maker: true }), 0);
   assert.equal(orderFeeCents(13, 96, { maker: true, feeType: 'quadratic_with_maker_fees' }), 0.88); // 0.8736c
   assert.equal(orderFeeCents(10, 3, { multiplier: 0.5 }), 1.02);                                    // 1.0185c
+});
+
+test('registered fee models do not move with the account grid: cent-per-order hypotheses and the category shadows', () => {
+  // A 'cent-per-order' hypothesis at C = 10, price 0.5: $0.175 -> $0.18 per order, $0.018 per contract, as registered.
+  const net = netPerContract({ won: true, price: 0.5, multiplier: 1, fee: { theta: 0.07, multiplier: 1, count: 10, rounding: 'cent-per-order' } });
+  assert.ok(Math.abs(net - (1 - 0.5 - 0.018)) < 1e-12);
+  assert.equal(categoryShadowFee(0.5), 0.018);
 });

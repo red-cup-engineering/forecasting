@@ -164,7 +164,7 @@ export const predict = (model, x) => sigmoid(predictLogit(model, x));
 export const brier = (ps, ys) => ps.reduce((s, p, i) => s + (p - ys[i]) ** 2, 0) / ps.length;
 export const logLoss = (ps, ys) => ps.reduce((s, p, i) => { const q = Math.min(1 - 1e-6, Math.max(1e-6, p)); return s - (ys[i] ? Math.log(q) : Math.log(1 - q)); }, 0) / ps.length;
 
-/** Kalshi taker fee for an order of `count` contracts at price P (dollars): ceil_to_cent(0.07*count*P*(1-P)). */
+/** Kalshi taker fee for an order of `count` contracts at price P (dollars): 0.07*count*P*(1-P), rounded up to the account's $0.0001 grid. */
 export const takerFee = (count, price) => orderFee(count, price);
 /** Fee per contract for orders of 10. */
 export const feePerContract = (price, lot = 10) => takerFee(lot, price) / lot;
