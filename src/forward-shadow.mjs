@@ -14,8 +14,13 @@ export const stateDir = (name, env = process.env) => env.FORWARD_SHADOW_DIR
 
 export const num = (x) => { if (x === undefined || x === null || x === '') return null; const n = Number(x); return Number.isFinite(n) ? n : null; };
 
-/** Kalshi taker fee for one order: ceil_to_cent(0.07 x multiplier x C x P x (1 - P)). */
-export const orderFee = (mult, p, count) => kalshiOrderFee(count, p, { multiplier: mult });
+/**
+ * The forward claims' registered taker fee for one order: ceil_to_cent(0.07 x multiplier x C x P x (1 - P)), as
+ * pre-registered (content/hypotheses/claims-c1.json, fee.rounding "cent-per-order", commit d121ad0). The account
+ * itself pays on the $0.0001 grid (fees.mjs), so the registered fee overstates its cost and a verdict on it is
+ * conservative; changing it is a re-registration, not a fee fix.
+ */
+export const orderFee = (mult, p, count) => kalshiOrderFee(count, p, { multiplier: mult, gridCents: 1 });
 
 /** Mean of x with delete-one-group jackknife SE; items [{g, x}]. */
 export function jackknife(items) {

@@ -15,9 +15,9 @@ test('simplex solves a small LP and detects infeasibility', () => {
   assert.equal(solveLP({ c: [1], rows: [{ a: [1], op: '>=', b: 5 }, { a: [1], op: '<=', b: 3 }] }).status, 'infeasible');
 });
 
-test('Kalshi fee rounds up to the cent per order', () => {
+test('Kalshi fee rounds up once per order to the account\'s $0.0001 grid', () => {
   assert.equal(orderFee(0.07, 100, 0.5), 1.75);
-  assert.equal(orderFee(0.07, 1, 0.5), 0.02);
+  assert.equal(orderFee(0.07, 1, 0.5), 0.0175);
 });
 
 test('bracket ladder whose asks sum below one is a Dutch book; wider asks glue', () => {

@@ -18,8 +18,9 @@ export function Phi(x) {
   return x >= 0 ? 0.5 * (1 + y) : 0.5 * (1 - y);
 }
 
-// Kalshi taker fee per contract for an n-lot at price p (dollars): ceil(0.07*n*p*(1-p) to the cent)/n.
-export const fee = (p, n = 10, rate = THETA) => orderFeePerContract(n, p, { multiplier: rate / THETA });
+// The taker fee per contract for an n-lot at price p (dollars) as the backtests these shadows forward-test charged it:
+// ceil(0.07*n*p*(1-p) to the cent)/n (gridCents 1). The account pays on the $0.0001 grid, so a shadow is conservative.
+export const fee = (p, n = 10, rate = THETA) => orderFeePerContract(n, p, { multiplier: rate / THETA, gridCents: 1 });
 
 /** Book at the touch from a market record (dollars + _fp sizes). */
 export function touch(m) {

@@ -16,10 +16,10 @@ export const PRICE_BUCKETS = [[1, 5], [6, 10], [11, 20], [21, 35], [36, 50], [51
 export const MODES = ['taker', 'maker'];
 export const SIDES = ['yes', 'no'];
 
-/** Kalshi taker fee for one order of `count` contracts at `price` dollars: ceil-to-cent of 0.07*mult*C*P*(1-P); per contract. */
+/** Kalshi taker fee for one order of `count` contracts at `price` dollars: 0.07*mult*C*P*(1-P) rounded up to the account's $0.0001 grid; per contract. */
 export const kalshiTakerFee = (price, { count = 10, multiplier = 1 } = {}) => orderFeePerContract(count, price, { multiplier });
 
-/** Maker fee per contract: free on plain 'quadratic' series, 0.0175*mult*P*(1-P) (ceil-to-cent per order) where the series charges makers. */
+/** Maker fee per contract: free on plain 'quadratic' series, 0.0175*mult*P*(1-P) (rounded up to the grid per order) where the series charges makers. */
 export const kalshiMakerFee = (price, { count = 10, multiplier = 1, feeType = 'quadratic' } = {}) => orderFeePerContract(count, price, { multiplier, maker: true, feeType });
 
 /** Index into PRICE_BUCKETS for a price in dollars, or -1. */
