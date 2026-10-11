@@ -114,7 +114,7 @@ export function winConservationIdentity({ id, teams, maxTieGames, rule, note }) 
 
 /** Kalshi taker fee for `qty` contracts at price p: theta*qty*p*(1-p); round 'cent' = ceil to the cent per order. */
 export function fee(p, qty = 1, { theta = THETA, round = 'none' } = {}) {
-  if (round === 'cent' && Number.isInteger(qty)) return orderFee(qty, p, { multiplier: theta / THETA });
+  if (round === 'cent' && Number.isInteger(qty)) return orderFee(qty, p, { multiplier: theta / THETA, gridCents: 1 });
   return feePerContract(p, { multiplier: theta / THETA }) * qty;
 }
 
