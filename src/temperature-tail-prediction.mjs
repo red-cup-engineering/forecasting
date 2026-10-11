@@ -20,9 +20,12 @@ export function tailSide({ floorStrike, capStrike }, mean) {
   return null;
 }
 
-/** No tail is eligible on the side of an active NWS temperature hazard, nor where the station's hazards could not be read. */
+/**
+ * No tail is eligible on the side of an active NWS temperature hazard, nor where the station's hazards could not be
+ * read. An unread read is `unread`: it certifies nothing, but it is no evidence against a bet already resting.
+ */
 export function regimeVerdict(side, hazards) {
-  if (hazards === null || hazards === undefined) return { ok: false, reason: 'NWS hazards unread at the station' };
+  if (hazards === null || hazards === undefined) return { ok: false, unread: true, reason: 'NWS hazards unread at the station' };
   const active = side === 'warm' ? hazards.warm : side === 'cold' ? hazards.cold : [];
   if (active.length > 0) return { ok: false, reason: `${side} tail under ${active.join(', ')}` };
   return { ok: true };
@@ -63,6 +66,6 @@ export function predictTemperatureTail(market, { guidance, observed = null, haza
   const side = tailSide(market, priced.mean);
   if (!side) return { eligible: false, reason: 'bracket straddles the forecast mean', priced };
   const regime = regimeVerdict(side, hazards);
-  if (!regime.ok) return { eligible: false, reason: regime.reason, priced };
+  if (!regime.ok) return { eligible: false, reason: regime.reason, ...(regime.unread ? { unread: true } : {}), priced };
   return { eligible: true, probability: priced.probability, lossRate: tailLossRate(priced.probability, priced.kind, rules.lossRatePosterior), side, priced };
 }
