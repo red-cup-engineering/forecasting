@@ -48,7 +48,7 @@ test('logistic regression separates a clean signal', () => {
 
 test('taker fee rounds up once per order to the account\'s $0.0001 grid', () => {
   assert.equal(takerFee(10, 0.5), 0.175);  // exact on the grid
-  assert.equal(takerFee(1, 0.99), 0.0007); // $0.000693 -> $0.0007, not a cent
+  assert.ok(Math.abs(takerFee(1, 0.99) - 0.0007) < 1e-12); // $0.000693 -> $0.0007, not a cent
   assert.ok(Math.abs(feePerContract(0.5) - 0.018) < 1e-9);
 });
 

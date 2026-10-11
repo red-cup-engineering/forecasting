@@ -8,7 +8,7 @@ import { deriveSetOfKalshiEdgeCandidates } from '../scripts/derive-set-of-kalshi
 
 test('taker fee rounds up once per order to the account\'s $0.0001 grid; maker is free on quadratic series', () => {
   assert.ok(Math.abs(kalshiTakerFee(0.5, { count: 10 }) - 0.0175) < 1e-12); // 0.07*10*.25 = $0.175 per order of 10
-  assert.equal(kalshiTakerFee(0.99, { count: 1 }), 0.0007);
+  assert.ok(Math.abs(kalshiTakerFee(0.99, { count: 1 }) - 0.0007) < 1e-12);
   assert.equal(kalshiMakerFee(0.5, { feeType: 'quadratic' }), 0);
   assert.ok(kalshiMakerFee(0.5, { feeType: 'quadratic_with_maker_fees' }) > 0);
 });

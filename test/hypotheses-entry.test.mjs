@@ -7,6 +7,9 @@ import { RegistrationError, entriesFromTape, requireAfterRegistration, snapshotT
 import { quoteFromCandles } from '../src/hypotheses/data.mjs';
 import { orderFee } from '../src/fees.mjs';
 
+// The cent-per-order hypotheses are scored on the fee they registered: whole cents per order, not the account grid.
+const CENT = { gridCents: 1 };
+
 const load = (id) => JSON.parse(readFileSync(join(hypothesesDir, `${id}.json`), 'utf8'));
 const row = (ticker, event, result, bid, ask, { close = '2026-10-15T12:25:00Z', ts = '2026-10-14T12:25:00Z' } = {}) => ({ ticker, event, close, occ: close, result, multiplier: 1, quote: bid === null ? null : { ts, bid, ask } });
 
@@ -25,9 +28,9 @@ test('C1 on a synthetic tape: NO at 1 - bid, only YES asks in [0.15, 0.65], cent
   const win = entries.find((e) => e.ticker.endsWith('-210')), loss = entries.find((e) => e.ticker.endsWith('-220'));
   assert.equal(win.price, 0.62);
   assert.equal(win.won, true);
-  assert.ok(Math.abs(win.x - (1 - 0.62 - orderFee(10, 0.62) / 10)) < 1e-12);
+  assert.ok(Math.abs(win.x - (1 - 0.62 - orderFee(10, 0.62, CENT) / 10)) < 1e-12);
   assert.equal(loss.won, false);
-  assert.ok(Math.abs(loss.x - (0 - 0.42 - orderFee(10, 0.42) / 10)) < 1e-12);
+  assert.ok(Math.abs(loss.x - (0 - 0.42 - orderFee(10, 0.42, CENT) / 10)) < 1e-12);
   assert.equal(win.g, 'KXJOBLESSCLAIMS-26OCT15');
 });
 
