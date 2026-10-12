@@ -20,6 +20,8 @@ import {compareBinaryParticipationMenu}
  from '@red-cup-engineering/mandate-portfolio-allocation-service/binary-participation-menu';
 import {evaluateMarketInformationValue}
  from '@red-cup-engineering/mandate-portfolio-allocation-service/market-information-value';
+import {bindScreenedOutcomeFillResearch}
+ from '@red-cup-engineering/mandate-portfolio-allocation-service/binary-fill-calibration';
 import {analyzeAaaGasMarketGame} from './aaa-gas-market-game.mjs';
 import {orderFeeCentsOfFills} from './fees.mjs';
 
@@ -103,14 +105,45 @@ export function compareAaaGasParticipation({
        yesSidePrice>yesBid&&yesSidePrice<=yesAsk)){
    gaps.push({kind:'maker',id:q.id,reason:'resting quote crosses or is off the current displayed touch'});continue;
   }
+  // A source-identified frozen fit and its independent heldout receiving
+  // belong to the UPSTREAM hazard calibrator. Never reinterpret a pooled
+  // retrospective histogram as an AAA-exclusive producer.
+  let fillEvidence=q.fillEvidence;
+  let fillGivenWin=q.probabilityFillGivenWin;
+  let fillGivenLoss=q.probabilityFillGivenLoss;
+  if(q.fillStudy){
+   if(q.fillEvidence||q.probabilityFill||q.probabilityFillGivenWin||
+      q.probabilityFillGivenLoss){
+    gaps.push({kind:'maker',id:q.id,
+     reason:'select the received training/heldout fill study OR an exploratory manual model, never combine both'});
+    continue;
+   }
+   try{
+    const bound=bindScreenedOutcomeFillResearch({
+     training:q.fillStudy.training,holdout:q.fillStudy.holdout,
+     holdoutPublishedAt:q.fillStudy.holdoutPublishedAt,
+     at,familyScope:scope,quoteRegime:q.fillStudy.quoteRegime,side:q.side,
+    });
+    if(bound.status!=='exploratory-heldout-screened'){
+     gaps.push({kind:'maker',id:q.id,reason:'upstream fill study not heldout-improved: '+bound.status});
+     continue;
+    }
+    fillEvidence=bound.fillEvidence;
+    fillGivenWin=bound.probabilityFillGivenWin;
+    fillGivenLoss=bound.probabilityFillGivenLoss;
+   }catch(error){
+    gaps.push({kind:'maker',id:q.id,reason:'upstream fill evidence mismatch: '+error.message});
+    continue;
+   }
+  }
   makers.push({
    id:q.id,ticker,side:q.side,priceUsd:q.priceUsd,
    feeUsd:fee(q.priceUsd,series,true),
    quoteObservedAt:market.marketObservedAt,closeAt:market.close_time,
-   fillEvidence:q.fillEvidence,
-   ...(q.fillEvidence?.kind==='outcome-conditioned'?{
-     probabilityFillGivenWin:q.probabilityFillGivenWin,
-     probabilityFillGivenLoss:q.probabilityFillGivenLoss,
+   fillEvidence,
+   ...(fillEvidence?.kind==='outcome-conditioned'?{
+     probabilityFillGivenWin:fillGivenWin,
+     probabilityFillGivenLoss:fillGivenLoss,
    }:{probabilityFill:q.probabilityFill}),
    ...(q.incentiveScenario?{incentiveScenario:q.incentiveScenario}:{}),
    carryUsd:q.carryUsd??0,
