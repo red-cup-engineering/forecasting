@@ -154,3 +154,57 @@ test('frozen calibration and source receipts must not arrive after the trading d
  assert.equal(study({scenarioForecast:{...scenario(),availableAt:'2026-10-12T21:00:00Z'}}).status,
   'unbound-event-or-joint-scenario');
 });
+
+
+const information=(correct=1,extra={})=>({
+ scope,computeCostUsd:.005,repricingCostBoundUsd:.01,
+ model:{
+  id:'pretrained-AAA-price-movement-signal',
+  availableAt:'2026-10-12T18:15:00Z',
+  sourceEvidenceIds:['authorized-prior-price-data'],
+  signals:[
+   {id:'low-source-indication',likelihoodByScenario:{
+    below:correct,'4.002':1-correct,'4.007':1-correct,'4.013':1-correct}},
+   {id:'high-source-indication',likelihoodByScenario:{
+    below:1-correct,'4.002':correct,'4.007':correct,'4.013':correct}},
+  ],
+ },
+ ...extra,
+});
+
+test('perfect upstream AAA source signal has positive sample information value at a frozen book',()=>{
+ const r=study({signalStudy:information()});
+ assert.equal(r.status,'conditional-venue-research');
+ assert.ok(r.informationValue);
+ assert.ok(r.informationValue.grossEvsiUsd>0);
+ assert.ok(r.informationValue.signals.some(s=>s.bestAction==='take-no'));
+ assert.ok(r.informationValue.signals.some(s=>s.bestAction==='take-yes'));
+ assert.equal(r.informationValue.tradeEligible,false);
+ assert.equal(r.tradeEligible,false);
+});
+
+test('uninformative source signal has no EVSI even when two taker sides are offered',()=>{
+ const r=study({signalStudy:information(.5)});
+ assert.ok(Math.abs(r.informationValue.grossEvsiUsd)<1e-12);
+ assert.equal(r.informationValue.shouldAcquireConditional,false);
+ assert.equal(r.informationValue.netEvsiUsd,-.015);
+});
+
+test('rival repricing loss can dominate otherwise valuable gas information',()=>{
+ const r=study({signalStudy:information(1,{repricingCostBoundUsd:1})});
+ assert.ok(r.informationValue.grossEvsiUsd>0);
+ assert.ok(r.informationValue.netEvsiUsd<0);
+ assert.equal(r.informationValue.shouldAcquireConditional,false);
+});
+
+test('signal model must match same AAA source scope and be available before decision',()=>{
+ const wrong=study({signalStudy:information(1,{scope:'AAA-Maine'})});
+ assert.equal(wrong.informationValue,null);
+ assert.ok(wrong.gaps.some(x=>x.kind==='conditional-information-value'));
+ const late=information();
+ late.model.availableAt='2026-10-12T21:00:00Z';
+ const r=study({signalStudy:late});
+ assert.equal(r.informationValue,null);
+ assert.ok(r.gaps.some(x=>/signal kernel/i.test(x.reason)));
+ assert.equal(r.tradeEligible,false);
+});
