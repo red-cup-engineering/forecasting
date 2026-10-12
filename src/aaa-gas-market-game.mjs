@@ -25,6 +25,7 @@ import {ladderGroups,buildLadder,ladderFamily} from './coherence-families.mjs';
 import {assessFamily} from './coherence.mjs';
 import {orderFeeCentsOfFills} from './fees.mjs';
 import {eventDate} from '@red-cup-engineering/kalshi-services-section/market-facts';
+import {projectJointThresholdScenarios} from '@red-cup-engineering/mandate-portfolio-allocation-service/joint-threshold-pushforward';
 
 const validClock=(s)=>typeof s==='string'&&Number.isFinite(Date.parse(s));
 const validNum=(x)=>typeof x==='number'&&Number.isFinite(x);
@@ -84,41 +85,33 @@ export function projectAaaGasScenarioLadder({event,forecast,at}={}){
        !knownAAA(m.rules_primary)||typeof m.ticker!=='string'||
        aaaGasScopeOf(m)!==forecast.targetScope))
     throw new TypeError('source-matched directional AAA threshold roster required');
-  const ids=new Set(),values=[];
-  let total=0;
-  for(const s of forecast.scenarios){
-    if(!s||typeof s.id!=='string'||!s.id||ids.has(s.id)||
-       !validNum(s.probability)||s.probability<0||s.probability>1||
-       !validNum(s.values?.[forecast.outcomeValueKey]))
-      throw new TypeError('unique shared scenario id, mass and numeric official-price target required');
-    ids.add(s.id);total+=s.probability;
-    values.push({price:s.values[forecast.outcomeValueKey],mass:s.probability});
-  }
-  if(Math.abs(total-1)>1e-9)throw new RangeError('scenario mass must sum to one');
-  const ladder=event.markets.map(m=>({
-    ticker:m.ticker,strikeUsdGallon:m.floor_strike,
-    probabilityYes:values.reduce((acc,x)=>acc+(x.price>m.floor_strike?x.mass:0),0),
-  })).sort((a,b)=>a.strikeUsdGallon-b.strikeUsdGallon);
-  if(new Set(ladder.map(x=>x.strikeUsdGallon)).size!==ladder.length)
-    throw new TypeError('one contract per AAA threshold required');
-  if(ladder.some((x,i)=>i&&x.probabilityYes>ladder[i-1].probabilityYes+1e-12))
-    throw new Error('nested scenario projection violated probability monotonicity');
-  const pairs=[];
-  for(let i=0;i<ladder.length;i++)for(let j=i;j<ladder.length;j++){
-    const a=ladder[i],b=ladder[j];
-    const joint=b.probabilityYes; // Sorted by nondecreasing strike; W_j subset W_i.
-    pairs.push({first:a.ticker,second:b.ticker,jointYesProbability:joint,
-      yesCovariance:joint-a.probabilityYes*b.probabilityYes});
-  }
+  // The entire numerical pushforward belongs to shared Prediction-Market
+  // Engineering. AAA only checks the actual venue source, event population,
+  // exact comparator and contract roster, then maps the generic result back
+  // to its existing public consumer format.
+  const projected=projectJointThresholdScenarios({
+    forecast,outcomeValueKey:forecast.outcomeValueKey,
+    thresholds:event.markets.map(m=>({id:m.ticker,threshold:m.floor_strike})),
+    comparator:'>',at,
+  });
   return {
     status:'scenario-pushforward-ungraded',
     kind:'aaa-nested-threshold-scenario-pushforward-v1',
-    eventTicker:event.event_ticker,targetDate:forecast.targetDate,forecastId:forecast.id??null,
-    issuedAt:forecast.observedAt,sourceAvailableAt:forecast.availableAt??forecast.observedAt,at,source:'AAA',
-    outcomeValueKey:forecast.outcomeValueKey,targetScope:forecast.targetScope,evidenceIds:[...forecast.evidenceIds],
-    marketProbabilities:ladder,nestedPairs:pairs,
-    interpretation:'exact projection of DECLARED shared market-game scenarios; no independent-strike approximation',
-    statisticalSkill:'not certified by this operation; compare day-clustered forecast scores against Kalshi',
+    eventTicker:event.event_ticker,targetDate:forecast.targetDate,
+    forecastId:projected.forecastId,
+    issuedAt:forecast.observedAt,
+    sourceAvailableAt:forecast.availableAt??forecast.observedAt,
+    at,source:'AAA',
+    outcomeValueKey:forecast.outcomeValueKey,
+    targetScope:forecast.targetScope,
+    evidenceIds:[...projected.evidenceIds],
+    marketProbabilities:projected.marketProbabilities.map(row=>({
+      ticker:row.id,strikeUsdGallon:row.threshold,
+      probabilityYes:row.probabilityYes,
+    })),
+    nestedPairs:projected.nestedPairs,
+    interpretation:projected.interpretation,
+    statisticalSkill:projected.statisticalSkill,
     tradeEligible:false,orderEffect:false,
   };
 }
