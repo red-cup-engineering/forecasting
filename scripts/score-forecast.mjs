@@ -1,28 +1,25 @@
 #!/usr/bin/env node
-import { createSemanticRecordJournal } from "@red-cup-engineering/semiotic-eavt-services-section/record-semantic-record";
+import { StoreError, get, put } from "@red-cup-engineering/semiotic-eavt-services-section/store";
 import { brierScore, logScore } from "../src/forecasting.mjs";
-import { FORECAST_CATEGORY, FORECAST_OBJECT_KIND, NODE_ROOT } from "./record-forecast.mjs";
+import { FORECAST_TYPE, NODE_ROOT } from "./record-forecast.mjs";
 import { resolve } from "node:path";
 
-/** The objectKind this section's semantic record journal uses for calibration-tracking records. */
-export const CALIBRATION_OBJECT_KIND = "forecasting.calibration-record";
-
-/** The journal category calibration-tracking records are written and queried under. */
-export const CALIBRATION_CATEGORY = "forecasting.calibration";
+/** The store type calibration-tracking records are written and read under. */
+export const CALIBRATION_TYPE = "forecast-calibration";
 
 /**
- * Looks up a previously recorded forecast by its journal record id.
- * @param {string} forecastId - a semantic-record-journal record id (an `ni:///sha-256;...` token).
+ * Looks up a previously recorded forecast by its address.
+ * @param {string} forecastId - the address recordForecast returned (an `ni:///sha-256;...` token).
  * @param {{dataRoot?: string}} [options]
  * @returns {Readonly<import("../src/forecasting.mjs").ForecastRecord>}
  * @throws {Error} when no recorded forecast matches forecastId.
  */
 export function findRecordedForecast(forecastId, options = {}) {
   const dataRoot = resolve(options.dataRoot ?? NODE_ROOT);
-  const journal = createSemanticRecordJournal({ root: dataRoot, objectKind: FORECAST_OBJECT_KIND });
-  const match = journal.query({ category: FORECAST_CATEGORY }).find((row) => row.id === forecastId);
+  let match;
+  try { match = get(dataRoot, FORECAST_TYPE, forecastId); } catch (error) { if (!(error instanceof StoreError)) throw error; }
   if (!match) throw new Error(`score-forecast: no recorded forecast found for id ${forecastId}`);
-  return match.record;
+  return match;
 }
 
 /**
@@ -30,7 +27,7 @@ export function findRecordedForecast(forecastId, options = {}) {
  * proper scoring rules (Brier always; log score whenever the recorded
  * probability is not exactly 0 or 1, since logScore is undefined at those
  * boundaries -- see forecasting.mjs's logScore doc), and writes a
- * calibration-tracking record via the semantic record journal. `kind` and
+ * calibration-tracking record to the store. `kind` and
  * `referenceClass` (added 2026-09-05 for
  * apps/forecasting-daily-cycle.mjs) are optional and additive: when
  * supplied, they are persisted on the record so
@@ -40,7 +37,7 @@ export function findRecordedForecast(forecastId, options = {}) {
  * this record's original shape.
  * @param {{forecastId: string, outcome: (0|1), kind?: ("house"|"market"), referenceClass?: string}} input
  * @param {{dataRoot?: string, recordedAt?: string}} [options]
- * @returns {{id: string, objectKind: string, appended: number, appended: number, told: { for: boolean, against: boolean }}} the journal's record receipt for the calibration entry.
+ * @returns {{id: string}} the address that holds the calibration entry.
  * @throws {TypeError} when outcome is not exactly 0 or 1.
  */
 export function scoreForecast({ forecastId, outcome, kind, referenceClass }, options = {}) {
@@ -68,8 +65,7 @@ export function scoreForecast({ forecastId, outcome, kind, referenceClass }, opt
     scoredAt,
   };
   const dataRoot = resolve(options.dataRoot ?? NODE_ROOT);
-  const journal = createSemanticRecordJournal({ root: dataRoot, objectKind: CALIBRATION_OBJECT_KIND });
-  return journal.record({ category: CALIBRATION_CATEGORY, recordedAt: scoredAt, record, told: { for: true, against: false } });
+  return { id: put(dataRoot, CALIBRATION_TYPE, record) };
 }
 
 if (import.meta.main) {

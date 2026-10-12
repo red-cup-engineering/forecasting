@@ -7,11 +7,11 @@ import { readFileSync } from "node:fs";
 import { observeSetOfKalshiWeatherMarkets } from "@red-cup-engineering/kalshi-services-section/observe-set-of-kalshi-weather-markets";
 import { deriveSetOfNwsTemperatureForecasts } from "@red-cup-engineering/kalshi-services-section/derive-set-of-nws-temperature-forecasts";
 import { sizePosition } from "@red-cup-engineering/position-sizing-service/size-position";
-import { createSemanticRecordJournal } from "@red-cup-engineering/semiotic-eavt-services-section/record-semantic-record";
+import { each, put } from "@red-cup-engineering/semiotic-eavt-services-section/store";
 import { runMain } from "@red-cup-engineering/javascript-file-services-section/javascript-file-main-guard";
 import { resolve } from "node:path";
 import { normalizeQuestion, createForecast, brierScore, logScore, questionIdFromTicker, referenceClassFromSeries, DATA_ROOT_ENV_VAR } from "../src/forecasting.mjs";
-import { recordForecast, FORECAST_CATEGORY, FORECAST_OBJECT_KIND, NODE_ROOT } from "../scripts/record-forecast.mjs";
+import { recordForecast, FORECAST_TYPE, NODE_ROOT } from "../scripts/record-forecast.mjs";
 
 /**
  * Re-exported so an existing consumer importing this app's own path
@@ -27,10 +27,8 @@ export { questionIdFromTicker, referenceClassFromSeries };
 export const HOUSE_EVIDENCE_SOURCE = "nws-forecast";
 /** Market evidence-source tag for the Kalshi-implied-probability row recorded beside the house forecast. */
 export const MARKET_EVIDENCE_SOURCE = "kalshi-market-implied";
-/** The journal category calibration rows for this loop are written and queried under. */
-export const CALIBRATION_CATEGORY = "forecasting.kalshi-weather-calibration";
-/** The objectKind this loop's semantic record journal uses for calibration rows. */
-export const CALIBRATION_OBJECT_KIND = "forecasting.kalshi-weather-calibration-record";
+/** The store type calibration rows for this loop are written and read under. */
+export const CALIBRATION_TYPE = "kalshi-weather-calibration";
 
 function clampOpenUnitInterval(probability) {
   return Math.min(0.999, Math.max(0.001, probability));
@@ -45,16 +43,9 @@ function impliedProbabilityFromMid(observation) {
   return null;
 }
 
-function journalWithObjectKind(dataRoot, objectKind) {
-  return createSemanticRecordJournal({ root: resolve(dataRoot ?? NODE_ROOT), objectKind });
-}
-
-function journalFor(dataRoot) {
-  return journalWithObjectKind(dataRoot, FORECAST_OBJECT_KIND);
-}
-
-function calibrationJournalFor(dataRoot) {
-  return journalWithObjectKind(dataRoot, CALIBRATION_OBJECT_KIND);
+/** The records of a store type as `{id, record}`: `id` is the address that holds the record. */
+function rowsOf(dataRoot, type) {
+  return [...each(resolve(dataRoot ?? NODE_ROOT), type)].map(({ address, record }) => ({ id: address, record }));
 }
 
 /**
@@ -73,8 +64,7 @@ export function readWeatherMarketsConfig(path) {
  * @returns {number}
  */
 export function countResolvedCalibrationRows(referenceClass, options = {}) {
-  const journal = calibrationJournalFor(options.dataRoot);
-  return journal.query({ category: CALIBRATION_CATEGORY }).filter((row) => row.record.referenceClass === referenceClass && row.record.kind === "house").length;
+  return rowsOf(options.dataRoot, CALIBRATION_TYPE).filter((row) => row.record.referenceClass === referenceClass && row.record.kind === "house").length;
 }
 
 /**
@@ -191,10 +181,9 @@ export async function runScoreClosedMarkets({ configPath, dataRoot, now, request
   const observedAt = now ?? new Date().toISOString();
   const seriesTickers = config.citySeries.map((row) => row.seriesTicker);
   const settled = await observeSetOfKalshiWeatherMarkets({ seriesTickers, observedAt, status: "settled" }, { fetchImpl: request });
-  const forecastJournal = journalFor(dataRoot);
-  const calibrationJournal = calibrationJournalFor(dataRoot);
+  const forecastRows = rowsOf(dataRoot, FORECAST_TYPE);
   // Each forecast is scored once: daily runs see every settled market again.
-  const scored = new Set(calibrationJournal.query({ category: CALIBRATION_CATEGORY }).map((row) => row.record.forecastId));
+  const scored = new Set(rowsOf(dataRoot, CALIBRATION_TYPE).map((row) => row.record.forecastId));
 
   let calibrationRowsWritten = 0;
   for (const observation of settled) {
@@ -202,9 +191,9 @@ export async function runScoreClosedMarkets({ configPath, dataRoot, now, request
     const outcome = observation.settlement.outcome;
     const questionId = questionIdFromTicker(observation.ticker);
     const referenceClass = referenceClassFromSeries(observation.seriesTicker);
-    const forecastRows = forecastJournal.query({ category: FORECAST_CATEGORY }).filter((row) => row.record.questionId === questionId);
-    for (const row of forecastRows) {
-      if (!Number.isFinite(Date.parse(row.recordedAt)) || Date.parse(row.recordedAt) >= Date.parse(observation.settlement.settledAt)) continue;
+    const questionRows = forecastRows.filter((row) => row.record.questionId === questionId);
+    for (const row of questionRows) {
+      if (!Number.isFinite(Date.parse(row.record.timestamp)) || Date.parse(row.record.timestamp) >= Date.parse(observation.settlement.settledAt)) continue;
       if (scored.has(row.id)) continue;
       const source = row.record.evidenceCitations?.[0]?.source;
       const kind = source === MARKET_EVIDENCE_SOURCE ? "market" : source === HOUSE_EVIDENCE_SOURCE ? "house" : null;
@@ -213,12 +202,7 @@ export async function runScoreClosedMarkets({ configPath, dataRoot, now, request
       const brier = brierScore(probability, outcome);
       let log = null, logScoreUndefinedReason = null;
       try { log = logScore(probability, outcome); } catch (error) { logScoreUndefinedReason = error.message; }
-      calibrationJournal.record({
-        category: CALIBRATION_CATEGORY,
-        recordedAt: observedAt,
-        record: { referenceClass, forecastId: row.id, questionId, kind, probability, outcome, brierScore: brier, logScore: log, logScoreUndefinedReason, scoredAt: observedAt, settlement: observation.settlement },
-        told: { for: true, against: false },
-      });
+      put(resolve(dataRoot ?? NODE_ROOT), CALIBRATION_TYPE, { referenceClass, forecastId: row.id, questionId, kind, probability, outcome, brierScore: brier, logScore: log, logScoreUndefinedReason, scoredAt: observedAt, settlement: observation.settlement });
       scored.add(row.id);
       calibrationRowsWritten += 1;
     }
@@ -232,8 +216,7 @@ export async function runScoreClosedMarkets({ configPath, dataRoot, now, request
  * @returns {object[]} one CalibrationReadout row per reference class.
  */
 export function runCalibrationReport(options = {}) {
-  const journal = calibrationJournalFor(options.dataRoot);
-  const rows = journal.query({ category: CALIBRATION_CATEGORY });
+  const rows = rowsOf(options.dataRoot, CALIBRATION_TYPE);
   const byReferenceClass = new Map();
   for (const row of rows) {
     const referenceClass = row.record.referenceClass;
