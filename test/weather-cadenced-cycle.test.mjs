@@ -45,7 +45,7 @@ test('a stale whole-venue state leaves only actually due zone clocks in the deci
    contracts:[{binding:{kind:'high',timeZone:'America/Chicago'}}],
  }));
  const plan=await weatherCadencePlan({root,now:when});
- assert.deepEqual(plan.dueTimeZones,['America/New_York','America/Kentucky/Louisville']);
+ assert.deepEqual(plan.dueTimeZones,['America/Kentucky/Louisville','America/New_York']);
  assert.equal(plan.shouldRun,true);
  assert.equal(plan.nextDueAt,'2026-07-15T18:35:00.000Z');
 });
