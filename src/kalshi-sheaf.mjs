@@ -199,7 +199,6 @@ export function partiallyIdentifiedHarmonicExtension(
   if (!Number.isInteger(maxSpectralDimension) ||
       maxSpectralDimension < 2 || maxSpectralDimension > 512)
     throw new TypeError('bounded singular-component dimension required');
-  const allKnown = free?.every(v => v === false);
   let fullyIdentified = null;
   try {
     fullyIdentified = harmonicExtension(sheaf, x, free, 0);
