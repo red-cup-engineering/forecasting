@@ -135,3 +135,138 @@ Reuse weather-engine's rulesHash, station-observations, climate-report evidence,
 - [NOAA IEM ASOS historical archive](https://mesonet.agron.iastate.edu/request/download.phtml): archived observations can be delayed or restated; availability needs recorded proof.
 
 **Acceptance criterion of this memorandum:** model the remaining high as a conditional, source-aligned stochastic process and demonstrate incremental out-of-sample information plus actual fill-adjusted surplus. If either half fails, record a negative research result and retain the abstention policy.
+
+
+## October 11 continuation: modal reachability, regional transitions and evidence order
+
+The sharpened hypothesis is not merely about late-afternoon timing. Incoming fronts,
+convective outflow, cloud clearance, radiative inversions, downslope warming and
+marine/lake influences can change which temperature trajectories remain physically
+admissible. A regional event has four distinct interpretations:
+
+1. **Physical observation.** A measured temperature spike can strengthen the
+   lower bound on the underlying day's maximum, provided that the source and
+   measurement rules truly align with that underlying maximum.
+2. **Dynamic reachability.** An independently justified model of all allowed
+   future trajectories could exclude or entail some final highs. Its proof
+   is only as sound as that model and its validity window.
+3. **Probabilistic update.** A cooling front may make further highs very unlikely
+   without making them impossible. Warmer air may make one likely without
+   making it necessary.
+4. **Concurrent market game.** Other participants can observe the same event,
+   modify quotes and decide when to take our passive orders; a forecast gain
+   is not automatically a profitable execution edge.
+
+### Modal inference is not a probability, nor a bilattice charge
+
+Let W_t be the *nonempty* set of future histories compatible with what was
+actually received at issuance time t, a specified source and a specified
+transition model. For a binary payout event B:
+
+    Box(B)     iff every w in W_t resolves B true.
+    Box(not B) iff every w in W_t resolves B false.
+    Diamond(B) iff some w in W_t resolves B true.
+
+If contradictory premises make W_t empty, do not conclude every proposition.
+Instead retain the independent positive and negative witnesses and mark a
+conflict. This is the non-explosive discipline of FOUR, not classical
+vacuous entailment.
+
+Obsmetrologia already defines Charge and its two orders in
+Obsmetrologia/Language/Positing/Charge.lean; its modal structure exists in
+Obsmetrologia/Closure/Modal.lean and
+Obsmetrologia/Language/Positing/ModalKripkeFourValued.lean.
+No parallel FOUR implementation or faux proved-JavaScript theorem belongs
+in the Kalshi repo. The market science layer produces compatible independent
+{for,against} witnesses, the existing SignCell carries them, and venue rules
+supply the precise payout interpretation.
+
+A lower bound on the *authoritative* final maximum is monotonic: once the
+final maximum must be at least 91 F, the interval up to 90 F is impossible
+and a strict-above-90-F bracket necessary, conditional on the bound. A proxy
+NWS observation during a TWC-settled market does NOT establish that same
+premise; its conclusion is kept in a separate proxy-conditional slot.
+
+A rapid 20 F cooling is NOT a proof that a further high is unreachable.
+For example, a purported maximum future heating rate r could imply
+T(s) <= T(t) + r*(s-t), and thus an upper bound on remaining temperatures,
+only if that rate is a sound bound on *all admissible futures*, not an
+empirical 95th percentile or a model average. This illustrates the desired
+future proof-bearing physical transition relation; no such certified
+rate bound is presently claimed.
+
+The evidence order is the order of disclosed witnesses, not an operation
+that overwrites earlier contradictions. At every clock we distinguish
+observedAt (physical event), availableAt (first accessible information),
+issuedAt (our decision), and the market's independently observed book time.
+Proof consequences are conditional on source, rule identity, station,
+date, rounding, publication, corrections and the venue's exceptional fallback.
+
+### Source ownership, with upstream/downstream boundaries
+
+**Obsmetrologia mathematics:** lenticule-science/obsmetrologia owns
+FOUR, the knowledge/truth orders, closure and modal mathematics. No
+new Lean proof or unverified theorem was introduced this session.
+
+**Generic proof operator:** red-cup-engineering/
+prediction-market-engineering-services-section, service
+mandate-portfolio-allocation-service/src/settlement-modal.mjs, owns
+deduceSettlementInterval. It computes subset/disjointness of closed
+numeric payout intervals against signed, received settlement-bound
+premises, including compatible intersections, a non-explosion rule for
+conflicts and withholding of late-published data. It has no Kalshi,
+weather, credential, money or order logic.
+
+**Shared evidence carrier:** existing SignCell/SignChain are consumed,
+not forked. Kalshi's weather-modal-outcomes.mjs binds the contract's
+actual whole-Fahrenheit bracket through temperature-distribution.mjs,
+and passes conditional sources through deduceSettlementInterval to
+SignCell. It never merges an NWS proxy with an asserted TWC final source.
+A merely declared input qualification is NOT authenticated provenance;
+the ordinary weather cycle supplies zero source-certified premises.
+
+**Regional weather observation:** the existing weather-relational-
+temperature.mjs now owns regionalThermalTransition, consuming exactly
+the same METAR hourly panel used by the relational temperature learner.
+For a region it compares adjacent genuinely received reporting bins,
+records per-station signed changes and source witnesses, requires a
+same-sign quorum, excludes conflicting or missing station bins, and
+rejects stale hours. Regional change is a *physical measurement
+event*, not an inferred market payout. It is carried by the existing
+weather-relational-nowcast and weather-engine archive/status path, with
+no new runtime timer, pricing surface, desk strategy or order actuator.
+
+The ordinary research forecast rows now expose conditional proof
+readings for bounded high-temperature contracts; only actual
+source-qualified witness slots can yield a source-conditional deduction.
+No ordinary NWS proxy spike can induce a structural price clip in
+the Kalshi desk. All new paths return tradeEligible:false or
+orderEffect:false.
+
+### What should actually be measured next
+
+For each predeclared region, station and weather day, reconstruct
+station shocks with what was **available** at each time, not the final
+retrospective archive. Classify coherent warming, coherent cooling,
+mixed regime, and no information. Compare the conditional final-high
+distribution and bracket calibration before and after each regime
+change against hour-only, NBM, and current executable Kalshi
+price baselines.
+
+Keep dawn, afternoon, overnight, frontal and marine events as
+explicit strata. Cluster confidence by weather day and region:
+hourly snapshots of the same front are not independent trials.
+For economic validation, record every contemporaneous level of
+the book, queue position, quote freshness, exact fee, latency,
+adverse selection, partial fills and markout; evaluate expected net
+return **per placement** rather than per hypothetical filled contract.
+Do not promote any lane merely because its posterior is extreme.
+Predeclare the test cells and retain falsifying nontrades.
+
+This session completed durable pure inference, source-dependent
+projection and physical transition witnesses. It did NOT demonstrate
+out-of-sample alpha, implement authenticated official-source
+certification, formally prove a new Obsmetrologia theorem in Lean,
+run the full workspace integration suite, update parent gitlink
+release pins or deploy a production trading strategy. Those
+remain independent receiving and scientific gates.
