@@ -32,6 +32,67 @@ export function relationalTemperaturePanel(reading,{stations}={}){
  for(const r of reading.accepted){const t=Date.parse(r.observedAt),boundary=Math.ceil(t/HOUR)*HOUR;if(boundary-t>20*60000)continue;let p=panel.get(boundary);if(!p)panel.set(boundary,p={});if(!p[r.station]||Date.parse(p[r.station].observedAt)<t)p[r.station]=r;}
  return [...panel].sort((a,b)=>a[0]-b[0]).map(([t,p])=>({at:t,complete:stations.every(s=>p[s]),stations:p}));
 }
+/**
+ * Regional thermal transition on the SAME admitted hourly METAR panel that
+ * trains our relational nowcast. It is an empirical observation of a common
+ * signed temperature step, not a bound on any city's eventual daily extreme.
+ *
+ * A report is usable only if physically observed and actually received by
+ * 'now'. Each station needs two adjacent routine bins, <=20m old relative to
+ * their own bin boundary. No invented hourly interpolation. Conflicted
+ * stations are withheld instead of averaged, and stale panels report a gap.
+ */
+export function regionalThermalTransition(reading,{stations,region=null,now,thresholdF=3,quorum=null,maxBinAgeMinutes=90}={}){
+ const tNow=typeof now==='number'?now:Date.parse(now);
+ if(!Array.isArray(stations)||stations.length<2||new Set(stations).size!==stations.length||
+    stations.some(s=>typeof s!=='string'||!s.length)||!Number.isFinite(tNow)||
+    !Number.isFinite(thresholdF)||thresholdF<=0||
+    !Number.isFinite(maxBinAgeMinutes)||maxBinAgeMinutes<0||maxBinAgeMinutes>180)
+  throw new TypeError('known stations, issuance clock and positive weather transition thresholds required');
+ const n=quorum??Math.max(2,Math.ceil(0.6*stations.length));
+ if(!Number.isInteger(n)||n<2||n>stations.length)throw new RangeError('quorum must be at least two and at most the region size');
+ if(!reading||!Array.isArray(reading.accepted)||!Array.isArray(reading.conflicts))throw new TypeError('received relational reading required');
+ const issuedAt=iso(tNow);
+ const eligible=reading.accepted.filter(r=>stations.includes(r.station)&&
+   Number.isFinite(Date.parse(r.observedAt))&&Number.isFinite(Date.parse(r.availableAt))&&
+   Date.parse(r.observedAt)<=tNow&&Date.parse(r.availableAt)<=tNow&&
+   Number.isFinite(r.temperatureC));
+ const rows=relationalTemperaturePanel({accepted:eligible},{stations});
+ const latest=[...rows].reverse().find(r=>r.at<=tNow&&tNow-r.at<=maxBinAgeMinutes*60000);
+ const base={kind:'regional-temperature-transition-observation-v1',region,at:issuedAt,
+   thresholdF,quorum:n,requestedStations:stations,tradeEligible:false,orderEffect:false,
+   meaning:'source-received spatial temperature innovation; changes physical forecast evidence only, never a necessary or impossible settlement conclusion'};
+ if(!latest)return {...base,status:'missing-current-comparable-bin',stations:[],excludedStations:stations};
+ const earlier=rows.find(r=>r.at===latest.at-HOUR);
+ if(!earlier)return {...base,status:'missing-previous-hour-bin',observedBin:iso(latest.at),stations:[],excludedStations:stations};
+ const hasConflict=(station,bin)=>(reading.conflicts??[]).some(c=>
+   (c.witnesses??[]).some(r=>r.station===station&&Number.isFinite(Date.parse(r.observedAt))&&
+     Math.ceil(Date.parse(r.observedAt)/HOUR)*HOUR===bin&&Date.parse(r.observedAt)<=tNow));
+ const deltas=[],excluded=[];
+ for(const station of stations){
+  const current=latest.stations[station],prev=earlier.stations[station];
+  if(!current||!prev||hasConflict(station,latest.at)||hasConflict(station,earlier.at)||
+      !Number.isFinite(current.temperatureC)||!Number.isFinite(prev.temperatureC)){
+    excluded.push(station);continue;
+  }
+  const diffF=(current.temperatureC-prev.temperatureC)*9/5;
+  deltas.push({station,deltaF:diffF,previousObservedAt:prev.observedAt,
+    latestObservedAt:current.observedAt,latestReceivedAt:current.availableAt,
+    witnesses:[...(prev.witnesses??[]),...(current.witnesses??[])]});
+ }
+ const warming=deltas.filter(r=>r.deltaF>=thresholdF);
+ const cooling=deltas.filter(r=>r.deltaF<=-thresholdF);
+ const direction=warming.length>=n&&warming.length>cooling.length?'warming':
+   cooling.length>=n&&cooling.length>warming.length?'cooling':null;
+ return {...base,
+   status:direction?'regional-transition-observed':deltas.length<n?'insufficient-station-coverage':'mixed-or-below-threshold',
+   direction,observedBin:iso(latest.at),previousBin:iso(earlier.at),
+   stationCoverage:deltas.length,excludedStations:excluded,
+   stationSteps:deltas,coherentStations:direction?(direction==='warming'?warming:cooling).map(r=>r.station):[],
+   disagreement:direction?(direction==='warming'?cooling:warming).map(r=>r.station):[],
+ };
+}
+
 export function relationalTemperatureFeatures(panel,t,target,stations,relational,peerFeatures='both'){
  const a=panel.get(t),b=panel.get(t-HOUR),c=panel.get(t-2*HOUR);if(!a||!b||!c)return null;
  const required=relational?stations:[target];if(!required.every(s=>a[s]&&b[s]&&c[s]))return null;
