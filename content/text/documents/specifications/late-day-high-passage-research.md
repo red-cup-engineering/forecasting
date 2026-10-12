@@ -128,7 +128,9 @@ Reuse weather-engine's rulesHash, station-observations, climate-report evidence,
 
 - [Existing 2026-10-03 Kalshi daily-temperature research](https://github.com/red-cup-engineering/kalshi-engineering-services-section/blob/main/services/forecasting-service/data/records/2026-10-03-kalshi-temperature-tail-backtest/README.md): house general model loses to market Brier; limited specialized tail-positive backtest does not certify late-day peak trading.
 - [Existing 2026-10-04 belief-path and maker study](https://github.com/red-cup-engineering/kalshi-engineering-services-section/blob/main/services/forecasting-service/data/records/2026-10-04-belief-path/README.md): no fee-surviving generic path-lane; mid reversion is not necessarily cash.
-- [NWS explanation of station temperatures and Daily Climate Report interpretation](https://www.weather.gov/wrh/climate?wfo=okx): verify actual local products and measurement conventions by station.
+- [NWS/Los Angeles ASOS temperature metrology](https://www.weather.gov/lox/asostemperature): five-minute whole-degree Celsius reports can differ from internally tracked daily maxima, including peaks between reports; source precision is central to this experiment.
+- [Kalshi's weather-market overview](https://help.kalshi.com/en/articles/13823837-weather-markets) and [an October 11, 2026 Newark daily-high contract](https://kalshi.com/markets/kxhightewr/newark-nj-ewr-daily-max-temp/kxhightewr-26oct11): the generic overview describes typical NWS daily settlement, while the particular contract explicitly names TWC; rules binding must take precedence.
+- [Kalshi fee documentation](https://help.kalshi.com/en/articles/13823805-fees): maker orders may incur fees after execution, and fee selection belongs to the actual market.
 - [Kalshi market-specific rules](https://kalshi.com/markets): the individual active event rules, not a generic category description, are authoritative.
 - [NOAA IEM ASOS historical archive](https://mesonet.agron.iastate.edu/request/download.phtml): archived observations can be delayed or restated; availability needs recorded proof.
 
