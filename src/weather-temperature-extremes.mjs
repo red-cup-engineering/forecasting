@@ -62,3 +62,38 @@ export function priceDailyTemperatureExtreme(c,e,now){
  const priced=extremeBracketProbability({strikeType:c.strike_type,floorStrike:c.floor_strike,capStrike:c.cap_strike},d);
  return {id:d.model,p:priced.p,details:{...d,structuralProbabilityBounds:priced.structuralProbabilityBounds,proxy:b.proxy}};
 }
+
+
+/**
+ * Sharp Fréchet bounds on whether a proxy-observed daily high is never
+ * exceeded at any *modeled remaining hourly point*. Given the conditional
+ * hourly CDFs F_i(m), the conjunction of {T_i <= m} has probability in
+ *
+ *   [max(0, 1 - sum_i(1 - F_i(m))), min_i F_i(m)].
+ *
+ * The comonotone extremal CDF used as the point estimate by extremeCdf
+ * equals the UPPER bound here. It must not be presented as a conservative
+ * probability that the high has passed.
+ *
+ * This is not a bound for the venue's settlement high: source/station
+ * differences, within-hour peaks, reporting corrections, hourly-marginal
+ * calibration and publication latency are intentionally unresolved.
+ * No live order/quote eligibility is implied.
+ */
+export function lateDayHighPassageEnvelope({ observedHighF, futureHourlyPoints }) {
+  if (!Number.isFinite(observedHighF)) throw new TypeError('finite proxy observed high required');
+  const cdf = extremeCdf(observedHighF, {
+    kind: 'high',
+    points: futureHourlyPoints,
+    observedBound: null,
+  });
+  return {
+    observedHighF,
+    futureHourlyCount: futureHourlyPoints.length,
+    noLaterHourlyExceedance: { low: cdf.low, high: cdf.high },
+    laterHourlyExceedance: { low: 1 - cdf.high, high: 1 - cdf.low },
+    probabilityKind: 'sharp-frechet-bounds-given-hourly-conditional-marginals',
+    scope: 'Future modeled hourly points only, not subhour peaks, settlement-source discrepancies, measurement rounding, corrections, or calibrated venue payout',
+    tradeEligible: false,
+  };
+}
