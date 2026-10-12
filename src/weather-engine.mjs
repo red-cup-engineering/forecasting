@@ -20,7 +20,7 @@ import { createModelGradeAccumulator, probabilityBand, allocateWeather } from '.
 import { fuseForecast } from './forecast-surface.mjs';
 import { orderFee } from './fees.mjs';
 import {sourceReport} from './weather-settlement-source.mjs';
-import {modalHighReading} from './weather-modal-outcomes.mjs';
+import {modalTemperatureReading} from './weather-modal-outcomes.mjs';
 import { bracketSettlesYes } from './temperature-distribution.mjs';
 
 import {settlementRoot,stateDirectory} from '@red-cup-engineering/kalshi-services-section/data-layout';
@@ -341,7 +341,7 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
       const midpoint=quoteTimes.has(c.ticker)?mid(c):null,b=c.binding,modelBands=models.map(m=>({...m,band:probabilityBand({...c,station:b?.station??null,stage:s},m,grades)}));
       const surface=fuseForecast({mid:midpoint,models:modelBands});
       const support=forecastCell(c,models);
-      const row={ticker:c.ticker,eventTicker:c.event_ticker,title:c.title,family:c.family,source:c.source,stage:s,targetDate:b?.targetDate??null,closeTime:c.close_time,ruleKey:c.ruleKey,rulesHash:c.rulesHash,station:b?.station??null,mid:midpoint,marketObservedAt:quoteTimes.get(c.ticker)??null,models:modelBands,evidenceId,settlementReport:sourceReport(c,evidence.settlement),...support,modal:b?.kind==='high'?modalHighReading(c,evidence,{at:new Date().toISOString()}):null,blocker:c.blocker,surface};
+      const row={ticker:c.ticker,eventTicker:c.event_ticker,title:c.title,family:c.family,source:c.source,stage:s,targetDate:b?.targetDate??null,closeTime:c.close_time,ruleKey:c.ruleKey,rulesHash:c.rulesHash,station:b?.station??null,mid:midpoint,marketObservedAt:quoteTimes.get(c.ticker)??null,models:modelBands,evidenceId,settlementReport:sourceReport(c,evidence.settlement),...support,modal:['high','low'].includes(b?.kind)?modalTemperatureReading(c,evidence,{at:new Date().toISOString()}):null,blocker:c.blocker,surface};
       rows.push(row);
       if(models.length&&midpoint!==null&&c.status==='active'&&Date.parse(c.close_time)>Date.now()){
         // The surface is graded like any model: house-surface-v1 against the mid is the house's own skill.
