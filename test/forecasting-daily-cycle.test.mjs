@@ -3,9 +3,9 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { createSemanticRecordJournal } from "@red-cup-engineering/semiotic-eavt-services-section/record-semantic-record";
+import { each } from "@red-cup-engineering/semiotic-eavt-services-section/store";
 import { runForecastingDailyCycle, discoverKalshiQuestions, readStaticQuestions } from "../apps/forecasting-daily-cycle.mjs";
-import { recordForecast, FORECAST_OBJECT_KIND, FORECAST_CATEGORY } from "../scripts/record-forecast.mjs";
+import { recordForecast } from "../scripts/record-forecast.mjs";
 
 const NEVER_OK = async () => ({ ok: false, status: 503, json: async () => ({}) });
 
@@ -57,7 +57,7 @@ test("runForecastingDailyCycle: with no live source confirming anything, every q
     assert.ok(result.resolutions.every((resolution) => resolution.type === "Open"));
     assert.equal(result.newlyScoredCount, 0);
     assert.ok(result.calibrationRecords.every((record) => record.type === "Reject" && record.code === "no-resolved-forecasts"));
-    assert.equal(result.cycleReceipt.objectKind, "forecasting.daily-cycle-record");
+    assert.match(result.cycleReceipt.id, /^ni:\/\/\/sha-256;/u);
   } finally {
     rmSync(dataRoot, { recursive: true, force: true });
   }
@@ -98,8 +98,7 @@ test("runForecastingDailyCycle scores a newly resolved Kalshi question exactly o
     const secondNyRecord = second.calibrationRecords.find((record) => record.referenceClass === "kalshi.weather.KXHIGHNY");
     assert.equal(secondNyRecord.resolvedForecastCount, 1);
 
-    const calibrationJournal = createSemanticRecordJournal({ root: dataRoot, objectKind: "forecasting.calibration-record" });
-    const calibrationRows = calibrationJournal.query({ category: "forecasting.calibration" }).filter((row) => row.record?.forecastId);
+    const calibrationRows = [...each(dataRoot, "forecast-calibration")].filter((row) => row.record?.forecastId);
     assert.equal(calibrationRows.length, 2);
   } finally {
     rmSync(dataRoot, { recursive: true, force: true });

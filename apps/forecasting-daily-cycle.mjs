@@ -2,33 +2,31 @@
 // The section's daily cycle: resolve-set-of-forecast-questions ->
 // score-forecast (idempotent, over newly resolved rows) ->
 // derive-calibration-record (per reference class, over full history) ->
-// the semantic record journal. Composes the section's own scripts/src;
+// the store. Composes the section's own scripts/src;
 // see the exported function's JSDoc for the full contract.
 import { readFileSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { createSemanticRecordJournal } from "@red-cup-engineering/semiotic-eavt-services-section/record-semantic-record";
+import { each, put } from "@red-cup-engineering/semiotic-eavt-services-section/store";
 import { resolve } from "node:path";
 import { runMain } from "@red-cup-engineering/javascript-file-services-section/javascript-file-main-guard";
 import { resolveSetOfForecastQuestions } from "../scripts/resolve-set-of-forecast-questions.mjs";
-import { scoreForecast, CALIBRATION_CATEGORY, CALIBRATION_OBJECT_KIND } from "../scripts/score-forecast.mjs";
+import { scoreForecast, CALIBRATION_TYPE } from "../scripts/score-forecast.mjs";
 import { deriveCalibrationRecord } from "../scripts/derive-calibration-record.mjs";
-import { FORECAST_CATEGORY, FORECAST_OBJECT_KIND, NODE_ROOT } from "../scripts/record-forecast.mjs";
+import { FORECAST_TYPE, NODE_ROOT } from "../scripts/record-forecast.mjs";
 import { brierScore, DATA_ROOT_ENV_VAR } from "../src/forecasting.mjs";
 
 const QUESTIONS_DIR = new URL("../content/questions/", import.meta.url);
 
 /** Kalshi weather series this cycle knows how to route (matches the brief's cohort; KXDENHIGH in content/config/weather-markets.json is not yet part of it). */
 export const KNOWN_KALSHI_SERIES = ["KXHIGHCHI", "KXHIGHNY", "KXHIGHTHOU"];
-/** The journal objectKind this cycle's own run receipts use. */
-export const CYCLE_OBJECT_KIND = "forecasting.daily-cycle-record";
-/** The journal category this cycle's own run receipts are written and queried under. */
-export const CYCLE_CATEGORY = "forecasting.daily-cycle";
+/** The store type this cycle's own run receipts are written under. */
+export const CYCLE_TYPE = "forecasting-cycle";
 /** Market-implied evidence-citation source tag (mirrors forecast-weather-markets-cli.mjs's MARKET_EVIDENCE_SOURCE) used to classify a recorded forecast row as "market"-kind rather than "house"-kind. */
 export const MARKET_EVIDENCE_SOURCE = "kalshi-market-implied";
 
-function journalFor(dataRoot, objectKind) {
-  return createSemanticRecordJournal({ root: resolve(dataRoot ?? NODE_ROOT), objectKind });
-}
+const rootOf = (dataRoot) => resolve(dataRoot ?? NODE_ROOT);
+/** The records of a store type as `{id, record}`: `id` is the address that holds the record. */
+const rowsOf = (dataRoot, type) => [...each(rootOf(dataRoot), type)].map(({ address, record }) => ({ id: address, record }));
 
 /**
  * Reads every static question definition file under content/questions/
@@ -56,7 +54,7 @@ export function readStaticQuestions() {
  * @returns {{id: string, sourcePlatform: string}[]}
  */
 export function discoverKalshiQuestions(dataRoot, staticIds) {
-  const rows = journalFor(dataRoot, FORECAST_OBJECT_KIND).query({ category: FORECAST_CATEGORY });
+  const rows = rowsOf(dataRoot, FORECAST_TYPE);
   const ids = new Set(rows.map((row) => row.record.questionId));
   const questions = [];
   for (const id of ids) {
@@ -89,10 +87,9 @@ export async function runForecastingDailyCycle(options = {}) {
 
   const resolutions = await resolveSetOfForecastQuestions({ questions, now: runAt }, { fetchImpl: options.fetchImpl });
 
-  const forecastJournal = journalFor(dataRoot, FORECAST_OBJECT_KIND);
-  const calibrationJournal = journalFor(dataRoot, CALIBRATION_OBJECT_KIND);
+  const forecastRows = rowsOf(dataRoot, FORECAST_TYPE);
   const alreadyScoredForecastIds = new Set(
-    calibrationJournal.query({ category: CALIBRATION_CATEGORY }).map((row) => row.record?.forecastId).filter((id) => typeof id === "string"),
+    rowsOf(dataRoot, CALIBRATION_TYPE).map((row) => row.record?.forecastId).filter((id) => typeof id === "string"),
   );
 
   const scoredForecasts = [];
@@ -100,7 +97,7 @@ export async function runForecastingDailyCycle(options = {}) {
   for (const resolution of resolutions) {
     if (resolution.type !== "Resolved") continue;
     const question = questionById.get(resolution.questionId);
-    const rows = forecastJournal.query({ category: FORECAST_CATEGORY }).filter((row) => row.record.questionId === resolution.questionId);
+    const rows = forecastRows.filter((row) => row.record.questionId === resolution.questionId);
     for (const row of rows) {
       const kind = row.record.evidenceCitations?.[0]?.source === MARKET_EVIDENCE_SOURCE ? "market" : "house";
       scoredForecasts.push({
@@ -121,13 +118,7 @@ export async function runForecastingDailyCycle(options = {}) {
   const referenceClasses = [...new Set(questions.map((question) => question.sourcePlatform))];
   const calibrationRecords = deriveCalibrationRecord({ scoredForecasts, referenceClasses, derivedAt: runAt });
 
-  const cycleJournal = journalFor(dataRoot, CYCLE_OBJECT_KIND);
-  const cycleReceipt = cycleJournal.record({
-    category: CYCLE_CATEGORY,
-    recordedAt: runAt,
-    record: { runAt, questionCount: questions.length, resolutions, newlyScoredCount, calibrationRecords },
-    told: { for: true, against: false },
-  });
+  const cycleReceipt = { id: put(rootOf(dataRoot), CYCLE_TYPE, { runAt, questionCount: questions.length, resolutions, newlyScoredCount, calibrationRecords }) };
 
   return { runAt, questionCount: questions.length, resolutions, newlyScoredCount, calibrationRecords, cycleReceipt };
 }

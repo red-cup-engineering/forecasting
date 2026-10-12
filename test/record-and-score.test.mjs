@@ -3,10 +3,10 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { createSemanticRecordJournal } from "@red-cup-engineering/semiotic-eavt-services-section/record-semantic-record";
+import { each } from "@red-cup-engineering/semiotic-eavt-services-section/store";
 import { createForecast } from "../src/forecasting.mjs";
 import { recordForecast } from "../scripts/record-forecast.mjs";
-import { CALIBRATION_CATEGORY, CALIBRATION_OBJECT_KIND, findRecordedForecast, scoreForecast } from "../scripts/score-forecast.mjs";
+import { CALIBRATION_TYPE, findRecordedForecast, scoreForecast } from "../scripts/score-forecast.mjs";
 
 test("record-forecast then score-forecast round-trips through a real tmp data root", (t) => {
   const dataRoot = mkdtempSync(join(tmpdir(), "forecasting-record-score-"));
@@ -22,14 +22,12 @@ test("record-forecast then score-forecast round-trips through a real tmp data ro
 
   const recordReceipt = recordForecast(forecast, { dataRoot });
   assert.match(recordReceipt.id, /^ni:\/\/\/sha-256;/u);
-  assert.equal(recordReceipt.told.for, true);
 
   const found = findRecordedForecast(recordReceipt.id, { dataRoot });
   assert.equal(found.questionId, "will-x-happen");
   assert.equal(found.probability, 0.75);
 
   const scoreReceipt = scoreForecast({ forecastId: recordReceipt.id, outcome: 1 }, { dataRoot });
-  assert.equal(scoreReceipt.told.for, true);
   assert.match(scoreReceipt.id, /^ni:\/\/\/sha-256;/u);
 });
 
@@ -76,6 +74,5 @@ test("findRecordedForecast throws for an id with no recorded forecast", (t) => {
 });
 
 function findCalibrationRecords(dataRoot) {
-  const journal = createSemanticRecordJournal({ root: dataRoot, objectKind: CALIBRATION_OBJECT_KIND });
-  return journal.query({ category: CALIBRATION_CATEGORY });
+  return [...each(dataRoot, CALIBRATION_TYPE)].map(({ address, record }) => ({ id: address, record }));
 }

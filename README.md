@@ -25,9 +25,8 @@ Stakes go through `kalshi-stake-path-service` inside its capped envelope.
    kept honestly separate from the numeric mean rather than one dressed up
    as the other.
 4. **Record** (`scripts/record-forecast.mjs`) — writes the canonical
-   `ForecastRecord` via `@red-cup-engineering/semantic-record-journal-service`
-   (`createSemanticRecordJournal`), landing at this section's own
-   `data/journals/`.
+   `ForecastRecord` with `put` of `@red-cup-engineering/semiotic-eavt-services-section/store`,
+   landing at this section's own `data/records/forecast-records/`.
 5. **Score** (`scripts/score-forecast.mjs`) — once a question resolves,
    scores the recorded forecast with the Brier score (always) and the log
    score (whenever the stated probability isn't exactly 0 or 1 — `logScore`
@@ -103,9 +102,9 @@ ruling:
   estimate as an attributable claim and joins conflicting claims without
   silently resolving their disagreement. Proper scoring remains in
   `src/forecasting.mjs`.
-- `@red-cup-engineering/semantic-record-journal-service` — already the sole
+- `@red-cup-engineering/semiotic-eavt-services-section` (`./store`) — the sole
   writer in `scripts/record-forecast.mjs` and `scripts/score-forecast.mjs`
-  (`createSemanticRecordJournal`); no hand-rolled record/receipt writing.
+  (`put`); no hand-rolled record/receipt writing.
 - Inference — the old question-only free-first loop has been retired. An
   inference-generated estimate can be supplied with its source material, but
   this forecasting pipeline currently has no admitted inference customer or
