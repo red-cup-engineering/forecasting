@@ -10,6 +10,65 @@ The collector discovers every Climate and Weather series from Kalshi, paginates 
 
 Weather observations are not settlement truth. The live contracts inspected on October 6 name The Weather Company for daily extremes and rain, and Synoptic for hourly directionals. NWS is a forecast/observation source; proxy observations never force TWC probabilities to zero. A climate day's standard-time boundary is used for station estimates, with source/window uncertainty remaining in validation. Rules hashes accompany model experiments and opportunities. Skill groups preserve the full measurement and revision rules while normalizing dates and ladder strikes; a source or methodology change resets eligibility. Contract changes are visible and external contract forecasts must match exact current rules.
 
+## Adaptive reasoning cadence (2026-10-12)
+
+The supplemental weather collector now exposes a read-only IANA-zone phase plan and
+an optional cadence-gated entrypoint. The scientific heuristic proposed for
+daily temperature extremes is **hourly at each station's local HH:00**, switching
+to **every five minutes between 14:30 and 17:30 local civil time, inclusive**.
+The peak window is a research-attention policy, not an assertion that the
+maximum has occurred or that extremes cannot happen overnight. In contrast,
+the actual station climate-report day may be defined using **local standard
+time**; that remains governed by each contract's source rules and is never
+replaced by the scheduling clock. Arizona and daylight saving changes use
+IANA time zones, never fixed US UTC offsets.
+
+The policy is in the existing forecasting package:
+[weather-reasoning-cadence.mjs](src/weather-reasoning-cadence.mjs).
+Its zone list is derived from the established temperature-market series
+registry and additional live contract bindings. A market in an unusual zone
+widens this list automatically. No second list of cities, weather models,
+probabilities, source truths or autonomous schedulers has been invented.
+
+From the already-pinned weather runtime and its state root:
+
+    node apps/weather.mjs cadence-plan --state "$KALSHI_WEATHER_STATE_DIR"
+    node apps/weather.mjs cadence-cycle --state "$KALSHI_WEATHER_STATE_DIR"
+
+The plan is read-only: current due local zones, the UTC five-minute slot,
+next slots and policy. The gated cycle invokes the exact same existing
+runWeatherCycle, weather-cycle lock, evidence archive, source collection,
+forecast surface and settlement grading. It does **not** place orders.
+One completed acquisition started during a slot satisfies that slot; a
+cycle that merely *finished* after the slot began does not, because its
+weather sources could have been collected before the slot opened.
+Missing source-start timestamps do not certify that a slot was covered.
+If a run is already in progress the existing single-flight lock suppresses
+overlap, and missed slots are not backfilled as independent forecasts.
+
+**Deployment receiver requirement.** The previously documented host timer
+starts full cycles ten minutes after the previous completion. That existing
+timer does *not* execute this new five-minute behavior just because the code
+is committed. For actual operation, update the **existing** host trigger to
+invoke cadence-cycle on one UTC five-minute wall-clock grid (e.g. one
+systemd OnCalendar every five minutes), replacing rather than multiplying
+the prior ten-minute trigger. Verify the running installed release exposes
+the new CLI before changing the trigger; do not add a parallel weather
+timer or schedule ChatGPT tasks at unsupported five-minute frequency.
+Observe duplicate suppression, completion time, provider rate limits and
+the source-availability stamps before declaring five-minute production
+receiving. Keep the ordinary cycle entrypoint unchanged as rollback.
+
+The current single-flight collector is **whole-venue**: the due-time-zone
+list decides *whether* to run the global collector, not which stations it
+fetches inside a successful run. Thus a five-minute NYC peak tick may also
+revisit Chicago's markets. This is intentionally conservative for
+downstream correctness; physical per-zone selective acquisition and
+conditional incremental modeling are separate future optimizations.
+Five-minute reasoning does not imply five-minute upstream weather reports:
+duplicate observations carry their actual receipt times, and a repeated
+look at one city-day does not create an independent validation case.
+
 ## Station science without a market
 
 `weather_weather_station_evidence` accepts station ICAO codes, IANA time zones and optional target dates. It collects the same raw model guidance, probabilistic quantiles, hourly forecasts, observations and climate reports used by the market collector, without requiring a Kalshi listing. NOAA LAMP preserves temperature, dewpoint, wind, and the separate hourly occurrence, measurable-hour and measurable-six-hour precipitation probabilities; occurrence is never substituted for measurable daily rain. It archives the evidence with source provenance and returns its content address. It leaves the market census, prediction journal and capital allocation unchanged.
