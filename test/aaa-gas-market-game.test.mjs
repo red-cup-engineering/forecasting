@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {analyzeAaaGasMarketGame,projectAaaGasScenarioLadder} from '../src/aaa-gas-market-game.mjs';
+import {analyzeAaaGasMarketGame,projectAaaGasScenarioLadder,auditAaaGasCollectorSnapshots} from '../src/aaa-gas-market-game.mjs';
 
 const at='2026-10-12T20:00:00Z',observedAt='2026-10-12T19:59:40Z';
 const ticker='KXAAAGASD';
@@ -239,4 +239,43 @@ test('two rungs in the same Kalshi event may not claim different AAA survey popu
  assert.equal(r.status,'unqualified-exchange-snapshot');
  assert.ok(r.gaps.some(x=>/survey populations differ/u.test(x.reason)));
  assert.equal(r.tradeEligible,false);
+});
+
+
+const archived=(ts,asOf,average,lowAsk=.62,highBid=.70,close='2026-10-13T03:59:00Z')=>({
+ ts,aaa:{as_of:asOf,national_avg:average},
+ markets:[
+  ['KXAAAGASD-26OCT13-4.0000',4.0000,'0.6000',lowAsk.toFixed(4),'0.61','0','0',close],
+  ['KXAAAGASD-26OCT13-4.0050',4.0050,highBid.toFixed(4),'0.7800','0.73','0','0',close],
+ ],
+});
+
+test('archived collector counts source information versions, not repeated polling ticks',()=>{
+ const a=archived('2026-10-12T18:00:00Z','10/12/26',4.002);
+ const b=archived('2026-10-12T18:15:00Z','10/12/26',4.002);
+ const c=archived('2026-10-12T18:30:00Z','10/12/26',4.004);
+ const r=auditAaaGasCollectorSnapshots([c,a,b]);
+ assert.equal(r.ticks,3);
+ assert.equal(r.distinctSourceVersions,2);
+ assert.deepEqual(r.sourceVersions.map(x=>x.observations),[2,1]);
+ assert.equal(r.comparedDisplayedPairs,3);
+ assert.equal(r.strictlyCrossedDisplayedPairs,3);
+ assert.equal(r.snapshotsWithDisplayedCrossing,3);
+ assert.equal(r.tradeEligible,false);
+});
+
+test('cross-strike quote crossing is only a condition on displayed pre-close quotes',()=>{
+ const a=archived('2026-10-12T18:00:00Z','10/12/26',4.002,.72,.70);
+ const b=archived('2026-10-13T04:00:00Z','10/13/26',4.004,.62,.70);
+ const r=auditAaaGasCollectorSnapshots([a,b]);
+ assert.equal(r.comparedDisplayedPairs,1);
+ assert.equal(r.strictlyCrossedDisplayedPairs,0);
+ assert.equal(r.ticks,2);
+});
+
+test('duplicate/invalid archive reception clocks cannot inflate sample counts',()=>{
+ const a=archived('2026-10-12T18:00:00Z','10/12/26',4.002);
+ assert.throws(()=>auditAaaGasCollectorSnapshots([a,a]),TypeError);
+ assert.throws(()=>auditAaaGasCollectorSnapshots([{ts:'bad',markets:[]}]),TypeError);
+ assert.throws(()=>auditAaaGasCollectorSnapshots([a,...Array(200001).fill(a)]),TypeError);
 });
