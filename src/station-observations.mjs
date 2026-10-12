@@ -92,10 +92,10 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
   }
   }
   const trace=[...readings.values()].sort((a,b)=>a.at.localeCompare(b.at));
-  if(!trace.length)return {...empty,source:url.href};
+  if(!trace.length)return {...empty,source:url.href,receivedAt:new Date().toISOString()};
   const temps=trace.map(r=>r.temperatureF),maxF=Math.max(...temps),minF=Math.min(...temps);
   const {floorPrecise,ceilingPrecise}=preciseBounds(trace,synoptic);
-  return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,floorPrecise,ceilingPrecise,latest:trace.at(-1).at,readings:trace,synoptic,source:url.href};
+  return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,floorPrecise,ceilingPrecise,latest:trace.at(-1).at,readings:trace,synoptic,source:url.href,receivedAt:new Date().toISOString()};
 }
 
 export const METAR_FEED = 'https://tgftp.nws.noaa.gov/data/observations/metar/stations';
