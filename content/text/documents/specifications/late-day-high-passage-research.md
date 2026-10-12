@@ -346,3 +346,39 @@ high/low *probabilistically* smaller or larger before Kalshi prices
 respond, then whether a maker receives positive after-fee P&L per
 placement. Proof of a bound (conditional on assumptions) and a
 measured executable advantage are separate receiving gates.
+
+
+## October 12 experiment: clock-adaptive reasoning frequency
+
+Candidate resource-allocation hypothesis: keep a low-cost **hourly decision
+opportunity** normally, and request **five-minute decision opportunities from
+14:30 through 17:30** in each daily-high station's IANA local civil time.
+The mechanism is phase-conditioned information value, not a theorem that daily
+highs always occur in the afternoon. Highs can occur early, during heat
+advection, or late/overnight; a future signal-driven override should evaluate
+such exceptions on evidence. Distinguish the civil scheduling clock from the
+local-standard climate-day and the actual contract settlement clock.
+
+Implementation resides in the already-owning forecasting package:
+src/weather-reasoning-cadence.mjs chooses due slots by timezone,
+weather-engine.mjs gates its existing single-flight research/collector cycle,
+apps/weather.mjs exposes cadence-plan and cadence-cycle. A single external
+five-minute host tick is the intended receiver; no new ChatGPT scheduled task
+or second independent weather pipeline. The full collector is still global
+at each due instant, not yet a per-city incremental collector. Source-arrival
+timestamps must be checked independently: running an unchanged forecast five
+times is not acquiring five independent physical observations. The earliest
+source collection clock, not the later cycle completion time, determines
+whether a given five-minute slot was covered. The historical 10-minute
+after-completion host timer requires replacement by a single five-minute
+dispatcher on the actual installed release, followed by host readback. GitHub
+source is not a claim of live timer replacement.
+
+**Falsifiable evaluation:** record coverage, actual cycle durations,
+source freshness, model changes, city-day clustered forecast gains, quoted
+spread/fees and fill-conditioned net return for hourly-only versus
+clock-focused issuance. Compare by local solar/seasonal regime; stratify
+front-driven off-window changes, and compute incremental information gained
+per additional acquisition cost. Promote high-frequency off-window exceptions
+only if they show positive measured incremental value. A phase-triggered
+research cycle never implies certainty or permission to place an order.
