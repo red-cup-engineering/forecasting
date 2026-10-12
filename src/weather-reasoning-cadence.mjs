@@ -112,3 +112,19 @@ export function planWeatherReasoningCadence({
     nextDueAt:rows.map(x=>x.nextDueAt).sort()[0],
     shouldRun:dueTimeZones.length>0,orderEffect:false};
 }
+
+
+/** Derive monitored civil zones from the existing official high/low series
+ * registry and its live-rule-bound market roster, not a second city map.
+ * The live roster only widens coverage: a transient market discovery gap
+ * cannot stop observing an already supported climate station.
+ */
+export function temperatureReasoningTimeZones({series=[],contracts=[]}={}){
+  if(!Array.isArray(series)||!Array.isArray(contracts))throw new TypeError('weather series and contracts must be arrays');
+  const zones=[
+    ...series.filter(r=>['high','low'].includes(r?.kind)).map(r=>r.timeZone),
+    ...contracts.filter(c=>['high','low'].includes(c?.binding?.kind)).map(c=>c.binding.timeZone),
+  ].filter(x=>typeof x==='string'&&x.length>0);
+  if(!zones.length)throw new TypeError('no locally zoned daily-temperature markets are configured');
+  return [...new Set(zones)].sort();
+}
