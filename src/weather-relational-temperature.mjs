@@ -67,6 +67,7 @@ export function regionalThermalTransition(reading,{stations,region=null,now,thre
  if(!earlier)return {...base,status:'missing-previous-hour-bin',observedBin:iso(latest.at),stations:[],excludedStations:stations};
  const hasConflict=(station,bin)=>(reading.conflicts??[]).some(c=>
    (c.witnesses??[]).some(r=>r.station===station&&Number.isFinite(Date.parse(r.observedAt))&&
+     Number.isFinite(Date.parse(r.availableAt))&&Date.parse(r.availableAt)<=tNow&&
      Math.ceil(Date.parse(r.observedAt)/HOUR)*HOUR===bin&&Date.parse(r.observedAt)<=tNow));
  const deltas=[],excluded=[];
  for(const station of stations){
