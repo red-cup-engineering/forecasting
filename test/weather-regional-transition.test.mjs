@@ -74,6 +74,14 @@ test('conflicting station report withdraws that station rather than voting both 
  assert.deepEqual(r.coherentStations,['LGA','EWR','HPN']);
 });
 
+test('future conflict receipt does not veto present station',()=>{
+ const m=mark('JFK',19,92,'2026-10-11T22:00:00Z');
+ const q=reading([80,80,80,80],[85,86,84,83],{conflicts:[{key:'JFK/19:45',witnesses:[m,{...m,temperatureC:5}]}]});
+ const r=detect(q);
+ assert.equal(r.stationCoverage,4);
+ assert.equal(r.coherentStations.length,4);
+});
+
 test('incomplete station bins cannot be silently interpolated or counted toward quorum',()=>{
  const x=reading();
  x.accepted=x.accepted.filter(r=>!(r.station==='JFK'||r.station==='EWR')||r.observedAt.includes('18:45'));
