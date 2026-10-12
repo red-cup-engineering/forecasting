@@ -140,18 +140,37 @@ export function vertexTension(sheaf, x) {
 }
 
 /**
- * Harmonic extension: minimise x^T L x over the free coordinates with the clamped coordinates fixed.
- * free[i] true = unknown coordinate. Returns the full vector. Throws if a free component is not
- * connected to any clamped one (L_FF singular), which is a genuine non-uniqueness of the extension.
+ * Harmonic extension: minimise x^T L x with the observed coordinates clamped.
+ *
+ * The free coordinates are IDENTIFIED only if the unregularized Dirichlet
+ * Hessian L_FF is positive definite. A disconnected component, an unanchored
+ * global section, or a free gauge direction makes the answer non-unique.
+ * Adding a ridge would choose an arbitrary representative, not infer it from
+ * evidence. Therefore test the unregularized Hessian BEFORE an optional ridge.
+ *
+ * A positive ridge is allowed only as numerical regularization AFTER uniqueness
+ * has been established. It slightly changes the minimizer; it does not supply
+ * missing observations or prove a probabilistic forecast.
  */
 export function harmonicExtension(sheaf, x, free, ridge = 1e-9) {
+  if (!sheaf || !Number.isSafeInteger(sheaf.n) ||
+      !Array.isArray(x) || x.length !== sheaf.n ||
+      x.some((v) => typeof v !== 'number' || !Number.isFinite(v)) ||
+      !Array.isArray(free) || free.length !== sheaf.n ||
+      free.some((v) => typeof v !== 'boolean') ||
+      typeof ridge !== 'number' || !Number.isFinite(ridge) || ridge < 0)
+    throw new TypeError('bounded sheaf coordinates, free mask and nonnegative finite ridge required');
   const F = [], B = [];
   free.forEach((f, i) => (f ? F : B).push(i));
   if (!F.length) return x.slice();
   const L = sheaf.L;
-  const Lff = F.map((i) => F.map((j) => L[i][j] + (i === j ? ridge : 0)));
+  const raw = F.map((i) => F.map((j) => L[i][j]));
   const rhs = F.map((i) => [-B.reduce((s, j) => s + L[i][j] * x[j], 0)]);
-  const sol = choleskySolve(Lff, rhs);
+  // Positive definiteness of L_FF is the uniqueness condition for a
+  // convex quadratic energy; a ridge must never obscure a null direction.
+  const identifiedSolution = choleskySolve(raw, rhs);
+  const sol = ridge === 0 ? identifiedSolution : choleskySolve(
+    raw.map((row, i) => row.map((v, j) => v + (i === j ? ridge : 0))), rhs);
   const out = x.slice();
   F.forEach((i, k) => { out[i] = sol[k][0]; });
   return out;
