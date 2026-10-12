@@ -6,7 +6,7 @@ import path from "node:path";
 import {
   STATIONS, assemble, bracketProb, dayISO, edgeTemplates, fitSheafMaps, ladderAt, loadEvents, neighbourPairs, snapshot, snapshotTimes, vid,
 } from "../src/kalshi-sheaf-market.mjs";
-import { dirichlet, harmonicExtension, jacobiEigen, vertexTension } from "../src/kalshi-sheaf.mjs";
+import { dirichlet, partiallyIdentifiedHarmonicExtension, jacobiEigen, vertexTension } from "../src/kalshi-sheaf.mjs";
 
 const here = path.dirname(new URL(import.meta.url).pathname);
 const rec = path.join(here, "../data/records/2026-10-04-kalshi-sheaf");
@@ -36,6 +36,7 @@ const base = new Map();
 const templates = edgeTemplates(neighbourPairs(3));
 const fee10 = (p) => Math.ceil(0.07 * 10 * p * (1 - p) * 100 - 1e-9) / 100 / 10;
 const rows = [], energyRows = [], edgeClassEnergy = [];
+const inferenceCoverage = [];
 let spectrumNote = null, sampleTension = null;
 
 for (const S of ["S1", "S2"]) {
@@ -63,18 +64,26 @@ for (const S of ["S1", "S2"]) {
     }
     const solve = (freeIds) => {
       const a = assemble(V, templates, maps, d, freeIds);
-      return { a, xh: harmonicExtension(a.sheaf, a.x0, a.free) };
+      return { a, inference: partiallyIdentifiedHarmonicExtension(a.sheaf, a.x0, a.free) };
     };
     const modes = [["thin", solve(thin)]];
     // leave-one-out: each lag-0 ladder alone is inferred from everything else
     for (const [id] of lag0) modes.push([`loo`, solve(new Set([id])), id]);
-    for (const [mode, { a, xh }, only] of modes) {
+    for (const [mode, { a, inference }, only] of modes) {
       const targetsIds = mode === "thin" ? thin : new Set([only]);
+      let withheld = 0, available = 0;
+      const xh = inference.values;
       for (const id of targetsIds) {
         const z = V.get(id), o = a.sheaf.offset.get(id);
-        // an isolated vertex (no clamped neighbour) has no harmonic estimate
+        // A weakly connected but gauge-ambiguous stalk is still NOT an
+        // identified market estimate. Retain identifiable other components.
+        if (!inference.identified[o] || !inference.identified[o + 1]) {
+          withheld++;
+          continue;
+        }
         const deg = a.sheaf.edges.filter((e) => e.u === id || e.v === id).length;
-        if (!deg) continue;
+        if (!deg) { withheld++; continue; }
+        available++;
         const mu = z.c + xh[o], sg = Math.exp(xh[o + 1] + base.get(`${z.station}.${z.kind}`));
         for (const b of z.ladder.brackets) {
           const outcome = b.result === "yes" ? 1 : 0;
@@ -86,6 +95,10 @@ for (const S of ["S1", "S2"]) {
           });
         }
       }
+      inferenceCoverage.push({S, day:dayISO(d), split:split_, mode, target:only ?? null,
+        available,withheld,freeCount:inference.freeCount,
+        identifiedFreeCount:inference.identifiedFreeCount,
+        unresolvedNullity:inference.unresolvedNullity});
     }
     if (S === "S1" && !sampleTension && d === targets.at(-1)) {
       const t = vertexTension(full.sheaf, full.x0), de = dir.perEdge.slice().sort((x, y) => y.energy - x.energy);
@@ -105,5 +118,5 @@ for (const S of ["S1", "S2"]) {
 }
 const cols = Object.keys(rows[0]);
 fs.writeFileSync(path.join(outDir, "signals.csv"), [cols.join(","), ...rows.map((r) => cols.map((c) => (typeof r[c] === "number" ? +r[c].toFixed(5) : r[c])).join(","))].join("\n"));
-fs.writeFileSync(path.join(outDir, "energy-by-day.json"), JSON.stringify({ energyRows, edgeClassEnergy, sampleTension, spectrumNote }, null, 1));
+fs.writeFileSync(path.join(outDir, "energy-by-day.json"), JSON.stringify({ energyRows, edgeClassEnergy, inferenceCoverage, sampleTension, spectrumNote }, null, 1));
 console.error("rows", rows.length, "->", outDir);
