@@ -18,14 +18,14 @@ test('empty research state derives local zones from the canonical temperature se
  assert.equal(plan.shouldRun,true);
  assert.ok(plan.dueTimeZones.includes('America/New_York'));
  assert.ok(plan.zones.some(z=>z.timeZone==='America/Phoenix'));
- assert.equal(plan.lastCompletedAt,null);
+ assert.equal(plan.lastEvidenceAt,null);
  assert.equal(plan.orderEffect,false);
 });
 
 test('successful whole-venue cycle satisfies all zone slots without a redundant API request',async t=>{
  const root=fixture(t);
  writeFileSync(join(root,'latest.json'),JSON.stringify({
-   at:'2026-07-15T18:30:15Z',contracts:[
+   at:'2026-07-15T18:30:40Z',collectionStartedAt:'2026-07-15T18:30:15Z',contracts:[
      {status:'active',binding:{kind:'high',timeZone:'America/New_York'}},
    ],
  }));
@@ -41,7 +41,7 @@ test('successful whole-venue cycle satisfies all zone slots without a redundant 
 test('a stale whole-venue state leaves only actually due zone clocks in the decision',async t=>{
  const root=fixture(t);
  writeFileSync(join(root,'latest.json'),JSON.stringify({
-   at:'2026-07-15T18:20:00Z',
+   at:'2026-07-15T18:20:30Z',collectionStartedAt:'2026-07-15T18:20:00Z',
    contracts:[{binding:{kind:'high',timeZone:'America/Chicago'}}],
  }));
  const plan=await weatherCadencePlan({root,now:when});
@@ -52,9 +52,30 @@ test('a stale whole-venue state leaves only actually due zone clocks in the deci
 
 test('the cadence planner never overwrites the stored weather forecast',async t=>{
  const root=fixture(t),name=join(root,'latest.json');
- const saved=JSON.stringify({at:'2026-07-15T18:30:15Z',existingForecasts:[{id:'untouched'}]});
+ const saved=JSON.stringify({at:'2026-07-15T18:30:40Z',collectionStartedAt:'2026-07-15T18:30:15Z',existingForecasts:[{id:'untouched'}]});
  writeFileSync(name,saved);
  await weatherCadencePlan({root,now:when});
  const {readFileSync}=await import('node:fs');
  assert.equal(readFileSync(name,'utf8'),saved);
+});
+
+
+test('a long collection completed after the 14:30 slot cannot retroactively satisfy it',async t=>{
+ const root=fixture(t);
+ writeFileSync(join(root,'latest.json'),JSON.stringify({
+   at:'2026-07-15T18:31:30Z',
+   collectionStartedAt:'2026-07-15T18:26:00Z',
+ }));
+ const r=await weatherCadencePlan({root,now:when});
+ assert.equal(r.shouldRun,true);
+ assert.ok(r.dueTimeZones.includes('America/New_York'));
+ assert.equal(r.lastEvidenceAt,'2026-07-15T18:26:00Z');
+});
+
+test('legacy snapshot lacking source-collection start fails open for science, not a false receipt',async t=>{
+ const root=fixture(t);
+ writeFileSync(join(root,'latest.json'),JSON.stringify({at:'2026-07-15T18:31:30Z'}));
+ const r=await weatherCadencePlan({root,now:when});
+ assert.equal(r.lastEvidenceAt,null);
+ assert.equal(r.shouldRun,true);
 });
