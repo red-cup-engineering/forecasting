@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {analyzeAaaGasMarketGame} from '../src/aaa-gas-market-game.mjs';
+import {analyzeAaaGasMarketGame,projectAaaGasScenarioLadder} from '../src/aaa-gas-market-game.mjs';
 
 const at='2026-10-12T20:00:00Z',observedAt='2026-10-12T19:59:40Z';
 const ticker='KXAAAGASD';
@@ -132,4 +132,99 @@ test('bounded candidate count and issuance clock are required',()=>{
  assert.throws(()=>analyzeAaaGasMarketGame(args({at:'bad'})),TypeError);
  assert.throws(()=>analyzeAaaGasMarketGame(args({maxBookAgeMs:0})),TypeError);
  assert.throws(()=>analyzeAaaGasMarketGame(args({quoteCandidates:Array(513).fill(quote())})),TypeError);
+});
+
+
+const sharedForecast=(extra={})=>({
+ id:'shared-market-game-scored-forecast-1',
+ observedAt:'2026-10-12T18:30:00Z',
+ horizon:'2026-10-13T15:00:00Z',
+ eventTicker:event().event_ticker,targetSource:'AAA',
+ outcomeValueKey:'aaaNationalRegularGasDollars',
+ evidenceIds:['source-AAA','trained-past-station-days'],
+ scenarios:[
+  {id:'below-all',probability:.1,values:{aaaNationalRegularGasDollars:3.995},heldPnlCentsByVenue:{kalshi:0}},
+  {id:'first',probability:.4,values:{aaaNationalRegularGasDollars:4.002},heldPnlCentsByVenue:{kalshi:0}},
+  {id:'second',probability:.4,values:{aaaNationalRegularGasDollars:4.007},heldPnlCentsByVenue:{kalshi:0}},
+  {id:'third',probability:.1,values:{aaaNationalRegularGasDollars:4.013},heldPnlCentsByVenue:{kalshi:0}},
+ ],
+ ...extra,
+});
+
+test('existing shared weighted scenarios produce a monotone AAA threshold distribution',()=>{
+ const r=projectAaaGasScenarioLadder({event:event(),forecast:sharedForecast(),at});
+ assert.equal(r.status,'scenario-pushforward-ungraded');
+ assert.deepEqual(r.marketProbabilities.map(x=>x.probabilityYes),[.9,.5,.1]);
+ assert.equal(r.marketProbabilities.length,3);
+ assert.equal(r.nestedPairs.length,6);
+ assert.equal(r.tradeEligible,false);
+});
+
+test('nested rung pair covariance is exact, rather than treating gas outcomes as independent',()=>{
+ const r=projectAaaGasScenarioLadder({event:event(),forecast:sharedForecast(),at});
+ const a=r.nestedPairs.find(x=>x.first.includes('4.0000')&&x.second.includes('4.0100'));
+ assert.ok(a);
+ assert.ok(Math.abs(a.jointYesProbability-.1)<1e-12);
+ assert.ok(Math.abs(a.yesCovariance-(.1-.9*.1))<1e-12);
+ const d=r.nestedPairs.find(x=>x.first===x.second&&x.first.includes('4.0050'));
+ assert.ok(Math.abs(d.yesCovariance-.25)<1e-12);
+});
+
+test('permutation of a shared scenario list leaves CDF and covariance unchanged',()=>{
+ const s=sharedForecast(),t=sharedForecast({scenarios:s.scenarios.slice().reverse()});
+ const a=projectAaaGasScenarioLadder({event:event(),forecast:s,at});
+ const b=projectAaaGasScenarioLadder({event:event(),forecast:t,at});
+ assert.deepEqual(a.marketProbabilities,b.marketProbabilities);
+ assert.deepEqual(a.nestedPairs,b.nestedPairs);
+});
+
+test('event research projects scenarios without converting them into trade-eligible maker probabilities',()=>{
+ const r=analyzeAaaGasMarketGame(args({scenarioForecast:sharedForecast()}));
+ assert.equal(r.status,'read-only-research');
+ assert.ok(r.scenarioProjection);
+ assert.deepEqual(r.scenarioProjection.marketProbabilities.map(x=>x.probabilityYes),[.9,.5,.1]);
+ assert.equal(r.maker.action,'abstain');
+ assert.equal(r.tradeEligible,false);
+});
+
+test('scope, source, target date and issued-after-decision future evidence cannot project',()=>{
+ const broken=[
+  {targetSource:'OPIS'},{eventTicker:'KXAAAGASD-26OCT14'},
+  {availableAt:'2026-10-12T21:00:00Z'},{observedAt:'2026-10-12T21:00:00Z'},
+  {horizon:'2026-10-12T18:00:00Z'}, {evidenceIds:[]},
+ ];
+ for(const mismatch of broken){
+  const r=analyzeAaaGasMarketGame(args({scenarioForecast:sharedForecast(mismatch)}));
+  assert.equal(r.scenarioProjection,null,JSON.stringify(mismatch));
+  assert.equal(r.gaps.length,1,JSON.stringify(mismatch));
+  assert.equal(r.maker.action,'abstain');
+ }
+});
+
+test('scenario normalization and source prices reject zero data, duplicates and invalid weights',()=>{
+ const s=sharedForecast();
+ const bad=[
+  {scenarios:s.scenarios.slice(0,3)},
+  {scenarios:[{...s.scenarios[0],probability:0.9},...s.scenarios.slice(1)]},
+  {scenarios:[s.scenarios[0],{...s.scenarios[1],id:'below-all'},...s.scenarios.slice(2)]},
+  {scenarios:[{...s.scenarios[0],values:{}},...s.scenarios.slice(1)]},
+ ];
+ for(const patch of bad){
+  assert.throws(()=>projectAaaGasScenarioLadder({event:event(),forecast:sharedForecast(patch),at}));
+ }
+});
+
+test('shared-scenario projection never joins national and state AAA events',()=>{
+ const stateTicker='KXAAAGASDME';
+ const stateEvent=event({series_ticker:stateTicker,
+  event_ticker:stateTicker+'-26OCT13',
+  markets:markets().map(m=>({...m,ticker:m.ticker.replace(ticker,stateTicker),
+    rules_primary:m.rules_primary.replace('United States','Maine')})),
+ });
+ assert.throws(()=>projectAaaGasScenarioLadder({event:stateEvent,forecast:sharedForecast(),at}),TypeError);
+ const scoped=projectAaaGasScenarioLadder({event:stateEvent,forecast:sharedForecast({
+   eventTicker:stateEvent.event_ticker,
+ }),at});
+ assert.equal(scoped.eventTicker,stateEvent.event_ticker);
+ assert.equal(scoped.tradeEligible,false);
 });
