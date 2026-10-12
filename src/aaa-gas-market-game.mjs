@@ -228,3 +228,63 @@ export function analyzeAaaGasMarketGame({
       'Cross-strike LP assumes simultaneous depth and settlement semantics; it is not an executable fill certificate',
     ]};
 }
+
+
+/**
+ * Audit the EXISTING public AAA+Kalshi observer's archived JSONL records.
+ * The collector records receipt time, AAA source as_of, national_avg, and
+ * displayed Kalshi bid/ask values, but NOT depth or queue position.
+ * Count distinct source versions and apparent directional ladder crossings.
+ * Do not count repeated 15-minute ticks as independent AAA observations.
+ */
+export function auditAaaGasCollectorSnapshots(records){
+  if(!Array.isArray(records)||records.length>200000)
+    throw new TypeError('bounded archived AAA/Kalshi snapshots required');
+  const seen=new Map(),identities=new Set();
+  let comparisons=0,crossings=0,snapshotsWithCrossing=0;
+  let firstAt=null,lastAt=null;
+  for(const rec of [...records].sort((a,b)=>Date.parse(a.ts)-Date.parse(b.ts))){
+    if(!rec||!validClock(rec.ts)||!Array.isArray(rec.markets)||rec.markets.length>10000)
+      throw new TypeError('each collector record must have receipt clock and bounded market rows');
+    if(identities.has(rec.ts))throw new TypeError('duplicate collector receipt time');
+    identities.add(rec.ts);
+    firstAt??=rec.ts;lastAt=rec.ts;
+    const sample=rec.aaa??{};
+    if(typeof sample.as_of==='string'&&validNum(sample.national_avg)){
+      const id=sample.as_of+'|'+sample.national_avg;
+      if(!seen.has(id))seen.set(id,{asOf:sample.as_of,
+        nationalAverageUsdGallon:sample.national_avg,firstObservedAt:rec.ts,observations:0});
+      seen.get(id).observations++;
+    }
+    const eventRows=new Map();
+    for(const m of rec.markets){
+      if(!Array.isArray(m)||m.length<8||typeof m[0]!=='string')continue;
+      const parts=/^(KXAAAGASD(?:[A-Z]{2})?-\d{2}[A-Z]{3}\d{2})-/u.exec(m[0]);
+      if(!parts||!validNum(Number(m[1]))||!validClock(m[7])||
+         Date.parse(rec.ts)>=Date.parse(m[7]))continue;
+      if(!eventRows.has(parts[1]))eventRows.set(parts[1],[]);
+      eventRows.get(parts[1]).push({strike:Number(m[1]),bid:Number(m[2]),ask:Number(m[3])});
+    }
+    let hit=false;
+    for(const rows of eventRows.values()){
+      rows.sort((a,b)=>a.strike-b.strike);
+      for(let i=0;i<rows.length;i++)for(let j=i+1;j<rows.length;j++){
+        const lower=rows[i],higher=rows[j];
+        if(!(lower.strike<higher.strike&&lower.ask>0&&lower.ask<1&&
+          higher.bid>0&&higher.bid<1))continue;
+        comparisons++;
+        if(higher.bid>lower.ask+1e-9){crossings++;hit=true;}
+      }
+    }
+    if(hit)snapshotsWithCrossing++;
+  }
+  return {kind:'aaa-public-collector-source-information-audit-v1',
+    ticks:records.length,distinctSourceVersions:seen.size,
+    sourceVersions:[...seen.values()],firstObservedAt:firstAt,lastObservedAt:lastAt,
+    strictlyCrossedDisplayedPairs:crossings,comparedDisplayedPairs:comparisons,
+    snapshotsWithDisplayedCrossing:snapshotsWithCrossing,
+    limits:['only observer receipts; no exact Kalshi market rules or book depth',
+      'displayed crossing is necessary, not sufficient for simultaneous executable arbitrage',
+      'same-day repeated snapshots are dependent and do not add independent AAA settlement labels'],
+    tradeEligible:false,orderEffect:false};
+}
