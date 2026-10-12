@@ -65,33 +65,36 @@ function slotAt(t,tz,policy,start,end){
 /**
  * Pure, replayable multi-zone selection at the most recent UTC 5-minute slot.
  *
- * lastCompletedAt is the end of the previous FULL venue collector pass, not
- * an NWS station observation clock. A global completed pass inside this slot
- * satisfies all zones; for zone-specific processes pass lastCompletedByZone
- * so unrelated zones do not gain a fabricated receipt.
+ * lastEvidenceAt is the START of the latest successfully committed source
+ * collection, not the later publication/completion clock. A cycle that began
+ * before 14:30 but ended afterward must NOT satisfy the 14:30 decision slot.
+ * The source collection's conservative start is used even if observations
+ * arrived later within the cycle. For targeted consumers, supply the actual
+ * zone evidence start via lastEvidenceByZone; a global evidence receipt is
+ * never a substitute for independently captured station observations.
  *
  * Missed slots are not backfilled and are not independent validation days.
  * The function never launches a collector; a five-minute dispatcher can act
  * only when shouldRun is true.
  */
 export function planWeatherReasoningCadence({
-  now=Date.now(),timeZones=[],lastCompletedAt=null,lastCompletedByZone={},
+  now=Date.now(),timeZones=[],lastEvidenceAt=null,lastEvidenceByZone={},
   policy=WEATHER_REASONING_CADENCE,
 }={}){
   const {start,end}=validatePolicy(policy),clock=utcMs(now,'now');
   if(!Array.isArray(timeZones)||!timeZones.length)throw new TypeError('at least one configured IANA timeZone required');
-  if(!lastCompletedByZone||typeof lastCompletedByZone!=='object'||Array.isArray(lastCompletedByZone))
+  if(!lastEvidenceByZone||typeof lastEvidenceByZone!=='object'||Array.isArray(lastEvidenceByZone))
     throw new TypeError('per-zone receipts must be a map');
   const slot=Math.floor(clock/TICK_MS)*TICK_MS,slotIso=new Date(slot).toISOString();
-  const globalLast=lastCompletedAt===null?null:utcMs(lastCompletedAt,'lastCompletedAt');
-  if(globalLast!==null&&globalLast>clock)throw new RangeError('future full-collector completion is not valid evidence');
+  const globalLast=lastEvidenceAt===null?null:utcMs(lastEvidenceAt,'lastEvidenceAt');
+  if(globalLast!==null&&globalLast>clock)throw new RangeError('future source evidence is not valid evidence');
   const zones=[...new Set(timeZones)].sort();
   const rows=zones.map(timeZone=>{
     const local=slotAt(slot,timeZone,policy,start,end);
-    const completed=Object.hasOwn(lastCompletedByZone,timeZone)?
-      utcMs(lastCompletedByZone[timeZone],'lastCompletedByZone'):globalLast;
+    const completed=Object.hasOwn(lastEvidenceByZone,timeZone)?
+      utcMs(lastEvidenceByZone[timeZone],'lastEvidenceByZone'):globalLast;
     if(completed!==null&&completed>clock)throw new RangeError('future zone completion is not valid evidence');
-    const alreadyCompleted=completed!==null&&completed>=slot;
+    const alreadyCovered=completed!==null&&completed>=slot;
     let nextDueAt=null;
     // At least one normal hourly slot occurs in 24 hours; 36h also spans DST.
     for(let t=slot+TICK_MS;t<=slot+36*3600_000;t+=TICK_MS){
@@ -103,7 +106,7 @@ export function planWeatherReasoningCadence({
     return {timeZone,localDate:local.localDate,localTime:local.localTime,
       cadenceMinutes:local.cadenceMinutes,focused:local.focused,
       slotAt:slotIso,onBoundary:local.onBoundary,
-      alreadyCompleted,due:local.onBoundary&&!alreadyCompleted,
+      alreadyCovered,due:local.onBoundary&&!alreadyCovered,
       nextDueAt};
   });
   const dueTimeZones=rows.filter(x=>x.due).map(x=>x.timeZone);
