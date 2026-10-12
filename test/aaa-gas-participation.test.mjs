@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {compareAaaGasParticipation} from '../src/aaa-gas-participation.mjs';
+import {fitBinaryOutcomeFillByDay,scoreBinaryOutcomeFillHoldout}
+ from '@red-cup-engineering/mandate-portfolio-allocation-service/binary-fill-calibration';
 
 const at='2026-10-12T20:00:00Z',eventTicker='KXAAAGASD-26OCT13';
 const scope=eventTicker+'|AAA:regular-gasoline|United States';
@@ -212,4 +214,82 @@ test('signal model must match same AAA source scope and be available before deci
  assert.equal(r.informationValue,null);
  assert.ok(r.gaps.some(x=>/signal kernel/i.test(x.reason)));
  assert.equal(r.tradeEligible,false);
+});
+
+
+// Synthetic SOURCE/ORDER fixtures exercise the structural receiving contract
+// only. These are NOT AAA actual trades or a measured forecast improvement.
+const quoteRegime='rest-YES-95c|queue-zero|240-minute';
+const syntheticReceipt=(i,{perfect=false}={})=>{
+ const d=new Date(Date.UTC(2024,0,1+i)).toISOString().slice(0,10);
+ const win=i%2===0,filled=perfect?win:win?(i%5!==0):(i%5===1);
+ return {
+  venueOrderId:'synthetic-order-'+i,executionReceiptId:'synthetic-terminal-'+i,
+  settlementReceiptId:'synthetic-settlement-'+d,
+  familyScope:scope,quoteRegime,side:'yes',
+  eventId:'SYNTHETIC-EVENT-'+d,marketId:'SYNTHETIC-MARKET-'+d,
+  targetDate:d,settlementSide:win?'yes':'no',
+  settlementStatus:'finalized',filled,attemptedContracts:1,
+  filledContracts:Number(filled),
+  bookReceivedAt:d+'T11:59:30Z',placedAt:d+'T12:00:00Z',
+  terminalAt:d+'T12:10:00Z',settledAt:d+'T15:00:00Z',
+  settlementAvailableAt:d+'T16:00:00Z',
+  ...(filled?{fillReceivedAt:d+'T12:05:00Z'}:{}),
+  evidenceIds:['synthetic-book-'+d,'synthetic-order-proof-'+d],
+ };
+};
+const syntheticScreen=()=>{
+ const training=fitBinaryOutcomeFillByDay({
+  familyScope:scope,quoteRegime,side:'yes',
+  freezeAt:'2024-03-05T00:00:00Z',publishedAt:'2024-03-05T01:00:00Z',
+  rows:Array.from({length:60},(_,i)=>syntheticReceipt(i)),
+ });
+ const holdout=scoreBinaryOutcomeFillHoldout({
+  training,rows:Array.from({length:300},(_,i)=>syntheticReceipt(i+95,{perfect:true})),
+  evaluatedAt:'2025-12-31T00:00:00Z',minEvaluationDays:30,
+ });
+ return {training,holdout,quoteRegime,holdoutPublishedAt:'2026-01-01T00:00:00Z'};
+};
+const screenMaker=(fillStudy)=>maker({
+  id:'source-screened-maker',fillEvidence:undefined,
+  probabilityFillGivenWin:undefined,probabilityFillGivenLoss:undefined,
+  fillStudy,
+});
+
+test('AAA venue adapter obtains conditional hazard bands from shared training and heldout studies',()=>{
+ const studyData=syntheticScreen();
+ assert.equal(studyData.holdout.conditionallyImproved,true);
+ const r=study({makerQuotes:[screenMaker(studyData)]});
+ assert.equal(r.status,'conditional-venue-research');
+ assert.equal(r.gaps.filter(x=>x.kind==='maker').length,0);
+ const m=r.menu.candidates.find(x=>x.id==='source-screened-maker');
+ assert.ok(m);
+ assert.equal(m.kind,'maker');
+ assert.ok(m.fillModelId);
+ assert.ok(m.fillModelId!==studyData.training.id);
+ assert.equal(m.details.tradeEligible,false);
+ assert.equal(r.tradeEligible,false);
+});
+
+test('unproved or incorrectly scoped fill evidence cannot price an AAA maker through the new study path',()=>{
+ const good=syntheticScreen(),bad={
+  ...good,holdout:{...good.holdout,conditionallyImproved:false},
+ };
+ const weak=study({makerQuotes:[screenMaker(bad)]});
+ assert.ok(weak.gaps.some(x=>x.kind==='maker'&&/holdout/i.test(x.reason)));
+ assert.ok(!weak.menu.candidates.some(x=>x.id==='source-screened-maker'));
+ const wrong=study({makerQuotes:[screenMaker({...good,training:{
+   ...good.training,familyScope:'diesel|another-population'},
+ })]});
+ assert.ok(wrong.gaps.some(x=>x.kind==='maker'));
+ assert.ok(!wrong.menu.candidates.some(x=>x.id==='source-screened-maker'));
+});
+
+test('manual hypothetical fill estimates may not be silently combined with a historical fill study',()=>{
+ const complete=syntheticScreen();
+ const combined=study({makerQuotes:[maker({
+  fillStudy:complete,
+ })]});
+ assert.ok(combined.gaps.some(x=>x.kind==='maker'&&/never combine both/i.test(x.reason)));
+ assert.ok(!combined.menu.candidates.some(x=>x.id==='rest-YES'));
 });
