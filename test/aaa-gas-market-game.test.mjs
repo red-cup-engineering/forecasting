@@ -139,7 +139,7 @@ const sharedForecast=(extra={})=>({
  id:'shared-market-game-scored-forecast-1',
  observedAt:'2026-10-12T18:30:00Z',
  horizon:'2026-10-13T15:00:00Z',
- eventTicker:event().event_ticker,targetSource:'AAA',
+ eventTicker:event().event_ticker,targetSource:'AAA',targetScope:'United States',
  outcomeValueKey:'aaaNationalRegularGasDollars',
  evidenceIds:['source-AAA','trained-past-station-days'],
  scenarios:[
@@ -189,6 +189,7 @@ test('event research projects scenarios without converting them into trade-eligi
 
 test('scope, source, target date and issued-after-decision future evidence cannot project',()=>{
  const broken=[
+  {targetScope:'Maine'},
   {targetSource:'OPIS'},{eventTicker:'KXAAAGASD-26OCT14'},
   {availableAt:'2026-10-12T21:00:00Z'},{observedAt:'2026-10-12T21:00:00Z'},
   {horizon:'2026-10-12T18:00:00Z'}, {evidenceIds:[]},
@@ -223,8 +224,19 @@ test('shared-scenario projection never joins national and state AAA events',()=>
  });
  assert.throws(()=>projectAaaGasScenarioLadder({event:stateEvent,forecast:sharedForecast(),at}),TypeError);
  const scoped=projectAaaGasScenarioLadder({event:stateEvent,forecast:sharedForecast({
-   eventTicker:stateEvent.event_ticker,
+   eventTicker:stateEvent.event_ticker,targetScope:'Maine',
  }),at});
  assert.equal(scoped.eventTicker,stateEvent.event_ticker);
+ assert.equal(scoped.targetScope,'Maine');
  assert.equal(scoped.tradeEligible,false);
+});
+
+
+test('two rungs in the same Kalshi event may not claim different AAA survey populations',()=>{
+ const ms=markets();ms[1]={...ms[1],
+   rules_primary:ms[1].rules_primary.replace('United States','Maine')};
+ const r=analyzeAaaGasMarketGame(args({event:event({markets:ms})}));
+ assert.equal(r.status,'unqualified-exchange-snapshot');
+ assert.ok(r.gaps.some(x=>/survey populations differ/u.test(x.reason)));
+ assert.equal(r.tradeEligible,false);
 });
