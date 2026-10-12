@@ -79,24 +79,24 @@ test('a repeated cron tick is idempotent within its five-minute slot',()=>{
  const p=plan('2026-07-15T18:32:00Z',[NY]);
  assert.equal(p.slotAt,'2026-07-15T18:30:00.000Z');
  assert.equal(p.shouldRun,true);
- const q=plan('2026-07-15T18:32:00Z',[NY],{lastCompletedAt:'2026-07-15T18:30:30Z'});
+ const q=plan('2026-07-15T18:32:00Z',[NY],{lastEvidenceAt:'2026-07-15T18:30:30Z'});
  assert.equal(q.shouldRun,false);
- assert.equal(q.zones[0].alreadyCompleted,true);
- const next=plan('2026-07-15T18:35:00Z',[NY],{lastCompletedAt:'2026-07-15T18:30:30Z'});
+ assert.equal(q.zones[0].alreadyCovered,true);
+ const next=plan('2026-07-15T18:35:00Z',[NY],{lastEvidenceAt:'2026-07-15T18:30:30Z'});
  assert.equal(next.shouldRun,true);
 });
 
 test('a targeted zone receipt never improperly acknowledges a different zone',()=>{
  const r=plan('2026-07-15T21:32:00Z',[LA,PHX],{
-  lastCompletedAt:'2026-07-15T21:30:20Z',
-  lastCompletedByZone:{[LA]:'2026-07-15T21:25:00Z'},
+  lastEvidenceAt:'2026-07-15T21:30:20Z',
+  lastEvidenceByZone:{[LA]:'2026-07-15T21:25:00Z'},
  });
  assert.equal(zone(r,PHX).due,false); // Global collection actually included Phoenix.
  assert.equal(zone(r,LA).due,true);   // Explicit zone receipt overrides the global.
 });
 
 test('missed slots are not replayed as separate weather forecast samples',()=>{
- const p=plan('2026-07-15T19:01:00Z',[NY],{lastCompletedAt:'2026-07-14T00:00:00Z'});
+ const p=plan('2026-07-15T19:01:00Z',[NY],{lastEvidenceAt:'2026-07-14T00:00:00Z'});
  assert.equal(p.slotAt,'2026-07-15T19:00:00.000Z');
  assert.equal(p.dueTimeZones.length,1);
  assert.equal(p.zones.length,1);
@@ -114,6 +114,6 @@ test('unrecognized time zone and misaligned or reversed windows fail closed',()=
   policy:{...WEATHER_REASONING_CADENCE,focusStart:'14:31'},
  }),TypeError);
  assert.throws(()=>plan('2026-07-15T18:30:00Z',[NY],{
-  lastCompletedAt:'2026-07-16T00:00:00Z',
+  lastEvidenceAt:'2026-07-16T00:00:00Z',
  }),RangeError);
 });
