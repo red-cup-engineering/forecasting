@@ -18,6 +18,8 @@
  */
 import {compareBinaryParticipationMenu}
  from '@red-cup-engineering/mandate-portfolio-allocation-service/binary-participation-menu';
+import {evaluateMarketInformationValue}
+ from '@red-cup-engineering/mandate-portfolio-allocation-service/market-information-value';
 import {analyzeAaaGasMarketGame} from './aaa-gas-market-game.mjs';
 import {orderFeeCentsOfFills} from './fees.mjs';
 
@@ -49,7 +51,7 @@ const fee=(price,series,maker)=>{
  */
 export function compareAaaGasParticipation({
  event,series,at,ticker,scenarioForecast,settlementBand,
- makerQuotes=[],maxBookAgeMs=60_000,
+ makerQuotes=[],signalStudy=null,maxBookAgeMs=60_000,
 }={}){
  if(!validTime(at)||!Array.isArray(makerQuotes)||makerQuotes.length>128)
   throw new TypeError('point-in-time AAA participation inputs required');
@@ -127,13 +129,40 @@ export function compareAaaGasParticipation({
    settlementEvidence:evidence,takerCandidates:takers,makerCandidates:makers,
    structuralCandidates:structural,maxQuoteAgeMs:maxBookAgeMs,
  });
+ let informationValue=null;const informationGaps=[];
+ if(signalStudy!==null){
+  try{
+   if(signalStudy.scope!==scope)
+    throw new TypeError('information model scope does not match AAA event/source');
+   if(!takers.length)
+    throw new TypeError('no executable one-lot taker actions available for the value-of-information comparison');
+   const actions=[
+    {id:'abstain',payoffsUsdByScenario:Object.fromEntries(
+      scenarioForecast.scenarios.map(s=>[s.id,0]))},
+    ...takers.map(t=>({id:t.id,payoffsUsdByScenario:Object.fromEntries(
+      scenarioForecast.scenarios.map(s=>{
+       const v=s.values[scenarioForecast.outcomeValueKey],
+         yesWin=v>market.floor_strike;
+       const ownWin=t.side==='yes'?yesWin:!yesWin;
+       return [s.id,Number(ownWin)-t.priceUsd-t.feeUsd];
+      }))})),
+   ];
+   informationValue=evaluateMarketInformationValue({
+    forecast:scenarioForecast,actions,signalModel:signalStudy.model,at,
+    computeCostUsd:signalStudy.computeCostUsd,
+    repricingCostBoundUsd:signalStudy.repricingCostBoundUsd,
+   });
+  }catch(error){informationGaps.push({
+   kind:'conditional-information-value',reason:error.message});}
+ }
+
  return {
   kind:'aaa-gas-participation-research-v1',
   status:'conditional-venue-research',at,ticker,scope,
   scenarioProjection:{forecastId:base.scenarioProjection.forecastId,
    marketProbabilityYes:p,targetScope:base.sourceScope},
-  coherence:base.coherence,menu,
-  gaps:[...base.gaps,...gaps,...menu.gaps],
+  coherence:base.coherence,menu,informationValue,
+  gaps:[...base.gaps,...gaps,...menu.gaps,...informationGaps],
   dependencies:['existing Kalshi AAA rule/quote parser and nested-scenario projection',
    'existing Kalshi quadratic fee model and orderbook depth',
    'shared maker adverse-fill model, joint market-game and abstention decision menu'],
