@@ -270,3 +270,79 @@ certification, formally prove a new Obsmetrologia theorem in Lean,
 run the full workspace integration suite, update parent gitlink
 release pins or deploy a production trading strategy. Those
 remain independent receiving and scientific gates.
+
+
+## October 12 implementation: rate-limited reachability, dual extrema, source receipts
+
+This continues the same research program, **not** a new market-maker or math
+library. The shared prediction-market engine now exports
+boundRatePathExtremum from mandate-portfolio-allocation-service/
+src/settlement-modal.mjs. It is a conditional physical/path bound:
+a finite interval for temperature at issuance, an interval for the
+maximum/minimum achieved so far, and a gap-free sequence of future
+segments with continuous rate bounds in F/hour. At each segment the
+operator integrates both lower and upper rates, bounding **every instant**
+of temperature in the segment rather than just the final hourly reading.
+Its running extremum is the maximum/minimum over the prior achieved
+extreme and the reachable segment, with an order-dual argument for lows.
+
+A result is a valid mathematical implication only under its named
+assumptions. A numerical weather forecast, empirical rate percentile,
+coherent regional transition or two endpoint METARs DO NOT alone supply
+a certified instantaneous derivative bound. If the last segment does
+not reach the climate observation window end, a rate certificate is not
+received by issuance time, or initial state contradicts the achieved
+extreme, the result is withheld. No rate-based live trading signal
+or actual physical-rate certificate has been established.
+
+Kalshi's weather-modal-outcomes.mjs consumes the same upstream operator
+and temperature-distribution.mjs bracket interpretation. It now
+offers modalTemperatureReading for **both** daily highs and lows;
+existing high-only exports remain backward-compatible. Three types
+of deduction remain distinct:
+
+- sourceConditional: an exact rule/source/station-matched
+  *conditional* certificate of a final reported extreme;
+- nwsProxyConditional: a NWS observation floor for highs or ceiling
+  for lows, requiring a separate unproved source-correlation assumption;
+- rateConditional: a hypothetical physical all-time-rate scenario,
+  with conservative half-degree tie uncertainty before conversion to a
+  whole-Fahrenheit payout interval. This may prove conditional necessity
+  or impossibility about the hypothetical future but has no authority
+  over the other two evidential carriers.
+
+All use the existing SignCell/FOUR witness construction. The normal
+weather-cycle path supplies no rateScenario and no source-authenticated
+verifiedSourceBounds. They are opt-in research inputs, not trusted merely
+because a caller provides a qualifier string. The live desk still sees
+only independently admitted probabilities and pre-existing structural
+kinds; it is not handed modal research witnesses as executable edges.
+
+Weather's TWC source reader now records a per-fetch receivedAt and
+the digest from the existing weather-universe source-address function,
+and sourceReport preserves them. Two records for the same requested
+station/date now return an explicit conflict carrying both candidates,
+not first-match-wins. Older archives that lack per-fetch clocks can use
+the (later, conservative) cycle retrievedAt, never backdate to the
+observation's physical timestamp. The published
+@red-cup-engineering/forecasting/weather-settlement-source export makes
+the receipt-bearing source reader available to other consumers, instead
+of each reimplementing its own parser.
+
+**Verification boundary:** dedicated tests cover source receipt
+retention, duplicate conflict reporting, both extreme polarities,
+actual rate-horizon coverage, continuous-time duality, half-degree
+rounding uncertainty, delayed premises, wrong-source and wrong-rule
+rejection, and finite-sampled path inclusion. Local isolated JavaScript
+semantic tests with limited dependency doubles passed; an actual
+workspace Node/SignCell integration suite, physical-rate certification,
+parent release receiving, city-day historical evaluation and live
+trading deployment remain unverified. They must not be inferred from
+successful unit-level arithmetic or GitHub commits.
+
+**Practical next experiment:** independent reception-clocked evidence
+must tell us whether a real regional front makes the remaining daily
+high/low *probabilistically* smaller or larger before Kalshi prices
+respond, then whether a maker receives positive after-fee P&L per
+placement. Proof of a bound (conditional on assumptions) and a
+measured executable advantage are separate receiving gates.
