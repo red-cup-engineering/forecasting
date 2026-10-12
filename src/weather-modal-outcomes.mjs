@@ -9,8 +9,8 @@
  * can be revised; exceptional Kalshi resolutions can pay the last fair price.
  * These conditional modal readings never authorize orders.
  */
-import {deduceSettlementInterval,boundRatePathExtremum} from '@red-cup-engineering/mandate-portfolio-allocation-service/settlement-modal';
-import {cell,address} from '@red-cup-engineering/signcell/cell';
+import {boundRatePathExtremum} from '@red-cup-engineering/mandate-portfolio-allocation-service/settlement-modal';
+import {projectConditionalSettlementSign} from '@red-cup-engineering/mandate-portfolio-allocation-service/settlement-sign-evidence';
 import {bracketBounds} from './temperature-distribution.mjs';
 
 const finite=x=>typeof x==='number'&&Number.isFinite(x);
@@ -84,17 +84,20 @@ function rateScenarioConditional(contract,payout,at,scenario){
   // handling. Even this implication requires the hypothesized report transform.
   const integerExtreme={lower:Math.ceil(envelope.finalExtreme.lower-0.5),
     upper:Math.floor(envelope.finalExtreme.upper+0.5)};
-  const deduced=deduceSettlementInterval({payout,premises:[{
-    id:'rate-scenario/'+scenario.id,lower:integerExtreme.lower,upper:integerExtreme.upper,
-    observedAt:at,availableAt:at,
-  }],at});
-  const conditionalCell=cell(contract.ticker,'settles-yes',
-    {source:contract.source,rules:contract.ruleKey,extreme:b.kind,
+  const projection=projectConditionalSettlementSign({
+    subject:contract.ticker,predicate:'settles-yes',
+    context:{source:contract.source,rules:contract.ruleKey,extreme:b.kind,
+      targetDate:b.targetDate,station:b.station,climateReport:b.climateReport,
       assumption:'hypothetical-all-time-rate-envelope-and-rounded-reported-extreme'},
-    deduced.support);
+    channel:'rate-counterfactual',payout,premises:[{
+      id:'rate-scenario/'+scenario.id,lower:integerExtreme.lower,upper:integerExtreme.upper,
+      observedAt:at,availableAt:at,
+    }],at,
+  });
   return {status:'conditional-hypothetical-rate-reachability',
-    envelope,integerExtreme, ...deduced,
-    cell:conditionalCell,address:address(conditionalCell),
+    envelope,integerExtreme, ...projection.deduction,
+    cell:projection.cell,address:projection.address,
+    signEvidence:projection,
     assumptions:[...envelope.assumptions,
       'whole-Fahrenheit reported final extreme lies in the outward-rounded physical envelope',
       'sensor, official-report and fallback differences remain unverified'],
@@ -107,22 +110,35 @@ export function modalTemperatureReading(contract,evidence,{at=new Date().toISOSt
   const when=typeof at==='number'?new Date(at).toISOString():at;
   if(!validTime(when))throw new TypeError('issuance time required');
   const qualified=qualifiedSourcePremises(contract,verifiedSourceBounds);
-  const sourceConditional=deduceSettlementInterval({payout,premises:qualified,at:when});
-  const proxyConditional=deduceSettlementInterval({payout,premises:observedProxyPremises(contract,evidence),at:when});
+  // One proven interval interpretation and one actual SignCell/SignChain
+  // carrier, upstream of Kalshi: no second local FOUR construction.
+  const signContext={source:contract.source,rules:contract.ruleKey,
+    extreme:contract.binding.kind,targetDate:contract.binding.targetDate,
+    station:contract.binding.station,climateReport:contract.binding.climateReport};
+  const sourceSign=projectConditionalSettlementSign({
+    subject:contract.ticker,context:{...signContext,
+      assumption:'source-bound normal binary settlement'},
+    channel:'source-conditional',payout,premises:qualified,at:when});
+  const proxySign=projectConditionalSettlementSign({
+    subject:contract.ticker,context:{...signContext,
+      assumption:'NWS proxy may not be authoritative settlement source'},
+    channel:'proxy-counterfactual',payout,
+    premises:observedProxyPremises(contract,evidence),at:when});
+  const sourceConditional=sourceSign.deduction;
+  const proxyConditional=proxySign.deduction;
   const rateConditional=rateScenarioConditional(contract,payout,when,rateScenario);
-  const proofCell=cell(contract.ticker,'settles-yes',
-    {source:contract.source,rules:contract.ruleKey,extreme:contract.binding.kind,assumption:'source-bound normal binary settlement'},
-    sourceConditional.support);
   return {
     status:'conditional-modal-research',
     sourceConditional:{
-      ...sourceConditional,cell:proofCell,address:address(proofCell),
+      ...sourceConditional,cell:sourceSign.cell,address:sourceSign.address,
+      signEvidence:sourceSign,
       assumptions:['premises describe the eventual authoritative reported '+contract.binding.kind,
         'market rule, station, source and event date match',
         'normal binary settlement without correction or fair-price fallback'],
     },
     nwsProxyConditional:{
-      ...proxyConditional,
+      ...proxyConditional,cell:proxySign.cell,address:proxySign.address,
+      signEvidence:proxySign,
       assumptions:['NWS proxy '+(contract.binding.kind==='high'?'floor':'ceiling')+' bounds the eventual source report',
         'no later correction reverses the lower bound',
         'proxy may not match the settlement source'],
