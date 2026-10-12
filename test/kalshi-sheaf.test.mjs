@@ -21,7 +21,7 @@ test("constants are global sections: kernel of L has dimension one on a connecte
   near(dirichlet(s, [2, 2, 2]).energy, 0);
 });
 
-test("a sign-twisted cycle has no global section (H^0 = 0, H^1 obstruction): smallest eigenvalue > 0", () => {
+test("a sign-twisted cycle has H^0 = 0: smallest eigenvalue > 0 (and here H^1 = 0)", () => {
   const s = buildSheaf([{ id: "a", dim: 1 }, { id: "b", dim: 1 }, { id: "c", dim: 1 }], [edge("e1", "a", "b"), edge("e2", "b", "c"), edge("e3", "c", "a", -1)]);
   const { values } = sheafSpectrum(s);
   assert.ok(values[0] > 0.1);
@@ -54,4 +54,49 @@ test("fitLadder recovers Normal(mu, sigma) from its own bracket masses", () => {
   const f = fitLadder(brackets);
   near(f.mu, 83.2, 0.01); near(f.sigma, 2.4, 0.02);
   near(brackets.reduce((s, b) => s + b.p, 0), 1, 1e-9);
+});
+
+test("an unanchored global section is non-identifiable, even with positive ridge", () => {
+  const s = buildSheaf([{ id: "a", dim: 1 }, { id: "b", dim: 1 }],
+    [edge("ab", "a", "b")]);
+  for (const ridge of [0, 1e-9, 0.1, 10]) {
+    assert.throws(
+      () => harmonicExtension(s, [5, 10], [true, true], ridge),
+      /not positive definite/,
+      "regularization must not manufacture a uniquely observed section",
+    );
+  }
+});
+
+test("an isolated free coordinate cannot borrow identification from an anchored component", () => {
+  const s = buildSheaf(
+    [{ id: "anchor", dim: 1 }, { id: "linked", dim: 1 }, { id: "isolated", dim: 1 }],
+    [edge("only", "anchor", "linked")],
+  );
+  assert.throws(
+    () => harmonicExtension(s, [2, 99, 500], [false, true, true]),
+    /not positive definite/,
+  );
+  const identified = harmonicExtension(s, [2, 99, 7], [false, true, false], 0);
+  near(identified[1], 2);
+  near(identified[2], 7);
+});
+
+test("twisted holonomy can identify the zero section with no clamped coordinates", () => {
+  const s = buildSheaf(
+    [{ id: "a", dim: 1 }, { id: "b", dim: 1 }, { id: "c", dim: 1 }],
+    [edge("e1", "a", "b"), edge("e2", "b", "c"), edge("twist", "c", "a", -1)],
+  );
+  const x = harmonicExtension(s, [3, 7, -2], [true, true, true], 0);
+  x.forEach(v => near(v, 0));
+  near(dirichlet(s, x).energy, 0);
+});
+
+test("invalid numerical masks and ridge values cannot be treated as evidence", () => {
+  const s = buildSheaf([{ id: "a", dim: 1 }, { id: "b", dim: 1 }],
+    [edge("e", "a", "b")]);
+  assert.throws(() => harmonicExtension(s, [0, NaN], [false, true]), TypeError);
+  assert.throws(() => harmonicExtension(s, [0, 1], [true]), TypeError);
+  assert.throws(() => harmonicExtension(s, [0, 1], [false, true], -0.1), TypeError);
+  assert.throws(() => harmonicExtension(s, [0, 1], [false, true], Infinity), TypeError);
 });
