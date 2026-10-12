@@ -31,6 +31,12 @@ const gasSeries=(ticker)=>/^KXAAAGAS(?:D|W|M)(?:[A-Z]{2})?$/u.test(ticker??'');
 const knownAAA=(rules)=>typeof rules==='string'&&
   /according to AAA\b/iu.test(rules)&&/average regular gas prices/iu.test(rules)&&
   /strictly greater than/iu.test(rules);
+/** Market's named survey population is part of the payout, not metadata. */
+export function aaaGasScopeOf(market){
+ const s=market?.rules_primary;
+ if(!knownAAA(s))return null;
+ return /average regular gas prices for (.+?) are strictly greater than \\$/iu.exec(s)?.[1]?.trim()??null;
+}
 const validRung=(m,event,at,maxAgeMs)=>(
   m&&typeof m.ticker==='string'&&m.ticker.startsWith(event.event_ticker+'-')&&
   m.strike_type==='greater'&&validNum(m.floor_strike)&&m.floor_strike>0&&
@@ -60,6 +66,7 @@ const emptyMaker=()=>rankBinaryMakerPlacements([]);
 export function projectAaaGasScenarioLadder({event,forecast,at}={}){
   if(!event||!forecast||!validClock(at)||forecast.targetSource!=='AAA'||
      forecast.eventTicker!==event.event_ticker||typeof forecast.id!=='string'||!forecast.id||
+     typeof forecast.targetScope!=='string'||!forecast.targetScope||
      !validClock(forecast.observedAt)||!validClock(forecast.horizon)||
      Date.parse(forecast.observedAt)>Date.parse(at)||
      Date.parse(forecast.horizon)<=Date.parse(at)||
@@ -72,7 +79,8 @@ export function projectAaaGasScenarioLadder({event,forecast,at}={}){
     throw new TypeError('bounded, point-in-time AAA target-source shared scenario forecast required');
   if(!Array.isArray(event.markets)||event.markets.length<2||event.markets.length>128||
      event.markets.some(m=>m.strike_type!=='greater'||!validNum(m.floor_strike)||
-       !knownAAA(m.rules_primary)||typeof m.ticker!=='string'))
+       !knownAAA(m.rules_primary)||typeof m.ticker!=='string'||
+       aaaGasScopeOf(m)!==forecast.targetScope))
     throw new TypeError('source-matched directional AAA threshold roster required');
   const ids=new Set(),values=[];
   let total=0;
@@ -105,7 +113,7 @@ export function projectAaaGasScenarioLadder({event,forecast,at}={}){
     kind:'aaa-nested-threshold-scenario-pushforward-v1',
     eventTicker:event.event_ticker,forecastId:forecast.id??null,
     issuedAt:forecast.observedAt,sourceAvailableAt:forecast.availableAt??forecast.observedAt,at,source:'AAA',
-    outcomeValueKey:forecast.outcomeValueKey,evidenceIds:[...forecast.evidenceIds],
+    outcomeValueKey:forecast.outcomeValueKey,targetScope:forecast.targetScope,evidenceIds:[...forecast.evidenceIds],
     marketProbabilities:ladder,nestedPairs:pairs,
     interpretation:'exact projection of DECLARED shared market-game scenarios; no independent-strike approximation',
     statisticalSkill:'not certified by this operation; compare day-clustered forecast scores against Kalshi',
@@ -146,9 +154,12 @@ export function analyzeAaaGasMarketGame({
      !validNum(Number(series.fee_multiplier??1))||Number(series.fee_multiplier??1)<0)
     return {...base,status:'unbound-series-fee-schedule',gaps:['unknown Kalshi fee type/multiplier'],coherence:[],maker:emptyMaker()};
   const invalid=event.markets.filter(m=>!validRung(m,event,now,maxBookAgeMs));
-  if(invalid.length)
+  const scope=aaaGasScopeOf(event.markets[0]);
+  const inconsistentScope=!scope||event.markets.some(m=>aaaGasScopeOf(m)!==scope);
+  if(invalid.length||inconsistentScope)
     return {...base,status:'unqualified-exchange-snapshot',
-      gaps:invalid.map(m=>({ticker:m?.ticker??null,reason:'missing/changed AAA contract terms, closed market or stale/absent timestamped book'})),
+      gaps:[...invalid.map(m=>({ticker:m?.ticker??null,reason:'missing/changed AAA contract terms, closed market or stale/absent timestamped book'})),
+        ...(inconsistentScope?[{reason:'rung survey populations differ or are unbound'}]:[])],
       coherence:[],maker:emptyMaker()};
   const groups=ladderGroups(event);
   if(groups.length!==1||groups[0][1].length!==event.markets.length)
@@ -208,6 +219,7 @@ export function analyzeAaaGasMarketGame({
   }
   return {...base,status:'read-only-research',
     sourceBinding:'AAA average regular gasoline strictly greater than the named strike; source published after market close is not pre-close information',
+    sourceScope:scope,
     coherence,scenarioProjection,maker:rankBinaryMakerPlacements(admitted),gaps:[...projectionGaps,...gaps],
     experimentalLimits:[
       'No calibrated AAA forward distribution supplied unless externally measured and timestamped',
