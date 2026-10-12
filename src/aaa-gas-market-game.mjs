@@ -40,6 +40,75 @@ const validRung=(m,event,at,maxAgeMs)=>(
 );
 const emptyMaker=()=>rankBinaryMakerPlacements([]);
 
+
+/**
+ * Push forward one EXISTING shared market-game joint scenario forecast into
+ * ALL "AAA price > strike" binary contracts for the SAME event.
+ *
+ * Scenarios are the upstream market-game's weighted scenario records, not a
+ * bespoke AAA posterior or independent Bernoulli models per rung. This makes
+ * the implied tail probability monotonically nonincreasing in strike and
+ * retains exact covariance between ANY two nested rungs:
+ *
+ *  P(W_i AND W_j) = P(X > max(strike_i, strike_j))
+ *  Cov(W_i,W_j) = joint - P(W_i)P(W_j).
+ *
+ * A model/forecaster must supply source/target binding and a real issuance
+ * clock. Probability normalisation alone does not establish empirical skill.
+ * Neither these prices nor their covariance make trades admissible.
+ */
+export function projectAaaGasScenarioLadder({event,forecast,at}={}){
+  if(!event||!forecast||!validClock(at)||forecast.targetSource!=='AAA'||
+     forecast.eventTicker!==event.event_ticker||!validClock(forecast.availableAt)||
+     Date.parse(forecast.availableAt)>Date.parse(at)||
+     typeof forecast.outcomeValueKey!=='string'||!forecast.outcomeValueKey||
+     !Array.isArray(forecast.evidenceIds)||!forecast.evidenceIds.length||
+     !Array.isArray(forecast.scenarios)||forecast.scenarios.length<2||
+     forecast.scenarios.length>512)
+    throw new TypeError('bounded, point-in-time AAA target-source shared scenario forecast required');
+  if(!Array.isArray(event.markets)||event.markets.length<2||event.markets.length>128||
+     event.markets.some(m=>m.strike_type!=='greater'||!validNum(m.floor_strike)||
+       !knownAAA(m.rules_primary)||typeof m.ticker!=='string'))
+    throw new TypeError('source-matched directional AAA threshold roster required');
+  const ids=new Set(),values=[];
+  let total=0;
+  for(const s of forecast.scenarios){
+    if(!s||typeof s.id!=='string'||!s.id||ids.has(s.id)||
+       !validNum(s.probability)||s.probability<0||s.probability>1||
+       !validNum(s.values?.[forecast.outcomeValueKey]))
+      throw new TypeError('unique shared scenario id, mass and numeric official-price target required');
+    ids.add(s.id);total+=s.probability;
+    values.push({price:s.values[forecast.outcomeValueKey],mass:s.probability});
+  }
+  if(Math.abs(total-1)>1e-9)throw new RangeError('scenario mass must sum to one');
+  const ladder=event.markets.map(m=>({
+    ticker:m.ticker,strikeUsdGallon:m.floor_strike,
+    probabilityYes:values.reduce((acc,x)=>acc+(x.price>m.floor_strike?x.mass:0),0),
+  })).sort((a,b)=>a.strikeUsdGallon-b.strikeUsdGallon);
+  if(new Set(ladder.map(x=>x.strikeUsdGallon)).size!==ladder.length)
+    throw new TypeError('one contract per AAA threshold required');
+  if(ladder.some((x,i)=>i&&x.probabilityYes>ladder[i-1].probabilityYes+1e-12))
+    throw new Error('nested scenario projection violated probability monotonicity');
+  const pairs=[];
+  for(let i=0;i<ladder.length;i++)for(let j=i;j<ladder.length;j++){
+    const a=ladder[i],b=ladder[j];
+    const joint=b.probabilityYes; // Sorted by nondecreasing strike; W_j subset W_i.
+    pairs.push({first:a.ticker,second:b.ticker,jointYesProbability:joint,
+      yesCovariance:joint-a.probabilityYes*b.probabilityYes});
+  }
+  return {
+    status:'scenario-pushforward-ungraded',
+    kind:'aaa-nested-threshold-scenario-pushforward-v1',
+    eventTicker:event.event_ticker,forecastId:forecast.id??null,
+    issuedAt:forecast.availableAt,at,source:'AAA',
+    outcomeValueKey:forecast.outcomeValueKey,evidenceIds:[...forecast.evidenceIds],
+    marketProbabilities:ladder,nestedPairs:pairs,
+    interpretation:'exact projection of DECLARED shared market-game scenarios; no independent-strike approximation',
+    statisticalSkill:'not certified by this operation; compare day-clustered forecast scores against Kalshi',
+    tradeEligible:false,orderEffect:false,
+  };
+}
+
 /**
  * Point-in-time research packet from an already collected Kalshi event/series.
  * event.markets MUST carry exact rules_primary, marketObservedAt, live
@@ -52,7 +121,7 @@ const emptyMaker=()=>rankBinaryMakerPlacements([]);
  * zero-fee assumptions, or phantom incentive credits.
  */
 export function analyzeAaaGasMarketGame({
-  event,series,at,quoteCandidates=[],maxBookAgeMs=60_000,
+  event,series,at,quoteCandidates=[],scenarioForecast=null,maxBookAgeMs=60_000,
 }={}){
   if(!validClock(at)||!Array.isArray(quoteCandidates)||quoteCandidates.length>512||
      !Number.isInteger(maxBookAgeMs)||maxBookAgeMs<1||maxBookAgeMs>3600_000)
@@ -85,6 +154,9 @@ export function analyzeAaaGasMarketGame({
   const ladder=buildLadder(event,subject,markets,series);
   if(ladder.skipped)return {...base,status:'unbound-gas-ladder',gaps:[ladder.skipped],coherence:[],maker:emptyMaker()};
   const c=assessFamily(ladderFamily(ladder));
+  let scenarioProjection=null;const projectionGaps=[];
+  if(scenarioForecast){try{scenarioProjection=projectAaaGasScenarioLadder({event,forecast:scenarioForecast,at});}
+    catch(error){projectionGaps.push({reason:'unqualified shared market-game scenario: '+error.message});}}
   const coherence=[{...c,interpretation:'existing Kalshi structural LP; hypothetical simultaneous book execution, fees and queue constraints still require receiving'}];
   const byTicker=new Map(event.markets.map(m=>[m.ticker,m]));
   const admitted=[],gaps=[];
@@ -132,7 +204,7 @@ export function analyzeAaaGasMarketGame({
   }
   return {...base,status:'read-only-research',
     sourceBinding:'AAA average regular gasoline strictly greater than the named strike; source published after market close is not pre-close information',
-    coherence,maker:rankBinaryMakerPlacements(admitted),gaps,
+    coherence,scenarioProjection,maker:rankBinaryMakerPlacements(admitted),gaps:[...projectionGaps,...gaps],
     experimentalLimits:[
       'No calibrated AAA forward distribution supplied unless externally measured and timestamped',
       'No derived per-order queue/fill probability unless externally measured and timestamped',
