@@ -32,9 +32,10 @@ probabilities, source truths or autonomous schedulers has been invented.
 
 From the already-pinned weather runtime and its state root:
 
-    node apps/weather.mjs cadence-plan --state "$KALSHI_WEATHER_STATE_DIR"
-    node apps/weather.mjs cadence-cycle --state "$KALSHI_WEATHER_STATE_DIR"
+    node apps/weather.mjs cadence-plan
+    node apps/weather.mjs cadence-cycle
 
+Pass `--state DIR` to either command when working against a non-default weather state root.
 The plan is read-only: current due local zones, the UTC five-minute slot,
 next slots and policy. The gated cycle invokes the exact same existing
 runWeatherCycle, weather-cycle lock, evidence archive, source collection,
