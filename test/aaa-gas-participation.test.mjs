@@ -21,7 +21,7 @@ const target=()=>event().markets[0].ticker;
 const scenario=()=>({
  id:'previously-issued-joint-scenarios',observedAt:'2026-10-12T18:00:00Z',
  availableAt:'2026-10-12T18:30:00Z',
- horizon:'2026-10-13T14:00:00Z',eventTicker,targetSource:'AAA',
+ horizon:'2026-10-13T14:00:00Z',eventTicker,targetDate:'2026-10-13',targetSource:'AAA',
  targetScope:'United States',outcomeValueKey:'officialGas',
  evidenceIds:['source-custody','prior-model-score'],
  scenarios:[
@@ -81,6 +81,11 @@ test('a prior model band must actually contain the joint scenario projection',()
  const r=study({settlementBand:scored({low:.95,high:.99})});
  assert.equal(r.status,'missing-consistent-source-calibration');
  assert.equal(r.menu,null);
+});
+
+test('a shared forecast with the wrong official target day cannot price AAA',()=>{
+ const wrong=study({scenarioForecast:{...scenario(),targetDate:'2026-10-14'}});
+ assert.equal(wrong.status,'unbound-event-or-joint-scenario');
 });
 
 test('an AAA Maine forecast cannot price the United States event',()=>{
