@@ -18,11 +18,11 @@
  */
 import {compareBinaryParticipationMenu}
  from '@red-cup-engineering/mandate-portfolio-allocation-service/binary-participation-menu';
-import {evaluateMarketInformationValue}
+import {evaluateMarketInformationValue,conditionMarketForecastOnSignal}
  from '@red-cup-engineering/mandate-portfolio-allocation-service/market-information-value';
 import {bindScreenedOutcomeFillResearch}
  from '@red-cup-engineering/mandate-portfolio-allocation-service/binary-fill-calibration';
-import {analyzeAaaGasMarketGame} from './aaa-gas-market-game.mjs';
+import {analyzeAaaGasMarketGame,projectAaaGasScenarioLadder} from './aaa-gas-market-game.mjs';
 import {orderFeeCentsOfFills} from './fees.mjs';
 
 const finite=x=>typeof x==='number'&&Number.isFinite(x);
@@ -53,18 +53,43 @@ const fee=(price,series,maker)=>{
  */
 export function compareAaaGasParticipation({
  event,series,at,ticker,scenarioForecast,settlementBand,
- makerQuotes=[],signalStudy=null,maxBookAgeMs=60_000,
+ makerQuotes=[],signalStudy=null,signalObservation=null,maxBookAgeMs=60_000,
 }={}){
  if(!validTime(at)||!Array.isArray(makerQuotes)||makerQuotes.length>128)
   throw new TypeError('point-in-time AAA participation inputs required');
  const base=analyzeAaaGasMarketGame({event,series,at,scenarioForecast,maxBookAgeMs});
  if(base.status!=='read-only-research'||!base.scenarioProjection)
   return reportGap(event,at,'unbound-event-or-joint-scenario',base.gaps??[]);
- const market=event.markets.find(m=>m.ticker===ticker),p=base.scenarioProjection.marketProbabilities
+ const scope=scopedId(event,base.sourceScope);
+ // The EVSI research interface describes a signal worth buying. This is the
+ // distinct actual RECEIPT interface: after observation, update the WHOLE
+ // joint scenario distribution and reproject every nested AAA threshold.
+ // No individual rung is independently nudged and no news item is silently
+ // interpreted as a likelihood.
+ let conditionedSignal=null,scenarioProjection=base.scenarioProjection;
+ if(signalObservation!==null){
+  if(!signalStudy||signalStudy.scope!==scope)
+   return reportGap(event,at,'unbound-conditional-source-signal',
+    'observed signal requires the preissued AAA source-scoped emission model');
+  try{
+   conditionedSignal=conditionMarketForecastOnSignal({
+    forecast:scenarioForecast,signalModel:signalStudy.model,
+    observation:signalObservation,at,
+   });
+   if(conditionedSignal.status!=='conditional-research-posterior')
+    return reportGap(event,at,conditionedSignal.status,
+     'received signal is impossible under the precommitted joint scenario likelihood');
+   scenarioProjection=projectAaaGasScenarioLadder({
+    event,forecast:conditionedSignal.forecast,at,
+   });
+  }catch(error){
+   return reportGap(event,at,'unqualified-conditional-source-signal',error.message);
+  }
+ }
+ const market=event.markets.find(m=>m.ticker===ticker),p=scenarioProjection.marketProbabilities
    .find(row=>row.ticker===ticker)?.probabilityYes;
  if(!market||!finite(p))
   return reportGap(event,at,'missing-exact-target-rung','no sourced scenario probability for selected ticker');
- const scope=scopedId(event,base.sourceScope);
  if(!settlementBand||settlementBand.scope!==scope||
    !validTime(settlementBand.availableAt)||Date.parse(settlementBand.availableAt)>Date.parse(at)||
    typeof settlementBand.modelId!=='string'||!settlementBand.modelId||
@@ -73,7 +98,9 @@ export function compareAaaGasParticipation({
    !finite(settlementBand.low)||!finite(settlementBand.high)||
    settlementBand.low<0||settlementBand.high>1||
    settlementBand.low>settlementBand.high||
-   p<settlementBand.low-1e-9||p>settlementBand.high+1e-9)
+   p<settlementBand.low-1e-9||p>settlementBand.high+1e-9||
+   (conditionedSignal!==null&&
+      settlementBand.forecastId!==conditionedSignal.forecast.id))
   return reportGap(event,at,'missing-consistent-source-calibration',
    'timestamped, exact-source, score-qualified interval enclosing projected scenario probability required');
  const atMs=Date.parse(at);
@@ -162,7 +189,7 @@ export function compareAaaGasParticipation({
    settlementEvidence:evidence,takerCandidates:takers,makerCandidates:makers,
    structuralCandidates:structural,maxQuoteAgeMs:maxBookAgeMs,
  });
- let informationValue=null;const informationGaps=[];
+ let informationValue=null,observedSignalDecision=null;const informationGaps=[];
  if(signalStudy!==null){
   try{
    if(signalStudy.scope!==scope)
@@ -188,6 +215,15 @@ export function compareAaaGasParticipation({
     computeCostUsd:signalStudy.computeCostUsd,
     repricingCostBoundUsd:signalStudy.repricingCostBoundUsd,
    });
+   if(conditionedSignal!==null){
+    // Same immutable book/fee action menu, posterior Bayes decision. A
+    // different, later market book requires a NEW observation and action menu.
+    const conditioned=conditionMarketForecastOnSignal({
+     forecast:scenarioForecast,signalModel:signalStudy.model,
+     observation:signalObservation,at,actions,
+    });
+    observedSignalDecision=conditioned.conditionalAction;
+   }
   }catch(error){informationGaps.push({
    kind:'conditional-information-value',reason:error.message});}
  }
@@ -195,9 +231,20 @@ export function compareAaaGasParticipation({
  return {
   kind:'aaa-gas-participation-research-v1',
   status:'conditional-venue-research',at,ticker,scope,
-  scenarioProjection:{forecastId:base.scenarioProjection.forecastId,
-   marketProbabilityYes:p,targetScope:base.sourceScope},
-  coherence:base.coherence,menu,informationValue,
+  scenarioProjection:{forecastId:scenarioProjection.forecastId,
+   marketProbabilityYes:p,targetScope:base.sourceScope,
+   marketProbabilities:scenarioProjection.marketProbabilities,
+   nestedPairs:scenarioProjection.nestedPairs},
+  posteriorForecast:conditionedSignal?.forecast??null,
+  observedSignal:conditionedSignal===null?null:{
+   observationId:conditionedSignal.observationId,
+   signalId:conditionedSignal.signalId,
+   status:conditionedSignal.status,
+   logObservationLikelihood:conditionedSignal.logObservationLikelihood,
+   posteriorPriorDivergenceNats:conditionedSignal.posteriorPriorDivergenceNats,
+   sourceAuthenticated:false,tradeEligible:false,orderEffect:false,
+  },
+  observedSignalDecision,coherence:base.coherence,menu,informationValue,
   gaps:[...base.gaps,...gaps,...menu.gaps,...informationGaps],
   dependencies:['existing Kalshi AAA rule/quote parser and nested-scenario projection',
    'existing Kalshi quadratic fee model and orderbook depth',
