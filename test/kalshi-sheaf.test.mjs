@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { bracketProb, buildSheaf, dirichlet, fitCalibrationLink, fitLadder, harmonicExtension, sheafSpectrum } from "../src/kalshi-sheaf.mjs";
+import { bracketProb, buildSheaf, dirichlet, fitCalibrationLink, fitLadder, harmonicExtension, partiallyIdentifiedHarmonicExtension, sheafSpectrum } from "../src/kalshi-sheaf.mjs";
 
 const I1 = [[1]];
 const edge = (id, u, v, a = 1, w = 1) => ({ id, u, v, Fu: [[a]], Fv: I1, W: [[w]] });
@@ -99,4 +99,40 @@ test("invalid numerical masks and ridge values cannot be treated as evidence", (
   assert.throws(() => harmonicExtension(s, [0, 1], [true]), TypeError);
   assert.throws(() => harmonicExtension(s, [0, 1], [false, true], -0.1), TypeError);
   assert.throws(() => harmonicExtension(s, [0, 1], [false, true], Infinity), TypeError);
+});
+
+
+test("partial sheaf inference preserves supported estimates while withholding gauge modes",()=>{
+  const sheaf=buildSheaf([
+    {id:"known",dim:2},{id:"partially-free",dim:2},{id:"isolated",dim:1},
+  ],[
+    {id:"observed-link",u:"known",v:"partially-free",
+     Fu:[[1,0]],Fv:[[1,0]],W:[[1]]},
+  ]);
+  const result=partiallyIdentifiedHarmonicExtension(
+    sheaf,[5,3,99,200,1000],[false,false,true,true,true]);
+  assert.equal(result.status,"partially-identified");
+  near(result.values[2],5);
+  assert.deepEqual(result.values.slice(3),[null,null]);
+  assert.deepEqual(result.withheldCoordinates,[3,4]);
+  assert.equal(result.identifiedFreeCount,1);
+  assert.equal(result.tradeEligible,false);
+});
+
+test("a sheaf with no globally unanchored gauge has all coordinates identified",()=>{
+  const sheaf=buildSheaf([
+    {id:"a",dim:1},{id:"b",dim:1},{id:"c",dim:1},
+  ],[edge("ab","a","b"),edge("bc","b","c"),edge("ca","c","a",-1)]);
+  const result=partiallyIdentifiedHarmonicExtension(sheaf,[1,6,-5],[true,true,true]);
+  assert.equal(result.status,"fully-identified");
+  assert.deepEqual(result.withheldCoordinates,[]);
+  result.values.forEach(v=>near(v,0));
+});
+
+test("a free global-section gauge withholds values instead of pretending a ridge fixed them",()=>{
+  const sheaf=buildSheaf([{id:"a",dim:1},{id:"b",dim:1}],[edge("ab","a","b")]);
+  const result=partiallyIdentifiedHarmonicExtension(sheaf,[3,4],[true,true]);
+  assert.deepEqual(result.values,[null,null]);
+  assert.equal(result.unresolvedNullity,1);
+  assert.equal(result.identifiedFreeCount,0);
 });
