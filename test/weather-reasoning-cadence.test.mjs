@@ -87,7 +87,7 @@ test('a repeated cron tick is idempotent within its five-minute slot',()=>{
 });
 
 test('a targeted zone receipt never improperly acknowledges a different zone',()=>{
- const r=plan('2026-07-15T21:30:00Z',[LA,PHX],{
+ const r=plan('2026-07-15T21:32:00Z',[LA,PHX],{
   lastCompletedAt:'2026-07-15T21:30:20Z',
   lastCompletedByZone:{[LA]:'2026-07-15T21:25:00Z'},
  });
