@@ -22,6 +22,8 @@ import {evaluateMarketInformationValue,conditionMarketForecastOnSignal}
  from '@red-cup-engineering/mandate-portfolio-allocation-service/market-information-value';
 import {bindScreenedOutcomeFillResearch}
  from '@red-cup-engineering/mandate-portfolio-allocation-service/binary-fill-calibration';
+import {projectObservedScenarioConditioningSign}
+ from '@red-cup-engineering/mandate-portfolio-allocation-service/settlement-sign-evidence';
 import {analyzeAaaGasMarketGame,projectAaaGasScenarioLadder} from './aaa-gas-market-game.mjs';
 import {orderFeeCentsOfFills} from './fees.mjs';
 
@@ -90,6 +92,22 @@ export function compareAaaGasParticipation({
    .find(row=>row.ticker===ticker)?.probabilityYes;
  if(!market||!finite(p))
   return reportGap(event,at,'missing-exact-target-rung','no sourced scenario probability for selected ticker');
+ let signProjection=null;
+ if(conditionedSignal!==null){
+  try{
+   signProjection=projectObservedScenarioConditioningSign({
+    forecast:scenarioForecast,signalModel:signalStudy.model,
+    observation:signalObservation,at,
+    context:{
+     source:'AAA',rules:market.rules_primary,
+     scope:base.sourceScope,targetDate:scenarioForecast.targetDate,
+     assumption:'source-conditioned frozen likelihood, not authenticated AAA settlement',
+    },
+   });
+  }catch(error){
+   return reportGap(event,at,'unqualified-conditional-sign-projection',error.message);
+  }
+ }
  if(!settlementBand||settlementBand.scope!==scope||
    !validTime(settlementBand.availableAt)||Date.parse(settlementBand.availableAt)>Date.parse(at)||
    typeof settlementBand.modelId!=='string'||!settlementBand.modelId||
@@ -236,6 +254,7 @@ export function compareAaaGasParticipation({
    marketProbabilities:scenarioProjection.marketProbabilities,
    nestedPairs:scenarioProjection.nestedPairs},
   posteriorForecast:conditionedSignal?.forecast??null,
+  signProjection,
   observedSignal:conditionedSignal===null?null:{
    observationId:conditionedSignal.observationId,
    signalId:conditionedSignal.signalId,
