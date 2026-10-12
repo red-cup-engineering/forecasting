@@ -177,6 +177,140 @@ export function harmonicExtension(sheaf, x, free, ridge = 1e-9) {
 }
 
 /** Spectrum of L (ascending). The multiplicity of zero is dim H^0 (global sections). */
+
+/**
+ * Recover the identifiable coordinates of a PARTIALLY constrained cellular
+ * sheaf without asserting a fictitious unique global harmonic section.
+ *
+ * The previous harmonicExtension remains the strict all-or-nothing solver.
+ * Here the free-coordinate Hessian is decomposed into independent blocks.
+ * Positive-definite blocks are solved exactly; singular blocks are analyzed
+ * spectrally, so only coordinates invariant along EVERY null direction are
+ * reported as estimates. Unknown coordinates become null, never zero-filled
+ * predictions. This is finite-dimensional numerical sheaf analysis, not a
+ * Bayesian posterior or a separately defined SignGraph.
+ *
+ * maxSpectralDimension caps the expensive Jacobi fallback for singular blocks;
+ * an oversized singular block is explicitly withheld instead of guessed.
+ */
+export function partiallyIdentifiedHarmonicExtension(
+  sheaf, x, free, {maxSpectralDimension = 96} = {},
+) {
+  if (!Number.isInteger(maxSpectralDimension) ||
+      maxSpectralDimension < 2 || maxSpectralDimension > 512)
+    throw new TypeError('bounded singular-component dimension required');
+  const allKnown = free?.every(v => v === false);
+  let fullyIdentified = null;
+  try {
+    fullyIdentified = harmonicExtension(sheaf, x, free, 0);
+  } catch (error) {
+    if (!/not positive definite/.test(error.message)) throw error;
+  }
+  if (fullyIdentified !== null) return {
+    kind: 'identified-cellular-sheaf-extension-v1',
+    status: 'fully-identified',
+    values: fullyIdentified,
+    identified: new Array(sheaf.n).fill(true),
+    withheldCoordinates: [],
+    freeCount: free.filter(Boolean).length,
+    identifiedFreeCount: free.filter(Boolean).length,
+    unresolvedNullity: 0,
+    numericalLimitations: [],
+    tradeEligible: false, orderEffect: false,
+  };
+
+  const F = [];
+  free.forEach((f, i) => {if (f) F.push(i);});
+  const rhs = F.map(i => -sheaf.L[i].reduce((sum, a, j) =>
+    sum + (free[j] ? 0 : a * x[j]), 0));
+  const hessian = F.map(i => F.map(j => sheaf.L[i][j]));
+  const values = x.slice(),identified = free.map(f => !f),withheld = [];
+  const seen = new Set();
+  let unresolvedNullity = 0, nullityKnown = true;
+
+  // The free Hessian decomposes along zero off-diagonal incidences. A
+  // connected block can itself have a gauge symmetry; connectivity is NOT
+  // substituted for positive definiteness.
+  for (let k = 0; k < F.length; k++) {
+    if (seen.has(k)) continue;
+    const pending = [k], component = [];
+    seen.add(k);
+    while (pending.length) {
+      const i = pending.pop();
+      component.push(i);
+      for (let j = 0; j < F.length; j++) if (!seen.has(j) &&
+          (hessian[i][j] !== 0 || hessian[j][i] !== 0)) {
+        seen.add(j); pending.push(j);
+      }
+    }
+    component.sort((a, b) => a - b);
+    const H = component.map(i => component.map(j => hessian[i][j]));
+    const b = component.map(i => rhs[i]);
+    let blockValues = null,unknownLocal = [];
+    try {
+      blockValues = choleskySolve(H, b.map(v => [v])).map(v => v[0]);
+    } catch (error) {
+      if (!/not positive definite/.test(error.message)) throw error;
+    }
+    if (blockValues === null && component.length > maxSpectralDimension) {
+      nullityKnown = false;
+      unknownLocal = component.map((_, i) => i);
+    } else if (blockValues === null) {
+      const scale = Math.max(1, ...H.map((row, i) => Math.abs(row[i])));
+      const {values: eigenvalues, vectors} = jacobiEigen(H, 100,
+        Math.max(1e-28, (1e-12 * scale) ** 2));
+      const cutoff = Math.max(1e-11, scale * 1e-10);
+      if (eigenvalues.some(value => value < -cutoff))
+        throw new RangeError('free sheaf Hessian is not positive semidefinite');
+      const gauges = [],candidate = new Array(component.length).fill(0);
+      for (let mode = 0; mode < eigenvalues.length; mode++) {
+        const vector = vectors[mode];
+        if (eigenvalues[mode] <= cutoff) {
+          gauges.push(vector);
+          continue;
+        }
+        const amplitude = vector.reduce((sum, v, i) => sum + v * b[i], 0) /
+          eigenvalues[mode];
+        for (let i = 0; i < candidate.length; i++)
+          candidate[i] += amplitude * vector[i];
+      }
+      unresolvedNullity += gauges.length;
+      const residual = H.map((row, i) =>
+        row.reduce((sum, value, j) => sum + value * candidate[j], 0) - b[i]);
+      const residualScale = Math.max(1, ...b.map(Math.abs));
+      const unreliable = residual.some(v =>
+        !Number.isFinite(v) || Math.abs(v) > 1e-7 * residualScale);
+      for (let i = 0; i < component.length; i++) if (unreliable ||
+          gauges.some(v => Math.abs(v[i]) > 1e-7))
+        unknownLocal.push(i);
+      blockValues = candidate;
+    }
+    for (let i = 0; i < component.length; i++) {
+      const coord = F[component[i]];
+      if (unknownLocal.includes(i) || blockValues === null ||
+          !Number.isFinite(blockValues[i])) {
+        values[coord] = null;
+        withheld.push(coord);
+      } else {
+        values[coord] = blockValues[i];
+        identified[coord] = true;
+      }
+    }
+  }
+  return {
+    kind: 'identified-cellular-sheaf-extension-v1',
+    status: withheld.length ? 'partially-identified' : 'fully-identified',
+    values, identified,
+    withheldCoordinates: withheld.sort((a, b) => a - b),
+    freeCount: F.length,
+    identifiedFreeCount: F.length - withheld.length,
+    unresolvedNullity: nullityKnown ? unresolvedNullity : null,
+    numericalLimitations: nullityKnown ? [] :
+      ['oversized singular sheaf blocks withheld without spectral interpolation'],
+    tradeEligible: false, orderEffect: false,
+  };
+}
+
 export const sheafSpectrum = (sheaf) => jacobiEigen(sheaf.L);
 
 // ---- calibration links: fitted restriction maps -------------------------------------------------
