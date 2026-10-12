@@ -42,6 +42,7 @@
     "./hypotheses": "./src/hypotheses/run.mjs",
     "./hypotheses-admitted": "./src/hypotheses/admit.mjs",
     "./fees": "./src/fees.mjs",
+    "./aaa-gas-participation": "./src/aaa-gas-participation.mjs",
     "./climate-report": "./src/climate-report.mjs"
   },
   "scripts": {
