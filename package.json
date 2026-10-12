@@ -31,6 +31,8 @@
     "./weather-modal-outcomes": "./src/weather-modal-outcomes.mjs",
     "./weather-reasoning-cadence": "./src/weather-reasoning-cadence.mjs",
     "./aaa-gas-market-game": "./src/aaa-gas-market-game.mjs",
+    "./fuel-maker-fill-retrospective": "./src/fuel-maker-fill-retrospective.mjs",
+    "./aaa-gas-participation": "./src/aaa-gas-participation.mjs",
     "./weather-settlement-source": "./src/weather-settlement-source.mjs",
     "./weather-relational-temperature": "./src/weather-relational-temperature.mjs",
     "./weather-strategy-research": "./src/weather-strategy-research.mjs",
