@@ -125,7 +125,7 @@ export function compareAaaGasParticipation({
  const menu=compareBinaryParticipationMenu({
    at,scope,settlementProbabilityYes:{low:settlementBand.low,high:settlementBand.high},
    settlementEvidence:evidence,takerCandidates:takers,makerCandidates:makers,
-   structuralCandidates:structural,maxQuoteAgeMs,
+   structuralCandidates:structural,maxQuoteAgeMs:maxBookAgeMs,
  });
  return {
   kind:'aaa-gas-participation-research-v1',
