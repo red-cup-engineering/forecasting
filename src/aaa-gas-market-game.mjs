@@ -59,8 +59,12 @@ const emptyMaker=()=>rankBinaryMakerPlacements([]);
  */
 export function projectAaaGasScenarioLadder({event,forecast,at}={}){
   if(!event||!forecast||!validClock(at)||forecast.targetSource!=='AAA'||
-     forecast.eventTicker!==event.event_ticker||!validClock(forecast.availableAt)||
-     Date.parse(forecast.availableAt)>Date.parse(at)||
+     forecast.eventTicker!==event.event_ticker||typeof forecast.id!=='string'||!forecast.id||
+     !validClock(forecast.observedAt)||!validClock(forecast.horizon)||
+     Date.parse(forecast.observedAt)>Date.parse(at)||
+     Date.parse(forecast.horizon)<=Date.parse(at)||
+     (forecast.availableAt!==undefined&&(!validClock(forecast.availableAt)||
+       Date.parse(forecast.availableAt)>Date.parse(at)))||
      typeof forecast.outcomeValueKey!=='string'||!forecast.outcomeValueKey||
      !Array.isArray(forecast.evidenceIds)||!forecast.evidenceIds.length||
      !Array.isArray(forecast.scenarios)||forecast.scenarios.length<2||
@@ -100,7 +104,7 @@ export function projectAaaGasScenarioLadder({event,forecast,at}={}){
     status:'scenario-pushforward-ungraded',
     kind:'aaa-nested-threshold-scenario-pushforward-v1',
     eventTicker:event.event_ticker,forecastId:forecast.id??null,
-    issuedAt:forecast.availableAt,at,source:'AAA',
+    issuedAt:forecast.observedAt,sourceAvailableAt:forecast.availableAt??forecast.observedAt,at,source:'AAA',
     outcomeValueKey:forecast.outcomeValueKey,evidenceIds:[...forecast.evidenceIds],
     marketProbabilities:ladder,nestedPairs:pairs,
     interpretation:'exact projection of DECLARED shared market-game scenarios; no independent-strike approximation',
