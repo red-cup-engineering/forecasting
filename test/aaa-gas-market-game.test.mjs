@@ -139,7 +139,7 @@ const sharedForecast=(extra={})=>({
  id:'shared-market-game-scored-forecast-1',
  observedAt:'2026-10-12T18:30:00Z',
  horizon:'2026-10-13T15:00:00Z',
- eventTicker:event().event_ticker,targetSource:'AAA',targetScope:'United States',
+ eventTicker:event().event_ticker,targetSource:'AAA',targetScope:'United States',targetDate:'2026-10-13',
  outcomeValueKey:'aaaNationalRegularGasDollars',
  evidenceIds:['source-AAA','trained-past-station-days'],
  scenarios:[
@@ -190,6 +190,7 @@ test('event research projects scenarios without converting them into trade-eligi
 test('scope, source, target date and issued-after-decision future evidence cannot project',()=>{
  const broken=[
   {targetScope:'Maine'},
+  {targetDate:'2026-10-14'},
   {targetSource:'OPIS'},{eventTicker:'KXAAAGASD-26OCT14'},
   {availableAt:'2026-10-12T21:00:00Z'},{observedAt:'2026-10-12T21:00:00Z'},
   {horizon:'2026-10-12T18:00:00Z'}, {evidenceIds:[]},
