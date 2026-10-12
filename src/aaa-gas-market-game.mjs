@@ -35,7 +35,7 @@ const knownAAA=(rules)=>typeof rules==='string'&&
 export function aaaGasScopeOf(market){
  const s=market?.rules_primary;
  if(!knownAAA(s))return null;
- return /average regular gas prices for (.+?) are strictly greater than \\$/iu.exec(s)?.[1]?.trim()??null;
+ return /average regular gas prices for (.+?) are strictly greater than /iu.exec(s)?.[1]?.trim()??null;
 }
 const validRung=(m,event,at,maxAgeMs)=>(
   m&&typeof m.ticker==='string'&&m.ticker.startsWith(event.event_ticker+'-')&&
