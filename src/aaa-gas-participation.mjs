@@ -134,6 +134,9 @@ export function compareAaaGasParticipation({
   try{
    if(signalStudy.scope!==scope)
     throw new TypeError('information model scope does not match AAA event/source');
+   if(!finite(signalStudy.computeCostUsd)||signalStudy.computeCostUsd<0||
+      !finite(signalStudy.repricingCostBoundUsd)||signalStudy.repricingCostBoundUsd<0)
+    throw new TypeError('explicit source/compute cost and opponent repricing budget required');
    if(!takers.length)
     throw new TypeError('no executable one-lot taker actions available for the value-of-information comparison');
    const actions=[
