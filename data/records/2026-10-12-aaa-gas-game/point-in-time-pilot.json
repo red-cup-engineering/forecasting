@@ -1,0 +1,57 @@
+{
+  "kind": "read-only-aaa-gas-collector-pilot-v1",
+  "studyDate": "2026-10-12",
+  "question": "Do repeated intraday gas market snapshots reveal new AAA source values or necessary top-of-book strike crossings?",
+  "source": {
+    "producer": "forecasting-service/src/aaa-gas-market-game.mjs::auditAaaGasCollectorSnapshots",
+    "blobSha": "4fa378882c4ca65a250b81c9db5614185d747346",
+    "inputs": [
+      {
+        "path": "services/forecasting-service/data/records/2026-10-03-kalshi-observable-progress/collector/aaa-gas-2026-10-03.jsonl",
+        "blobSha": "1c1e4713b8b891d5cb1cc6fd4b91697000eb69da"
+      },
+      {
+        "path": "services/forecasting-service/data/records/2026-10-03-kalshi-observable-progress/collector/aaa-gas-2026-10-04.jsonl",
+        "blobSha": "8fbf076f9df182dfe7eac93d19b6dc21068e4bef"
+      }
+    ]
+  },
+  "findings": {
+    "kind": "aaa-public-collector-source-information-audit-v1",
+    "ticks": 71,
+    "distinctSourceVersions": 2,
+    "sourceVersions": [
+      {
+        "asOf": "10/3/26",
+        "nationalAverageUsdGallon": 4.3807,
+        "firstObservedAt": "2026-10-03T21:45:53+00:00",
+        "observations": 34
+      },
+      {
+        "asOf": "10/4/26",
+        "nationalAverageUsdGallon": 4.3697,
+        "firstObservedAt": "2026-10-04T07:27:22+00:00",
+        "observations": 37
+      }
+    ],
+    "firstObservedAt": "2026-10-03T21:45:53+00:00",
+    "lastObservedAt": "2026-10-04T16:51:06+00:00",
+    "strictlyCrossedDisplayedPairs": 0,
+    "comparedDisplayedPairs": 886,
+    "snapshotsWithDisplayedCrossing": 0,
+    "limits": [
+      "only observer receipts; no exact Kalshi market rules or book depth",
+      "displayed crossing is necessary, not sufficient for simultaneous executable arbitrage",
+      "same-day repeated snapshots are dependent and do not add independent AAA settlement labels"
+    ],
+    "tradeEligible": false,
+    "orderEffect": false
+  },
+  "caution": [
+    "71 observations are repeated polling ticks across less than two calendar days, not 71 independent AAA settlement samples",
+    "AAA as_of and first captured receipt time are not guaranteed to be the official first publication instant",
+    "No market depth or contemporaneous rules snapshot: zero observed necessary crossing is not a full arbitrage scan",
+    "No calibrated probability gain or realized trading return is established"
+  ],
+  "disposition": "archive negative baseline; compare independent source arrivals and queue-aware fills before considering any gas strategy"
+}
