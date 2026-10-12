@@ -55,6 +55,45 @@ carriers, produces forecast and calibration records, and composes with the
 Kalshi market-read and stake-guard services without taking a market position.
 It does not claim theory ownership or an operations/public product boundary.
 
+## Actual joint-scenario signals and partially identified market sheaves
+
+The read-only `aaa-gas-study.mjs participation PACKET.json` now supports
+`signalObservation` alongside the existing source-scoped `signalStudy`.
+This is the observed-result continuation of the already implemented
+expected-value-of-information decision, not a new probability engine:
+
+- `signalStudy.model.conditionedOnForecastId` names the supplied original
+  joint forecast. The model was published before observing the signal.
+- `signalObservation` contains its `id`, a known `signalId`, absolute
+  `observedAt` and `availableAt` clocks, and source `evidenceIds`.
+- The shared Prediction Market Engineering Bayes operator produces the
+  entire joint posterior. Every AAA threshold, pairwise covariance and
+  research action is recalculated from that ONE scenario distribution.
+- The independently received `settlementBand` must include
+  `forecastId` equal to that posterior's `id` and must contain its
+  selected rung probability. This is a consistency requirement, not proof
+  that the settlement model has been calibrated.
+- The result supplies `posteriorForecast`, `observedSignalDecision`,
+  the conditional research `signProjection` with an actual canonical
+  SignCell address and SignChain proof predecessor IDs, and the usual
+  fee-aware participation menu. No Kalshi order is placed.
+- A source report impossible under the frozen likelihood or published
+  after the decision gives a gap, not an executable signal. Journal
+  publication and independent causal receiving remain external.
+
+The cellular sheaf now also offers
+`partiallyIdentifiedHarmonicExtension`. The live shadow and historical
+backtest consume it to recover numerically identifiable stalk coordinates
+from constrained graph components without inventing estimates for gauge
+modes and disconnected free components. The backtest records withheld
+targets in `energy-by-day.json`. These are numerical research estimates,
+not empirical forecasting skill or calibrated opportunity admission.
+
+Both `aaa-gas-participation` and `kalshi-sheaf` are package exports.
+The mathematical shared signal update is owned by Prediction Market
+Engineering; Kalshi owns the venue rules, quote, fees, source population and
+event-specific projection.
+
 ## Entanglement
 
 Checked against the house primitives named in the 2026-09-01 five-custody
