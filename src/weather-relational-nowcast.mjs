@@ -4,7 +4,7 @@ import {createHash,randomUUID} from 'node:crypto';
 import {readFile,mkdir,writeFile,link,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {collectWeatherStrategyResearch,WEATHER_LEARNER_SPECS} from './weather-strategy-research.mjs';
-import {parseRelationalTemperatureCsv,relationalTemperaturePanel,relationalTemperatureFeatures,relationalIrregularTemperatureFeatures,fitRelationalTemperatureForIssuance,predictRelationalTemperature,RELATIONAL_REGIONS} from './weather-relational-temperature.mjs';
+import {parseRelationalTemperatureCsv,relationalTemperaturePanel,relationalTemperatureFeatures,relationalIrregularTemperatureFeatures,fitRelationalTemperatureForIssuance,predictRelationalTemperature,RELATIONAL_REGIONS,regionalThermalTransition} from './weather-relational-temperature.mjs';
 const HOUR=3600000,DAY=24*HOUR,iso=t=>new Date(t).toISOString(),hash=v=>createHash('sha256').update(typeof v==='string'?v:JSON.stringify(v)).digest('hex');
 const mean=a=>a.reduce((s,v)=>s+v,0)/a.length;
 const conflictBin=(reading,t)=>reading.conflicts.some(c=>c.witnesses.some(r=>{const at=Date.parse(r.observedAt);return Math.ceil(at/HOUR)*HOUR===t&&t-at<=20*60000;}));
@@ -47,5 +47,6 @@ export async function collectRelationalWeatherNowcast({region='nyc',cacheDir,now
  const response=await fetchImpl(url,{signal:AbortSignal.timeout(20000)});if(!response.ok)throw new Error('IEM current routine reports '+response.status);const rawSource=await response.text();if(Buffer.byteLength(rawSource)>256*1024)throw new Error('current reports exceed bounded source size');
  const receivedAt=iso(Date.now()),source={url:String(url),availableAt:receivedAt,sha256:hash(rawSource),bytes:Buffer.byteLength(rawSource),operator:'last routine report within 20 minutes at/before UTC boundary; no interpolation; same observational lineage as NWS'};
  const reading=parseRelationalTemperatureCsv(rawSource,{stations,availableAt:receivedAt,sourceId:source.sha256}),issued=Date.now(),projection=prospectiveRelationalForecasts(training,reading,{region,now:issued});
- return {kind:'prospective-relational-weather-v1',region,at:iso(issued),source,rawSource,reading,training,...projection,orderEffect:false};
+ const regionalTransition=regionalThermalTransition(reading,{stations,region,now:issued});
+ return {kind:'prospective-relational-weather-v1',region,at:iso(issued),source,rawSource,reading,training,regionalTransition,...projection,orderEffect:false};
 }
