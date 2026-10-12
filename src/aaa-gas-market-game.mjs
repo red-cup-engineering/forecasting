@@ -99,6 +99,16 @@ export function analyzeAaaGasMarketGame({
        Date.parse(row.modelAvailableAt)>now||Date.parse(row.fillAvailableAt)>now)
       {gaps.push({candidate:row.id,reason:'missing or later-published calibrated outcome/fill evidence'});continue;}
     const m=byTicker.get(row.ticker);
+    const yesBid=Number(m.yes_bid_dollars),yesAsk=Number(m.yes_ask_dollars);
+    if(!validNum(yesBid)||!validNum(yesAsk)||yesBid<0||yesAsk>1||yesBid>=yesAsk){
+      gaps.push({candidate:row.id,reason:'no valid contemporaneous two-sided YES book'});continue;
+    }
+    const quoteYesPrice=row.side==='yes'?row.priceUsd:1-row.priceUsd;
+    if(!validNum(quoteYesPrice)||
+       !(row.side==='yes'?quoteYesPrice>=yesBid&&quoteYesPrice<yesAsk:
+         quoteYesPrice>yesBid&&quoteYesPrice<=yesAsk)){
+      gaps.push({candidate:row.id,reason:'maker candidate crosses the book or is not at/inside the displayed touch'});continue;
+    }
     if(!validNum(row.priceUsd)||row.priceUsd<=0||row.priceUsd>=1||
        Math.abs(row.priceUsd*100-Math.round(row.priceUsd*100))>1e-8)
       {gaps.push({candidate:row.id,reason:'requires a whole-cent one-contract resting quote from owning planner'});continue;}
