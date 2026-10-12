@@ -111,7 +111,7 @@ export async function weatherStrategyResearch({region='nyc',root=weatherRoot(),n
 }
 export async function weatherRelationalNowcast({region='nyc',root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}){
  const packet=await collectRelationalWeatherNowcast({region,cacheDir:join(root,'nbm','relational'),now,fetchImpl}),evidence={at:packet.at,stations:[],local:{},observations:{},errors:[],relational:{regions:[packet]}};
- const evidenceId=await archiveWeatherEvidence(evidence,root);return {at:packet.at,region,evidenceId,source:packet.source,trainingId:packet.training.id,selection:packet.training.selection,gaps:packet.gaps,science:evidence.science,orderEffect:false};
+ const evidenceId=await archiveWeatherEvidence(evidence,root);return {at:packet.at,region,evidenceId,source:packet.source,trainingId:packet.training.id,selection:packet.training.selection,gaps:packet.gaps,regionalTransition:packet.regionalTransition,science:evidence.science,orderEffect:false};
 }
 /** Independent operational AI ensemble, registered in the same prospective physical scorer. */
 export async function weatherEcmwfEvidence({stations,validCount=1,root=weatherRoot(),now=Date.now(),fetchImpl=fetch,python}={}){
