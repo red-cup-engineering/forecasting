@@ -293,3 +293,49 @@ test('manual hypothetical fill estimates may not be silently combined with a his
  assert.ok(combined.gaps.some(x=>x.kind==='maker'&&/never combine both/i.test(x.reason)));
  assert.ok(!combined.menu.candidates.some(x=>x.id==='rest-YES'));
 });
+
+
+test('one received AAA source observation revises the full shared scenario ladder and research action',()=>{
+ const signalStudy=information(.8);
+ signalStudy.model.conditionedOnForecastId=scenario().id;
+ const observation={
+  id:'received-AAA-source-indication-1',signalId:'low-source-indication',
+  observedAt:'2026-10-12T19:20:00Z',availableAt:'2026-10-12T19:30:00Z',
+  evidenceIds:['actual-source-byte-receipt'],
+ };
+ const posteriorId=JSON.stringify(['conditioned-joint-forecast',
+   scenario().id,signalStudy.model.id,observation.id,observation.signalId]);
+ const r=study({
+  signalStudy,signalObservation:observation,
+  settlementBand:scored({
+   low:.68,high:.71,forecastId:posteriorId,
+  }),
+ });
+ assert.equal(r.status,'conditional-venue-research');
+ assert.equal(r.scenarioProjection.forecastId,posteriorId);
+ assert.equal(r.posteriorForecast.id,posteriorId);
+ assert.ok(r.posteriorForecast.evidenceIds.includes('actual-source-byte-receipt'));
+ assert.ok(Math.abs(r.scenarioProjection.marketProbabilityYes-9/13)<1e-12);
+ const ps=r.scenarioProjection.marketProbabilities.map(m=>m.probabilityYes);
+ assert.ok(ps.every((p,i)=>i===0||ps[i-1]>=p));
+ assert.ok(ps[1]>.3&&ps[1]<.5);
+ assert.equal(r.observedSignalDecision.posteriorBestAction,'take-no');
+ assert.equal(r.observedSignal.sourceAuthenticated,false);
+ assert.equal(r.tradeEligible,false);
+ assert.equal(r.orderEffect,false);
+});
+
+test('an unscoped or unavailable observation cannot silently reprice the AAA ladder',()=>{
+ const info=information(.8);
+ info.model.conditionedOnForecastId=scenario().id;
+ const obs={id:'new-report',signalId:'low-source-indication',
+  observedAt:'2026-10-12T19:20:00Z',
+  availableAt:'2026-10-12T19:30:00Z',evidenceIds:['publisher-receipt']};
+ assert.equal(study({signalObservation:obs}).status,'unbound-conditional-source-signal');
+ assert.equal(study({signalStudy:info,
+  signalObservation:{...obs,availableAt:'2026-10-12T21:00:00Z'}}).status,
+  'unqualified-conditional-source-signal');
+ assert.equal(study({signalStudy:info,signalObservation:obs,
+  settlementBand:scored({low:.68,high:.71})}).status,
+  'missing-consistent-source-calibration');
+});
