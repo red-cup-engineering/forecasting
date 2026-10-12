@@ -4,6 +4,8 @@ import {collectWeatherStrategyResearch} from './weather-strategy-research.mjs';
 import {collectRelationalTemperatureScience} from './weather-relational-temperature.mjs';
 import {deriveDailyTemperatureExtremes} from './weather-temperature-extremes.mjs';
 import {INDEX_CITIES} from './weather-index.mjs';
+import {TEMPERATURE_MARKETS} from './temperature-market-model.mjs';
+import {planWeatherReasoningCadence,temperatureReasoningTimeZones} from './weather-reasoning-cadence.mjs';
 import { binarySettlement } from '@red-cup-engineering/kalshi-services-section/market-facts';
 import {randomUUID,createHash} from 'node:crypto';
 import {updateStationScience,readStationScience,stationPointForecasts} from './station-weather-science.mjs';
@@ -151,6 +153,44 @@ export async function weatherStatus({root=weatherRoot()}={}) {
   if(lock&&await processStart(lock.pid)===lock.start)running={startedAt:new Date(lock.at).toISOString()};
   return {...result,running,lastFailure:await read(join(root,'last-failure.json'),null)};
 }
+
+/** A read-only local-time plan for the next existing whole-exchange weather cycle.
+ * Its station/zone roster comes from the normal temperature-market registry
+ * plus any live contract bindings. No extra scheduler or source ownership.
+ */
+export async function weatherCadencePlan({root=weatherRoot(),now=Date.now(),policy}={}){
+  const status=await weatherStatus({root});
+  const timeZones=temperatureReasoningTimeZones({
+    series:TEMPERATURE_MARKETS.series,contracts:status.contracts??[],
+  });
+  const lastCompletedAt=Number.isFinite(Date.parse(status.at))?status.at:null;
+  const plan=planWeatherReasoningCadence({
+    now,timeZones,lastCompletedAt,...(policy?{policy}:{}),
+  });
+  return {...plan,collectorRunning:status.running??null,
+    lastCompletedAt,scope:'full-venue weather cycle; due zones only select when it runs'};
+}
+
+/** One entrypoint for an existing 5-minute host tick; choose due times in
+ * each local civil zone, then REUSE the existing single-flight collector.
+ * The collector still refreshes all weather contracts; this method does
+ * not claim zone-scoped acquisition or real 5-minute source availability.
+ * A missed/busy slot is not backfilled as independent forecast evidence.
+ */
+export async function runCadencedWeatherCycle({
+  root=weatherRoot(),now=Date.now(),policy,...collectorOptions
+}={}){
+  const plan=await weatherCadencePlan({root,now,policy});
+  if(!plan.shouldRun)return {status:'not-due',cadence:plan,orderEffect:false};
+  if(plan.collectorRunning)return {status:'already-running',cadence:plan,orderEffect:false};
+  const cadence={selectedAt:plan.evaluatedAt,slotAt:plan.slotAt,
+    dueTimeZones:plan.dueTimeZones,policy:plan.policy,
+    scope:'one single-flight global weather collection selected by station-local due windows',
+    sourceFreshness:'separate from scheduled reasoning; preserve actual source receipt clocks'};
+  const result=await runWeatherCycle({root,now,...collectorOptions,cadence});
+  return {...result,status:'completed',cadence,orderEffect:false};
+}
+
 export async function triggerWeatherCycle({root=weatherRoot()}={}) {
   const state=await weatherStatus({root});
   if(state.running)return {status:'already-running',...state.running,orderEffect:false};
@@ -317,7 +357,7 @@ async function removeDeadTemporaries(root){
  * scoring: an overrun then costs scoring time, never the desk's surface. Scoring resumes next cycle (score files
  * make it idempotent).
  */
-export async function runWeatherCycle({root=weatherRoot(),client=weatherClient(),now=Date.now(),fetchImpl=fetch,capitalUsd=0,encumberedUsd=0}={}) {
+export async function runWeatherCycle({root=weatherRoot(),client=weatherClient(),now=Date.now(),fetchImpl=fetch,capitalUsd=0,encumberedUsd=0,cadence=null}={}) {
   return locked(root,async()=>{
     await removeDeadTemporaries(root);
     const grades=await read(join(root,'grades.json'),{});
@@ -361,7 +401,7 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
     const research=Object.entries(families).filter(([_,v])=>v.modelled<v.markets).sort((a,b)=>b[1].volume24h-a[1].volume24h).map(([family,v])=>({family,...v,nextEffect:family==='hourly-temperature'?'bind official station/time and score short-horizon observation-conditioned forecasts':family==='precipitation'?'bind interval totals; validate probabilistic accumulation forecasts':family==='tropical'?'bind NHC event definitions and calibrate track/intensity ensembles':family==='snow'?'bind reporting station and validate snow accumulation ensembles':'bind settlement transformation and submit versioned forecasts'}));
     const {forecasts:physicalForecasts,outcomes:physicalOutcomes,...science}=evidence.science??{};
     const regionalTransitions=(evidence.relational?.regions??[]).filter(r=>r.regionalTransition).map(r=>({region:r.region,...r.regionalTransition}));
-    const result={science,regionalTransitions,at,collectionStartedAt:new Date(now).toISOString(),complete:universe.complete,series:universe.series,marketCount:contracts.length,modelled:rows.filter(r=>r.models.length).length,families,errors:[...universe.errors,...evidence.errors],scoring:{settled:scoring.settled,pending:scoring.pending,errors:scoring.errors},grades:scoring.grades,forecasts:rows,contracts,opportunities,research,allocation:allocateWeather(opportunities.filter(o=>Date.parse(o.quoteExpiresAt)>Date.now()),{capitalUsd,encumberedUsd}),orderEffect:false};
+    const result={science,regionalTransitions,...(cadence?{cadence}:{}),at,collectionStartedAt:new Date(now).toISOString(),complete:universe.complete,series:universe.series,marketCount:contracts.length,modelled:rows.filter(r=>r.models.length).length,families,errors:[...universe.errors,...evidence.errors],scoring:{settled:scoring.settled,pending:scoring.pending,errors:scoring.errors},grades:scoring.grades,forecasts:rows,contracts,opportunities,research,allocation:allocateWeather(opportunities.filter(o=>Date.parse(o.quoteExpiresAt)>Date.now()),{capitalUsd,encumberedUsd}),orderEffect:false};
     await atomic(join(root,'latest.json'),result);
     return result;
   });
