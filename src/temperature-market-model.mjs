@@ -8,6 +8,7 @@
 import { readFileSync } from 'node:fs';
 import { bracketProbability, forecastScale } from './temperature-distribution.mjs';
 import { guidanceForExtreme } from './nbm-station-guidance.mjs';
+import {eventDate} from '@red-cup-engineering/kalshi-services-section/market-facts';
 
 export const TEMPERATURE_MARKETS = JSON.parse(readFileSync(new URL('../content/config/temperature-markets.json', import.meta.url), 'utf8'));
 const BY_SERIES = new Map(TEMPERATURE_MARKETS.series.map((row) => [row.seriesTicker, row]));
@@ -15,12 +16,8 @@ const BY_SERIES = new Map(TEMPERATURE_MARKETS.series.map((row) => [row.seriesTic
 /** The declared row for a series, or undefined when the house does not price it. */
 export const temperatureSeries = (seriesTicker) => BY_SERIES.get(seriesTicker);
 
-const MONTHS = { JAN: '01', FEB: '02', MAR: '03', APR: '04', MAY: '05', JUN: '06', JUL: '07', AUG: '08', SEP: '09', OCT: '10', NOV: '11', DEC: '12' };
-/** The local calendar date an event ticker names (KXHIGHNY-26OCT04 -> 2026-10-04), or null. */
-export function eventDate(eventTicker) {
-  const match = /-(\d{2})([A-Z]{3})(\d{2})$/u.exec(eventTicker ?? '');
-  return match && MONTHS[match[2]] ? `20${match[1]}-${MONTHS[match[2]]}-${match[3]}` : null;
-}
+/** Compatibility export: generic Kalshi ticker-date interpretation belongs to the venue. */
+export {eventDate};
 
 /**
  * The probability one bracket settles yes, with everything it rests on.
