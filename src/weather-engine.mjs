@@ -163,12 +163,15 @@ export async function weatherCadencePlan({root=weatherRoot(),now=Date.now(),poli
   const timeZones=temperatureReasoningTimeZones({
     series:TEMPERATURE_MARKETS.series,contracts:status.contracts??[],
   });
-  const lastCompletedAt=Number.isFinite(Date.parse(status.at))?status.at:null;
+  // The stored cycle-end 'at' is NOT a valid slot-coverage clock: the run
+  // might have started collecting observations before the slot opened.
+  const lastEvidenceAt=Number.isFinite(Date.parse(status.collectionStartedAt))?
+    status.collectionStartedAt:null;
   const plan=planWeatherReasoningCadence({
-    now,timeZones,lastCompletedAt,...(policy?{policy}:{}),
+    now,timeZones,lastEvidenceAt,...(policy?{policy}:{}),
   });
   return {...plan,collectorRunning:status.running??null,
-    lastCompletedAt,scope:'full-venue weather cycle; due zones only select when it runs'};
+    lastEvidenceAt,scope:'full-venue weather cycle; due zones only select when it runs'};
 }
 
 /** One entrypoint for an existing 5-minute host tick; choose due times in
