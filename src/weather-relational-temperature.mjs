@@ -80,8 +80,9 @@ export function regionalThermalTransition(reading,{stations,region=null,now,thre
     latestObservedAt:current.observedAt,latestReceivedAt:current.availableAt,
     witnesses:[...(prev.witnesses??[]),...(current.witnesses??[])]});
  }
- const warming=deltas.filter(r=>r.deltaF>=thresholdF);
- const cooling=deltas.filter(r=>r.deltaF<=-thresholdF);
+ const toleranceF=1e-9; // round-tripping Fahrenheit through Celsius must not lose an exact 3 F threshold
+ const warming=deltas.filter(r=>r.deltaF>=thresholdF-toleranceF);
+ const cooling=deltas.filter(r=>r.deltaF<=-thresholdF+toleranceF);
  const direction=warming.length>=n&&warming.length>cooling.length?'warming':
    cooling.length>=n&&cooling.length>warming.length?'cooling':null;
  return {...base,
