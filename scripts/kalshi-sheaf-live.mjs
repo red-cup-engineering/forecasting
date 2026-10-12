@@ -4,7 +4,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { STATIONS, assemble, bracketProb, dayISO, edgeTemplates, eventDay, fitSheafMaps, loadEvents, neighbourPairs, snapshot, snapshotTimes } from "../src/kalshi-sheaf-market.mjs";
-import { dirichlet, partiallyIdentifiedHarmonicExtension, vertexTension } from "../src/kalshi-sheaf.mjs";
+import { partiallyIdentifiedHarmonicExtension } from "../src/kalshi-sheaf.mjs";
+import {marketSheafDirichlet as dirichlet,marketSheafVertexTension as vertexTension} from "../src/kalshi-sheaf-signgraph.mjs";
 
 const here = path.dirname(new URL(import.meta.url).pathname);
 const rec = path.join(here, "../data/records/2026-10-04-kalshi-sheaf");
