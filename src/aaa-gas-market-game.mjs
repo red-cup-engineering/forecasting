@@ -20,7 +20,7 @@
  * queue priority, adverse fills, fees and possible, non-guaranteed LIP
  * rewards. Every result is research-only and cannot place orders.
  */
-import {rankBinaryMakerPlacements} from '@red-cup-engineering/mandate-portfolio-allocation-service/binary-maker-game';
+import {binaryMakerPlacementBounds,rankBinaryMakerPlacements} from '@red-cup-engineering/mandate-portfolio-allocation-service/binary-maker-game';
 import {ladderGroups,buildLadder,ladderFamily} from './coherence-families.mjs';
 import {assessFamily} from './coherence.mjs';
 import {orderFeeCentsOfFills} from './fees.mjs';
@@ -105,7 +105,7 @@ export function analyzeAaaGasMarketGame({
     const feeType=series.fee_type,multiplier=Number(series.fee_multiplier??1);
     const actualFeeUsd=orderFeeCentsOfFills([{count:1,priceCents:Math.round(row.priceUsd*100)}],
       {feeType,multiplier,maker:true})/100;
-    admitted.push({
+    const proposed={
       id:row.id,side:row.side,priceUsd:row.priceUsd,
       makerFeeUsdPerFill:actualFeeUsd,
       probabilityYes:row.probabilityYes,probabilityFill:row.probabilityFill,
@@ -116,7 +116,9 @@ export function analyzeAaaGasMarketGame({
         fillModelId:row.fillModelId,fillEvidenceId:row.fillEvidenceId,
         marketObservedAt:m.marketObservedAt,modelAvailableAt:row.modelAvailableAt,
         fillAvailableAt:row.fillAvailableAt,seriesFeeType:feeType},
-    });
+    };
+    try{binaryMakerPlacementBounds(proposed);admitted.push(proposed);}
+    catch(error){gaps.push({candidate:row.id,reason:'invalid conditional probability or cost assumptions: '+error.message});}
   }
   return {...base,status:'read-only-research',
     sourceBinding:'AAA average regular gasoline strictly greater than the named strike; source published after market close is not pre-close information',
