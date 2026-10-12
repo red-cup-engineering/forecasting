@@ -24,6 +24,7 @@ import {binaryMakerPlacementBounds,rankBinaryMakerPlacements} from '@red-cup-eng
 import {ladderGroups,buildLadder,ladderFamily} from './coherence-families.mjs';
 import {assessFamily} from './coherence.mjs';
 import {orderFeeCentsOfFills} from './fees.mjs';
+import {eventDate} from '@red-cup-engineering/kalshi-services-section/market-facts';
 
 const validClock=(s)=>typeof s==='string'&&Number.isFinite(Date.parse(s));
 const validNum=(x)=>typeof x==='number'&&Number.isFinite(x);
@@ -66,6 +67,7 @@ const emptyMaker=()=>rankBinaryMakerPlacements([]);
 export function projectAaaGasScenarioLadder({event,forecast,at}={}){
   if(!event||!forecast||!validClock(at)||forecast.targetSource!=='AAA'||
      forecast.eventTicker!==event.event_ticker||typeof forecast.id!=='string'||!forecast.id||
+     !eventDate(event.event_ticker)||forecast.targetDate!==eventDate(event.event_ticker)||
      typeof forecast.targetScope!=='string'||!forecast.targetScope||
      !validClock(forecast.observedAt)||!validClock(forecast.horizon)||
      Date.parse(forecast.observedAt)>Date.parse(at)||
@@ -111,7 +113,7 @@ export function projectAaaGasScenarioLadder({event,forecast,at}={}){
   return {
     status:'scenario-pushforward-ungraded',
     kind:'aaa-nested-threshold-scenario-pushforward-v1',
-    eventTicker:event.event_ticker,forecastId:forecast.id??null,
+    eventTicker:event.event_ticker,targetDate:forecast.targetDate,forecastId:forecast.id??null,
     issuedAt:forecast.observedAt,sourceAvailableAt:forecast.availableAt??forecast.observedAt,at,source:'AAA',
     outcomeValueKey:forecast.outcomeValueKey,targetScope:forecast.targetScope,evidenceIds:[...forecast.evidenceIds],
     marketProbabilities:ladder,nestedPairs:pairs,
@@ -148,6 +150,7 @@ export function analyzeAaaGasMarketGame({
   if(!event||!series||!gasSeries(event.series_ticker)||
      event.series_ticker!==series.ticker||typeof event.event_ticker!=='string'||
      !event.event_ticker.startsWith(event.series_ticker+'-')||
+     !eventDate(event.event_ticker)||
      !Array.isArray(event.markets)||event.markets.length<2)
     return {...base,status:'unsupported-or-unbound-gas-event',gaps:['source/series/event/rung roster not bound'],coherence:[],maker:emptyMaker()};
   if(!['quadratic','quadratic_with_maker_fees','quadratic_with_combo_maker_fees'].includes(series.fee_type)||
