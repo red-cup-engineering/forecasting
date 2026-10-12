@@ -8,8 +8,13 @@
 //           edge metric W = inverse residual covariance. Identity restrictions would be the
 //           "same quantity" case (Kalshi vs Polymarket); not present in this data.
 import {
-  bracketBounds, bracketProb, buildSheaf, dirichlet, fitCalibrationLink, fitLadder, harmonicExtension, vertexTension, zeros,
+  bracketBounds, bracketProb, fitCalibrationLink, fitLadder, harmonicExtension, zeros,
 } from "./kalshi-sheaf.mjs";
+import {
+  buildMarketSheafFromSignGraph as buildSheaf,
+  marketSheafDirichlet as dirichlet,
+  marketSheafVertexTension as vertexTension,
+} from "./kalshi-sheaf-signgraph.mjs";
 
 export const STATIONS = {
   AUS: [30.19, -97.67], MDW: [41.79, -87.75], DEN: [39.86, -104.67], LAX: [33.94, -118.41], MIA: [25.79, -80.29],
