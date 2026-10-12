@@ -1,0 +1,529 @@
+{
+  "kind": "read-only-gas-and-diesel-maker-fill-selection-study-v1",
+  "studyDate": "2026-10-12",
+  "task": "Evaluate whether fills of high-probability fuel prediction claims are conditioned on eventual settlement, using the existing archived hypothetical placement grid.",
+  "input": {
+    "path": "services/forecasting-service/data/records/2026-10-04-kalshi-microstructure/results/fill-grid-gas.csv",
+    "blobSha": "da20044e37f7c04f0102c41cd225b7d7f00bd223",
+    "header": "p,Q,H,hb,tb,eb,yes,filled,clean,n",
+    "sourceFamilies": [
+      "KXAAAGASD*",
+      "KXDIESELD"
+    ],
+    "containsIndependentEventIds": false
+  },
+  "operator": {
+    "repository": "red-cup-engineering/kalshi-engineering-services-section",
+    "path": "services/forecasting-service/src/fuel-maker-fill-retrospective.mjs",
+    "blobSha": "44efa77e96d323381951d6d012d38d80c66c4650",
+    "upstream": {
+      "repository": "red-cup-engineering/prediction-market-engineering-services-section",
+      "path": "services/mandate-portfolio-allocation-service/src/binary-maker-game.mjs",
+      "blobSha": "6e270df125c21dd6e1ad1e0035b65a8b2c018859"
+    }
+  },
+  "replay": {
+    "kind": "gas-diesel-pooled-retrospective-fill-game-v1",
+    "sourceId": "da20044e37f7c04f0102c41cd225b7d7f00bd223",
+    "queueAhead": 0,
+    "horizonMinutes": 240,
+    "makerFeeUsdPerFill": 0,
+    "receivedRows": 6804,
+    "selectedRows": 252,
+    "prices": [
+      {
+        "priceCents": 94,
+        "status": "retrospective-bucket-only",
+        "placements": 1629,
+        "winningPlacements": 1512,
+        "losingPlacements": 117,
+        "simulatedFills": 484,
+        "simulatedCleanFills": 143,
+        "simulatedSweepFills": 341,
+        "empiricalBaseWinFraction": 0.9281767955801105,
+        "fillGivenWinningSettlement": 0.29563492063492064,
+        "fillGivenLosingSettlement": 0.3162393162393162,
+        "simulatedGrossUsdPerPlacement": -0.004886433394720675,
+        "independenceCounterfactualUsdPerPlacement": -0.0035128489498014196,
+        "selectionEffectUsdPerPlacement": -0.0013735844449192557,
+        "cleanFillGrossUsdPerPlacement": 0.0009699201964395412,
+        "sweepFillGrossUsdPerPlacement": -0.005856353591160199,
+        "conditionalModelWitness": {
+          "kind": "binary-maker-outcome-conditioned-placement-v1",
+          "side": "yes",
+          "priceUsd": 0.94,
+          "makerFeeUsdPerFill": 0,
+          "probabilityYes": {
+            "low": 0.9281767955801105,
+            "high": 0.9281767955801105
+          },
+          "probabilityWin": {
+            "low": 0.9281767955801105,
+            "high": 0.9281767955801105
+          },
+          "probabilityFillGivenWin": {
+            "low": 0.29563492063492064,
+            "high": 0.29563492063492064
+          },
+          "probabilityFillGivenLoss": {
+            "low": 0.3162393162393162,
+            "high": 0.3162393162393162
+          },
+          "probabilityFill": {
+            "low": 0.2971147943523634,
+            "high": 0.2971147943523634
+          },
+          "conditionalPnlUsdPerPlacement": {
+            "low": -0.004886433394720668,
+            "high": -0.004886433394720668
+          },
+          "worstCaseCoupling": {
+            "winProbability": 0.9281767955801105,
+            "fillGivenWin": 0.29563492063492064,
+            "fillGivenLoss": 0.3162393162393162,
+            "winAndFillProbability": 0.2744014732965009,
+            "lossAndFillProbability": 0.022713321055862504,
+            "fillProbability": 0.2971147943523634,
+            "netPnlUsdPerPlacement": -0.004886433394720668
+          },
+          "bestCaseCoupling": {
+            "winProbability": 0.9281767955801105,
+            "fillGivenWin": 0.29563492063492064,
+            "fillGivenLoss": 0.3162393162393162,
+            "winAndFillProbability": 0.2744014732965009,
+            "lossAndFillProbability": 0.022713321055862504,
+            "fillProbability": 0.2971147943523634,
+            "netPnlUsdPerPlacement": -0.004886433394720668
+          },
+          "rewardScenarioUsdPerPlacement": {
+            "low": 0,
+            "high": 0
+          },
+          "carryUsdPerPlacement": 0,
+          "conditionallyPositive": false,
+          "assumptions": [
+            "conditional fill probabilities concern the exact same quote regime and holding horizon",
+            "joint settlement and fill conditional rates were validly estimated on independent past events",
+            "probability interval rectangle contains the true parameter vector",
+            "binary $1 purchased-side payout and per-filled-order fees are accurately modeled",
+            "scenario rewards are not automatically received liquidity incentives"
+          ],
+          "tradeEligible": false,
+          "orderEffect": false
+        },
+        "sourceQualification": "retrospective correlated hypothetical queue replay; not day-clustered or calibrated",
+        "tradeEligible": false
+      },
+      {
+        "priceCents": 95,
+        "status": "retrospective-bucket-only",
+        "placements": 2293,
+        "winningPlacements": 2140,
+        "losingPlacements": 153,
+        "simulatedFills": 579,
+        "simulatedCleanFills": 156,
+        "simulatedSweepFills": 423,
+        "empiricalBaseWinFraction": 0.9332751853467074,
+        "fillGivenWinningSettlement": 0.24205607476635513,
+        "fillGivenLosingSettlement": 0.39869281045751637,
+        "simulatedGrossUsdPerPlacement": -0.013977322285215855,
+        "independenceCounterfactualUsdPerPlacement": -0.0042231433424580874,
+        "selectionEffectUsdPerPlacement": -0.009754178942757766,
+        "cleanFillGrossUsdPerPlacement": 0.0029655473179241217,
+        "sweepFillGrossUsdPerPlacement": -0.016942869603139975,
+        "conditionalModelWitness": {
+          "kind": "binary-maker-outcome-conditioned-placement-v1",
+          "side": "yes",
+          "priceUsd": 0.95,
+          "makerFeeUsdPerFill": 0,
+          "probabilityYes": {
+            "low": 0.9332751853467074,
+            "high": 0.9332751853467074
+          },
+          "probabilityWin": {
+            "low": 0.9332751853467074,
+            "high": 0.9332751853467074
+          },
+          "probabilityFillGivenWin": {
+            "low": 0.24205607476635513,
+            "high": 0.24205607476635513
+          },
+          "probabilityFillGivenLoss": {
+            "low": 0.39869281045751637,
+            "high": 0.39869281045751637
+          },
+          "probabilityFill": {
+            "low": 0.25250763192324466,
+            "high": 0.25250763192324466
+          },
+          "conditionalPnlUsdPerPlacement": {
+            "low": -0.013977322285215865,
+            "high": -0.013977322285215865
+          },
+          "worstCaseCoupling": {
+            "winProbability": 0.9332751853467074,
+            "fillGivenWin": 0.24205607476635513,
+            "fillGivenLoss": 0.39869281045751637,
+            "winAndFillProbability": 0.22590492804186654,
+            "lossAndFillProbability": 0.0266027038813781,
+            "fillProbability": 0.25250763192324466,
+            "netPnlUsdPerPlacement": -0.013977322285215865
+          },
+          "bestCaseCoupling": {
+            "winProbability": 0.9332751853467074,
+            "fillGivenWin": 0.24205607476635513,
+            "fillGivenLoss": 0.39869281045751637,
+            "winAndFillProbability": 0.22590492804186654,
+            "lossAndFillProbability": 0.0266027038813781,
+            "fillProbability": 0.25250763192324466,
+            "netPnlUsdPerPlacement": -0.013977322285215865
+          },
+          "rewardScenarioUsdPerPlacement": {
+            "low": 0,
+            "high": 0
+          },
+          "carryUsdPerPlacement": 0,
+          "conditionallyPositive": false,
+          "assumptions": [
+            "conditional fill probabilities concern the exact same quote regime and holding horizon",
+            "joint settlement and fill conditional rates were validly estimated on independent past events",
+            "probability interval rectangle contains the true parameter vector",
+            "binary $1 purchased-side payout and per-filled-order fees are accurately modeled",
+            "scenario rewards are not automatically received liquidity incentives"
+          ],
+          "tradeEligible": false,
+          "orderEffect": false
+        },
+        "sourceQualification": "retrospective correlated hypothetical queue replay; not day-clustered or calibrated",
+        "tradeEligible": false
+      },
+      {
+        "priceCents": 96,
+        "status": "retrospective-bucket-only",
+        "placements": 3243,
+        "winningPlacements": 3088,
+        "losingPlacements": 155,
+        "simulatedFills": 744,
+        "simulatedCleanFills": 297,
+        "simulatedSweepFills": 447,
+        "empiricalBaseWinFraction": 0.952204748689485,
+        "fillGivenWinningSettlement": 0.2192357512953368,
+        "fillGivenLosingSettlement": 0.432258064516129,
+        "simulatedGrossUsdPerPlacement": -0.011483194572926306,
+        "independenceCounterfactualUsdPerPlacement": -0.0017883647779904789,
+        "selectionEffectUsdPerPlacement": -0.009694829794935828,
+        "cleanFillGrossUsdPerPlacement": -0.00003700277520814201,
+        "sweepFillGrossUsdPerPlacement": -0.011446191797718164,
+        "conditionalModelWitness": {
+          "kind": "binary-maker-outcome-conditioned-placement-v1",
+          "side": "yes",
+          "priceUsd": 0.96,
+          "makerFeeUsdPerFill": 0,
+          "probabilityYes": {
+            "low": 0.952204748689485,
+            "high": 0.952204748689485
+          },
+          "probabilityWin": {
+            "low": 0.952204748689485,
+            "high": 0.952204748689485
+          },
+          "probabilityFillGivenWin": {
+            "low": 0.2192357512953368,
+            "high": 0.2192357512953368
+          },
+          "probabilityFillGivenLoss": {
+            "low": 0.432258064516129,
+            "high": 0.432258064516129
+          },
+          "probabilityFill": {
+            "low": 0.2294172062904718,
+            "high": 0.2294172062904718
+          },
+          "conditionalPnlUsdPerPlacement": {
+            "low": -0.01148319457292632,
+            "high": -0.01148319457292632
+          },
+          "worstCaseCoupling": {
+            "winProbability": 0.952204748689485,
+            "fillGivenWin": 0.2192357512953368,
+            "fillGivenLoss": 0.432258064516129,
+            "winAndFillProbability": 0.2087573234659266,
+            "lossAndFillProbability": 0.020659882824545187,
+            "fillProbability": 0.2294172062904718,
+            "netPnlUsdPerPlacement": -0.01148319457292632
+          },
+          "bestCaseCoupling": {
+            "winProbability": 0.952204748689485,
+            "fillGivenWin": 0.2192357512953368,
+            "fillGivenLoss": 0.432258064516129,
+            "winAndFillProbability": 0.2087573234659266,
+            "lossAndFillProbability": 0.020659882824545187,
+            "fillProbability": 0.2294172062904718,
+            "netPnlUsdPerPlacement": -0.01148319457292632
+          },
+          "rewardScenarioUsdPerPlacement": {
+            "low": 0,
+            "high": 0
+          },
+          "carryUsdPerPlacement": 0,
+          "conditionallyPositive": false,
+          "assumptions": [
+            "conditional fill probabilities concern the exact same quote regime and holding horizon",
+            "joint settlement and fill conditional rates were validly estimated on independent past events",
+            "probability interval rectangle contains the true parameter vector",
+            "binary $1 purchased-side payout and per-filled-order fees are accurately modeled",
+            "scenario rewards are not automatically received liquidity incentives"
+          ],
+          "tradeEligible": false,
+          "orderEffect": false
+        },
+        "sourceQualification": "retrospective correlated hypothetical queue replay; not day-clustered or calibrated",
+        "tradeEligible": false
+      },
+      {
+        "priceCents": 97,
+        "status": "retrospective-bucket-only",
+        "placements": 5273,
+        "winningPlacements": 5114,
+        "losingPlacements": 159,
+        "simulatedFills": 902,
+        "simulatedCleanFills": 283,
+        "simulatedSweepFills": 619,
+        "empiricalBaseWinFraction": 0.9698463872558316,
+        "fillGivenWinningSettlement": 0.16210402815799765,
+        "fillGivenLosingSettlement": 0.4591194968553459,
+        "simulatedGrossUsdPerPlacement": -0.008712307984069778,
+        "independenceCounterfactualUsdPerPlacement": -0.000026277014079245903,
+        "selectionEffectUsdPerPlacement": -0.008686030969990531,
+        "cleanFillGrossUsdPerPlacement": 0.0012307984069789512,
+        "sweepFillGrossUsdPerPlacement": -0.00994310639104873,
+        "conditionalModelWitness": {
+          "kind": "binary-maker-outcome-conditioned-placement-v1",
+          "side": "yes",
+          "priceUsd": 0.97,
+          "makerFeeUsdPerFill": 0,
+          "probabilityYes": {
+            "low": 0.9698463872558316,
+            "high": 0.9698463872558316
+          },
+          "probabilityWin": {
+            "low": 0.9698463872558316,
+            "high": 0.9698463872558316
+          },
+          "probabilityFillGivenWin": {
+            "low": 0.16210402815799765,
+            "high": 0.16210402815799765
+          },
+          "probabilityFillGivenLoss": {
+            "low": 0.4591194968553459,
+            "high": 0.4591194968553459
+          },
+          "probabilityFill": {
+            "low": 0.17106011758012518,
+            "high": 0.17106011758012518
+          },
+          "conditionalPnlUsdPerPlacement": {
+            "low": -0.0087123079840698,
+            "high": -0.0087123079840698
+          },
+          "worstCaseCoupling": {
+            "winProbability": 0.9698463872558316,
+            "fillGivenWin": 0.16210402815799765,
+            "fillGivenLoss": 0.4591194968553459,
+            "winAndFillProbability": 0.15721600606865163,
+            "lossAndFillProbability": 0.013844111511473538,
+            "fillProbability": 0.17106011758012518,
+            "netPnlUsdPerPlacement": -0.0087123079840698
+          },
+          "bestCaseCoupling": {
+            "winProbability": 0.9698463872558316,
+            "fillGivenWin": 0.16210402815799765,
+            "fillGivenLoss": 0.4591194968553459,
+            "winAndFillProbability": 0.15721600606865163,
+            "lossAndFillProbability": 0.013844111511473538,
+            "fillProbability": 0.17106011758012518,
+            "netPnlUsdPerPlacement": -0.0087123079840698
+          },
+          "rewardScenarioUsdPerPlacement": {
+            "low": 0,
+            "high": 0
+          },
+          "carryUsdPerPlacement": 0,
+          "conditionallyPositive": false,
+          "assumptions": [
+            "conditional fill probabilities concern the exact same quote regime and holding horizon",
+            "joint settlement and fill conditional rates were validly estimated on independent past events",
+            "probability interval rectangle contains the true parameter vector",
+            "binary $1 purchased-side payout and per-filled-order fees are accurately modeled",
+            "scenario rewards are not automatically received liquidity incentives"
+          ],
+          "tradeEligible": false,
+          "orderEffect": false
+        },
+        "sourceQualification": "retrospective correlated hypothetical queue replay; not day-clustered or calibrated",
+        "tradeEligible": false
+      },
+      {
+        "priceCents": 98,
+        "status": "retrospective-bucket-only",
+        "placements": 4971,
+        "winningPlacements": 4818,
+        "losingPlacements": 153,
+        "simulatedFills": 1328,
+        "simulatedCleanFills": 726,
+        "simulatedSweepFills": 602,
+        "empiricalBaseWinFraction": 0.9692214846107423,
+        "fillGivenWinningSettlement": 0.2594437525944375,
+        "fillGivenLosingSettlement": 0.5098039215686274,
+        "simulatedGrossUsdPerPlacement": -0.010348018507342597,
+        "independenceCounterfactualUsdPerPlacement": -0.0028794746403005807,
+        "selectionEffectUsdPerPlacement": -0.0074685438670420165,
+        "cleanFillGrossUsdPerPlacement": 0.000506940253470123,
+        "sweepFillGrossUsdPerPlacement": -0.010854958760812721,
+        "conditionalModelWitness": {
+          "kind": "binary-maker-outcome-conditioned-placement-v1",
+          "side": "yes",
+          "priceUsd": 0.98,
+          "makerFeeUsdPerFill": 0,
+          "probabilityYes": {
+            "low": 0.9692214846107423,
+            "high": 0.9692214846107423
+          },
+          "probabilityWin": {
+            "low": 0.9692214846107423,
+            "high": 0.9692214846107423
+          },
+          "probabilityFillGivenWin": {
+            "low": 0.2594437525944375,
+            "high": 0.2594437525944375
+          },
+          "probabilityFillGivenLoss": {
+            "low": 0.5098039215686274,
+            "high": 0.5098039215686274
+          },
+          "probabilityFill": {
+            "low": 0.2671494669080668,
+            "high": 0.2671494669080668
+          },
+          "conditionalPnlUsdPerPlacement": {
+            "low": -0.010348018507342571,
+            "high": -0.010348018507342571
+          },
+          "worstCaseCoupling": {
+            "winProbability": 0.9692214846107423,
+            "fillGivenWin": 0.2594437525944375,
+            "fillGivenLoss": 0.5098039215686274,
+            "winAndFillProbability": 0.25145845906256287,
+            "lossAndFillProbability": 0.015691007845503917,
+            "fillProbability": 0.2671494669080668,
+            "netPnlUsdPerPlacement": -0.010348018507342571
+          },
+          "bestCaseCoupling": {
+            "winProbability": 0.9692214846107423,
+            "fillGivenWin": 0.2594437525944375,
+            "fillGivenLoss": 0.5098039215686274,
+            "winAndFillProbability": 0.25145845906256287,
+            "lossAndFillProbability": 0.015691007845503917,
+            "fillProbability": 0.2671494669080668,
+            "netPnlUsdPerPlacement": -0.010348018507342571
+          },
+          "rewardScenarioUsdPerPlacement": {
+            "low": 0,
+            "high": 0
+          },
+          "carryUsdPerPlacement": 0,
+          "conditionallyPositive": false,
+          "assumptions": [
+            "conditional fill probabilities concern the exact same quote regime and holding horizon",
+            "joint settlement and fill conditional rates were validly estimated on independent past events",
+            "probability interval rectangle contains the true parameter vector",
+            "binary $1 purchased-side payout and per-filled-order fees are accurately modeled",
+            "scenario rewards are not automatically received liquidity incentives"
+          ],
+          "tradeEligible": false,
+          "orderEffect": false
+        },
+        "sourceQualification": "retrospective correlated hypothetical queue replay; not day-clustered or calibrated",
+        "tradeEligible": false
+      }
+    ],
+    "statement": "pooled historical AAA gasoline and diesel YES-maker hypothetical placements, held through settlement; series IDs are absent",
+    "sourceFamilies": [
+      "AAA-gasoline",
+      "diesel"
+    ],
+    "pooledSourceFamilies": true,
+    "uncertainty": "no per-row series IDs, no independent event/day IDs, no independent validation, no current queue or source rights; raw fractions have NO prospective confidence interval",
+    "economicConclusions": "optimistic retrospective no-fee results for a mixed gasoline/diesel class; not AAA calibration",
+    "candidateModelAdmitted": false,
+    "tradeEligible": false,
+    "orderEffect": false
+  },
+  "comparisons": [
+    {
+      "action": "abstain",
+      "netGrossUsdPerAttempt": 0,
+      "status": "historical-control"
+    },
+    {
+      "action": "maker-YES",
+      "priceCents": 94,
+      "grossUsdPerAttempt": -0.004886433394720675,
+      "independenceCounterfactualUsdPerAttempt": -0.0035128489498014196,
+      "selectionPenaltyUsdPerAttempt": -0.0013735844449192557,
+      "mode": "historical simulated placement, uncalibrated, no fees"
+    },
+    {
+      "action": "maker-YES",
+      "priceCents": 95,
+      "grossUsdPerAttempt": -0.013977322285215855,
+      "independenceCounterfactualUsdPerAttempt": -0.0042231433424580874,
+      "selectionPenaltyUsdPerAttempt": -0.009754178942757766,
+      "mode": "historical simulated placement, uncalibrated, no fees"
+    },
+    {
+      "action": "maker-YES",
+      "priceCents": 96,
+      "grossUsdPerAttempt": -0.011483194572926306,
+      "independenceCounterfactualUsdPerAttempt": -0.0017883647779904789,
+      "selectionPenaltyUsdPerAttempt": -0.009694829794935828,
+      "mode": "historical simulated placement, uncalibrated, no fees"
+    },
+    {
+      "action": "maker-YES",
+      "priceCents": 97,
+      "grossUsdPerAttempt": -0.008712307984069778,
+      "independenceCounterfactualUsdPerAttempt": -0.000026277014079245903,
+      "selectionPenaltyUsdPerAttempt": -0.008686030969990531,
+      "mode": "historical simulated placement, uncalibrated, no fees"
+    },
+    {
+      "action": "maker-YES",
+      "priceCents": 98,
+      "grossUsdPerAttempt": -0.010348018507342597,
+      "independenceCounterfactualUsdPerAttempt": -0.0028794746403005807,
+      "selectionPenaltyUsdPerAttempt": -0.0074685438670420165,
+      "mode": "historical simulated placement, uncalibrated, no fees"
+    },
+    {
+      "action": "taker",
+      "status": "unranked: no paired same-issuance executable-depth baseline in this grid"
+    },
+    {
+      "action": "two-sided-quote/LIP",
+      "status": "unranked: no period-paid rewards, two-leg inventory or joint fill record"
+    },
+    {
+      "action": "structural-hedge",
+      "status": "unranked: no full contingent leg-fill receipts or partial loss bound"
+    }
+  ],
+  "researchDecision": "Among observed 94-98c one-sided simulated YES maker choices, retrospective gross returns are all negative; zero-exposure abstain dominates. This is a descriptive sample comparison, not a prospective or live policy.",
+  "gates": [
+    "No per-row series ID: gasoline and diesel not separable; cannot fit an AAA-only conditional fill model.",
+    "No independent event-day ID: aggregate 10-minute grids do not support a day-clustered confidence interval or prospective calibration.",
+    "No actual individual exchange order/queue/fill receipts; no verified maker fee classification; no live market data.",
+    "AAA/OPIS commercial data rights need independent authorization before extended source collection.",
+    "All candidate trading or liquidity-incentive strategies remain research-only."
+  ]
+}
