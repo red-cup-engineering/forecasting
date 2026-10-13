@@ -1,9 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,rmSync,writeFileSync} from 'node:fs';
+import {mkdtempSync,rmSync,writeFileSync,readFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {weatherCadencePlan,runCadencedWeatherCycle} from '../src/weather-engine.mjs';
+import {weatherCadencePlan,runCadencedWeatherCycle,weatherStatus,boundedWeatherStatus} from '../src/weather-engine.mjs';
 
 const when=Date.parse('2026-07-15T18:32:00Z');
 const fixture=t=>{
@@ -78,4 +78,30 @@ test('legacy snapshot lacking source-collection start fails open for science, no
  const r=await weatherCadencePlan({root,now:when});
  assert.equal(r.lastEvidenceAt,null);
  assert.equal(r.shouldRun,true);
+});
+
+
+test('production weather-status projects oversized grades without changing source or silently claiming completeness', async t => {
+  const root=fixture(t);
+  const grades=Object.fromEntries(Array.from({length:4200},(_,i)=>[
+    `station:${String(i).padStart(4,'0')}`,{events:1,admitted:i%2===0}
+  ]));
+  const original=JSON.stringify({at:'2026-10-13T17:00:00Z',collectionStartedAt:'2026-10-13T16:58:00Z',grades,contracts:[]});
+  writeFileSync(join(root,'latest.json'),original);
+  const status=await weatherStatus({root});
+  assert.equal(Object.keys(status.grades).length,128);
+  assert.deepEqual(status.gradeProjection,{
+    total:4200,shown:128,omitted:4072,
+    admittedPopulation:{yes:2100,no:2100,unknown:0},
+    complete:false,
+    selection:'last property keys in the stored source, not recency or statistical sampling',
+    source:'weather-state/latest.json',
+  });
+  assert.equal(status.grades['station:4199'].events,1);
+  assert.equal(status.grades['station:0000'],undefined);
+  assert.equal(status.collectionStartedAt,'2026-10-13T16:58:00Z');
+  assert.equal(readFileSync(join(root,'latest.json'),'utf8'),original);
+  assert.deepEqual(Object.keys((await weatherStatus({root,maxGradeMembers:0})).grades),[]);
+  assert.equal(Object.keys(boundedWeatherStatus({grades:{a:1}},128).grades).length,1);
+  assert.throws(()=>boundedWeatherStatus({grades},4096),/bound/);
 });

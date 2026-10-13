@@ -147,11 +147,41 @@ export async function weatherEvidence({root=weatherRoot(),evidenceId,station,raw
   if(station?.startsWith('index:'))return {at:e.at,station,sourceEvidenceId:e.sourceEvidenceId,index:e.indices?.[station.slice(6)]??null,science:e.science?{...e.science,metrics:e.science.metrics?.filter(r=>r.station===station),comparisons:e.science.comparisons?.filter(r=>r.station===station),parameters:Object.fromEntries(Object.entries(e.science.parameters??{}).filter(([k])=>k.startsWith(station+'/'))),forecasts:e.science.forecasts?.filter(r=>r.station===station),outcomes:e.science.outcomes?.filter(r=>r.forecast.station===station)}:null};
   return station?{at:e.at,station,ecmwfEnsemble:e.ecmwfEnsemble?{runtime:e.ecmwfEnsemble.runtime,availableAt:e.ecmwfEnsemble.availableAt,projection:e.ecmwfEnsemble.projection,station:e.ecmwfEnsemble.stations[station],fields:e.ecmwfEnsemble.fields,indices:e.ecmwfEnsemble.indices}:null,sourceEvidenceId:e.sourceEvidenceId,dailyExtremes:e.dailyExtremes?{forecasts:e.dailyExtremes.forecasts.filter(r=>r.station===station),gaps:e.dailyExtremes.gaps.filter(r=>r.station===station)}:null,science:e.science?{...e.science,metrics:e.science.metrics?.filter(r=>r.station===station),comparisons:e.science.comparisons?.filter(r=>r.station===station),parameters:Object.fromEntries(Object.entries(e.science.parameters??{}).filter(([k])=>k.startsWith(station+'/'))),forecasts:e.science.forecasts?.filter(r=>r.station===station),outcomes:e.science.outcomes?.filter(r=>r.forecast.station===station)}:null,lamp:e.lamp?{runtime:e.lamp.runtime,source:e.lamp.source,extendedSource:e.lamp.extendedSource,station:e.lamp.stations[station]}:null,guidance:e.guidance?.stations[station],hourlyGuidance:e.hourlyGuidance?{runtime:e.hourlyGuidance.runtime,source:e.hourlyGuidance.source,station:e.hourlyGuidance.stations[station]}:null,quantiles:e.quantiles?{runtime:e.quantiles.runtime,source:e.quantiles.source,station:e.quantiles.stations[station]}:null,settlementReports:Object.fromEntries(Object.entries(e.settlement?.daily??{}).map(([date,r])=>[date,{source:r.source,results:r.data?.results?.filter(x=>x.station?.icao===station)}])),local:e.local[station],observations:Object.fromEntries(Object.entries(e.observations).filter(([key])=>key.startsWith(station+'/'))),errors:e.errors.filter(r=>!r.station||r.station===station)}:e;
 }
-export async function weatherStatus({root=weatherRoot()}={}) {
+/** Projection boundary for public operation transport: the full calibration population remains in
+ * the SAME immutable-on-read local latest.json source, but an unbounded object cannot pass the
+ * MetroPlat Infograph member limit. Never claim that the sampled keys cover every grade.
+ * Source insertion order is not an observation clock. No grades are mutated or erased.
+ */
+export function boundedWeatherStatus(snapshot, maxGradeMembers = 128) {
+  if (!Number.isSafeInteger(maxGradeMembers) || maxGradeMembers < 0 || maxGradeMembers > 1024)
+    throw new RangeError('weather status grade-member bound must be an integer from 0 to 1024');
+  const grades = snapshot?.grades;
+  if (!grades || typeof grades !== 'object' || Array.isArray(grades)) return snapshot;
+  const keys = Object.keys(grades);
+  if (keys.length <= maxGradeMembers) return snapshot;
+  const admitted = { yes: 0, no: 0, unknown: 0 };
+  for (const grade of Object.values(grades)) {
+    if (grade?.admitted === true) admitted.yes += 1;
+    else if (grade?.admitted === false) admitted.no += 1;
+    else admitted.unknown += 1;
+  }
+  return {
+    ...snapshot,
+    grades: Object.fromEntries(keys.slice(maxGradeMembers === 0 ? keys.length : -maxGradeMembers).map((key) => [key, grades[key]])),
+    gradeProjection: {
+      total: keys.length, shown: maxGradeMembers, omitted: keys.length - maxGradeMembers,
+      admittedPopulation: admitted, complete: false,
+      selection: 'last property keys in the stored source, not recency or statistical sampling',
+      source: 'weather-state/latest.json',
+    },
+  };
+}
+
+export async function weatherStatus({root=weatherRoot(),maxGradeMembers=128}={}) {
   const result=await read(join(root,'latest.json'),{status:'no weather cycle recorded',orderEffect:false});
   let running=null;const lock=await read(join(root,'cycle.lock'),null);
   if(lock&&await processStart(lock.pid)===lock.start)running={startedAt:new Date(lock.at).toISOString()};
-  return {...result,running,lastFailure:await read(join(root,'last-failure.json'),null)};
+  return boundedWeatherStatus({...result,running,lastFailure:await read(join(root,'last-failure.json'),null)},maxGradeMembers);
 }
 
 /** A read-only local-time plan for the next existing whole-exchange weather cycle.
