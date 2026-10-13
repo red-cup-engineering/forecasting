@@ -6,6 +6,7 @@ import {INDEX_CITIES,indexDistributions,canonicalIndexPoints,stationTemperatureD
 import {readFile,writeFile,mkdir,rename} from 'node:fs/promises';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
+import {weatherReadPage} from './weather-read-page.mjs';
 import {makeTemperaturePool,postprocessTemperature,temperatureDiagnostics,temperatureDistributionCrps} from './weather-ensemble.mjs';
 const hash=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
 const key=r=>`${r.station}/${r.model}/${r.horizon}`;
@@ -120,3 +121,14 @@ export async function updateStationScience(evidence,{root,now=Date.now(),sourceE
  return {...stationScienceReport(state),scored,forecasted,forecasts,outcomes};
 }
 export async function readStationScience({root,station}={}){return stationScienceReport(await read(join(root,'state.json'),{}),{station});}
+
+/** Native-sized view of the same scientific record; full library read remains above. */
+export async function readStationSciencePage({root,station,field='metrics',offset=0,limit=100,sourceRevision}={}){
+ if(station!==undefined&&(typeof station!=='string'||!/^([A-Z0-9]{4}|index:(miami|nyc|chicago|la-coastal))$/.test(station)))throw new TypeError('one ICAO station or existing city-index key is required');
+ let bytes,present=true;try{bytes=await readFile(join(root,'state.json'));}catch(error){if(error.code!=='ENOENT')throw error;present=false;bytes=Buffer.from('{}');}
+ const state=JSON.parse(bytes.toString('utf8')),report=stationScienceReport(state,{station});
+ const source={file:'station-science/state.json',present,revision:present?`sha256:${createHash('sha256').update(bytes).digest('hex')}`:'absent',at:state.at??null,...(station===undefined?{}:{station})};
+ return {...weatherReadPage(report,{source,field,allowedFields:['metrics','comparisons','parameters'],offset,limit,sourceRevision}),
+  truth:report.truth,scoring:report.scoring,pending:report.pending,missingOutcomes:report.missingOutcomes,orderEffect:false};
+}
+

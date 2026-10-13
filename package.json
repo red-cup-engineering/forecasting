@@ -22,6 +22,7 @@
     "./weather-quantiles": "./src/weather-quantiles.mjs",
     "./lamp-station-guidance": "./src/lamp-station-guidance.mjs",
     "./station-weather-science": "./src/station-weather-science.mjs",
+    "./weather-read-page": "./src/weather-read-page.mjs",
     "./weather-index": "./src/weather-index.mjs",
     "./nbm-hourly-guidance": "./src/nbm-hourly-guidance.mjs",
     "./weather-cli": "./apps/weather.mjs",
@@ -51,6 +52,7 @@
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
+    "@red-cup-engineering/json-services-section": "workspace:*",
     "@red-cup-engineering/semiotic-eavt-services-section": "workspace:*",
     "@red-cup-engineering/computer-text-content-engineering-services-section": "workspace:*",
     "@red-cup-engineering/javascript-file-services-section": "workspace:*",
@@ -76,3 +78,4 @@
   ],
   "license": "UNLICENSED"
 }
+
