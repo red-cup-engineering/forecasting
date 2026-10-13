@@ -5,7 +5,7 @@
  * the mean of per-cluster win rates with a Wilson interval whose count is the number of clusters (the
  * independent unit), so repeated entries inside one cluster cannot narrow it.
  *
- * The file written for a passed hypothesis, `<state>/admitted/<id>.json`, is
+ * The file written for a passed hypothesis, `data/records/admitted-forecast-records/<id>.json`, is
  *   { model, applies: { series, entry } }
  * `model` is the surface model for any contract the rule applies to; `applies` says which contracts those are.
  *
@@ -17,6 +17,7 @@ import { mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync
 import { join } from 'node:path';
 import { fuseForecast } from '../forecast-surface.mjs';
 import { quoteQualifies } from './entry.mjs';
+import { modelDirectory } from './store.mjs';
 
 /** Mean of cluster win rates with Wilson bounds over the cluster count (weather-learning bin statistic). */
 export function clusterCalibration(entries) {
@@ -42,19 +43,19 @@ export function surfaceModelFile(h, entries) {
 }
 
 export function writeAdmitted(dir, h, file) {
-  mkdirSync(join(dir, 'admitted'), { recursive: true });
-  const path = join(dir, 'admitted', `${h.id}.json`), tmp = `${path}.tmp`;
+  mkdirSync(modelDirectory(dir), { recursive: true });
+  const path = join(modelDirectory(dir), `${h.id}.json`), tmp = `${path}.tmp`;
   writeFileSync(tmp, `${JSON.stringify(file, null, 2)}\n`); renameSync(tmp, path);
   return path;
 }
-export function removeAdmitted(dir, id) { rmSync(join(dir, 'admitted', `${id}.json`), { force: true }); }
+export function removeAdmitted(dir, id) { rmSync(join(modelDirectory(dir), `${id}.json`), { force: true }); }
 
 /**
  * Surface models for one contract from every passed hypothesis whose rule applies to it now.
  * @param {{dir: string, series: string, quote: {bid: number, ask: number}, minutesToAnchor: {close?: number, start?: number}}} c
  */
 export function admittedHypothesisModels({ dir, series, quote, minutesToAnchor }) {
-  const folder = join(dir, 'admitted');
+  const folder = modelDirectory(dir);
   if (!existsSync(folder)) return [];
   const out = [];
   for (const f of readdirSync(folder).filter((x) => x.endsWith('.json')).sort()) {

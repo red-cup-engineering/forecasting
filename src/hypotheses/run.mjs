@@ -6,9 +6,9 @@
  *              perishable), then live registered-window quotes and settled markets since each registeredAt
  *   3. derive  entries and settled P&L from the observation store + the spec (all/verdict; discardable indexes)
  *   4. verdict delete-one-cluster jackknife -> FOUR reading -> status transition
- *   5. emit    a passed hypothesis writes its surface model to <state>/admitted/<id>.json
+ *   5. emit    a passed hypothesis writes its surface model under data/records/admitted-forecast-records/
  *
- * Indexes written per hypothesis under <state>/<id>/: ledger.json (entries, a pure function of observations and
+ * Indexes written under data/state/hypothesis-state/<id>/: ledger.json (entries, a pure function of observations and
  * spec -- same input, same bytes) and status.json (the reading and the status; `asOf` is the run instant).
  * Delete them and the next run rebuilds them from the observations.
  */
@@ -22,7 +22,7 @@ import { EVALUATORS } from './evaluators.mjs';
 import { SPORTS } from '../sport-feeds.mjs';
 import { createFetcher } from './fetcher.mjs';
 import { validateHypothesis } from './schema.mjs';
-import { cacheDir, openStore, stateRoot } from './store.mjs';
+import { externalDirectory, hypothesisDirectory, openStore, stateRoot } from './store.mjs';
 import { nextStatus, readVerdict } from './verdict.mjs';
 
 export const hypothesesDir = join(dirname(fileURLToPath(import.meta.url)), '..', '..', 'content', 'hypotheses');
@@ -33,6 +33,9 @@ export function loadHypotheses(dir = hypothesesDir) {
 
 const writeJson = (path, value) => { mkdirSync(dirname(path), { recursive: true }); const tmp = `${path}.tmp`; writeFileSync(tmp, `${JSON.stringify(value, null, 1)}\n`); renameSync(tmp, path); };
 const readJson = (path) => (existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : null);
+// The existing persisted JSON status uses null for undefined statistics. Return
+// that same carrier at the native boundary; NaN/Infinity are not JSON values.
+const statusCarrier = (value) => JSON.parse(JSON.stringify(value));
 
 /** Items (or awaiting) for one hypothesis from the store alone. Pure over observations. */
 export async function deriveItems(h, { store, externalDir }) {
@@ -51,16 +54,16 @@ export async function deriveItems(h, { store, externalDir }) {
  * @param {'all'|'sync'|'collect'|'verdict'} [options.mode]  verdict spends no requests
  * @param {string[]} [options.only]       restrict to these hypothesis ids
  */
-export async function runHypotheses({ requestBudget, mode = 'all', only = null, root = stateRoot(), contentDir = hypothesesDir, externalDir = join(root, 'external'), now = Date.now(), fetcher = null } = {}) {
+export async function runHypotheses({ requestBudget, mode = 'all', only = null, root = stateRoot(), contentDir = hypothesesDir, externalDir = externalDirectory(root), now = Date.now(), fetcher = null } = {}) {
   if (!['all', 'sync', 'collect', 'verdict'].includes(mode)) throw new TypeError('runHypotheses: unknown mode');
   const syncing = mode !== 'verdict';
   if (syncing && (!Number.isSafeInteger(requestBudget) || requestBudget < 0)) throw new TypeError('runHypotheses: nonnegative safe integer requestBudget is required');
   const all = loadHypotheses(contentDir).filter((h) => !only || only.includes(h.id));
-  const prior = new Map(all.map((h) => [h.id, readJson(join(root, h.id, 'status.json'))]));
+  const prior = new Map(all.map((h) => [h.id, readJson(join(hypothesisDirectory(root, h.id), 'status.json'))]));
   const standing = (h) => (h.status === 'killed' || h.status === 'admitted' ? h.status : prior.get(h.id)?.status === 'killed' ? 'killed' : prior.get(h.id)?.status === 'passed' ? 'passed' : h.status);
   const live = all.filter((h) => standing(h) !== 'killed');
   const report = { at: new Date(now).toISOString(), mode, orderEffect: false, skipped: all.filter((h) => standing(h) === 'killed').map((h) => h.id), partial: false, hypotheses: [] };
-  const store = openStore(cacheDir(root)), nowIso = new Date(now).toISOString();
+  const store = openStore(root), nowIso = new Date(now).toISOString();
   const f = syncing ? (fetcher ?? createFetcher({ budget: requestBudget })) : null;
 
   if (syncing) {
@@ -71,7 +74,7 @@ export async function runHypotheses({ requestBudget, mode = 'all', only = null, 
     await syncSeries({ store, fetcher: f, series: [...feeSeries], now: nowIso, report: sync });
     if (mode !== 'sync') for (const h of live.filter((x) => x.evaluator && EVALUATORS[x.evaluator].collect)) await EVALUATORS[h.evaluator].collect({ h, store, fetcher: f, now, report: sync });
     if (mode !== 'collect') {
-      await syncForwardQuotes({ store, fetcher: f, hypotheses: generic, now, report: sync });
+      await syncForwardQuotes({ store, fetcher: f, hypotheses: generic, report: sync });
       for (const series of new Set(generic.flatMap((h) => h.universe.series))) {
         const since = Math.min(...generic.filter((h) => h.universe.series.includes(series)).map((h) => Date.parse(h.registeredAt)));
         await syncSettled({ store, fetcher: f, series, sinceMs: since, now: nowIso, report: sync });
@@ -89,14 +92,14 @@ export async function runHypotheses({ requestBudget, mode = 'all', only = null, 
     const d = await deriveItems(h, { store, externalDir });
     const v = readVerdict(h, { items: d.items }, { now });
     const status = d.awaiting ? standing(h) : nextStatus(standing(h), v);
-    const dir = join(root, h.id);
+    const dir = hypothesisDirectory(root, h.id);
     writeJson(join(dir, 'ledger.json'), { id: h.id, registeredAt: h.registeredAt, entries: d.entries.map(({ g, ticker, side, price, at, won, x, arm }) => ({ g, ticker, side, price, at, won, x, arm })) });
     let admitted = null;
     if (status === 'passed' || status === 'admitted') {
       const file = surfaceModelFile(h, d.entries);
       if (file) admitted = writeAdmitted(root, h, file);
     } else removeAdmitted(root, h.id);
-    const record = { id: h.id, status, reading: d.awaiting ? null : v.reading, sides: d.awaiting ? null : v.sides, awaiting: d.awaiting, clusters: v.clusters, minClusters: h.verdict.minClusters, mean: v.mean, se: v.se, t: v.t, comparison: v.comparison, holdout: v.holdout ? { holdout: v.holdout.holdout.mean, rest: v.holdout.rest.mean } : null, reasons: v.reasons, notes: d.notes, admittedModel: admitted, asOf: nowIso };
+    const record = statusCarrier({ id: h.id, status, reading: d.awaiting ? null : v.reading, sides: d.awaiting ? null : v.sides, awaiting: d.awaiting, clusters: v.clusters, minClusters: h.verdict.minClusters, mean: v.mean, se: v.se, t: v.t, comparison: v.comparison, holdout: v.holdout ? { holdout: v.holdout.holdout.mean, rest: v.holdout.rest.mean } : null, reasons: v.reasons, notes: d.notes, admittedModel: admitted, asOf: new Date().toISOString() });
     writeJson(join(dir, 'status.json'), record);
     report.hypotheses.push(record);
   }
@@ -106,5 +109,5 @@ export async function runHypotheses({ requestBudget, mode = 'all', only = null, 
 
 /** Statuses as last written (no fetching): killed hypotheses from their files, the rest from status.json. */
 export function readStatuses({ root = stateRoot(), contentDir = hypothesesDir } = {}) {
-  return loadHypotheses(contentDir).map((h) => (h.status === 'killed' ? { id: h.id, status: 'killed', killed: h.killed } : readJson(join(root, h.id, 'status.json')) ?? { id: h.id, status: h.status, reading: null, clusters: 0, minClusters: h.verdict.minClusters, reasons: ['not yet run'] }));
+  return loadHypotheses(contentDir).map((h) => (h.status === 'killed' ? { id: h.id, status: 'killed', killed: h.killed } : readJson(join(hypothesisDirectory(root, h.id), 'status.json')) ?? { id: h.id, status: h.status, reading: null, clusters: 0, minClusters: h.verdict.minClusters, reasons: ['not yet run'] }));
 }

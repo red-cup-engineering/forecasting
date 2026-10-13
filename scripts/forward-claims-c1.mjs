@@ -23,16 +23,20 @@ export async function forwardClaimsCycle() {
   const resolved = new Set(rows.filter((r) => r.type === 'result').map((r) => r.ticker));
   const out = [];
   const open = (await pacedGet(`${KALSHI}/markets?series_ticker=${SERIES}&status=open&limit=1000`))?.markets ?? [];
+  const quotesAvailableAt = Date.now();
   const byEvent = new Map();
   for (const m of open) { if (!byEvent.has(m.event_ticker)) byEvent.set(m.event_ticker, []); byEvent.get(m.event_ticker).push(m); }
   let mult = null;
   for (const [ev, ms] of byEvent) {
-    const hours = hoursToClose(ms[0].close_time, now);
+    const hours = hoursToClose(ms[0].close_time, quotesAvailableAt);
     const kind = snapshotKind(hours, recorded.has(ev));
     console.log(`${ev}: ${hours === null ? '?' : hours.toFixed(1)} h to close, ${recorded.has(ev) ? 'recorded' : kind ? `snapshot (${kind})` : 'waiting'}`);
     if (!kind) continue;
     mult ??= (await pacedGet(`${KALSHI}/series/${SERIES}`))?.series?.fee_multiplier ?? 1;
-    out.push({ type: 'snapshot', event_ticker: ev, kind, hours_to_close: Math.round(hours * 100) / 100, at: new Date(now).toISOString(), close_time: ms[0].close_time, fee_multiplier: mult, n_markets: ms.length, entries: c1Entries(ms, mult) });
+    const availableAt = Date.now(), availableHours = hoursToClose(ms[0].close_time, availableAt);
+    const receivedKind = snapshotKind(availableHours, recorded.has(ev));
+    if (!receivedKind) continue;
+    out.push({ type: 'snapshot', event_ticker: ev, kind: receivedKind, hours_to_close: Math.round(availableHours * 100) / 100, at: new Date(availableAt).toISOString(), quotesAvailableAt: new Date(quotesAvailableAt).toISOString(), close_time: ms[0].close_time, fee_multiplier: mult, n_markets: ms.length, entries: c1Entries(ms, mult) });
     console.log(`  recorded ${out.at(-1).entries.length} C1 entries of ${ms.length} markets`);
   }
   // results for recorded events whose markets have closed

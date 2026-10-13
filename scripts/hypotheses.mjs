@@ -7,7 +7,8 @@
  *   node scripts/hypotheses.mjs verdict <id>
  *
  * The request budget is the caller's: --budget or HYPOTHESES_REQUEST_BUDGET. State: HYPOTHESES_STATE_DIR or
- * ~/.local/state/561-group/settlements/forecasting-service/hypotheses/.
+ * ~/.local/state/561-group/settlements/forecasting-service/; the existing provider
+ * owns data/logs/, data/state/hypothesis-state/ and the typed model/input records.
  */
 import { pathToFileURL } from 'node:url';
 import { hypothesesDir, loadHypotheses, readStatuses, runHypotheses } from '../src/hypotheses/run.mjs';
