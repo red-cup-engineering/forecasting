@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { hypothesesDir } from '../src/hypotheses/run.mjs';
 import { RegistrationError, entriesFromTape, requireAfterRegistration, snapshotTarget } from '../src/hypotheses/entry.mjs';
-import { quoteFromCandles } from '../src/hypotheses/data.mjs';
+import { quoteFromCandles, syncForwardQuotes, tapeFor } from '../src/hypotheses/data.mjs';
 import { orderFee } from '../src/fees.mjs';
 
 // The cent-per-order hypotheses are scored on the fee they registered: whole cents per order, not the account grid.
@@ -68,4 +68,61 @@ test('snapshot target and candle quote extraction', () => {
   ];
   assert.deepEqual(quoteFromCandles(candles, sec, 3600), { ts: new Date((sec - 60) * 1000).toISOString(), bid: 0.31, ask: 0.35 });
   assert.deepEqual(quoteFromCandles([{ end_period_ts: sec - 60, yes_bid: { close_dollars: '0.0000' }, yes_ask: { close_dollars: '1.0000' } }], sec, 3600), { none: true });
+});
+
+test('forward-window custody uses the post-fetch receipt, never the cycle start or a later historical quote', async () => {
+  const h = load('claims-c1');
+  const ticker = 'KXJOBLESSCLAIMS-26OCT15-210', series = 'KXJOBLESSCLAIMS';
+  const close = '2026-10-15T12:25:00Z';
+  const target = Date.parse(close) - 24 * 3600e3;
+  const market = {
+    ticker, event_ticker: 'KXJOBLESSCLAIMS-26OCT15', close_time: close,
+    yes_bid_dollars: '0.3800', yes_ask_dollars: '0.4000',
+  };
+  const fetcher = {
+    async kalshi(path, q) {
+      assert.equal(path, '/markets');
+      assert.equal(q.series_ticker, series);
+      assert.equal(q.status, 'open');
+      return { markets: [market], cursor: '' };
+    },
+  };
+  const memory = () => {
+    const quotes = new Map();
+    return {
+      get: (e, a) => quotes.get(e + ':' + a),
+      put(e, a, value, receipt) {
+        assert.equal(receipt, value.observedAt);
+        quotes.set(e + ':' + a, value);
+        return true;
+      },
+      all: (attribute) => attribute === 'market'
+        ? [[ticker, { ev: market.event_ticker, close, occ: close, result: 'no' }]]
+        : [],
+    };
+  };
+  const store = memory(), report = {};
+  await syncForwardQuotes({ store, fetcher, hypotheses: [h], report, receiptClock: () => target });
+  assert.equal(report.newQuotes, 1);
+  const witness = store.get(ticker, 'quote:close:-1440');
+  assert.equal(witness.kind, 'forward-window');
+  assert.equal(witness.ts, new Date(target).toISOString());
+  assert.equal(witness.observedAt, witness.ts);
+  assert.deepEqual(tapeFor({ store, universe: [series], snapshot: h.entry.snapshot,
+    notBeforeMs: Date.parse(h.registeredAt), requireForward: true })[0].quote, witness);
+
+  const laterStore = memory(), laterReport = {};
+  await syncForwardQuotes({ store: laterStore, fetcher, hypotheses: [h], report: laterReport,
+    receiptClock: () => target + 61 * 60000 });
+  assert.equal(laterReport.newQuotes ?? 0, 0, 'response received after the 60-min band cannot be backdated');
+  assert.equal(laterStore.get(ticker, 'quote:close:-1440'), undefined);
+
+  // A candle loaded after settlement remains retrospective, not a forward witness.
+  const retrospective = memory();
+  retrospective.put(ticker, 'quote:close:-1440', {
+    ts: new Date(target).toISOString(), bid: 0.38, ask: 0.4,
+    observedAt: new Date(target + 86400e3).toISOString(),
+  }, new Date(target + 86400e3).toISOString());
+  assert.equal(tapeFor({ store: retrospective, universe: [series], snapshot: h.entry.snapshot,
+    notBeforeMs: Date.parse(h.registeredAt), requireForward: true })[0].quote, null);
 });

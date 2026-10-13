@@ -30,6 +30,39 @@ export async function syncSeries({ store, fetcher, series, now, report }) {
   });
 }
 
+/** Witness an open contract during its registered window. A historical candle
+ * fetched after settlement cannot replace a missed prospective observation. */
+export async function syncForwardQuotes({ store, fetcher, hypotheses, report, receiptClock = () => Date.now() }) {
+  await guard(report, async () => {
+    for (const series of new Set(hypotheses.flatMap((h) => h.universe.series))) {
+      let cursor = '';
+      do {
+        const page = await fetcher.kalshi('/markets', { series_ticker: series, status: 'open', limit: 1000, cursor });
+        // Source time is the instant the response was received, NOT the earlier
+        // cycle-selection time. A delayed public GET must not create a false
+        // pre-registered window witness after that window has expired.
+        const receivedAt = receiptClock();
+        if (!Number.isSafeInteger(receivedAt) || receivedAt < 0)
+          throw new RangeError('a finite post-fetch receipt clock in epoch milliseconds is required');
+        const stamp = new Date(receivedAt).toISOString();
+        for (const m of page.markets ?? []) {
+          for (const h of hypotheses.filter((x) => x.universe.series.includes(series))) {
+            const key = snapshotKey(h.entry.snapshot), target = snapshotTarget({ close: m.close_time, occ: m.occurrence_datetime }, h.entry.snapshot);
+            if (store.get(m.ticker, key)?.kind === 'forward-window') continue;
+            if (!(receivedAt >= Date.parse(h.registeredAt)) || !Number.isFinite(target)
+              || Math.abs(receivedAt - target) > h.entry.snapshot.toleranceMinutes * 60000) continue;
+            const bid = dollars(m.yes_bid_dollars), ask = dollars(m.yes_ask_dollars);
+            if (!(bid > 0 && ask < 1 && ask >= bid)) continue;
+            if (store.put(m.ticker, key, { ts: stamp, bid, ask, kind: 'forward-window', observedAt: stamp }, stamp))
+              report.newQuotes = (report.newQuotes ?? 0) + 1;
+          }
+        }
+        cursor = page.cursor ?? '';
+      } while (cursor);
+    }
+  });
+}
+
 /** Settled markets of `series` that closed at or after `sinceMs` (the hypothesis registration). */
 export async function syncSettled({ store, fetcher, series, sinceMs, now, report }) {
   await guard(report, async () => {
@@ -92,13 +125,13 @@ export async function syncQuotes({ store, fetcher, snapshot, universe, notBefore
 }
 
 /** Tape rows for a universe: settled markets with their snapshot quote, in ticker order. */
-export function tapeFor({ store, universe, snapshot, notBeforeMs }) {
+export function tapeFor({ store, universe, snapshot, notBeforeMs, requireForward = false }) {
   const key = snapshotKey(snapshot), rows = [];
   for (const [ticker, fact] of store.all('market')) {
     const series = ticker.split('-')[0];
     if (!universe.includes(series) || Date.parse(fact.close) < notBeforeMs) continue;
     const q = store.get(ticker, key);
-    rows.push({ ticker, event: fact.ev, close: fact.close, occ: fact.occ, result: fact.result, multiplier: store.get(series, 'series')?.multiplier ?? 1, quote: q && !q.none ? q : null });
+    rows.push({ ticker, event: fact.ev, close: fact.close, occ: fact.occ, result: fact.result, multiplier: store.get(series, 'series')?.multiplier ?? 1, quote: q && !q.none && (!requireForward || q.kind === 'forward-window') ? q : null });
   }
   return rows.sort((a, b) => (a.ticker < b.ticker ? -1 : 1));
 }

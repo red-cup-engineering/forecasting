@@ -3,8 +3,8 @@
  *
  *   1. load hypotheses (content/hypotheses/*.json, validated); killed ones are skipped, never fetched or judged
  *   2. sync    spend the caller's request budget on what is new: evaluator collect steps first (live data is
- *              perishable), then settled markets since each registeredAt, then the snapshot quotes
- *   3. derive  entries and settled P&L from the observation store + the spec (pure; discardable indexes)
+ *              perishable), then live registered-window quotes and settled markets since each registeredAt
+ *   3. derive  entries and settled P&L from the observation store + the spec (all/verdict; discardable indexes)
  *   4. verdict delete-one-cluster jackknife -> FOUR reading -> status transition
  *   5. emit    a passed hypothesis writes its surface model to <state>/admitted/<id>.json
  *
@@ -16,7 +16,7 @@ import { mkdirSync, readFileSync, readdirSync, renameSync, writeFileSync, exists
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { surfaceModelFile, removeAdmitted, writeAdmitted } from './admit.mjs';
-import { syncQuotes, syncSeries, syncSettled, tapeFor } from './data.mjs';
+import { syncForwardQuotes, syncSeries, syncSettled, tapeFor } from './data.mjs';
 import { entriesFromTape } from './entry.mjs';
 import { EVALUATORS } from './evaluators.mjs';
 import { SPORTS } from '../sport-feeds.mjs';
@@ -40,7 +40,7 @@ export async function deriveItems(h, { store, externalDir }) {
     const r = await EVALUATORS[h.evaluator].derive({ h, store, externalDir });
     return { items: r.items, entries: r.items, awaiting: r.awaiting ?? null, notes: r.notes ?? {} };
   }
-  const tape = tapeFor({ store, universe: h.universe.series, snapshot: h.entry.snapshot, notBeforeMs: Date.parse(h.registeredAt) });
+  const tape = tapeFor({ store, universe: h.universe.series, snapshot: h.entry.snapshot, notBeforeMs: Date.parse(h.registeredAt), requireForward: true });
   const { entries, refused, noQuote, considered } = entriesFromTape(h, tape);
   return { items: entries, entries, awaiting: null, notes: { refused, noQuote, considered, tape: tape.length } };
 }
@@ -50,15 +50,17 @@ export async function deriveItems(h, { store, externalDir }) {
  * @param {number} options.requestBudget  requests this run may spend (required; the caller's resource decision)
  * @param {'all'|'sync'|'collect'|'verdict'} [options.mode]  verdict spends no requests
  * @param {string[]} [options.only]       restrict to these hypothesis ids
+ * @param {() => number} [options.receiptClock] Internal post-fetch receipt clock for deterministic testing; the deployed operation never accepts a caller clock.
  */
-export async function runHypotheses({ requestBudget, mode = 'all', only = null, root = stateRoot(), contentDir = hypothesesDir, externalDir = join(root, 'external'), now = Date.now(), fetcher = null } = {}) {
+export async function runHypotheses({ requestBudget, mode = 'all', only = null, root = stateRoot(), contentDir = hypothesesDir, externalDir = join(root, 'external'), now = Date.now(), fetcher = null, receiptClock = () => Date.now() } = {}) {
+  if (!['all', 'sync', 'collect', 'verdict'].includes(mode)) throw new TypeError('runHypotheses: unknown mode');
   const syncing = mode !== 'verdict';
-  if (syncing && !Number.isInteger(requestBudget)) throw new TypeError('runHypotheses: requestBudget (integer) is required');
+  if (syncing && (!Number.isSafeInteger(requestBudget) || requestBudget < 0)) throw new TypeError('runHypotheses: nonnegative safe integer requestBudget is required');
   const all = loadHypotheses(contentDir).filter((h) => !only || only.includes(h.id));
   const prior = new Map(all.map((h) => [h.id, readJson(join(root, h.id, 'status.json'))]));
   const standing = (h) => (h.status === 'killed' || h.status === 'admitted' ? h.status : prior.get(h.id)?.status === 'killed' ? 'killed' : prior.get(h.id)?.status === 'passed' ? 'passed' : h.status);
   const live = all.filter((h) => standing(h) !== 'killed');
-  const report = { skipped: all.filter((h) => standing(h) === 'killed').map((h) => h.id), partial: false, hypotheses: [] };
+  const report = { at: new Date(now).toISOString(), mode, orderEffect: false, skipped: all.filter((h) => standing(h) === 'killed').map((h) => h.id), partial: false, hypotheses: [] };
   const store = openStore(cacheDir(root)), nowIso = new Date(now).toISOString();
   const f = syncing ? (fetcher ?? createFetcher({ budget: requestBudget })) : null;
 
@@ -70,15 +72,19 @@ export async function runHypotheses({ requestBudget, mode = 'all', only = null, 
     await syncSeries({ store, fetcher: f, series: [...feeSeries], now: nowIso, report: sync });
     if (mode !== 'sync') for (const h of live.filter((x) => x.evaluator && EVALUATORS[x.evaluator].collect)) await EVALUATORS[h.evaluator].collect({ h, store, fetcher: f, now, report: sync });
     if (mode !== 'collect') {
+      await syncForwardQuotes({ store, fetcher: f, hypotheses: generic, report: sync, receiptClock });
       for (const series of new Set(generic.flatMap((h) => h.universe.series))) {
         const since = Math.min(...generic.filter((h) => h.universe.series.includes(series)).map((h) => Date.parse(h.registeredAt)));
         await syncSettled({ store, fetcher: f, series, sinceMs: since, now: nowIso, report: sync });
       }
-      for (const h of generic) await syncQuotes({ store, fetcher: f, snapshot: h.entry.snapshot, universe: h.universe.series, notBeforeMs: Date.parse(h.registeredAt), now, report: sync });
     }
     report.sync = { ...sync, requests: f.spent, budget: requestBudget };
     report.partial = Boolean(sync.partial);
   }
+
+  // The fast collector appends perishable observations. Rebuilt indexes belong
+  // to all/verdict passes, so concurrent collection never overwrites a verdict.
+  if (mode === 'collect') return { ...report, hypotheses: readStatuses({ root, contentDir }) };
 
   for (const h of live) {
     const d = await deriveItems(h, { store, externalDir });
