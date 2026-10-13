@@ -10,7 +10,7 @@ import {INDEX_CITIES,indexConfiguration,collectWeatherIndexEvidence,priceWeather
 import {latestHourlyGuidance} from './nbm-hourly-guidance.mjs';
 import {latestLampGuidance} from './lamp-station-guidance.mjs';
 import { latestStationGuidance, guidanceForExtreme } from './nbm-station-guidance.mjs';
-import { NWS_API, NWS_USER_AGENT, climateDayStart, observedExtremes, activeTemperatureHazards } from './station-observations.mjs';
+import { NWS_API, NWS_USER_AGENT, climateDate, climateDayStart, observedExtremes, activeTemperatureHazards } from './station-observations.mjs';
 import { TEMPERATURE_MARKETS } from './temperature-market-model.mjs';
 import { forecastScale, bracketProbability, bracketBounds, studentTCdf } from './temperature-distribution.mjs';
 import { priceRainMarket,priceRainPoolMarket } from './rain-market-model.mjs';
@@ -29,9 +29,7 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
   if(!Array.isArray(requests)||requests.length<1||(!marketCollection&&requests.length>16))throw new TypeError('provide 1..16 station requests');
   const normalized=requests.map(r=>{
     if(!r||!/^[A-Z0-9]{4}$/.test(r.station)||typeof r.timeZone!=='string')throw new TypeError('station ICAO and IANA time zone required');
-    const fmt=new Intl.DateTimeFormat('en-CA',{timeZone:r.timeZone,year:'numeric',month:'2-digit',day:'2-digit'});
-    let today=fmt.format(new Date(now));
-    if(climateDayStart(today,r.timeZone).getTime()>now)today=new Date(Date.parse(today+'T00:00:00Z')-86400000).toISOString().slice(0,10);
+    const today=climateDate(r.timeZone,now);
     const targetDates=r.targetDates??[today];
     if(!Array.isArray(targetDates)||targetDates.length<1||(!marketCollection&&targetDates.length>4)||targetDates.some(d=>typeof d!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(d)||!Number.isFinite(Date.parse(d+'T00:00:00Z'))||new Date(d+'T00:00:00Z').toISOString().slice(0,10)!==d))throw new TypeError('provide 1..4 real ISO target dates per station');
     return {station:r.station,timeZone:r.timeZone,targetDates:[...new Set(targetDates)]};
@@ -58,8 +56,7 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
     }catch(e){errors.push({station,source:'NWS-hourly',error:e.message});}
     try{const alerts=await activeTemperatureHazards({station},{fetchImpl});if(local[station])local[station].alerts=alerts;}catch(e){errors.push({station,source:'NWS-alerts',error:e.message});}
     // Physical verification needs today's observations even when every open contract is for tomorrow.
-    const fmt=new Intl.DateTimeFormat('en-CA',{timeZone:b.timeZone,year:'numeric',month:'2-digit',day:'2-digit'});
-    let today=fmt.format(new Date(now));if(climateDayStart(today,b.timeZone).getTime()>now)today=new Date(Date.parse(today+'T00:00:00Z')-86400000).toISOString().slice(0,10);
+    const today=climateDate(b.timeZone,now);
     const dates=new Set([...b.targetDates,today]);
     if(now-climateDayStart(today,b.timeZone).getTime()<3600000)dates.add(new Date(Date.parse(today+'T00:00:00Z')-86400000).toISOString().slice(0,10));
     for(const date of dates) {
