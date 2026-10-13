@@ -1,11 +1,16 @@
 import { studentTCdf } from './temperature-distribution.mjs';
 /** Streaming event/date statistics; full immutable outcomes remain in the source journal. */
-/** The pooled group: one model on one family and stage across every station and rule, where dates (not stations) are the independent unit. */
-export const pooledGradeKey=(family,stage,modelId)=>`${family}/*/*/*/${stage}/${modelId}`;
+/** Dates, not stations or hourly ladder rungs, are the independent unit. Hourly
+ * index evidence cannot confer eligibility on another source or methodology. */
+export const pooledGradeKey=(family,stage,modelId,{source,ruleKey}={})=>{
+  if(family!=='hourly-temperature')return `${family}/*/*/*/${stage}/${modelId}`;
+  if(typeof source!=='string'||!source||source.includes('/')||!/^[a-f0-9]{64}$/.test(ruleKey??''))return null;
+  return `${family}/${source}/*/${ruleKey}/${stage}/${modelId}`;
+};
 export function createModelGradeAccumulator({minDates=30,pooledMinDates=10}={}) {
   const groups=new Map();
   function add(row){
-    for(const model of row.models)for(const key of [`${row.family}/${row.source}/${row.station}/${row.ruleKey}/${row.stage}/${model.id}`,pooledGradeKey(row.family,row.stage,model.id)]){
+    for(const model of row.models)for(const key of [`${row.family}/${row.source}/${row.station}/${row.ruleKey}/${row.stage}/${model.id}`,pooledGradeKey(row.family,row.stage,model.id,row)].filter(Boolean)){
       let g=groups.get(key);if(!g){g={events:new Map(),bins:Array.from({length:10},()=>new Map())};groups.set(key,g);}
       const event=`${row.eventTicker}/${row.stage}`,date=row.targetDate??row.closeTime.slice(0,10);
       let r=g.events.get(event);if(!r){r={date,n:0,delta:0};g.events.set(event,r);}
@@ -42,7 +47,8 @@ export function gradeModels(resolved,options={}){const accumulator=createModelGr
 export function probabilityBand(contract, model, grades) {
   // The station's own grade when it is admitted, else the model's pooled grade on the family and stage.
   const own=grades[`${contract.family}/${contract.source}/${contract.station}/${contract.ruleKey}/${contract.stage}/${model.id}`];
-  const g=own?.admitted?own:grades[pooledGradeKey(contract.family,contract.stage,model.id)]??own;
+  const pooled=pooledGradeKey(contract.family,contract.stage,model.id,contract);
+  const g=own?.admitted?own:(pooled?grades[pooled]:undefined)??own;
   const b=g?.bins[Math.min(9,Math.floor(model.p*10))];
   const structural=model.details?.structuralProbabilityBounds;
   const valid=!structural||(Number.isFinite(structural.low)&&Number.isFinite(structural.high)&&structural.low>=0&&structural.high<=1&&structural.low<=model.p&&structural.high>=model.p);

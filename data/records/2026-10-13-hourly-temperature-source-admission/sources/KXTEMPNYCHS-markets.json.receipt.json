@@ -1,0 +1,6 @@
+{
+  "source": "https://api.elections.kalshi.com/trade-api/v2/markets?series_ticker=KXTEMPNYCHS&status=open&limit=1",
+  "receivedAt": "2026-10-13T21:33:13.770653+00:00",
+  "sha256": "dc9cf34324332bee63a501f775ace6dc44aca7469e4bb6eda0021596756cc343",
+  "file": "KXTEMPNYCHS-markets.json"
+}

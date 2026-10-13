@@ -1,0 +1,314 @@
+                                                       NYCWINDEX
+
+Scope: These rules shall apply to this contract.
+
+Underlying: The Underlying for this Contract is the value of the Kalshi Weather Index for New York City (the "Index")
+<in/at> <time period>, as reported by the Source Agency. The Index is the minute-resolution temperature index for New
+York City calculated and published by the Source Agency pursuant to the Kalshi Weather Index Methodology, Version 1.0,
+including its New York City Configuration (initial configuration identifier nyc-temperature-v1.0), set forth in Appendix B
+(together, the "Methodology"), as published at the location identified in the Source Agency section. The Index is expressed in
+degrees Fahrenheit, rounded at final output to the nearest 0.01°F, which is its published precision.
+
+A "canonical Index observation" is a numeric Index value for a given event minute published by the Source Agency with a
+status of “normal” or “degraded” under the Methodology. An event minute for which the Source Agency publishes a status of
+unavailable yields no canonical Index observation. The event time of a canonical Index observation is the event minute to
+which it applies, not the time at which it is published.
+
+Revisions to the Underlying made after Expiration will not be accounted for in determining the Expiration Value.
+
+Source Agency: The Source Agency is Kalshi. The Source Agency publishes the Index and the Methodology itself on the
+Exchange’s website, accessible to the public.
+
+Type: The type of Contract is an Event Contract.
+
+Issuance: After the initial Contract, Contract iterations will be listed on an as-needed basis at the discretion of the Exchange
+and corresponding to the risk management needs of Members. For each Contract, the Exchange will specify at Issuance:
+<time period>; whether the Contract is an "in" Contract or an "at" Contract; the comparison term <above/below/at least/at
+most/exactly/between>; and <value>. No term is assumed by default.
+
+<time period>: <time period> refers to a specific duration or range of time as specified by the Exchange. May be
+expressed as a calendar year (e.g., "2026"), a calendar month and year (e.g., "January 2026"), a calendar quarter (e.g., "Q1
+2026"), a specific week, a season, a calendar day, a single clock hour, a single specified minute, or other bounded time
+periods as appropriate to the contract subject matter. All time periods are interpreted in Eastern Time (ET) unless otherwise
+specified. The end of <time period> is defined as 11:59:59 PM ET on the final day of the specified period or, for a <time
+period> shorter than a full calendar day, the final second of the specified interval. Where a <time period> denotes a local
+clock time or interval that occurs twice because daylight saving time ends, the earlier of the two occurrences governs unless
+the Exchange specifies otherwise at Issuance. The Exchange will not specify a <time period> denoting a local clock time that
+does not occur because daylight saving time begins. The Exchange may list iterations of the Contract corresponding to
+variations of <time period>.
+
+<in/at>: <in/at> refers to the Contract's determination structure, as specified by the Exchange at Issuance. For an "at"
+Contract, <time period> shall be a single specified minute (the "settlement time"), and the Contract is determined by
+reference to the Index Settlement Value for the settlement time, as defined in the Payout Criterion. For an "in" Contract, the
+Contract is determined by reference to the set of canonical Index observations with event times within <time period>, as
+provided in the Payout Criterion.
+
+<above/below/at least/at most/exactly/between>: <above/below/at least/at most/exactly/between> refers to comparison
+operators, applied at the Index's published precision without any re-rounding. "Above" means strictly greater than (>);
+"below" means strictly less than (<); "at least" means greater than or equal to (≥); "at most" means less than or equal to (≤);
+"exactly" means equal to (=); and "between" means within an inclusive range (greater than or equal to the lower bound and
+less than or equal to the upper bound, unless otherwise explicitly specified by the Exchange).
+
+<value>: <value> refers to a specific numeric level, or inclusive numeric range, specified by the Exchange at Issuance,
+expressed in the same units as the Index and at no greater precision than the Index's published precision. No rounding is
+applied to <value> or to any canonical Index observation for purposes of the comparison.
+
+Payout Criterion: The Payout Criterion for the Contract encompasses the Expiration Values in which the Index, as reported
+by the Source Agency, is <above/below/at least/at most/exactly/between> <value> <in/at> <time period>, as determined
+under the following provisions.
+
+Additional clarification(s):
+
+      For an "at" Contract, the Market Outcome is "Yes" if the Index Settlement Value for the settlement time satisfies the
+      specified comparison against <value>, and "No" if it does not. The "Index Settlement Value" for the settlement time is
+      the canonical Index observation with the greatest event time t such that t is at or before the settlement time and no
+      more than 60 minutes before the settlement time. The Index Settlement Value is determined no earlier than 5 minutes
+      (300 seconds) after the settlement time, the deadline by which the Source Agency publishes the canonical Index
+      observation, if any, for the settlement time. Event time, not publication time, governs this selection. If no canonical
+      Index observation exists with an event time at or within 60 minutes (inclusive of exactly 60 minutes) before the
+      settlement time, the Expiration Value cannot be determined and the Contract will be resolved pursuant to Rule 7.1 of
+      the Rulebook.
+      For an "in" Contract:
+             The Market Outcome is "Yes" if the comparison operator is “above”, “below”, “exactly”, or “between” and at
+             least one canonical Index observation with an event time within <time period> satisfies the specified comparison
+             against <value>
+             The Market Outcome is "Yes" if the comparison operator is “at most”, “at least”, and all of the available
+             canonical Index observation(s) with an event time within <time period> satisfy the specified comparison against
+             <value>
+             If only one canonical Index observation occurs for <time period>, the market outcomes which govern an “at”
+             Contract shall govern the “in” Contract for <time period>.
+      Event minutes for which no canonical Index observation exists are disregarded: they do not satisfy the comparison, and
+      they do not prevent other observations from satisfying it. A Market Outcome of "No" is determined no earlier than 5
+      minutes (300 seconds) after the end of <time period>. If no canonical Index observation exists with an event time
+      within <time period>, the Expiration Value cannot be determined and the Contract will be resolved pursuant to Rule
+      7.1 of the Rulebook.
+      A canonical Index observation, once published, is final for purposes of this Contract. Restatements, corrections,
+      republications, or removals of a canonical Index observation after its initial publication will not be accounted for in
+      determining the Expiration Value or Market Outcome. The sole mechanism for addressing a canonical Index
+      observation alleged to be erroneous is the Market Outcome Review Process under Rule 7.1 of the Rulebook.
+      If the Expiration Value cannot be determined by the Source Agency on the Expiration Date for any reason, including
+      equipment failure, data-provider outage, or failure to satisfy the Methodology's quorum requirements, the Contract
+      will be resolved pursuant to Rule 7.1 of the Rulebook.
+      Illustrative examples, at the Index’s published precision of 0.01°F:
+             An "at" Contract specifying "at least 90.00" for a settlement time of 3:00 PM ET on August 14, 2026: the
+             canonical Index observation for the 3:00 PM ET event minute is 90.00 → the Market Outcome is "Yes." If that
+             observation is 89.99 → "No."
+             An "at" Contract specifying "above 90.00" for the same settlement time: the 3:00 PM ET event minute is
+             unavailable; the most recent canonical Index observation is 91.24 with an event time of 2:57 PM ET → the
+             Index Settlement Value is 91.24 → "Yes."
+             The same Contract where no canonical Index observation has an event time from 2:00 PM ET through 3:00 PM
+             ET → resolved pursuant to Rule 7.1.
+             An "in" Contract specifying "above 95.00" for <time period> August 14, 2026: a single canonical Index
+             observation of 95.01 with an event time of 4:41 PM ET → "Yes," regardless of every other observation that day.
+             If canonical Index observations exist for that day and none exceeds 95.00 → "No."
+             An "at" Contract specifying "exactly 90.00": an Index Settlement Value of 90.00 → "Yes"; 90.01 → "No."
+            The canonical Index observation for a settlement time is first published as 90.05 and later restated to 89.80 →
+            90.05 governs, subject only to Rule 7.1.
+
+Minimum Tick: The Minimum Tick size for the Contract shall be $0.01.
+
+Position Accountability Level: The Position Accountability Level for the Contract shall be $25,000 per strike, per
+Member.
+
+Last Trading Date: The Last Trading Date of the Contract will be the final calendar date of <time period>, and the Last
+Trading Time will be the end of <time period>. If the Contract expires earlier in accordance with Rule 7.2, the Last Trading
+Date and Last Trading Time will be the earlier Expiration Date and time.
+
+Settlement Date: The Settlement Date of the Contract shall be no later than the day after the Expiration Date, unless the
+Market Outcome is under review pursuant to Rule 7.1.
+
+Expiration Date: The latest Expiration Date of the Contract shall be one week after the end of <time period>. If an event
+described in the Payout Criterion occurs, expiration will be moved to an earlier date and time in accordance with Rule 7.2.
+
+Expiration time: The Expiration time of the Contract shall be 10:00 AM ET.
+
+Settlement Value: The Settlement Value for this Contract is $1.00.
+
+Expiration Value: The Expiration Value is (i) for an 'at' Contract, the Index Settlement Value for the settlement time, and
+(ii) for an 'in' Contract, the set of canonical Index observations with event times within <time period>, in each case as
+determined under the Payout Criterion.
+
+Contingencies: Before Settlement, Kalshi may, at its sole discretion, initiate the Market Outcome Review Process pursuant
+to Rule 7.1 of the Rulebook. If an Expiration Value cannot be determined on the Expiration Date, Kalshi has the right to
+determine payouts pursuant to Rule 7.1 in the Rulebook.
+
+
+
+    APPENDIX B – KALSHI WEATHER INDEX METHODOLOGY (NEW YORK CITY CONFIGURATION)
+
+This Methodology is published in full on the Exchange’s website and is incorporated into the Contract’s Terms and
+Conditions (Appendix A). Methodology Version 1.0; initial configuration identifier nyc-temperature-v1.0.
+
+Section 1 — Overview and definitions.
+
+The Kalshi Weather Index for a configured city is an event-time, minute-resolution weighted temperature estimate calculated
+by Kalshi (the “Administrator”) exclusively under this Methodology. Each published point is calculated only from the
+configuration version effective for its event minute, using deterministic rules; no discretion is exercised in the calculation of
+any Index value. The configuration, selected inputs, and quality-control decisions for every point are retained so that each
+published value can be exactly reproduced.
+
+      Event minute (event time t): the UTC minute being indexed by the Contract. One Index point is calculated per UTC
+      minute.
+      Observation time: the timestamp assigned to an observation by its source.
+      Receipt time: the Administrator’s locally stamped arrival time for an observation. Receipt time is authoritative for
+      eligibility; provider latency telemetry is diagnostic only.
+      Canonical Index observation: the single published Index value for an event minute with status normal or degraded.
+      Minutes with status unavailable have no canonical Index observation.
+      Statuses: normal — every member contributed its exact primary observation; degraded — a member was absent, a
+      fallback was used, or a quality-control substitution occurred; unavailable — the quorum requirement was not met and
+      no numeric value is published for the minute.
+Section 2 — Data sources and membership (New York City).
+
+The New York City Index is an airport-network index for the New York City metropolitan area, spanning the tri-state region.
+It describes the calibrated multi-station tri-state network and is not a measure of the temperature of the City of New York
+(the five boroughs) as a literal municipal-boundary location.
+       Members. The Index has eight member stations, each a National Weather Service/FAA Automated Surface Observing
+       System (ASOS) station: KLGA (LaGuardia Airport), KEWR (Newark Liberty International Airport), KTEB
+       (Teterboro Airport), KCDW (Essex County Airport), KHPN (Westchester County Airport), KFRG (Republic
+       Airport), KSMQ (Somerset Airport), and KISP (Long Island MacArthur Airport). Each member carries an equal base
+       weight of 0.125000.
+       Primary source. For each member, the primary source is the station's one-minute high-frequency ASOS air
+       temperature record (station identifiers KLGA1M, KEWR1M, KTEB1M, KCDW1M, KHPN1M, KFRG1M,
+       KSMQ1M, KISP1M), delivered through Synoptic Data PBC (HF-ASOS network 258). A primary record is eligible
+       for event minute t only if its observation time equals t exactly.
+       Fallback source. The fallback for each member is, in hierarchical order, the member's HF-ASOS reading from the
+       prior minute, with each minute more proximate to event time t being higher in the hierarchy, up to the same minute as
+       the minute of the publication of the same station's genuine official ASOS METAR/SPECI observation (station
+       identifier without the 1M suffix), used only after primary failure for that minute, with a maximum age of 75 minutes
+       (observation time at or before t). For fallback air temperature, use the temperature encoded in the selected
+       METAR/SPECI's valid RMK T-group when present. If no valid T-group is present, use the air temperature from the
+       main-body temperature/dew-point group. Generated or derived products (including HFMETAR) are not eligible
+       fallbacks (hfmetars=0). Every fallback is independently quality-controlled. Below the METAR/SPECI observation in
+       the hierarchy are the readings from the Member's HF-ASOS which were recorded for minutes before the minute of
+       the METAR/SPECI reading, but not more than 75 minutes prior to event time t.
+       Source precision. Source numeric precision is preserved through quality control and calculation; inputs are not
+       rounded. Only the published Index value is rounded.
+
+Section 3 — Timing and source selection.
+
+      For each event minute t, the eligibility deadline is t + D, where D = 300 seconds (5 minutes).
+      Any observation whose local receipt time is later than t + D is excluded from the canonical calculation and retained as
+      diagnostic data only.
+      For each member, permitted sources are tried in priority order (primary, then fallback). A primary record must have
+      observation time equal to t; a fallback may be carried forward only if its observation time is at or before t and its age
+      does not exceed 75 minutes.
+      Source-local quality control is applied first; the first locally eligible candidate is selected, and city-level spatial quality
+      control is then applied. If the candidate is rejected, the next source is tried and spatial quality control is re-evaluated.
+      Iteration proceeds in deterministic station-identifier order until no selection changes or all sources are exhausted.
+      At t + D, exactly one canonical point for t is calculated and published. It is not revised for observations arriving after
+      the deadline.
+
+Section 4 — Quality control (New York City parameters).
+
+      Provider flags. Reject observations carrying configured failed provider air-temperature quality-control flags from
+      either source; raw flags and reason codes are preserved.
+      Numeric. Reject null, non-numeric, non-finite, sentinel, or out-of-range values. Hard range: −40°C ≤ temperature ≤
+      +50°C.
+      Rate. Against the last QC-accepted reading from the same source, for gaps Δt ≤ 90 minutes: flag when |ΔT| > 2.0 +
+      0.12 × Δt (minutes) °C. A rate flag alone does not reject.
+      Spatial. After offset adjustment, compare the candidate to the median of at least q = 3 currently eligible offset-
+      adjusted peers (candidate excluded). MAD is the median of |peer − peer median|. Spatially inconsistent when deviation
+      ≥ max(4°C, 6 × MAD).
+      Extreme. Reject any candidate with deviation > max(8°C, 10 × MAD), regardless of rate flags.
+      Decision. Reject a rate-flagged candidate only if it is also spatially inconsistent; reject extreme-threshold candidates
+      unconditionally; then try the independently QC-passed official-ASOS fallback and recompute spatial quality control. If
+      fewer than q peers exist, spatial gates are not applied.
+      Baseline. A rejected candidate never becomes the temporal baseline for the rate gate. Every fallback is quality-
+      controlled independently, and spatial tests are recomputed after substitutions.
+
+Section 5 — Calculation, quorum, and status.
+
+Let M be the configured members, w_i their base weights, A(t) the accepted members for event minute t after selection and
+quality control, x_i(t) their temperatures in °C, and b_i their static offsets (a positive b_i denotes a station normally warmer
+than its peers). The city reference is defined over all configured members, not only the available subset:
+
+                                              B_c = Σ over i in M of (w_i × b_i)
+
+                                                   z_i(t) = x_i(t) − b_i + B_c
+
+                            Index_c(t) = Σ over i in A(t) of (w_i × z_i(t)) ÷ Σ over i in A(t) of w_i
+
+   I. Quorum. A numeric Index value is published only when |A(t)| ≥ 7 members and the available base-weight share Σ
+      over A(t) of w_i ≥ 0.875000000. Otherwise the minute is published as unavailable, and the Index is not carried
+      forward.
+  II. Units and rounding. Calculation is performed in °C at full source precision. The published Index value is expressed
+      in °F, rounded only at final output to the nearest 0.01°F.
+ III. Current offsets (nyc-temperature-v1.0). KLGA1M +1.0°C; KEWR1M +1.0°C; KTEB1M +1.0°C; KCDW1M
+      +0.0°C; KHPN1M −1.0°C; KFRG1M +0.0°C; KSMQ1M −1.0°C; KISP1M +0.0°C. City reference B_c = +0.125°C.
+      Offsets are updated pursuant to Section 6, with each update published as a new configuration record before taking
+      effect.
+
+Section 6 — Offset calibration and weekly refresh.
+
+      At launch and after each complete UTC week, offsets are re-estimated from the trailing seven complete UTC days of
+      QC-passed exact primary observations. Carried-forward fallback values are never used for offset estimation.
+      For station i at a qualifying minute, the residual is r_i(t) = x_i(t) − median(other available members), requiring at least
+      3 offset-adjusted peers (q_offset = 3). The target offset b*_i is the median of r_i(t).
+      At least 3,000 residuals spanning at least five calendar days are required per station; otherwise the prior offset is
+      retained and an operational flag is raised.
+      The applied update is b_i,new = b_i,old + clip(0.5 × (b*_i − b_i,old), −0.5°C, +0.5°C). B_c is recomputed from the
+      full configured weight set, a new configuration record is published, and the update applies prospectively only.
+
+Section 7 — Hourly settlement values.
+
+For a specified settlement time S, the settlement value is determined only after S + D (300 seconds). The selected point is the
+canonical Index observation with the greatest event time t such that t ≤ S, using event time — not publication time — for the
+comparison. Normal and degraded points are eligible; unavailable minutes are not, and remain unavailable in the series (the
+selector may look back across them without creating or carrying forward any new observation). The settlement record stores
+S, the selected event time, the selected published value, its status, the configuration identifier, the publication time, and the
+elapsed age S − t.
+
+Contracts referencing the Index may impose additional eligibility bounds on the selected point — including a maximum
+elapsed age — under their own terms and conditions. The Contract certified herewith requires the selected event time to be
+no more than 60 minutes before S.
+
+Section 8 — Publication, finality, and restatement.
+The Administrator makes available to the public on the Exchange's website, free of charge and without registration: this
+Methodology and each canonical Index observation and its status. For each settlement time referenced by a listed contract,
+the Administrator publishes the Index Settlement Value — the selected event time, value, and status — no later than the
+determination of the related Market Outcome. A delay in publication does not affect the validity, finality, or use in
+settlement of any canonical Index observation.
+
+A canonical Index observation, once published, is never revised or removed in place, and late-arriving data are diagnostic
+only and cannot modify a canonical point. The Administrator may correct a canonical Index observation it determines to be
+erroneous only by publishing a restatement pursuant to the Administrator’s versioned restatement policy: a restatement is
+published as a separately versioned record; identifies the affected event minutes, the corrected values, and the reason for the
+correction; and does not remove or overwrite the originally published value, which remains part of the permanent record.
+The effect, if any, of a restatement on a listed contract is governed exclusively by that contract’s terms and conditions. Under
+the Contract certified herewith, restatements are not accounted for in determining the Expiration Value or Market Outcome,
+and the exclusive remedial mechanism for an allegedly erroneous canonical Index observation is the Market Outcome
+Review Process under Rule 7.1 of the Rulebook.
+
+Section 9 — Versioning, amendments, and governance.
+
+      Amendments. Changes to the member roster, base weights, quorum requirements, quality-control parameters, the
+      receipt deadline D, source definitions or priority, the calculation formulas, units, rounding, or the provisions of this
+      Methodology are amendments. Amendments are adopted only pursuant to a rule certification under Commission
+      Regulation 40.6; they apply prospectively only, to event minutes at and after their effective time; and are never applied
+      to any previously published canonical Index observation.
+
+      Operation. Offset updates under Section 6, fallback selection under Section 3, and quality-control substitutions under
+      Section 4 are the operation of this Methodology and are not amendments.
+      Governance. Personnel involved in the calculation and operation of the Index are subject to the trading prohibitions
+      set forth in Appendix C.
+
+Section 10 — Audit records.
+
+For every event minute, the Administrator retains: city and configuration identifiers; event and publication times; published
+value, units, rounding, and status; member identifiers and weights; source, observation, and receipt times; fallback ages; raw
+and accepted temperatures; offsets in effect; each quality-control reason code; and contributor and source counts. For every
+settlement value, the Administrator retains the settlement record described in Section 7.
+
+
+                                       APPENDIX C – TRADING PROHIBITIONS
+
+In addition to the general prohibition against trading on material nonpublic information, the Exchange will institute additional
+prohibitions for trading the contract. Persons under 18 years of age are not permitted to create Kalshi accounts. The
+following individuals will be prohibited from trading:
+
+      Exchange personnel, as with all Kalshi contracts.
+      Synoptic Data PBC employees and affiliates.
+      NWS/FAA personnel and contractors responsible for operating, maintaining, calibrating, or repairing the seven named
+      member stations.
+      Households and MNPI recipients of any of the above.
+

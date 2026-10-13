@@ -1,0 +1,6 @@
+{
+  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago/calibrations",
+  "receivedAt": "2026-10-13T21:34:13.322719+00:00",
+  "sha256": "c8f89f633e2f35bc81f55ddd5ed38fce59bfae23b08d367c0e9d61cd6367345e",
+  "file": "chicago-calibrations.json"
+}

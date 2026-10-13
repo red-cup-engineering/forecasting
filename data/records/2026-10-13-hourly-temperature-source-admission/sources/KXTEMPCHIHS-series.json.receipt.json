@@ -1,0 +1,6 @@
+{
+  "source": "https://api.elections.kalshi.com/trade-api/v2/series/KXTEMPCHIHS",
+  "receivedAt": "2026-10-13T21:33:13.337309+00:00",
+  "sha256": "0e6ee2648e8e8543e5e151384ecc40da1ffc8ed4abf4aadf7125892917073e9a",
+  "file": "KXTEMPCHIHS-series.json"
+}
