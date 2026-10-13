@@ -1,0 +1,6 @@
+{
+  "source": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791927129272&to=1791927309272&detailed=true",
+  "receivedAt": "2026-10-13T21:40:09.706982+00:00",
+  "sha256": "d1f11360bfb44a6f66b75a40ec192c0d5703188eba5a939cd01b986e304a1365",
+  "file": "nyc-index-minutes.json"
+}
