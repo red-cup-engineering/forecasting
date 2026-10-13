@@ -32,13 +32,28 @@ function fakeClient(calls) {
   };
 }
 
-function fixture() {
-  const root = mkdtempSync(join(tmpdir(), 'hyp-')), content = join(root, 'content');
+function fixture({ seedProspectiveReceipts = true } = {}) {
+  const home = mkdtempSync(join(tmpdir(), 'hyp-')), content = join(home, 'content');
+  const root = join(home, 'state');
   mkdirSync(content);
   const h = JSON.parse(readFileSync(join(hypothesesDir, 'claims-c1.json'), 'utf8'));
   writeFileSync(join(content, 'test-t1.json'), JSON.stringify({ ...h, id: 'test-t1', universe: { series: ['T'] }, registeredAt: '2026-10-08T00:00:00Z' }));
   writeFileSync(join(content, 'late-favourite-r1.json'), readFileSync(join(hypothesesDir, 'late-favourite-r1.json')));
-  return { root: join(root, 'state'), content };
+  // The historical test used to fetch candles after settlement and promote them
+  // as forward evidence. Instead, explicitly seed synthetic OBSERVATIONS dated
+  // at their original forward window; the test never calls these real trades.
+  if (seedProspectiveReceipts) {
+    const store = openStore(join(root, 'cache'));
+    for (let i = 0; i < WEEKS; i++) {
+      const close = Date.parse('2026-10-15T12:25:00Z') + i * 7 * 86400e3;
+      const observedAt = new Date(close - 86400e3).toISOString();
+      const event = `T-${String(i).padStart(2, '0')}`;
+      for (const strike of [200, 210]) store.put(`${event}-${strike}`, 'quote:close:-1440', {
+        kind: 'forward-window', ts: observedAt, observedAt, bid: 0.38, ask: 0.4,
+      }, observedAt);
+    }
+  }
+  return { root, content };
 }
 
 test('a run encodes entries, passes the criterion, emits a surface model, and skips killed hypotheses', async () => {
@@ -66,7 +81,7 @@ test('a run encodes entries, passes the criterion, emits a surface model, and sk
   assert.ok(!calls.some((p) => p.includes('KXLATE')), 'no fetch for killed');
 });
 
-test('idempotent: a second run on the same input yields the same ledger and fetches nothing new', async () => {
+test('idempotent: a second run preserves the same forward ledger and appends no duplicate observations', async () => {
   const { root, content } = fixture(), calls = [];
   await runHypotheses({ requestBudget: 100, root, contentDir: content, now: NOW, fetcher: createFetcher({ budget: 100, client: fakeClient(calls) }) });
   const ledger1 = readFileSync(join(root, 'test-t1', 'ledger.json'), 'utf8');
@@ -85,9 +100,9 @@ test('idempotent: a second run on the same input yields the same ledger and fetc
 
 test('the request budget stops a run cleanly and the next run resumes', async () => {
   const { root, content } = fixture(), calls = [];
-  const r1 = await runHypotheses({ requestBudget: 3, root, contentDir: content, now: NOW, fetcher: createFetcher({ budget: 3, client: fakeClient(calls) }) });
+  const r1 = await runHypotheses({ requestBudget: 2, root, contentDir: content, now: NOW, fetcher: createFetcher({ budget: 2, client: fakeClient(calls) }) });
   assert.equal(r1.partial, true);
-  assert.equal(calls.length, 3);
+  assert.equal(calls.length, 2);
   const r2 = await runHypotheses({ requestBudget: 100, root, contentDir: content, now: NOW, fetcher: createFetcher({ budget: 100, client: fakeClient([]) }) });
   assert.equal(r2.hypotheses.find((x) => x.id === 'test-t1').clusters, WEEKS);
   assert.throws(() => createFetcher({}), TypeError);
@@ -103,4 +118,16 @@ test('observations are SEAVT rows in the flat-file journal layout', async () => 
   assert.equal(store.get('T-00-200', 'quote:close:-1440').bid, 0.38);
   const statuses = readStatuses({ root, contentDir: hypothesesDir });
   assert.equal(statuses.find((s) => s.id === 'late-favourite-r1').status, 'killed');
+});
+
+test('settled candle history without an original forward-window witness cannot pass or publish a model', async () => {
+  const { root, content } = fixture({ seedProspectiveReceipts: false }), calls = [];
+  const result = await runHypotheses({ requestBudget: 100, root, contentDir: content, now: NOW,
+    receiptClock: () => NOW, fetcher: createFetcher({ budget: 100, client: fakeClient(calls) }) });
+  const hypothesis = result.hypotheses.find((h) => h.id === 'test-t1');
+  assert.equal(hypothesis.clusters, 0);
+  assert.equal(hypothesis.status, 'forward');
+  assert.equal(result.sync.newQuotes ?? 0, 0);
+  assert.equal(existsSync(join(root, 'admitted', 'test-t1.json')), false);
+  assert.equal(openStore(join(root, 'cache')).get('T-00-200', 'quote:close:-1440'), undefined);
 });
