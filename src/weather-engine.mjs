@@ -1,3 +1,5 @@
+import {weatherParticipationActions, reviewWeatherParticipation, readWeatherParticipationFees, verifyWeatherParticipationProposal} from './weather-participation.mjs';
+import {weatherCarryAllocation} from './weather-capital.mjs';
 import {collectEcmwfEnsemble} from './weather-ecmwf-ensemble.mjs';
 import {collectRelationalWeatherNowcast} from './weather-relational-nowcast.mjs';
 import {collectWeatherStrategyResearch} from './weather-strategy-research.mjs';
@@ -9,7 +11,7 @@ import {planWeatherReasoningCadence,temperatureReasoningTimeZones} from './weath
 import { binarySettlement } from '@red-cup-engineering/kalshi-services-section/market-facts';
 import {randomUUID,createHash} from 'node:crypto';
 import {updateStationScience,readStationScience,readStationSciencePage,stationPointForecasts} from './station-weather-science.mjs';
-import {weatherReadPage,weatherStatusInventory} from './weather-read-page.mjs';
+import {admitWeatherPageWire,weatherReadPage,weatherStatusInventory} from './weather-read-page.mjs';
 import {readWeatherSourceRecord} from './weather-source-record.mjs';
 import { readFile, writeFile, mkdir, rename, readdir, appendFile, rm, stat, link } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
@@ -18,7 +20,7 @@ import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { gzipSync, gunzipSync } from 'node:zlib';
 import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
-import { digest, discoverWeather, weatherRuleKey, mapLimit } from './weather-universe.mjs';
+import { digest, discoverWeather, weatherRuleKey, weatherContract, mapLimit } from './weather-universe.mjs';
 import { collectWeatherEvidence, collectStationWeatherEvidence, weatherEstimates, forecastCell } from './weather-evidence.mjs';
 import { createModelGradeAccumulator, probabilityBand, allocateWeather } from './weather-learning.mjs';
 import { fuseForecast } from './forecast-surface.mjs';
@@ -149,6 +151,24 @@ export async function weatherEvidence({root=weatherRoot(),evidenceId,station,raw
   }
   if(station?.startsWith('index:'))return {at:e.at,station,sourceEvidenceId:e.sourceEvidenceId,index:e.indices?.[station.slice(6)]??null,science:e.science?{...e.science,metrics:e.science.metrics?.filter(r=>r.station===station),comparisons:e.science.comparisons?.filter(r=>r.station===station),parameters:Object.fromEntries(Object.entries(e.science.parameters??{}).filter(([k])=>k.startsWith(station+'/'))),forecasts:e.science.forecasts?.filter(r=>r.station===station),outcomes:e.science.outcomes?.filter(r=>r.forecast.station===station)}:null};
   return station?{at:e.at,station,ecmwfEnsemble:e.ecmwfEnsemble?{runtime:e.ecmwfEnsemble.runtime,availableAt:e.ecmwfEnsemble.availableAt,projection:e.ecmwfEnsemble.projection,station:e.ecmwfEnsemble.stations[station],fields:e.ecmwfEnsemble.fields,indices:e.ecmwfEnsemble.indices}:null,sourceEvidenceId:e.sourceEvidenceId,dailyExtremes:e.dailyExtremes?{forecasts:e.dailyExtremes.forecasts.filter(r=>r.station===station),gaps:e.dailyExtremes.gaps.filter(r=>r.station===station)}:null,science:e.science?{...e.science,metrics:e.science.metrics?.filter(r=>r.station===station),comparisons:e.science.comparisons?.filter(r=>r.station===station),parameters:Object.fromEntries(Object.entries(e.science.parameters??{}).filter(([k])=>k.startsWith(station+'/'))),forecasts:e.science.forecasts?.filter(r=>r.station===station),outcomes:e.science.outcomes?.filter(r=>r.forecast.station===station)}:null,lamp:e.lamp?{runtime:e.lamp.runtime,source:e.lamp.source,extendedSource:e.lamp.extendedSource,station:e.lamp.stations[station]}:null,guidance:e.guidance?.stations[station],hourlyGuidance:e.hourlyGuidance?{runtime:e.hourlyGuidance.runtime,source:e.hourlyGuidance.source,station:e.hourlyGuidance.stations[station]}:null,quantiles:e.quantiles?{runtime:e.quantiles.runtime,source:e.quantiles.source,station:e.quantiles.stations[station]}:null,settlementReports:Object.fromEntries(Object.entries(e.settlement?.daily??{}).map(([date,r])=>[date,{source:r.source,results:r.data?.results?.filter(x=>x.station?.icao===station)}])),local:e.local[station],observations:Object.fromEntries(Object.entries(e.observations).filter(([key])=>key.startsWith(station+'/'))),errors:e.errors.filter(r=>!r.station||r.station===station)}:e;
+}
+
+const participationFields=['rows','errors','marketBatches','bookBatches','liveIndexDiscovery','evaluations','skipped','selectedActionIds','commitments','unansweredQuestions','conflictingCommitments','tradePages','trades','market','book','book.yes_dollars','book.no_dollars','feeObservations','feeObservations.eventFeePages','frozenModels','actions','actions.alternatives','actions.questions','actions.forecastModels','review','review.actions','review.tradeConflicts','review.executionAssumptions','review.publicCounterpartyEvidence','review.publicCounterpartyEvidence.trades','policy','policy.cases','proposal','proposal.commitments','proposal.unansweredQuestions'];
+/** A bounded view of the existing immutable participant archive. Complete
+ * library readers and source bytes remain available; no new dataset is made. */
+export async function weatherParticipationEvidencePage({root=weatherRoot(),evidenceId,field,row,tradePage,offset=0,limit=100,sourceRevision}={}){
+ if(!/^[a-f0-9]{64}$/u.test(evidenceId??''))throw new TypeError('content-addressed evidenceId required');
+ const {record,source}=await readWeatherSourceRecord({root,file:`evidence/${evidenceId}.json.gz`,sourceRevision});
+ if(!source.present||!['weather-participation-snapshot-v1','weather-participation-review-v1','weather-participation-proposal-v1','weather-carry-allocation-v1'].includes(record.kind))throw new TypeError('an original participation archive is required');
+ let subject=record;
+ if(row!==undefined){if(!Number.isSafeInteger(row)||row<0||!Array.isArray(record.rows)||row>=record.rows.length)throw new RangeError('an existing participant row is required');subject=record.rows[row];}
+ if(tradePage!==undefined){if(row===undefined||!Number.isSafeInteger(tradePage)||tradePage<0||tradePage>=(subject.tradePages?.length??0))throw new RangeError('an existing trade page within the selected row is required');subject=subject.tradePages[tradePage].packet;}
+ const metadata={evidenceId,kind:record.kind,snapshotId:record.snapshotId??null,...(row===undefined?{}:{row}),...(tradePage===undefined?{}:{tradePage}),orderEffect:false,tradeAuthority:false};
+ const valueOf=path=>path.split('.').reduce((value,key)=>value?.[key],subject);
+ if(field!==undefined)return weatherReadPage({[field]:valueOf(field)},{source,field,allowedFields:participationFields,offset,limit,sourceRevision,metadata});
+ const collections=participationFields.map(field=>{const v=valueOf(field);return {field,count:Array.isArray(v)?v.length:v&&typeof v==='object'?Object.keys(v).length:0};}).filter(v=>v.count);
+ const scalars=Object.fromEntries(['ticker','eventTicker','family','station','rulesHash','sourceEvidenceId','frozenForecastAt','contractProbabilityDerivedAt','marketReceivedAt','status','capitalUsd','encumberedUsd','availableCapitalUsd','reservedUsd','remainingUsd','cashDeficitUsd','priorityReserveUsd','carryBudgetUsd','carryReserveUsd','conditionalNetAfterHurdleLowUsd','scope','method'].filter(key=>subject[key]!==undefined).map(key=>[key,subject[key]]));
+ return admitWeatherPageWire({...metadata,source,at:record.at??null,coverage:record.coverage??null,...scalars,collections});
 }
 /** Projection boundary for public operation transport: the full calibration population remains in
  * the SAME immutable-on-read local latest.json source, but an unbounded object cannot pass the
@@ -452,3 +472,119 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
   });
 }
 
+
+export async function weatherParticipation({root=weatherRoot(),client=weatherClient(),tickers,maxMarkets,quoteIntents,capitalUsd,encumberedUsd=0,contracts=1,windowSeconds=60,snapshotId,proposalActionIds,carryPolicy,now=Date.now()}={}){
+ if(snapshotId!==undefined){
+  if(tickers!==undefined||maxMarkets!==undefined||quoteIntents!==undefined||capitalUsd!==undefined||encumberedUsd!==0||contracts!==1||windowSeconds!==60)throw new TypeError('review uses only snapshotId and optional proposalActionIds or carryPolicy');
+  const snapshot=await weatherEvidence({root,evidenceId:snapshotId});if(digest(snapshot)!==snapshotId)throw new TypeError('participation snapshot hash mismatch');if(snapshot.kind!=='weather-participation-snapshot-v1')throw new TypeError('market participation snapshot required');
+  if(carryPolicy!==undefined){
+   if(proposalActionIds!==undefined)throw new TypeError('choose carryPolicy or proposalActionIds');
+   const evaluatedAt=Date.now(),allocation=weatherCarryAllocation(snapshot,carryPolicy,{now:evaluatedAt});
+   const proposal=allocation.selectedActionIds.length?verifyWeatherParticipationProposal({...snapshot,availableCapitalUsd:allocation.carryBudgetUsd},{actionIds:allocation.selectedActionIds},{now:evaluatedAt}):null;
+   const packet={...allocation,snapshotId,policy:carryPolicy,proposal};const evidenceId=digest(packet);await archivePacket(join(root,'evidence',evidenceId+'.json.gz'),packet);return {evidenceId,...packet};
+  }
+  if(proposalActionIds!==undefined){
+   const packet={kind:'weather-participation-proposal-v1',at:new Date().toISOString(),snapshotId,...verifyWeatherParticipationProposal(snapshot,{actionIds:proposalActionIds},{now:Date.now()})};
+   const evidenceId=digest(packet);await archivePacket(join(root,'evidence',evidenceId+'.json.gz'),packet);return {evidenceId,...packet};
+  }
+  const rows=await mapLimit(snapshot.rows,2,async row=>{
+   const pages=[],trades=[],seenCursors=new Set();let cursor,error=null;const end=Math.min(now,Date.parse(row.actions.expiresAt));
+   try {for(let page=0;page<3;page++){
+    const packet=await client.call('GET','/markets/trades',{signed:false,query:{ticker:row.ticker,min_ts:Math.floor(Date.parse(row.actions.observedAt)/1000),max_ts:Math.ceil(end/1000),is_block_trade:false,limit:1000,cursor}});
+    pages.push({receivedAt:new Date().toISOString(),packet});if(!Array.isArray(packet.trades)||packet.trades.some(t=>t?.ticker!==row.ticker))throw new TypeError('scoped trade tape missing or mismatched');trades.push(...packet.trades);
+    cursor=packet.cursor??'';if(typeof cursor!=='string'||cursor&&seenCursors.has(cursor))throw new TypeError('trade cursor invalid or nonadvancing');if(!cursor)break;seenCursors.add(cursor);
+   }}catch(e){error=e.message;}
+   const market=await client.getMarket(row.ticker),receivedAt=new Date().toISOString(),rulesMatch=digest({primary:market.rules_primary,secondary:market.rules_secondary})===row.rulesHash;
+   const label=binarySettlement(market),outcome=label&&rulesMatch&&Date.parse(label.settledAt)>=Date.parse(row.actions.observedAt)&&Date.parse(label.settledAt)<=Date.parse(receivedAt)?label:null;
+   const review=reviewWeatherParticipation(row.actions,{trades,complete:!error&&!cursor,reviewedAt:new Date(Math.min(now,Date.parse(receivedAt))).toISOString(),outcome,marketType:row.market.market_type,notionalValueUsd:Number(row.market.notional_value_dollars)});
+   return {ticker:row.ticker,tradePages:pages,market,marketReceivedAt:receivedAt,rulesMatch,errors:error?[error]:[],review};
+  });
+  const packet={kind:'weather-participation-review-v1',at:new Date().toISOString(),snapshotId,rows,orderEffect:false,tradeAuthority:false};const evidenceId=digest(packet);await archivePacket(join(root,'evidence',evidenceId+'.json.gz'),packet);return {evidenceId,...packet};
+ }
+ if(proposalActionIds!==undefined||carryPolicy!==undefined)throw new TypeError('proposal or carry policy needs a captured snapshotId');
+ if(!Number.isFinite(capitalUsd)||capitalUsd<0||!Number.isFinite(encumberedUsd)||encumberedUsd<0||!Number.isInteger(contracts)||contracts<1||contracts>10000||!Number.isInteger(windowSeconds)||windowSeconds<5||windowSeconds>300)throw new TypeError('explicit scenario capital, whole contracts and 5..300-second window required');
+ if(tickers!==undefined&&(!Array.isArray(tickers)||tickers.length<1||tickers.length>2000||new Set(tickers).size!==tickers.length||tickers.some(t=>typeof t!=='string'||t.length>120)))throw new TypeError('1..2000 distinct weather tickers required');
+ if(quoteIntents!==undefined&&(!Array.isArray(quoteIntents)||quoteIntents.length<1||quoteIntents.length>4000||quoteIntents.some(q=>!q||typeof q.ticker!=='string'||q.ticker.length>120||!['yes','no'].includes(q.side)||!Number.isFinite(q.price)||q.price<=0||q.price>=1||(q.quantity!==undefined&&(!Number.isInteger(q.quantity)||q.quantity<1||q.quantity>10000)))))throw new TypeError('scoped quote intents require a ticker, side, finite price and optional whole quantity');
+ if(maxMarkets!==undefined&&(!Number.isInteger(maxMarkets)||maxMarkets<1||maxMarkets>2000||tickers!==undefined))throw new TypeError('maxMarkets must be 1..2000 for automatic selection');
+ const {record:state}=await readWeatherSourceRecord({root,file:'latest.json',emptyRecord:{status:'no weather cycle recorded'}});if(!Number.isFinite(Date.parse(state.at))||Date.parse(state.at)>now||now-Date.parse(state.at)>15*60000)throw new TypeError('weather evidence needs a causal receipt within fifteen minutes');
+ const byTicker=new Map((state.contracts??[]).map(c=>[c.ticker,c]));let forecasts=(state.forecasts??[]).filter(r=>r.models?.some(m=>Number.isFinite(m.p))&&Date.parse(r.closeTime)>now),availableCapitalUsd=Math.max(0,capitalUsd-encumberedUsd);
+ const liveIndexDiscovery=[],discoveryErrors=[];
+ if(tickers===undefined){
+  // New hourly listings can appear between physical collection cycles. Bind
+  // them now against already-received weather evidence; no new weather model fit.
+  const indexSeries=[...new Map([...byTicker.values()].filter(c=>c.binding?.kind==='index-at'&&['nyc','miami','la-coastal'].includes(c.binding.city)).map(c=>[c.seriesTicker,c])).values()].slice(0,3),sourceId=forecasts.find(r=>r.evidenceId)?.evidenceId;
+  if(sourceId&&indexSeries.length){
+   const evidence=await weatherEvidence({root,evidenceId:sourceId});
+   await mapLimit(indexSeries,2,async template=>{try{
+    const series=await client.getSeries(template.seriesTicker),markets=[],pages=[],seen=new Set();let cursor;
+    // The existing 2,000-contract selection envelope also bounds new listing
+    // discovery. Retain incomplete coverage rather than silently paging forever.
+    for(let page=0;page<Math.ceil((maxMarkets??2000)/1000);page++){
+     const packet=await client.call('GET','/markets',{signed:false,query:{series_ticker:template.seriesTicker,status:'open',limit:1000,cursor}}),receivedAt=new Date().toISOString();pages.push({receivedAt,packet});
+     if(!Array.isArray(packet.markets)||packet.markets.some(m=>m?.series_ticker!==undefined&&m.series_ticker!==template.seriesTicker))throw new TypeError('scoped live index markets required');markets.push(...packet.markets);
+     cursor=packet.cursor??'';if(typeof cursor!=='string'||cursor&&seen.has(cursor))throw new TypeError('live index cursor invalid or nonadvancing');if(!cursor)break;seen.add(cursor);
+    }
+    const receivedAt=pages.at(-1)?.receivedAt??new Date().toISOString();liveIndexDiscovery.push({series,markets,pages,receivedAt,complete:!cursor});
+    if(cursor)discoveryErrors.push({series:template.seriesTicker,error:'live listing discovery reached the selected contract envelope; coverage incomplete'});
+    for(const market of markets){
+     if(forecasts.some(r=>r.ticker===market.ticker)||Date.parse(market.close_time)<=Date.parse(receivedAt))continue;
+     const c=weatherContract(market,series);c.rulesHash=digest({primary:c.rules_primary,secondary:c.rules_secondary});
+     const models=weatherEstimates(c,evidence,Date.parse(receivedAt));if(!models.length)continue;
+     const b=c.binding,stageValue=stage(c,Date.parse(receivedAt)),bands=models.map(m=>({...m,band:probabilityBand({...c,station:b?.station??null,stage:stageValue},m,state.grades??{})}));byTicker.set(c.ticker,c);
+     forecasts.push({ticker:c.ticker,eventTicker:c.event_ticker,closeTime:c.close_time,family:c.family,station:'index:'+b.city,rulesHash:c.rulesHash,ruleKey:c.ruleKey,stage:stageValue,mid:mid(c),models:bands,evidenceId:sourceId,derivedAt:receivedAt,...forecastCell(c,models)});
+    }
+   }catch(e){discoveryErrors.push({series:template.seriesTicker,error:e.message});}});
+  }
+ }
+ let selected;
+ if(tickers)selected=tickers.map(t=>{const r=forecasts.find(r=>r.ticker===t);if(!r)throw new TypeError('no prospective weather probabilities for '+t);return r;});
+ else {
+  const sorted=[...forecasts].sort((a,b)=>Date.parse(a.closeTime)-Date.parse(b.closeTime)||Math.abs((a.mid??0)-.5)-Math.abs((b.mid??0)-.5)),groups=new Map();
+  for(const r of sorted){const group=r.station??r.family;if(!groups.has(group))groups.set(group,[]);groups.get(group).push(r);}
+  selected=[];const selectionLimit=maxMarkets??2000;while(selected.length<selectionLimit&&[...groups.values()].some(g=>g.length))for(const g of groups.values()){if(g.length&&selected.length<selectionLimit)selected.push(g.shift());}
+ }
+ if(quoteIntents?.some(q=>!selected.some(r=>r.ticker===q.ticker)))throw new TypeError('proposed quote ticker is outside the selected capture');
+ const errors=[...discoveryErrors],marketBatches=[],marketObservations=new Map(),seriesObservations=new Map(),eventObservations=new Map();
+ const chunks=rows=>Array.from({length:Math.ceil(rows.length/100)},(_,i)=>rows.slice(i*100,(i+1)*100));
+ await mapLimit(chunks(selected),2,async batch=>{try{
+  const packet=await client.call('GET','/markets',{signed:false,query:{tickers:batch.map(r=>r.ticker).join(','),limit:1000}}),receivedAt=new Date().toISOString(),requested=new Set(batch.map(r=>r.ticker));
+  marketBatches.push({requestedTickers:[...requested],receivedAt,packet});
+  if(!Array.isArray(packet.markets)||packet.cursor||new Set(packet.markets.map(m=>m.ticker)).size!==packet.markets.length||packet.markets.some(m=>!requested.has(m.ticker)))throw new TypeError('complete unique scoped market metadata required');
+  for(const market of packet.markets)marketObservations.set(market.ticker,{market,receivedAt});
+ }catch(e){errors.push({source:'batch-markets',tickers:batch.map(r=>r.ticker),error:e.message});}});
+ const scoped=[];for(const r of selected){try{
+  const c=byTicker.get(r.ticker);if(!c||c.rulesHash!==r.rulesHash)throw new TypeError('forecast rules scope missing');
+  const observation=marketObservations.get(r.ticker);if(!observation)throw new TypeError('requested market missing from metadata receipt');
+  const {market,receivedAt:marketReceivedAt}=observation;if(digest({primary:market.rules_primary,secondary:market.rules_secondary})!==r.rulesHash||market.event_ticker!==c.event_ticker||market.exchange_index!==c.exchange_index)throw new TypeError('fresh market changed rules, event or exchange');
+  const existing=eventObservations.get(c.event_ticker);if(existing&&existing.contract.seriesTicker!==c.seriesTicker)throw new TypeError('event has conflicting series fee scope');
+  if(!existing)eventObservations.set(c.event_ticker,{contract:c});scoped.push({r,c,market,marketReceivedAt});
+ }catch(e){errors.push({ticker:r.ticker,error:e.message});}}
+ await mapLimit([...eventObservations.values()],2,async observation=>{try{
+  observation.terms=await readWeatherParticipationFees(client,observation.contract,{seriesObservations});
+ }catch(e){observation.error=e.message;}});
+ const prepared=scoped.filter(({r,c})=>{const observation=eventObservations.get(c.event_ticker);if(observation.error){errors.push({ticker:r.ticker,error:observation.error});return false;}return true;});
+ const bookBatches=[],rows=[];
+ await mapLimit(chunks(prepared),2,async batch=>{try{
+  // Metadata/fees precede fresh books. Every batch keeps its own actual receipt;
+  // neither concurrent requests nor a common receipt imply exchange atomicity.
+  const packet=await client.call('GET','/markets/orderbooks',{signed:false,query:new URLSearchParams(batch.map(({r})=>['tickers',r.ticker]))}),receivedAt=new Date().toISOString(),requested=new Set(batch.map(({r})=>r.ticker));
+  bookBatches.push({requestedTickers:[...requested],receivedAt,packet});
+  if(!Array.isArray(packet.orderbooks)||new Set(packet.orderbooks.map(b=>b.ticker)).size!==packet.orderbooks.length||packet.orderbooks.some(b=>!requested.has(b.ticker)))throw new TypeError('unique scoped batch books required');
+  const books=new Map(packet.orderbooks.map(b=>[b.ticker,b.orderbook_fp]));
+  for(const {r,c,market,marketReceivedAt} of batch){try{
+   const book=books.get(r.ticker),observedAt=receivedAt,terms=eventObservations.get(c.event_ticker).terms;
+   if(!book)throw new TypeError('requested market missing from batch book receipt');
+   if(Date.parse(observedAt)-Date.parse(state.at)>15*60000)throw new TypeError('forecast receipt expired during market preparation');
+   const models=r.models.filter(m=>Number.isFinite(m.p)&&m.p>=0&&m.p<=1&&(!m.details?.validUntil||Date.parse(m.details.validUntil)>Date.parse(observedAt)));
+   const expiresAt=new Date(Math.min(Date.parse(observedAt)+windowSeconds*1000,Date.parse(market.close_time),terms.nextFeeChangeAt?Date.parse(terms.nextFeeChangeAt):Infinity)).toISOString();
+   const actions=weatherParticipationActions({market,book,series:terms.effective,models,capitalUsd:availableCapitalUsd,contracts,observedAt,expiresAt,quoteIntents:quoteIntents?.filter(q=>q.ticker===r.ticker)});
+   rows.push({ticker:r.ticker,eventTicker:r.eventTicker,family:r.family,station:r.station,rulesHash:r.rulesHash,sourceEvidenceId:r.evidenceId,frozenForecastAt:state.at,contractProbabilityDerivedAt:r.derivedAt??state.at,marketReceivedAt,market,book,feeObservations:terms,frozenModels:models,actions});
+  }catch(e){errors.push({ticker:r.ticker,error:e.message});}}
+ }catch(e){errors.push({source:'batch-orderbooks',tickers:batch.map(({r})=>r.ticker),error:e.message});}});
+ // Keep deterministic selection order without rewriting individual receipt clocks.
+ const positions=new Map(selected.map((r,i)=>[r.ticker,i]));rows.sort((a,b)=>positions.get(a.ticker)-positions.get(b.ticker));
+ const bookBatch=bookBatches.length===1?bookBatches[0].packet:null,bookBatchReceivedAt=bookBatches.length===1?bookBatches[0].receivedAt:null;
+ const coverage={forecastCandidates:forecasts.length,selected:selected.length,captured:rows.length,selectionLimit:tickers?tickers.length:maxMarkets??2000,selectionTruncated:selected.length<forecasts.length,feeEvents:eventObservations.size,feeSeries:seriesObservations.size};
+ const packet={kind:'weather-participation-snapshot-v1',at:new Date().toISOString(),captureStartedAt:new Date(now).toISOString(),forecastEvidenceAt:state.at,capitalUsd,encumberedUsd,availableCapitalUsd,coverage,quoteIntents:quoteIntents??[],liveIndexDiscovery,marketBatches,bookBatches,bookBatchReceivedAt,bookBatch,bookBatchAtomicity:'not guaranteed; common receipt only',rows,errors,scope:'mutually exclusive alternatives per contract side; capital feasibility is per alternative until a joint proposal is verified; existing forecast admission unchanged',orderEffect:false,tradeAuthority:false};
+ await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});const evidenceId=digest(packet);await archivePacket(join(root,'evidence',evidenceId+'.json.gz'),packet);return {evidenceId,...packet};
+}
