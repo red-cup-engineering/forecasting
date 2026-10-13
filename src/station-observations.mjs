@@ -17,6 +17,9 @@
  * at least the highest LOWER end of any reading, so the report's whole-degree
  * high is at least that rounded; the minimum mirrors it.
  */
+import {createHash} from 'node:crypto';
+import {gzipSync} from 'node:zlib';
+import {precipitationWitnesses} from './weather-precipitation.mjs';
 import { readBody } from '@red-cup-engineering/http-services-section/body/web';
 import { makeNiUri } from '@red-cup-engineering/uri-services-section/ni-uri';
 import { admitCanonicalJson, JSON_RESOURCE_ENVELOPE } from '@red-cup-engineering/json-services-section/canonical-json';
@@ -80,13 +83,18 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
   url.searchParams.set('start', from.toISOString());
   url.searchParams.set('end', until.toISOString());
   url.searchParams.set('limit','500');
-  const readings=new Map(),visited=new Set(),synoptic=[];let next=url.href;
+  const readings=new Map(),visited=new Set(),synoptic=[],pages=[];let next=url.href;
   while(next){
     const pageUrl=new URL(next,url);if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname||visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');
     visited.add(pageUrl.href);
-    const res=await fetchImpl(pageUrl,{headers:{'user-agent':userAgent,accept:'application/geo+json'},signal:AbortSignal.timeout(30000)});
+    const signal=AbortSignal.timeout(30000);
+    const res=await fetchImpl(pageUrl,{headers:{'user-agent':userAgent,accept:'application/geo+json'},signal});
     if(!res.ok)throw new Error(`station-observations: GET ${pageUrl} answered ${res.status}`);
-    const page=await res.json();next=page.pagination?.next??null;
+    const rawBytes=await readBody({body:res.body,headers:res.headers,signal},{maxBytes:JSON_RESOURCE_ENVELOPE.maxSourceBytes,decodeContentEncoding:false});
+    const page=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(rawBytes)),receivedAt=new Date().toISOString();
+    if(!page||!Array.isArray(page.features))throw new Error('station-observations: GeoJSON feature page required');
+    pages.push({url:pageUrl.href,receivedAt,identity:makeNiUri(rawBytes),sha256:createHash('sha256').update(rawBytes).digest('hex'),bytes:rawBytes.byteLength,encoding:'gzip-base64',body:gzipSync(rawBytes).toString('base64'),packet:page});
+    next=page.pagination?.next??null;
     for(const feature of page.features??[]) {
     const p=feature?.properties,temperature=p?.temperature,at=p?.timestamp,epoch=Date.parse(at);
     if(!Number.isFinite(epoch)||epoch<from.getTime()||epoch>until.getTime()||epoch>=from.getTime()+86400000||typeof temperature?.value!=='number'||!Number.isFinite(temperature.value))continue;
@@ -108,11 +116,12 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
     }
   }
   }
+  const receivedAt=new Date().toISOString(),precipitation=precipitationWitnesses(pages,{station,start:from.getTime(),end:from.getTime()+86400000,observedUntil:until.getTime(),receivedAt}),rawPages=pages.map(({packet,...raw})=>raw);
   const trace=[...readings.values()].sort((a,b)=>a.at.localeCompare(b.at));
-  if(!trace.length)return {...empty,source:url.href,receivedAt:new Date().toISOString()};
+  if(!trace.length)return {...empty,source:url.href,receivedAt,precipitation,rawPages};
   const temps=trace.map(r=>r.temperatureF),maxF=Math.max(...temps),minF=Math.min(...temps);
   const {floorPrecise,ceilingPrecise}=preciseBounds(trace,synoptic);
-  return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,floorPrecise,ceilingPrecise,latest:trace.at(-1).at,readings:trace,synoptic,source:url.href,receivedAt:new Date().toISOString()};
+  return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,floorPrecise,ceilingPrecise,latest:trace.at(-1).at,readings:trace,synoptic,source:url.href,receivedAt,precipitation,rawPages};
 }
 
 export const METAR_FEED = 'https://tgftp.nws.noaa.gov/data/observations/metar/stations';

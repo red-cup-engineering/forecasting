@@ -1,3 +1,4 @@
+import {sameDayRainEvidence} from './weather-precipitation.mjs';
 import {weatherParticipationActions, reviewWeatherParticipation, readWeatherParticipationFees, verifyWeatherParticipationProposal} from './weather-participation.mjs';
 import {weatherCarryAllocation} from './weather-capital.mjs';
 import {collectEcmwfEnsemble} from './weather-ecmwf-ensemble.mjs';
@@ -438,7 +439,7 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
       const midpoint=quoteTimes.has(c.ticker)?mid(c):null,b=c.binding,modelBands=models.map(m=>({...m,band:probabilityBand({...c,station:b?.station??null,stage:s},m,grades)}));
       const surface=fuseForecast({mid:midpoint,models:modelBands});
       const support=forecastCell(c,models);
-      const row={ticker:c.ticker,eventTicker:c.event_ticker,title:c.title,family:c.family,source:c.source,stage:s,targetDate:b?.targetDate??null,closeTime:c.close_time,ruleKey:c.ruleKey,rulesHash:c.rulesHash,station:b?.station??null,mid:midpoint,marketObservedAt:quoteTimes.get(c.ticker)??null,models:modelBands,evidenceId,settlementReport:sourceReport(c,evidence.settlement),...support,modal:['high','low'].includes(b?.kind)?modalTemperatureReading(c,evidence,{at:new Date().toISOString()}):null,blocker:c.blocker,surface};
+      const row={ticker:c.ticker,eventTicker:c.event_ticker,title:c.title,family:c.family,source:c.source,stage:s,targetDate:b?.targetDate??null,closeTime:c.close_time,ruleKey:c.ruleKey,rulesHash:c.rulesHash,station:b?.station??null,...(b?.kind==='rain'?{rainNowcast:sameDayRainEvidence(c,evidence,decisionNow)}:{}),mid:midpoint,marketObservedAt:quoteTimes.get(c.ticker)??null,models:modelBands,evidenceId,settlementReport:sourceReport(c,evidence.settlement),...support,modal:['high','low'].includes(b?.kind)?modalTemperatureReading(c,evidence,{at:new Date().toISOString()}):null,blocker:c.blocker,surface};
       rows.push(row);
       if(models.length&&midpoint!==null&&c.status==='active'&&Date.parse(c.close_time)>Date.now()){
         // The surface is graded like any model: house-surface-v1 against the mid is the house's own skill.
