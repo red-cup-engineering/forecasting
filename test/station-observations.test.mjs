@@ -1,5 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
 import { admitCanonicalJson, JSON_RESOURCE_ENVELOPE } from '@red-cup-engineering/json-services-section/canonical-json';
 import { verifyNiUri } from '@red-cup-engineering/uri-services-section/ni-uri';
 import { parseMetar, latestMetar, readNwsMetarSnapshot, admitNwsMetarSnapshot, METAR_FEED } from '../src/station-observations.mjs';
@@ -9,6 +10,18 @@ const bulletin = `2026/10/13 17:10\n${report}\n`;
 const bytes = text => new TextEncoder().encode(text);
 const response = text => new Response(text, { headers: { 'content-type': 'text/plain; charset=utf-8' } });
 const now = () => '2026-10-13T17:12:00.000Z';
+
+test('independently retained live NOAA source reproduces its exact NI identity and parsed reading', async () => {
+  const fixture = JSON.parse(await readFile(new URL('./fixtures/nws-metar-KDLH-20261013.json',import.meta.url),'utf8'));
+  assert.equal(fixture.source.identity,'ni:///sha-256;u-IibLavCKaqde4HLBmiAQk-9MQ-HWzQ-C2U0l8-iIw');
+  assert.equal(fixture.source.bytes,97);
+  assert.equal(verifyNiUri(bytes(fixture.source.text),fixture.source.identity),true);
+  assert.equal(fixture.observation.temperatureF,50);
+  assert.equal(fixture.observation.at,'2026-10-13T21:15:00.000Z');
+  assert.equal(fixture.source.freshness.observedAgeSeconds,520.002);
+  const replay = await readNwsMetarSnapshot({station:'KDLH'}, {now:()=>fixture.source.receivedAt,fetchImpl:async()=>response(fixture.source.text)});
+  assert.deepEqual(replay,fixture);
+});
 
 test('latestMetar retains the exact parsed report API and an admitted injectable feed', async () => {
   let call;

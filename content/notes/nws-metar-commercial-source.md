@@ -89,3 +89,23 @@ then independently receive unsigned preflight/refusal and an authorized paid
 source receipt. Freshness and source identity must survive that real delivery.
 No production activation, full-package suite or closed-chain accounting receipt
 is claimed from the targeted source tests alone.
+
+On 2026-10-13 the actual repaired reader then acquired the live KDLH bulletin
+from the fixed NOAA source. Receipt at 21:23:40.002 UTC retained 97 original
+bytes for observation 21:15:00 UTC, with measured age 520.002 seconds and NI
+`ni:///sha-256;u-IibLavCKaqde4HLBmiAQk-9MQ-HWzQ-C2U0l8-iIw`. Original text,
+parsed reading, rights and receipt are preserved in the accompanying test
+fixture; its byte identity was independently verified through the existing NI
+provider and the source replay reproduces that complete record. A prior real
+read at 21:22:33.935 UTC received the same original-byte identity. This
+establishes live upstream acquisition by the local source producer. It does
+not establish installed-machine release, merchant deployment or paid receipt.
+
+The retained KDLH report includes a `$` maintenance indicator. The official
+[Aviation Weather Center coding reference](https://aviationweather.gov/help/data/)
+defines that as a reporting system needing maintenance. The exact remark
+remains present in both original source text and parsed `raw`; a downstream
+consumer must not drop it or promote this source into an unqualified sensor
+accuracy claim. It does not by itself identify which reported sensor requires
+maintenance. This is an observed source qualification, not a hypothetical
+warning or a reason to fabricate missing measurements.

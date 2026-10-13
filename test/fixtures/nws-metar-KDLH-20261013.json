@@ -1,0 +1,31 @@
+{
+  "observation": {
+    "at": "2026-10-13T21:15:00.000Z",
+    "precisionF": 0.09,
+    "raw": "KDLH 132115Z 26005KT 10SM BKN014 BKN022 OVC027 10/09 A2990 RMK AO2 T01000089 $",
+    "station": "KDLH",
+    "synoptic": [],
+    "temperatureF": 50
+  },
+  "source": {
+    "attribution": "NOAA National Weather Service",
+    "bytes": 97,
+    "freshness": {
+      "bulletinAgeSeconds": 520.002,
+      "maximumAgeSeconds": 7200,
+      "observedAgeSeconds": 520.002
+    },
+    "identity": "ni:///sha-256;u-IibLavCKaqde4HLBmiAQk-9MQ-HWzQ-C2U0l8-iIw",
+    "issuedAt": "2026-10-13T21:15:00.000Z",
+    "receivedAt": "2026-10-13T21:23:40.002Z",
+    "rights": {
+      "authority": "https://www.weather.gov/disclaimer/",
+      "basis": "public-domain US government information",
+      "commercialReuse": "https://www.weather.gov/documentation/services-web-api",
+      "modifications": "561 Group parsed the temperature and converted units; source text is unchanged.",
+      "notice": "561 Group product; no NOAA or NWS endorsement. No copyright is claimed in the original NWS information."
+    },
+    "text": "2026/10/13 21:15\nKDLH 132115Z 26005KT 10SM BKN014 BKN022 OVC027 10/09 A2990 RMK AO2 T01000089 $ \n",
+    "url": "https://tgftp.nws.noaa.gov/data/observations/metar/stations/KDLH.TXT"
+  }
+}
