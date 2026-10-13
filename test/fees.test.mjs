@@ -42,7 +42,7 @@ test('a small order pays its fee to the hundredth of a cent, not a whole cent', 
   assert.equal(orderFeeCents(1, 2), 0.14);    // 0.1372c
   assert.equal(orderFee(1, 0.97), 0.0021);    // $0.002037 -> $0.0021
   assert.equal(orderFeeCents(0, 50), 0);
-  assert.equal(orderFeeCents(1.005, 50), 0, 'a count finer than 0.01 contracts is not an order Kalshi takes');
+  assert.throws(() => orderFeeCents(1.005, 50), /positive multiple of 0.01/, 'invalid positive quantity must never become zero-fee exposure');
 });
 
 test('an FCM-cleared account rounds the order to the cent', () => {
@@ -62,4 +62,33 @@ test('registered fee models do not move with the account grid: cent-per-order hy
   const net = netPerContract({ won: true, price: 0.5, multiplier: 1, fee: { theta: 0.07, multiplier: 1, count: 10, rounding: 'cent-per-order' } });
   assert.ok(Math.abs(net - (1 - 0.5 - 0.018)) < 1e-12);
   assert.equal(categoryShadowFee(0.5), 0.018);
+});
+
+test('subcent venue quotes use four-decimal prices before account-grid rounding', () => {
+  // The former whole-cent coercion silently valued both edge quotes as free.
+  assert.equal(orderFee(1, 0.005), 0.0004);
+  assert.equal(orderFee(1, 0.9999), 0.0001);
+  assert.equal(orderFeeCentsOfFills([{ count: 1, priceTenThousandths: 50 }]), 0.04);
+  assert.equal(orderFeeCentsOfFills([{ count: 1, priceTenThousandths: 9999 }]), 0.01);
+  assert.equal(orderFee(1, '0.5600'), orderFeeCents(1, 56) / 100);
+  // The 4-decimal size/price grid is part of admissibility, not a rounding hint.
+  assert.throws(() => orderFee(1, 0.00505), /four-decimal dollar grid/);
+  assert.throws(() => orderFee(1, -0.5), /four-decimal dollar grid/);
+});
+
+test('unrepresentable fills and conflicting units cannot silently suppress fees', () => {
+  for (const fills of [
+    [{ count: 1.005, priceCents: 50 }],
+    [{ count: -1, priceCents: 50 }],
+    [{ count: 1, priceCents: 0 }],
+    [{ count: 1, priceCents: 100 }],
+    [{ count: 1, priceCents: 50.5 }],
+    [{ count: 1, priceTenThousandths: 0 }],
+    [{ count: 1, priceTenThousandths: 10000 }],
+    [{ count: 1, priceCents: 50, priceTenThousandths: 5000 }],
+    [{ count: 1 }],
+  ]) assert.throws(() => orderFeeCentsOfFills(fills), RangeError);
+  assert.throws(() => orderFeeCentsOfFills([{ count: 1, priceCents: 50 }], { multiplier: NaN }), RangeError);
+  assert.throws(() => orderFeeCentsOfFills([{ count: 1, priceCents: 50 }], { multiplier: Infinity }), RangeError);
+  assert.equal(orderFeeCents(0, 50), 0, 'a genuinely empty order retains its zero fee');
 });
