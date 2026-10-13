@@ -91,7 +91,7 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { priceTemperatureBracket, eventDate, temperatureSeries, TEMPERATURE_MARKETS } from './temperature-market-model.mjs';
 import { latestStationGuidance } from './nbm-station-guidance.mjs';
-import { observedExtremes } from './station-observations.mjs';
+import { climateDate, observedExtremes } from './station-observations.mjs';
 
 export const BRIEF_TYPE = 'KalshiMarketBrief';
 export const BRIEF_VERSION = 1;
@@ -191,7 +191,6 @@ export function whatWouldMoveIt(category, extra = []) {
 
 // ---------------------------------------------------------------- house-model hooks
 
-const localDate = (timeZone, at) => new Intl.DateTimeFormat('en-CA', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(at));
 
 /**
  * The daily-temperature hook: NBM station guidance through the fitted Student-t
@@ -216,7 +215,7 @@ export const temperatureHouseModel = {
       return { ...base, status: 'unpriced', reason: `NBM guidance unavailable: ${error.message}`, evidence: [] };
     }
     let observed = null;
-    if (targetDate === localDate(row.timeZone, now)) {
+    if (targetDate === climateDate(row.timeZone, now)) {
       observed = await observedExtremes({ station: row.station, date: targetDate, timeZone: row.timeZone, now }, { fetchImpl: io.fetchImpl }).catch(() => null);
     }
     const perMarket = {};
