@@ -8,7 +8,9 @@ import {TEMPERATURE_MARKETS} from './temperature-market-model.mjs';
 import {planWeatherReasoningCadence,temperatureReasoningTimeZones} from './weather-reasoning-cadence.mjs';
 import { binarySettlement } from '@red-cup-engineering/kalshi-services-section/market-facts';
 import {randomUUID,createHash} from 'node:crypto';
-import {updateStationScience,readStationScience,stationPointForecasts} from './station-weather-science.mjs';
+import {updateStationScience,readStationScience,readStationSciencePage,stationPointForecasts} from './station-weather-science.mjs';
+import {weatherReadPage,weatherStatusInventory} from './weather-read-page.mjs';
+import {readWeatherSourceRecord} from './weather-source-record.mjs';
 import { readFile, writeFile, mkdir, rename, readdir, appendFile, rm, stat, link } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { createInterface } from 'node:readline';
@@ -124,6 +126,7 @@ export async function weatherEcmwfEvidence({stations,validCount=1,root=weatherRo
  return {evidenceId,...summary,fieldCount:fields.length,indexCount:indices.length,stationMetadata:stationMetadata.map(({source,...r})=>({...r,metadataSource:source.url})),science:{at:evidence.science.at,status:evidence.science.status,forecasted:evidence.science.forecasted,scored:evidence.science.scored,forecasts:evidence.science.forecasts},orderEffect:false};
 }
 export function weatherStationSkill({root=weatherRoot(),station}={}){return readStationScience({root:join(root,'station-science'),station});}
+export function weatherStationSkillPage({root=weatherRoot(),...request}={}){return readStationSciencePage({...request,root:join(root,'station-science')});}
 export async function weatherStationEvidence({stations,root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
   const evidence=await collectStationWeatherEvidence(stations,{cacheDir:join(root,'nbm'),now,fetchImpl});
   const evidenceId=await archiveWeatherEvidence(evidence,root);
@@ -182,6 +185,15 @@ export async function weatherStatus({root=weatherRoot(),maxGradeMembers=128}={})
   let running=null;const lock=await read(join(root,'cycle.lock'),null);
   if(lock&&await processStart(lock.pid)===lock.start)running={startedAt:new Date(lock.at).toISOString()};
   return boundedWeatherStatus({...result,running,lastFailure:await read(join(root,'last-failure.json'),null)},maxGradeMembers);
+}
+
+/** Bounded operation projection; internal consumers retain weatherStatus's full read. */
+export async function weatherStatusPage({root=weatherRoot(),field,offset=0,limit=100,sourceRevision}={}){
+ const {record,source}=await readWeatherSourceRecord({root,file:'latest.json',emptyRecord:{status:'no weather cycle recorded',orderEffect:false},sourceRevision});
+ if(field!==undefined)return weatherReadPage(record,{source,field,allowedFields:['contracts','forecasts','grades','errors','opportunities','research','scoring'],offset,limit,sourceRevision,metadata:{orderEffect:false}});
+ const lock=await read(join(root,'cycle.lock'),null);
+ const running=lock&&await processStart(lock.pid)===lock.start?{startedAt:new Date(lock.at).toISOString()}:null;
+ return weatherStatusInventory(record,{source,running,lastFailure:await read(join(root,'last-failure.json'),null)});
 }
 
 /** A read-only local-time plan for the next existing whole-exchange weather cycle.
@@ -439,3 +451,4 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
     return result;
   });
 }
+
