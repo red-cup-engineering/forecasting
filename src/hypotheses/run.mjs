@@ -53,8 +53,9 @@ export async function deriveItems(h, { store, externalDir }) {
  * @param {number} options.requestBudget  requests this run may spend (required; the caller's resource decision)
  * @param {'all'|'sync'|'collect'|'verdict'} [options.mode]  verdict spends no requests
  * @param {string[]} [options.only]       restrict to these hypothesis ids
+ * @param {() => number} [options.receiptClock] Internal post-fetch receipt clock for deterministic testing; the deployed operation never accepts a caller clock.
  */
-export async function runHypotheses({ requestBudget, mode = 'all', only = null, root = stateRoot(), contentDir = hypothesesDir, externalDir = externalDirectory(root), now = Date.now(), fetcher = null } = {}) {
+export async function runHypotheses({ requestBudget, mode = 'all', only = null, root = stateRoot(), contentDir = hypothesesDir, externalDir = externalDirectory(root), now = Date.now(), fetcher = null, receiptClock = () => Date.now() } = {}) {
   if (!['all', 'sync', 'collect', 'verdict'].includes(mode)) throw new TypeError('runHypotheses: unknown mode');
   const syncing = mode !== 'verdict';
   if (syncing && (!Number.isSafeInteger(requestBudget) || requestBudget < 0)) throw new TypeError('runHypotheses: nonnegative safe integer requestBudget is required');
@@ -74,7 +75,7 @@ export async function runHypotheses({ requestBudget, mode = 'all', only = null, 
     await syncSeries({ store, fetcher: f, series: [...feeSeries], now: nowIso, report: sync });
     if (mode !== 'sync') for (const h of live.filter((x) => x.evaluator && EVALUATORS[x.evaluator].collect)) await EVALUATORS[h.evaluator].collect({ h, store, fetcher: f, now, report: sync });
     if (mode !== 'collect') {
-      await syncForwardQuotes({ store, fetcher: f, hypotheses: generic, report: sync });
+      await syncForwardQuotes({ store, fetcher: f, hypotheses: generic, report: sync, receiptClock });
       for (const series of new Set(generic.flatMap((h) => h.universe.series))) {
         const since = Math.min(...generic.filter((h) => h.universe.series.includes(series)).map((h) => Date.parse(h.registeredAt)));
         await syncSettled({ store, fetcher: f, series, sinceMs: since, now: nowIso, report: sync });

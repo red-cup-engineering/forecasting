@@ -32,14 +32,16 @@ export async function syncSeries({ store, fetcher, series, now, report }) {
 
 /** Witness an open contract during its registered window. A historical candle
  * fetched after settlement cannot replace a missed prospective observation. */
-export async function syncForwardQuotes({ store, fetcher, hypotheses, report }) {
+export async function syncForwardQuotes({ store, fetcher, hypotheses, report, receiptClock = () => Date.now() }) {
   await guard(report, async () => {
     for (const series of new Set(hypotheses.flatMap((h) => h.universe.series))) {
       let cursor = '';
       const seen = new Set();
       do {
         const page = await fetcher.kalshi('/markets', { series_ticker: series, status: 'open', limit: 1000, cursor });
-        const availableAt = Date.now(), stamp = new Date(availableAt).toISOString();
+        const availableAt = receiptClock();
+        if (!Number.isSafeInteger(availableAt) || availableAt < 0) throw new RangeError('a finite post-fetch receipt clock in epoch milliseconds is required');
+        const stamp = new Date(availableAt).toISOString();
         if (!Array.isArray(page?.markets)) throw new TypeError('forward observations require a markets array');
         const next = page.cursor ?? '';
         if (typeof next !== 'string' || next && seen.has(next)) throw new TypeError('forward observations require an advancing cursor');
@@ -53,9 +55,9 @@ export async function syncForwardQuotes({ store, fetcher, hypotheses, report }) 
               || Math.abs(availableAt - target) > h.entry.snapshot.toleranceMinutes * 60000) continue;
             const bid = dollars(m.yes_bid_dollars), ask = dollars(m.yes_ask_dollars);
             if (!(bid > 0 && ask < 1 && ask >= bid)) continue;
-            store.put(m.ticker, key, { ts: stamp, bid, ask, kind: 'forward-window', observedAt: stamp,
-              source: { series, event: m.event_ticker, close: m.close_time, occ: m.occurrence_datetime ?? null } }, stamp);
-            report.newQuotes = (report.newQuotes ?? 0) + 1;
+            if (store.put(m.ticker, key, { ts: stamp, bid, ask, kind: 'forward-window', observedAt: stamp,
+              source: { series, event: m.event_ticker, close: m.close_time, occ: m.occurrence_datetime ?? null } }, stamp))
+              report.newQuotes = (report.newQuotes ?? 0) + 1;
           }
         }
         cursor = next;
