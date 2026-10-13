@@ -33,18 +33,10 @@ import {settlementRoot,stateDirectory} from '@red-cup-engineering/kalshi-service
 /** The weather engine's state: one object-state directory of the Kalshi settlement, data/state/weather-state. */
 export const weatherRoot=(env=process.env)=>env.KALSHI_WEATHER_STATE_DIR??stateDirectory(settlementRoot(env),'weather');
 export function weatherClient({fetchImpl=fetch}={}) {
-  let next=0;
-  const paced=async(url,options)=>{
-    for(let attempt=0;attempt<5;attempt++){
-      const slot=Math.max(Date.now(),next);next=slot+400;
-      await new Promise(resolve=>setTimeout(resolve,Math.max(0,slot-Date.now())));
-      const r=await fetchImpl(url,{...options,signal:AbortSignal.timeout(20000)});
-      if(r.status!==429||attempt===4)return r;
-      const delay=Math.max(1000*2**attempt,Number(r.headers.get('retry-after')??0)*1000);
-      await r.arrayBuffer();await new Promise(resolve=>setTimeout(resolve,delay));
-    }
-  };
-  return createKalshiClient({credentials:null,fetchImpl:paced});
+  // The canonical client owns pacing, attempt timeouts and 429 backoff. Wrapping
+  // its seven default attempts in another five-attempt fetch loop spent up to
+  // 35 wire requests on one logical source read.
+  return createKalshiClient({credentials:null,fetchImpl,minIntervalMs:400,timeoutMs:20000,retries429:4});
 }
 const read=async(path,fallback)=>{try{return JSON.parse(await readFile(path,'utf8'));}catch(e){if(e.code==='ENOENT')return fallback;throw e;}};
 async function atomic(path,value){const tmp=`${path}.${process.pid}.tmp`;await writeFile(tmp,JSON.stringify(value)+'\n',{mode:0o600});await rename(tmp,path);}
