@@ -17,6 +17,10 @@
  * at least the highest LOWER end of any reading, so the report's whole-degree
  * high is at least that rounded; the minimum mirrors it.
  */
+import { readBody } from '@red-cup-engineering/http-services-section/body/web';
+import { makeNiUri } from '@red-cup-engineering/uri-services-section/ni-uri';
+import { admitCanonicalJson, JSON_RESOURCE_ENVELOPE } from '@red-cup-engineering/json-services-section/canonical-json';
+
 export const NWS_API = 'https://api.weather.gov';
 export const NWS_USER_AGENT = '(561 Group weather desk, ops@561.group)';
 
@@ -33,19 +37,6 @@ export function climateDayStart(date, timeZone) {
   const year = noon.getUTCFullYear();
   const standard = Math.min(offsetMinutes(new Date(Date.UTC(year, 0, 15))), offsetMinutes(new Date(Date.UTC(year, 6, 15))));
   return new Date(Date.parse(`${date}T00:00:00Z`) - standard * 60_000);
-}
-
-/** The date whose standard-time climate interval contains the observation instant. */
-export function climateDate(timeZone, at = Date.now()) {
-  const instant = new Date(at);
-  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
-    timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
-  }).formatToParts(instant).map(part => [part.type, part.value]));
-  const civilDate = `${parts.year}-${parts.month}-${parts.day}`;
-  // During daylight time, civil midnight begins the previous climate day's last hour.
-  return instant.getTime() < climateDayStart(civilDate, timeZone).getTime()
-    ? new Date(Date.parse(`${civilDate}T00:00:00Z`) - 86400_000).toISOString().slice(0, 10)
-    : civilDate;
 }
 
 /**
@@ -120,11 +111,15 @@ export const METAR_FEED = 'https://tgftp.nws.noaa.gov/data/observations/metar/st
  * @param {Date|number} issued the bulletin's time, to date the day-and-hour group
  */
 export function parseMetar(raw, issued) {
+  if (typeof raw !== 'string') return null;
   const m = /^([A-Z0-9]{4})\s+(?:METAR\s+|SPECI\s+)?(\d{2})(\d{2})(\d{2})Z\b/u.exec(raw.trim());
   if (!m) return null;
   const ref = new Date(issued);
+  if (!Number.isFinite(ref.getTime()) || +m[2] < 1 || +m[2] > 31 || +m[3] > 23 || +m[4] > 59) return null;
   let at = Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth(), Number(m[2]), Number(m[3]), Number(m[4]));
   if (at - ref.getTime() > 2 * 86400000) at = Date.UTC(ref.getUTCFullYear(), ref.getUTCMonth() - 1, Number(m[2]), Number(m[3]), Number(m[4]));
+  // Date.UTC normalizes impossible calendar days; that is not an observation.
+  if (new Date(at).getUTCDate() !== +m[2]) return null;
   const c = (sign, digits) => (sign === '1' ? -1 : 1) * Number(digits) / 10, f = (x) => x * 9 / 5 + 32;
   const [body, remarks = ''] = raw.split(' RMK ');
   const tenths = /\sT([01])(\d{3})[01]\d{3}(\s|$)/u.exec(` ${remarks}`);
@@ -138,12 +133,81 @@ export function parseMetar(raw, issued) {
   return { station: m[1], at: new Date(at).toISOString(), temperatureF, precisionF: tenths ? 0.09 : 0.9, synoptic, raw };
 }
 
-/** The station's latest METAR from NWS's feed, which publishes each report about 2.5 minutes after it is taken (the observation API lags 15-35). */
-export async function latestMetar({ station }, { fetchImpl = fetch, feed = METAR_FEED, userAgent = NWS_USER_AGENT } = {}) {
-  const res = await fetchImpl(`${feed}/${station}.TXT`, { headers: { 'user-agent': userAgent }, signal: AbortSignal.timeout(10000) });
-  if (!res.ok) throw new Error(`metar ${station}: ${res.status}`);
-  const [stamp, raw] = (await res.text()).trim().split('\n');
-  return raw ? parseMetar(raw, Date.parse(`${stamp.replace(/\//gu, '-').replace(' ', 'T')}:00Z`)) : null;
+const METAR_BYTES = 4096;
+const METAR_WIRE_ENVELOPE = Object.freeze({ ...JSON_RESOURCE_ENVELOPE, maxSourceBytes: 16384, maxCanonicalBytes: 16384 });
+
+function metarStation(station) {
+  if (typeof station !== 'string' || !/^[A-Z0-9]{4}$/u.test(station)) throw new TypeError('METAR station must be one uppercase four-character ICAO identifier');
+  return station;
+}
+
+async function readMetarBulletin(station, { fetchImpl = fetch, feed = METAR_FEED, userAgent = NWS_USER_AGENT } = {}) {
+  metarStation(station); // before constructing or acquiring any network resource
+  const url = `${feed}/${station}.TXT`, signal = AbortSignal.timeout(10000);
+  const res = await fetchImpl(url, { headers: { 'user-agent': userAgent, accept: 'text/plain' }, redirect: 'error', signal });
+  if (!res.ok || res.redirected || res.url && res.url !== url) {
+    await res.body?.cancel().catch(() => {});
+    if (!res.ok) throw new Error(`metar ${station}: ${res.status}`);
+    throw new Error('METAR source must not redirect');
+  }
+  // A fetched Response is already decoded by fetch. Reuse the HTTP provider's
+  // bounded stream reader and carry the same deadline through the body read.
+  const bytes = await readBody({ body: res.body, headers: res.headers, signal }, { maxBytes: METAR_BYTES, decodeContentEncoding: false });
+  // Preserve a UTF-8 BOM as content too, so re-encoding source.text recovers
+  // every original byte covered by its NI identity.
+  const text = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
+  const lines = text.trim().split(/\r?\n/u), [stamp, raw] = lines;
+  if (!raw) return { report: null, bytes, text, url, issuedAt: null };
+  if (lines.length !== 2 || !/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}$/u.test(stamp)) throw new Error('METAR bulletin requires one UTC issue stamp and one report');
+  const issuedAt = `${stamp.replace(/\//gu, '-').replace(' ', 'T')}:00.000Z`, issued = Date.parse(issuedAt);
+  if (!Number.isFinite(issued) || new Date(issued).toISOString() !== issuedAt) throw new Error('METAR bulletin issue stamp must be a real UTC calendar instant');
+  const report = parseMetar(raw, issued);
+  if (report && report.station !== station) throw new Error('METAR bulletin does not match its requested station');
+  return { report, bytes, text, url, issuedAt };
+}
+
+/** The station's latest METAR from NWS's feed; retains the existing report-or-null API. */
+export async function latestMetar({ station }, options = {}) {
+  return (await readMetarBulletin(station, options)).report;
+}
+
+/** Fixed NWS US-station source; requests never choose another host or archive. */
+export function admitNwsMetarSnapshot(request) {
+  if (request === null || typeof request !== 'object' || Array.isArray(request)
+    || Object.keys(request).length !== 1 || !Object.hasOwn(request, 'station')
+    || typeof request.station !== 'string' || !/^K[A-Z0-9]{3}$/u.test(request.station)) {
+    throw new TypeError('NWS METAR snapshot requires exactly one continental US ICAO station (Kxxx); foreign, archive and caller-selected sources are not admitted');
+  }
+  return Object.freeze({ station: request.station });
+}
+
+/**
+ * One original public NWS bulletin and its existing parsed temperature view.
+ * Original bytes are identified by the upstream NI provider; parsing and unit
+ * conversion are attributed to the house, never represented as official NWS.
+ */
+export async function readNwsMetarSnapshot(request, { fetchImpl = fetch, now = () => new Date().toISOString() } = {}) {
+  const { station } = admitNwsMetarSnapshot(request);
+  const source = await readMetarBulletin(station, { fetchImpl });
+  if (!source.report) throw new Error('NWS METAR snapshot has no admissible report');
+  if (Date.parse(source.report.at) > Date.parse(source.issuedAt)) throw new Error('NWS METAR report is later than its bulletin issue stamp');
+  const receivedAt = now();
+  if (typeof receivedAt !== 'string' || !Number.isFinite(Date.parse(receivedAt)) || new Date(receivedAt).toISOString() !== receivedAt) throw new TypeError('METAR receipt time must be one canonical UTC ISO instant');
+  const observedAgeSeconds = (Date.parse(receivedAt) - Date.parse(source.report.at)) / 1000;
+  const bulletinAgeSeconds = (Date.parse(receivedAt) - Date.parse(source.issuedAt)) / 1000;
+  if (observedAgeSeconds < 0 || bulletinAgeSeconds < 0) throw new Error('NWS METAR snapshot has future source timestamps');
+  if (observedAgeSeconds > 7200 || bulletinAgeSeconds > 7200) throw new Error('NWS METAR snapshot exceeds the two-hour freshness bound');
+  return admitCanonicalJson(JSON.stringify({
+    observation: source.report,
+    source: { url: source.url, identity: makeNiUri(source.bytes), bytes: source.bytes.byteLength, text: source.text,
+      issuedAt: source.issuedAt, receivedAt,
+      freshness: { observedAgeSeconds, bulletinAgeSeconds, maximumAgeSeconds: 7200 },
+      attribution: 'NOAA National Weather Service',
+      rights: { basis: 'public-domain US government information', authority: 'https://www.weather.gov/disclaimer/',
+        commercialReuse: 'https://www.weather.gov/documentation/services-web-api',
+        modifications: '561 Group parsed the temperature and converted units; source text is unchanged.',
+        notice: '561 Group product; no NOAA or NWS endorsement. No copyright is claimed in the original NWS information.' } },
+  }), METAR_WIRE_ENVELOPE).value;
 }
 
 /**
@@ -189,3 +253,4 @@ export async function activeTemperatureHazards({ station }, { fetchImpl = fetch,
   const events = (await get(`${baseUrl}/alerts/active?point=${stationPoints.get(station)}`)).features.map((feature) => feature.properties.event);
   return { station, warm: events.filter((event) => WARM_HAZARDS.includes(event)), cold: events.filter((event) => COLD_HAZARDS.includes(event)) };
 }
+
