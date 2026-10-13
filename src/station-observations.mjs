@@ -1,3 +1,4 @@
+import {readNwsResponse,readNwsJson} from './nws-source.mjs';
 /**
  * A station's temperature extremes so far in its climate day, from the NWS
  * observation API (api.weather.gov; public, asks only for a descriptive
@@ -87,13 +88,12 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
   while(next){
     const pageUrl=new URL(next,url);if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname||visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');
     visited.add(pageUrl.href);
-    const signal=AbortSignal.timeout(30000);
-    const res=await fetchImpl(pageUrl,{headers:{'user-agent':userAgent,accept:'application/geo+json'},signal});
-    if(!res.ok)throw new Error(`station-observations: GET ${pageUrl} answered ${res.status}`);
+    const acquired=await readNwsResponse(pageUrl,{fetchImpl,headers:{'user-agent':userAgent,accept:'application/geo+json'},timeoutMs:30000});
+    const {response:res,signal}=acquired;
     const rawBytes=await readBody({body:res.body,headers:res.headers,signal},{maxBytes:JSON_RESOURCE_ENVELOPE.maxSourceBytes,decodeContentEncoding:false});
     const page=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(rawBytes)),receivedAt=new Date().toISOString();
     if(!page||!Array.isArray(page.features))throw new Error('station-observations: GeoJSON feature page required');
-    pages.push({url:pageUrl.href,receivedAt,identity:makeNiUri(rawBytes),sha256:createHash('sha256').update(rawBytes).digest('hex'),bytes:rawBytes.byteLength,encoding:'gzip-base64',body:gzipSync(rawBytes).toString('base64'),packet:page});
+    pages.push({url:pageUrl.href,receivedAt,transport:{attempts:acquired.attempts,rateLimits:acquired.rateLimits},identity:makeNiUri(rawBytes),sha256:createHash('sha256').update(rawBytes).digest('hex'),bytes:rawBytes.byteLength,encoding:'gzip-base64',body:gzipSync(rawBytes).toString('base64'),packet:page});
     next=page.pagination?.next??null;
     for(const feature of page.features??[]) {
     const p=feature?.properties,temperature=p?.temperature,at=p?.timestamp,epoch=Date.parse(at);
@@ -264,9 +264,7 @@ const stationPoints = new Map();
  */
 export async function activeTemperatureHazards({ station }, { fetchImpl = fetch, baseUrl = NWS_API, userAgent = NWS_USER_AGENT } = {}) {
   const get = async (url) => {
-    const response = await fetchImpl(url, { headers: { 'User-Agent': userAgent, Accept: 'application/geo+json' }, signal: AbortSignal.timeout(10000) });
-    if (!response.ok) throw new Error(`NWS ${url}: ${response.status}`);
-    return response.json();
+    return readNwsJson(url,{fetchImpl,headers:{'User-Agent':userAgent,Accept:'application/geo+json'},timeoutMs:10000});
   };
   if (!stationPoints.has(station)) {
     const [lon, lat] = (await get(`${baseUrl}/stations/${station}`)).geometry.coordinates;

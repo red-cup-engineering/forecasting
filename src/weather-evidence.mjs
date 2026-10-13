@@ -1,3 +1,4 @@
+import {readNwsJson} from './nws-source.mjs';
 import {sameDayRainModels} from './weather-precipitation.mjs';
 import {collectEcmwfEnsemble} from './weather-ecmwf-ensemble.mjs';
 import {access} from 'node:fs/promises';
@@ -21,9 +22,7 @@ import { mapLimit } from './weather-universe.mjs';
 import { cell, merge, address } from '@red-cup-engineering/signcell/cell';
 
 async function nws(url, fetchImpl) {
-  const r=await fetchImpl(url,{headers:{'User-Agent':NWS_USER_AGENT,Accept:'application/geo+json'},signal:AbortSignal.timeout(10000)});
-  if(!r.ok)throw new Error(`NWS ${r.status}: ${url}`);
-  return r.json();
+  return readNwsJson(url,{fetchImpl,headers:{'User-Agent':NWS_USER_AGENT,Accept:'application/geo+json'},timeoutMs:10000});
 }
 /** Public station evidence for research and forecasting, independent of any market. */
 export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.now(),fetchImpl=fetch,marketCollection=false}={}) {

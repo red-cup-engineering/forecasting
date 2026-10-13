@@ -1,3 +1,4 @@
+import {readNwsJson} from './nws-source.mjs';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {fileURLToPath} from 'node:url';
@@ -11,8 +12,8 @@ export async function collectEcmwfEnsemble(stations,{cacheDir,validCount=1,now=D
  const metadata=[];
  for(const s of stations){if(!/^[A-Z0-9]{4}$/.test(s.station)||typeof s.timeZone!=='string')throw new TypeError('station ICAO and time zone required');new Intl.DateTimeFormat('en',{timeZone:s.timeZone});
   const saved=stationMetadata?.[s.station];if(saved){const [lon,lat]=saved.source?.raw?.geometry?.coordinates??[];if(saved.source.url!==`${NWS_API}/stations/${s.station}`||lon!==saved.longitude||lat!==saved.latitude||!Number.isFinite(lat)||Math.abs(lat)>89.75||!Number.isFinite(lon)||Math.abs(lon)>180)throw new TypeError('retained NWS station geometry mismatch');metadata.push({...s,...saved});continue;}
-  const url=`${NWS_API}/stations/${s.station}`,r=await fetchImpl(url,{headers:{'User-Agent':NWS_USER_AGENT,Accept:'application/geo+json'},signal:AbortSignal.timeout(10000)});if(!r.ok)throw new Error(`NWS station metadata ${r.status}`);
-  const raw=await r.json(),[longitude,latitude]=raw.geometry?.coordinates??[];if(!Number.isFinite(latitude)||Math.abs(latitude)>89.75||!Number.isFinite(longitude)||Math.abs(longitude)>180)throw new TypeError('verified nonpolar station point geometry required');
+  const url=`${NWS_API}/stations/${s.station}`,raw=await readNwsJson(url,{fetchImpl,headers:{'User-Agent':NWS_USER_AGENT,Accept:'application/geo+json'},timeoutMs:10000});
+  const [longitude,latitude]=raw.geometry?.coordinates??[];if(!Number.isFinite(latitude)||Math.abs(latitude)>89.75||!Number.isFinite(longitude)||Math.abs(longitude)>180)throw new TypeError('verified nonpolar station point geometry required');
   metadata.push({...s,latitude,longitude,source:{url,availableAt:new Date().toISOString(),raw}});
  }
  const child=execute(python,[fileURLToPath(new URL('./weather-ecmwf-decode.py',import.meta.url))],{timeout:240000,maxBuffer:16*1024*1024,env:{...process.env,OMP_NUM_THREADS:'1',OPENBLAS_NUM_THREADS:'1'}});child.child.stdin.end(JSON.stringify({stations:metadata,cacheDir,validCount,now:new Date(now).toISOString()}));
