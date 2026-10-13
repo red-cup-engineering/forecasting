@@ -11,7 +11,8 @@
  *   checks.json   last result-check time per ticker (results are looked up at most every 10 min)
  */
 import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
-import { join } from 'node:path';
+import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { KALSHI, appendJsonl, jackknife, pacedGet, readJsonl, stateDir, verdict } from '../src/forward-shadow.mjs';
 import { SPORTS, eventMatchesGame, normalizeScoreboard, sideMatches } from '../src/sport-feeds.mjs';
 import { DT, dtEntry, dtNet, isDeepTerminal, liveState } from '../src/forward-deep-terminal.mjs';
@@ -20,7 +21,7 @@ const DIR = stateDir('deep-terminal'); const LOG = join(DIR, 'log.jsonl'); const
 const ESPN = 'https://site.api.espn.com/apis/site/v2/sports';
 const KEYS = ['nfl', 'ncaaf', 'mlb'];
 
-async function cycle() {
+export async function forwardDeepTerminalCycle() {
   mkdirSync(DIR, { recursive: true });
   const now = Date.now(); const rows = readJsonl(LOG);
   const entered = new Set(rows.filter((r) => r.type === 'entry').map((r) => r.game));
@@ -61,9 +62,10 @@ async function cycle() {
   writeFileSync(CHK, JSON.stringify(checks));
   appendJsonl(LOG, out); if (stat.live) appendJsonl(CYC, [stat]);
   console.log(`cycle: ${stat.live} live games, ${stat.deep} deep-terminal, ${stat.entered} new entries, ${out.length} rows`);
+  return { program: 'deep-terminal', ...stat, rowsAppended: out.length, orderEffect: false };
 }
 
-function score() {
+export function forwardDeepTerminalScore() {
   const rows = readJsonl(LOG); const res = new Map(rows.filter((r) => r.type === 'result').map((r) => [r.game, r.result]));
   const entries = rows.filter((r) => r.type === 'entry');
   const items = entries.filter((e) => res.has(e.game)).map((e) => ({ g: e.game, x: dtNet(e, res.get(e.game)) }));
@@ -72,9 +74,14 @@ function score() {
   console.log(`entries ${entries.length}, settled ${items.length}, wins ${[...res.values()].filter((r) => r === 'yes').length}`);
   console.log(`mean net/contract ${f(st.mean)}  SE ${f(st.se)}  t ${f(st.t, 2)}`);
   console.log(`verdict: ${verdict(st, DT.minGames)}`);
+  return { program: 'deep-terminal', entries: entries.length, settled: items.length, statistics: st, verdict: verdict(st, DT.minGames), orderEffect: false };
 }
 
-const cmd = process.argv[2];
-if (cmd === 'cycle') cycle().catch((e) => { console.error(e.message); process.exit(1); });
-else if (cmd === 'score') score();
-else { console.error('usage: forward-deep-terminal.mjs cycle|score'); process.exit(2); }
+
+// Importable by the host's typed operation registry without starting any cycle at module load.
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const cmd = process.argv[2];
+  if (cmd === 'cycle') forwardDeepTerminalCycle().catch((e) => { console.error(e.message); process.exitCode = 1; });
+  else if (cmd === 'score') forwardDeepTerminalScore();
+  else { console.error('usage: forward-deep-terminal.mjs cycle|score'); process.exitCode = 2; }
+}

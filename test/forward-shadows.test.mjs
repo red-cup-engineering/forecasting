@@ -102,3 +102,13 @@ test('dtEntry: ask band, book shape, favourite, fee', () => {
   assert.equal(dtNet({ price: 0.96, fee: 0.001 }, 'yes'), 1 - 0.96 - 0.001);
   assert.equal(dtNet({ price: 0.96, fee: 0.001 }, 'no'), -0.961);
 });
+
+
+test('forward experiments are importable by the MetroPlat operation registry without invoking their CLIs', async () => {
+  const [claims, terminal] = await Promise.all([
+    import('../scripts/forward-claims-c1.mjs'),
+    import('../scripts/forward-deep-terminal.mjs'),
+  ]);
+  for (const fn of [claims.forwardClaimsCycle, claims.forwardClaimsScore, terminal.forwardDeepTerminalCycle, terminal.forwardDeepTerminalScore])
+    assert.equal(typeof fn, 'function');
+});
