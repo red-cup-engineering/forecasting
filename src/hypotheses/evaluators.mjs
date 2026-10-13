@@ -34,11 +34,13 @@ const listExternal = (dir, prefix) => (existsSync(dir) ? readdirSync(dir).filter
  * stores one `dt-entry` fact (first qualifying poll per game). Results are looked up for entries awaiting one.
  */
 async function collectDeepTerminal({ h, store, fetcher, now, report }) {
-  const stamp = new Date(now).toISOString();
   try {
     for (const key of ['nfl', 'ncaaf', 'mlb']) {
       const spec = SPORTS[key], q = key === 'ncaaf' ? '?groups=80&limit=300' : '?limit=300';
       const sb = await fetcher.url(`${ESPN}/${spec.espn}/scoreboard${q}`);
+      const scoreboardAvailableAt = new Date().toISOString();
+      if (!Array.isArray(sb?.events)) throw new TypeError('DT observations require a scoreboard events array');
+      if (Date.parse(scoreboardAvailableAt) < Date.parse(h.registeredAt)) continue;
       const raw = new Map((sb?.events ?? []).map((e) => [String(e.id), e]));
       for (const g of normalizeScoreboard('team', sb)) {
         if (g.state !== 'in') continue;
@@ -54,19 +56,24 @@ async function collectDeepTerminal({ h, store, fetcher, now, report }) {
         const lm = ev.markets.filter((m) => sideMatches(m.yes_sub_title, names));
         if (lm.length !== 1) continue;
         const market = (await fetcher.kalshi(`/markets/${lm[0].ticker}`))?.market;
+        const quoteAvailableAt = new Date().toISOString();
         if (!market) continue;
         const series = store.get(spec.game, 'series')?.multiplier ?? 1;
         const evFull = await fetcher.kalshi(`/events/${ev.event_ticker}`);
+        const availableAt = Date.now(), stamp = new Date(availableAt).toISOString();
+        if (!(availableAt < Date.parse(market.close_time)) || market.result === 'yes' || market.result === 'no') continue;
         const mult = evFull?.event?.fee_multiplier_override ?? evFull?.fee_multiplier_override ?? series;
         const e = dtEntry(market, mult);
         if (e.reason) continue;
-        store.put(game, 'dt-entry', { game, sport: key, event: ev.event_ticker, ticker: e.ticker, price: e.price, fee: e.fee, at: stamp, slack: st.regime.slack, state: st.detail }, stamp);
+        store.put(game, 'dt-entry', { game, sport: key, event: ev.event_ticker, ticker: e.ticker, price: e.price, fee: e.fee, at: stamp,
+          scoreboardAvailableAt, quoteAvailableAt, feeAvailableAt: stamp, close: market.close_time, slack: st.regime.slack, state: st.detail }, stamp);
         report.newEntries = (report.newEntries ?? 0) + 1;
       }
     }
     for (const [game, e] of store.all('dt-entry')) {
       if (store.has(game, 'dt-result')) continue;
       const market = (await fetcher.kalshi(`/markets/${e.ticker}`))?.market;
+      const stamp = new Date().toISOString();
       if (market && (market.result === 'yes' || market.result === 'no')) store.put(game, 'dt-result', { result: market.result }, stamp);
     }
   } catch (error) { if (error instanceof BudgetExhausted) report.partial = true; else throw error; }

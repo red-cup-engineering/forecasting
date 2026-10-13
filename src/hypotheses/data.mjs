@@ -25,7 +25,7 @@ export async function syncSeries({ store, fetcher, series, now, report }) {
     for (const s of series) {
       if (store.has(s, 'series')) continue;
       const p = await fetcher.kalshi(`/series/${s}`);
-      store.put(s, 'series', { multiplier: Number(p.series?.fee_multiplier ?? 1), feeType: p.series?.fee_type ?? null }, now);
+      store.put(s, 'series', { multiplier: Number(p.series?.fee_multiplier ?? 1), feeType: p.series?.fee_type ?? null }, new Date().toISOString());
     }
   });
 }
@@ -36,28 +36,31 @@ export async function syncForwardQuotes({ store, fetcher, hypotheses, report, re
   await guard(report, async () => {
     for (const series of new Set(hypotheses.flatMap((h) => h.universe.series))) {
       let cursor = '';
+      const seen = new Set();
       do {
         const page = await fetcher.kalshi('/markets', { series_ticker: series, status: 'open', limit: 1000, cursor });
-        // Source time is the instant the response was received, NOT the earlier
-        // cycle-selection time. A delayed public GET must not create a false
-        // pre-registered window witness after that window has expired.
-        const receivedAt = receiptClock();
-        if (!Number.isSafeInteger(receivedAt) || receivedAt < 0)
-          throw new RangeError('a finite post-fetch receipt clock in epoch milliseconds is required');
-        const stamp = new Date(receivedAt).toISOString();
-        for (const m of page.markets ?? []) {
+        const availableAt = receiptClock();
+        if (!Number.isSafeInteger(availableAt) || availableAt < 0) throw new RangeError('a finite post-fetch receipt clock in epoch milliseconds is required');
+        const stamp = new Date(availableAt).toISOString();
+        if (!Array.isArray(page?.markets)) throw new TypeError('forward observations require a markets array');
+        const next = page.cursor ?? '';
+        if (typeof next !== 'string' || next && seen.has(next)) throw new TypeError('forward observations require an advancing cursor');
+        if (next) seen.add(next);
+        for (const m of page.markets) {
           for (const h of hypotheses.filter((x) => x.universe.series.includes(series))) {
             const key = snapshotKey(h.entry.snapshot), target = snapshotTarget({ close: m.close_time, occ: m.occurrence_datetime }, h.entry.snapshot);
             if (store.get(m.ticker, key)?.kind === 'forward-window') continue;
-            if (!(receivedAt >= Date.parse(h.registeredAt)) || !Number.isFinite(target)
-              || Math.abs(receivedAt - target) > h.entry.snapshot.toleranceMinutes * 60000) continue;
+            if (!(availableAt >= Date.parse(h.registeredAt)) || !Number.isFinite(target)
+              || !(availableAt < Date.parse(m.close_time)) || m.result === 'yes' || m.result === 'no'
+              || Math.abs(availableAt - target) > h.entry.snapshot.toleranceMinutes * 60000) continue;
             const bid = dollars(m.yes_bid_dollars), ask = dollars(m.yes_ask_dollars);
             if (!(bid > 0 && ask < 1 && ask >= bid)) continue;
-            if (store.put(m.ticker, key, { ts: stamp, bid, ask, kind: 'forward-window', observedAt: stamp }, stamp))
+            if (store.put(m.ticker, key, { ts: stamp, bid, ask, kind: 'forward-window', observedAt: stamp,
+              source: { series, event: m.event_ticker, close: m.close_time, occ: m.occurrence_datetime ?? null } }, stamp))
               report.newQuotes = (report.newQuotes ?? 0) + 1;
           }
         }
-        cursor = page.cursor ?? '';
+        cursor = next;
       } while (cursor);
     }
   });
@@ -69,15 +72,22 @@ export async function syncSettled({ store, fetcher, series, sinceMs, now, report
     const synced = store.get(series, 'sync');
     const from = Math.max(sinceMs, synced ? Date.parse(synced.closedThrough) - CURSOR_OVERLAP_MS : 0);
     let cursor = '', newest = synced ? Date.parse(synced.closedThrough) : 0;
+    const seen = new Set();
     do {
       const page = await fetcher.kalshi('/markets', { series_ticker: series, status: 'settled', min_close_ts: Math.floor(from / 1000), limit: 1000, cursor });
-      for (const m of page.markets ?? []) {
+      const availableAt = new Date().toISOString();
+      if (!Array.isArray(page?.markets)) throw new TypeError('settled observations require a markets array');
+      const next = page.cursor ?? '';
+      if (typeof next !== 'string' || next && seen.has(next)) throw new TypeError('settled observations require an advancing cursor');
+      if (next) seen.add(next);
+      for (const m of page.markets) {
         if (m.result !== 'yes' && m.result !== 'no') continue;
-        if (store.put(m.ticker, 'market', marketFact(m), now)) report.newMarkets = (report.newMarkets ?? 0) + 1;
+        if (!Number.isFinite(Date.parse(m.close_time))) throw new TypeError('settled observations require an absolute close instant');
+        if (store.put(m.ticker, 'market', marketFact(m), availableAt)) report.newMarkets = (report.newMarkets ?? 0) + 1;
         newest = Math.max(newest, Date.parse(m.close_time));
       }
-      cursor = page.cursor ?? '';
-      store.put(series, 'sync', { closedThrough: new Date(newest || from).toISOString() }, now);
+      cursor = next;
+      store.put(series, 'sync', { closedThrough: new Date(newest || from).toISOString() }, availableAt);
     } while (cursor);
   });
 }

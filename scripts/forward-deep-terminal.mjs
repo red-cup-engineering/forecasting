@@ -30,6 +30,7 @@ export async function forwardDeepTerminalCycle() {
   for (const key of KEYS) {
     const spec = SPORTS[key]; const q = key === 'ncaaf' ? '?groups=80&limit=300' : '?limit=300';
     const sb = await pacedGet(`${ESPN}/${spec.espn}/scoreboard${q}`);
+    const scoreboardAvailableAt = new Date().toISOString();
     const raw = new Map((sb?.events ?? []).map((e) => [String(e.id), e]));
     const norm = normalizeScoreboard('team', sb);
     for (const g of norm) {
@@ -44,11 +45,14 @@ export async function forwardDeepTerminalCycle() {
       const lm = ev.markets.filter((m) => sideMatches(m.yes_sub_title, tn));
       if (lm.length !== 1) { stat.skipped['ambiguous side'] = (stat.skipped['ambiguous side'] ?? 0) + 1; continue; }
       const market = (await pacedGet(`${KALSHI}/markets/${lm[0].ticker}`))?.market; if (!market) continue;
+      const quoteAvailableAt = new Date().toISOString();
       const series = await pacedGet(`${KALSHI}/series/${spec.game}`); const evFull = await pacedGet(`${KALSHI}/events/${ev.event_ticker}`);
+      const availableAt = Date.now();
+      if (!(availableAt < Date.parse(market.close_time)) || market.result === 'yes' || market.result === 'no') continue;
       const mult = evFull?.event?.fee_multiplier_override ?? evFull?.fee_multiplier_override ?? series?.series?.fee_multiplier ?? 1;
       const e = dtEntry(market, mult);
       if (e.reason) { stat.skipped[e.reason] = (stat.skipped[e.reason] ?? 0) + 1; console.log(`${game} deep-terminal, no entry: ${e.reason}`); continue; }
-      out.push({ type: 'entry', game, sport: key, event_ticker: ev.event_ticker, leader: st.leader, score: `${st.away}-${st.home}`, margin: st.margin, regime: st.regime, state: st.detail, at: stat.at, ...e });
+      out.push({ type: 'entry', game, sport: key, event_ticker: ev.event_ticker, leader: st.leader, score: `${st.away}-${st.home}`, margin: st.margin, regime: st.regime, state: st.detail, at: new Date(availableAt).toISOString(), scoreboardAvailableAt, quoteAvailableAt, ...e });
       entered.add(game); stat.entered += 1; console.log(`${game} ENTRY ${e.ticker} ask ${e.price} (${st.detail}, slack ${st.regime.slack})`);
     }
   }

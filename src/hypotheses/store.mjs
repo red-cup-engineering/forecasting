@@ -13,10 +13,13 @@ import { homedir } from 'node:os';
 import { join } from 'node:path';
 import { isDeepStrictEqual } from 'node:util';
 import { appendLogRows, feedRows, mark, unmark } from '@red-cup-engineering/kalshi-services-section/seavt-log';
+import { stateDirectory, recordDirectory } from '@red-cup-engineering/kalshi-services-section/data-layout';
 
 export const FEED = 'hypotheses-observation';
-export const stateRoot = (env = process.env) => env.HYPOTHESES_STATE_DIR ?? join(env.HOME ?? homedir(), '.local', 'state', '561-group', 'settlements', 'forecasting-service', 'hypotheses');
-export const cacheDir = (root) => join(root, 'cache');
+export const stateRoot = (env = process.env) => env.HYPOTHESES_STATE_DIR ?? join(env.HOME ?? homedir(), '.local', 'state', '561-group', 'settlements', 'forecasting-service');
+export const hypothesisDirectory = (root, id) => join(stateDirectory(root, 'hypothesis'), id);
+export const modelDirectory = (root) => recordDirectory(root, 'admitted-forecast');
+export const externalDirectory = (root) => recordDirectory(root, 'hypothesis-input');
 
 /** Open the store: the feed is replayed once into an index (attribute -> entity -> latest value). */
 export function openStore(dir) {
@@ -40,6 +43,5 @@ export function openStore(dir) {
       index.get(a).set(e, v);
       return true;
     },
-    pack: (today) => packClosedLogs(dir, FEED, today),
   };
 }
