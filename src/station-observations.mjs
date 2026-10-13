@@ -83,7 +83,9 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
   const url = new URL(`${baseUrl}/stations/${station}/observations`);
   url.searchParams.set('start', from.toISOString());
   url.searchParams.set('end', until.toISOString());
-  url.searchParams.set('limit','500');
+  // Keep full GeoJSON station packets within the existing 1 MiB source
+  // envelope. Eight 200-record pages still cover a minute-resolution day.
+  url.searchParams.set('limit','200');
   const readings=new Map(),visited=new Set(),synoptic=[],pages=[];let next=url.href;
   while(next){
     const pageUrl=new URL(next,url);if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname||visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');
