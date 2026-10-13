@@ -10,6 +10,7 @@ import { binarySettlement } from '@red-cup-engineering/kalshi-services-section/m
 import {randomUUID,createHash} from 'node:crypto';
 import {updateStationScience,readStationScience,readStationSciencePage,stationPointForecasts} from './station-weather-science.mjs';
 import {weatherReadPage,weatherStatusInventory} from './weather-read-page.mjs';
+import {readWeatherSourceRecord} from './weather-source-record.mjs';
 import { readFile, writeFile, mkdir, rename, readdir, appendFile, rm, stat, link } from 'node:fs/promises';
 import { createReadStream } from 'node:fs';
 import { createInterface } from 'node:readline';
@@ -158,11 +159,8 @@ export async function weatherStatus({root=weatherRoot()}={}) {
 
 /** Bounded operation projection; internal consumers retain weatherStatus's full read. */
 export async function weatherStatusPage({root=weatherRoot(),field,offset=0,limit=100,sourceRevision}={}){
- let bytes,present=true;try{bytes=await readFile(join(root,'latest.json'));}catch(error){if(error.code!=='ENOENT')throw error;present=false;bytes=Buffer.from('{"status":"no weather cycle recorded","orderEffect":false}');}
- const record=JSON.parse(bytes.toString('utf8'));
- const source={file:'latest.json',present,revision:present?`sha256:${createHash('sha256').update(bytes).digest('hex')}`:'absent',at:record.at??null};
- if(field!==undefined)return {...weatherReadPage(record,{source,field,allowedFields:['contracts','forecasts','grades','errors','opportunities','research','scoring'],offset,limit,sourceRevision}),orderEffect:false};
- if(sourceRevision!==undefined&&sourceRevision!==source.revision)throw new Error('weather source revision changed; restart paging from offset zero');
+ const {record,source}=await readWeatherSourceRecord({root,file:'latest.json',emptyRecord:{status:'no weather cycle recorded',orderEffect:false},sourceRevision});
+ if(field!==undefined)return weatherReadPage(record,{source,field,allowedFields:['contracts','forecasts','grades','errors','opportunities','research','scoring'],offset,limit,sourceRevision,metadata:{orderEffect:false}});
  const lock=await read(join(root,'cycle.lock'),null);
  const running=lock&&await processStart(lock.pid)===lock.start?{startedAt:new Date(lock.at).toISOString()}:null;
  return weatherStatusInventory(record,{source,running,lastFailure:await read(join(root,'last-failure.json'),null)});

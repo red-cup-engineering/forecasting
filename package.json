@@ -52,6 +52,7 @@
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
+    "@red-cup-engineering/uri-services-section": "workspace:*",
     "@red-cup-engineering/json-services-section": "workspace:*",
     "@red-cup-engineering/semiotic-eavt-services-section": "workspace:*",
     "@red-cup-engineering/computer-text-content-engineering-services-section": "workspace:*",

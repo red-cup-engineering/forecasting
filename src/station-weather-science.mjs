@@ -7,6 +7,7 @@ import {readFile,writeFile,mkdir,rename} from 'node:fs/promises';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {weatherReadPage} from './weather-read-page.mjs';
+import {readWeatherSourceRecord} from './weather-source-record.mjs';
 import {makeTemperaturePool,postprocessTemperature,temperatureDiagnostics,temperatureDistributionCrps} from './weather-ensemble.mjs';
 const hash=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
 const key=r=>`${r.station}/${r.model}/${r.horizon}`;
@@ -125,10 +126,9 @@ export async function readStationScience({root,station}={}){return stationScienc
 /** Native-sized view of the same scientific record; full library read remains above. */
 export async function readStationSciencePage({root,station,field='metrics',offset=0,limit=100,sourceRevision}={}){
  if(station!==undefined&&(typeof station!=='string'||!/^([A-Z0-9]{4}|index:(miami|nyc|chicago|la-coastal))$/.test(station)))throw new TypeError('one ICAO station or existing city-index key is required');
- let bytes,present=true;try{bytes=await readFile(join(root,'state.json'));}catch(error){if(error.code!=='ENOENT')throw error;present=false;bytes=Buffer.from('{}');}
- const state=JSON.parse(bytes.toString('utf8')),report=stationScienceReport(state,{station});
- const source={file:'station-science/state.json',present,revision:present?`sha256:${createHash('sha256').update(bytes).digest('hex')}`:'absent',at:state.at??null,...(station===undefined?{}:{station})};
- return {...weatherReadPage(report,{source,field,allowedFields:['metrics','comparisons','parameters'],offset,limit,sourceRevision}),
-  truth:report.truth,scoring:report.scoring,pending:report.pending,missingOutcomes:report.missingOutcomes,orderEffect:false};
+ const {record:state,source:recordSource}=await readWeatherSourceRecord({root,file:'state.json',label:'station-science/state.json',sourceRevision});
+ const report=stationScienceReport(state,{station}),source={...recordSource,...(station===undefined?{}:{station})};
+ return weatherReadPage(report,{source,field,allowedFields:['metrics','comparisons','parameters'],offset,limit,sourceRevision,
+  metadata:{truth:report.truth,scoring:report.scoring,pending:report.pending,missingOutcomes:report.missingOutcomes,orderEffect:false}});
 }
 
