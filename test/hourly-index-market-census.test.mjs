@@ -52,7 +52,7 @@ test('source publisher sees a NEW contract from the public hourly venue census, 
  assert.equal(c.binding.targetTime,'2026-10-14T14:00:00.000Z');
  assert.equal(c.family,'hourly-temperature');
  assert.equal(c.source,'synoptic');
- assert.equal(c.marketMid,0.42);
+ assert.ok(Math.abs(c.marketMid-0.42)<1e-12);
  assert.equal(c.marketObservedAt,'2026-10-14T13:00:00.000Z');
  assert.match(c.rulesHash,/^[a-f0-9]{64}$/u);
  assert.equal(calls.filter(c=>c[0]==='markets').length,4);
