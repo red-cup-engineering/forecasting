@@ -25,7 +25,7 @@ export function weatherRuleKey(market,seriesTicker,source,station) {
  */
 export function authoritativeWeatherSource(market){
  const classify=s=>/synoptic data/iu.test(s)?'synoptic':/the weather company|weather[.]com\/kalshi/iu.test(s)?'twc':
-   /national weather service|nws climatological|climate report/iu.test(s)?'nws-cli':
+   /national weather service|\bnws\b|climate report/iu.test(s)?'nws-cli':
    /national hurricane center|\bnhc\b/iu.test(s)?'nhc':null;
  const primary=String(market?.rules_primary??''),secondary=String(market?.rules_secondary??'');
  const clauses=text=>[...text.matchAll(/\b(?:as reported by|according to|outcome verified (?:by|from))\s+(?:the\s+)?(Synoptic Data|The Weather Company|National Weather Service(?:'s)?(?: Climatological Report)?|NWS Climatological Report|National Hurricane Center)\b/giu)].map(m=>classify(m[1]));
@@ -34,7 +34,7 @@ export function authoritativeWeatherSource(market){
   if(explicit.length>1)return null;
   if(explicit.length===1)return explicit[0];
  }
- const mentions=[...new Set((primary.match(/Synoptic Data|The Weather Company|weather[.]com\/kalshi|National Weather Service|NWS Climatological|Climate Report|National Hurricane Center|\bNHC\b/giu)??[]).map(classify).filter(Boolean))];
+ const mentions=[...new Set((primary.match(/Synoptic Data|The Weather Company|weather[.]com\/kalshi|National Weather Service|\bNWS\b|Climate Report|National Hurricane Center|\bNHC\b/giu)??[]).map(classify).filter(Boolean))];
  return mentions.length===1?mentions[0]:null;
 }
 
