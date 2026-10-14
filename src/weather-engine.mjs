@@ -181,9 +181,10 @@ export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.no
    // anchor is an admitted-model-only projection supported by fuseForecast.
    const midpoint=old&&decisionNow>=Date.parse(old.marketObservedAt)&&decisionNow-Date.parse(old.marketObservedAt)<=20*60000?old.mid:null;
    const models=weatherEstimates(c,evidence,decisionNow).map(m=>({...m,band:probabilityBand({...c,station:c.binding.station,stage:s},m,grades)}));
-   rows.push({ticker:c.ticker,eventTicker:c.event_ticker,family:c.family,source:c.source,ruleKey:c.ruleKey,rulesHash:c.rulesHash,targetDate:c.binding.targetDate,closeTime:c.close_time,station:c.binding.station,blocker:c.blocker,surface:fuseForecast({mid:midpoint,models})});
+   rows.push({ticker:c.ticker,eventTicker:c.event_ticker,family:c.family,source:c.source,ruleKey:c.ruleKey,rulesHash:c.rulesHash,targetDate:c.binding.targetDate,closeTime:c.close_time,station:c.binding.station,blocker:c.blocker,evidenceId:stationEvidenceId,indexSourceEvidenceId:evidenceId,marketObservedAt:midpoint===null?null:old.marketObservedAt,models,surface:fuseForecast({mid:midpoint,models})});
   }
   surface={...forecastSurface(rows,contracts,new Date(decisionNow).toISOString()),sourceEvidenceId:evidenceId,stationEvidenceId,projection:'fresh original index with previously received station guidance; original input age checks retained'};
+  retainHourlyWindow(surface,previous.surface,contracts,grades,decisionNow);
   await atomic(join(root,'index-source.json'),{at:packet.at,evidenceId,surface});
  }}catch(error){projectionError=error.message;}
  return {at:packet.at,evidenceId,projectionError,cities:Object.keys(packet.indices),errors:packet.errors,conflicts:Object.entries(packet.indices).filter(([_,p])=>p.validation?.conflicted).map(([city])=>city),surfaceContracts:surface?.contracts.length??0,orderEffect:false};
@@ -455,7 +456,37 @@ export async function allocateLiveWeather({root=weatherRoot(),capitalUsd,encumbe
 export function forecastSurface(rows,contracts,at){
   const byTicker=new Map(contracts.map(c=>[c.ticker,c]));
   return {type:'KalshiForecastSurface',version:SURFACE_VERSION,at,contracts:rows.filter(r=>r.surface&&(r.surface.admitted.length||r.surface.structural.length)&&!r.blocker).map(r=>{const c=byTicker.get(r.ticker);
-    return {ticker:r.ticker,eventTicker:r.eventTicker,seriesTicker:c?.seriesTicker??r.ticker.split('-')[0],family:r.family,settlementSource:r.source,ruleKey:r.ruleKey,targetDate:r.targetDate,closeTime:r.closeTime,...marketSettlementTiming(c),rulesHash:r.rulesHash,feeMultiplier:c?.feeMultiplier??1,feeType:c?.feeType??'quadratic',station:r.station,...r.surface};})};
+    return {ticker:r.ticker,eventTicker:r.eventTicker,seriesTicker:c?.seriesTicker??r.ticker.split('-')[0],family:r.family,settlementSource:r.source,ruleKey:r.ruleKey,targetDate:r.targetDate,closeTime:r.closeTime,...marketSettlementTiming(c),rulesHash:r.rulesHash,feeMultiplier:c?.feeMultiplier??1,feeType:c?.feeType??'quadratic',station:r.station,...r.surface,...(c?.binding?.kind==='index-at'?{
+      targetTime:c.binding.targetTime,indexLaw:c.indexLaw,sourceSurfaceAt:at,modelEvidenceId:r.evidenceId??null,indexSourceEvidenceId:r.indexSourceEvidenceId??r.evidenceId??null,marketObservedAt:r.marketObservedAt??null,
+      modelSources:(r.models??[]).filter(m=>r.surface.admitted.includes(m.id)).map(m=>({id:m.id,p:m.p,source:m.source??null,issuedAt:m.issuedAt??m.details?.issuedAt??null,sourceAvailableAt:m.details?.sourceAvailableAt??m.details?.receivedAt??null,sourceRuntime:m.details?.sourceRuntime??null,validUntil:m.details?.validUntil??null})),
+    }:{})};})};
+}
+/** The measurement closes forecasting, not the still-open contract. Preserve
+ * original qualified knowledge on its original clock; never turn a pending
+ * index into canonical truth or relabel a changed contract/calibration. */
+function retainHourlyWindow(surface,previous,contracts,grades,now){
+  if(previous?.version!==SURFACE_VERSION)return;
+  const fresh=new Set(surface.contracts.map(row=>row.ticker));
+  const scope=new Map(contracts.map(contract=>[contract.ticker,contract]));
+  for(const original of previous.contracts??[]){
+    const c=scope.get(original.ticker);
+    const target=Date.parse(c?.binding?.targetTime),close=Date.parse(c?.close_time),sourceAt=Date.parse(original.sourceSurfaceAt);
+    if(fresh.has(original.ticker)||!c||c.blocker||c.binding?.kind!=='index-at'
+      ||!Number.isFinite(target)||!Number.isFinite(close)||now<target||now>=close||close>target+5*60000
+      ||!Number.isFinite(sourceAt)||sourceAt>target||now<sourceAt||now-sourceAt>20*60000
+      ||original.ruleKey!==c.ruleKey||original.rulesHash!==c.rulesHash||original.closeTime!==c.close_time||original.targetTime!==c.binding.targetTime
+      ||!c.indexLaw?.id||original.indexLaw?.id!==c.indexLaw.id||original.indexLaw.methodologyBodyNI!==c.indexLaw.methodologyBodyNI
+      ||original.indexLaw.configurationVersion!==c.indexLaw.configurationVersion||!original.admitted?.length||original.structural?.length||!original.modelSources?.length)continue;
+    // Grading may have changed while the frozen prediction remained valid.
+    // Requalify those same model probabilities in the same rule/source cohort.
+    const models=original.modelSources.filter(m=>m.validUntil==null||Number.isFinite(Date.parse(m.validUntil))&&now<Date.parse(m.validUntil))
+      .map(m=>({...m,band:probabilityBand({...c,station:c.binding.station,stage:stage(c,now)},m,grades)}));
+    const marketAt=Date.parse(original.marketObservedAt);
+    const midpoint=Number.isFinite(marketAt)&&now>=marketAt&&now-marketAt<=20*60000?original.mid:null;
+    const qualified=fuseForecast({mid:midpoint,models});
+    if(!qualified?.admitted.length)continue;
+    surface.contracts.push({...original,...qualified,...marketSettlementTiming(c),feeMultiplier:c.feeMultiplier??1,feeType:c.feeType??'quadratic',retainedPreTarget:true,qualificationCheckedAt:new Date(now).toISOString(),retainedAgainstEvidenceId:surface.sourceEvidenceId});
+  }
 }
 /** Version 2: structural bounds are observation-derived only (forecast-surface STRUCTURAL_KINDS). */
 export const SURFACE_VERSION=2;
@@ -465,7 +496,9 @@ export async function readForecastSurface({root=weatherRoot(),now=Date.now(),max
   const eligible=value=>value&&value.version===SURFACE_VERSION&&now>=Date.parse(value.at)&&now-Date.parse(value.at)<=maxAgeMs;
   if(!eligible(index))return eligible(s)?s:null;
   const daily=eligible(s)?s.contracts.filter(row=>row.family!=='hourly-temperature'):[];
-  return {...index,contracts:[...daily,...index.contracts]};
+  const hourly=index.contracts.filter(row=>!row.retainedPreTarget||(now>=Date.parse(row.sourceSurfaceAt)&&now-Date.parse(row.sourceSurfaceAt)<=maxAgeMs&&now<Date.parse(row.closeTime)
+    &&row.modelSources.filter(model=>row.admitted.includes(model.id)).every(model=>model.validUntil==null||now<Date.parse(model.validUntil))));
+  return {...index,contracts:[...daily,...hourly]};
 }
 /** A run killed mid-write leaves `<file>.<pid>.tmp` behind; remove those whose writer is gone. */
 async function removeDeadTemporaries(root){

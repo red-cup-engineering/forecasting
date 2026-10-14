@@ -1,5 +1,16 @@
 # Weather research and Kalshi on Cold Red Gate
 
+The existing fast index publisher keeps a qualified pre-measurement forecast during
+the measurement-to-close window, at most five minutes, when the current exact rules,
+certified law and calibration still match and no contract blocker is present.
+It retains the original model probabilities, issue/availability clocks and source
+archive references; the original forecast surface must remain within twenty minutes.
+Current source-scoped grades requalify the same models, expired model declarations
+drop, and the original market anchor expires on its own twenty-minute clock.
+New qualified predictions or truth replace old rows. Changed rules/calibration,
+blocked sources and closed markets cannot retain them. Republishing does not renew
+the original forecast clock, and pending index observations do not become truth.
+
 The existing `kalshi-weather-forecast` / `kalshi-weather-score` operations and `forecast-weather-markets-cli.mjs run|score|calibration` keep their configured NWS model, semantic journal, calibration and paper-sizing behavior. The general forecasting daily cycle continues to consume those records.
 
 The supplemental research and market collector: `node apps/weather.mjs cycle`, or the authenticated Cold Red Gate `weather_weather_cycle` tool. `weather_weather_status` shows coverage, gaps, scored model skill and available opportunities. `weather_weather_forecast` reads a specific contract. `weather_weather_model_admit` contributes a model experiment. `weather_weather_allocate` creates a depth-limited capital plan. These tools do not place orders; execution remains the custody-bound Kalshi desk.
