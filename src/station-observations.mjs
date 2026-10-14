@@ -167,8 +167,9 @@ function metarStation(station) {
 
 async function readMetarBulletin(station, { fetchImpl = fetch, feed = METAR_FEED, userAgent = NWS_USER_AGENT } = {}) {
   metarStation(station); // before constructing or acquiring any network resource
-  const url = `${feed}/${station}.TXT`, signal = AbortSignal.timeout(10000);
-  const res = await fetchImpl(url, { headers: { 'user-agent': userAgent, accept: 'text/plain' }, redirect: 'error', signal });
+  const url = `${feed}/${station}.TXT`;
+  const acquired = await readNwsResponse(url, { fetchImpl, headers: { 'user-agent': userAgent, accept: 'text/plain' }, redirect: 'error', timeoutMs: 10000 });
+  const { response: res, signal } = acquired;
   if (!res.ok || res.redirected || res.url && res.url !== url) {
     await res.body?.cancel().catch(() => {});
     if (!res.ok) throw new Error(`metar ${station}: ${res.status}`);
@@ -187,7 +188,7 @@ async function readMetarBulletin(station, { fetchImpl = fetch, feed = METAR_FEED
   if (!Number.isFinite(issued) || new Date(issued).toISOString() !== issuedAt) throw new Error('METAR bulletin issue stamp must be a real UTC calendar instant');
   const report = parseMetar(raw, issued);
   if (report && report.station !== station) throw new Error('METAR bulletin does not match its requested station');
-  return { report, bytes, text, url, issuedAt };
+  return { report, bytes, text, url, issuedAt, transport: { attempts: acquired.attempts, rateLimits: acquired.rateLimits } };
 }
 
 /** The station's latest METAR from NWS's feed; retains the existing report-or-null API. */
@@ -224,7 +225,7 @@ export async function readNwsMetarSnapshot(request, { fetchImpl = fetch, now = (
   return admitCanonicalJson(JSON.stringify({
     observation: source.report,
     source: { url: source.url, identity: makeNiUri(source.bytes), bytes: source.bytes.byteLength, text: source.text,
-      issuedAt: source.issuedAt, receivedAt,
+      issuedAt: source.issuedAt, receivedAt, transport: source.transport,
       freshness: { observedAgeSeconds, bulletinAgeSeconds, maximumAgeSeconds: 7200 },
       attribution: 'NOAA National Weather Service',
       rights: { basis: 'public-domain US government information', authority: 'https://www.weather.gov/disclaimer/',

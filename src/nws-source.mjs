@@ -5,7 +5,7 @@ import {retryAfterDelayMs} from '@red-cup-engineering/http-services-section/retr
 import {readBody} from '@red-cup-engineering/http-services-section/body/web';
 import {JSON_RESOURCE_ENVELOPE} from '@red-cup-engineering/json-services-section/canonical-json';
 const cooldowns=new WeakMap();
-export async function readNwsResponse(url,{fetchImpl=fetch,headers={},timeoutMs=10000}={}) {
+export async function readNwsResponse(url,{fetchImpl=fetch,headers={},timeoutMs=10000,redirect='follow'}={}) {
  if(!Number.isSafeInteger(timeoutMs)||timeoutMs<=0)throw new TypeError('positive finite acquisition timeout required');
  const target=new URL(url),deadline=Date.now()+timeoutMs,receipts=[];
  let origins=cooldowns.get(fetchImpl);if(!origins){origins=new Map();cooldowns.set(fetchImpl,origins);}
@@ -22,7 +22,7 @@ export async function readNwsResponse(url,{fetchImpl=fetch,headers={},timeoutMs=
    const remaining=deadline-Date.now();if(remaining<=0)throw refused('original acquisition deadline exhausted');
    signal=AbortSignal.timeout(remaining);attempts++;
    let response;
-   try { response=await fetchImpl(target,{headers,signal}); }
+   try { response=await fetchImpl(target,{headers,signal,redirect}); }
    catch(error) {
     latest={status:null,receivedAt:new Date().toISOString(),code:error.code??error.name,networkFailure:true};
     return {ok:false,refusal:latest};
