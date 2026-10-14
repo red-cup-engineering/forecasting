@@ -63,7 +63,7 @@ export function climateDate(timeZone, at = Date.now()) {
  */
 export function preciseBounds(readings,synoptic=[]){
   let lowEnd=-Infinity,highEnd=Infinity;
-  for(const r of readings){if(r.qualityControl==='qc:X'||r.qualityControl==='qc:Q')continue;lowEnd=Math.max(lowEnd,r.temperatureF-r.precisionF);highEnd=Math.min(highEnd,r.temperatureF+r.precisionF);}
+  for(const r of readings){if(r.qualityControl==='qc:X'||r.qualityControl==='qc:Q')continue;lowEnd=Math.max(lowEnd,Number.isFinite(r.lowerF)?r.lowerF:r.temperatureF-r.precisionF);highEnd=Math.min(highEnd,Number.isFinite(r.upperFExclusive)?r.upperFExclusive:r.temperatureF+r.precisionF);}
   for(const r of synoptic){if(r.kind==='max6h')lowEnd=Math.max(lowEnd,r.temperatureF-r.precisionF);else highEnd=Math.min(highEnd,r.temperatureF+r.precisionF);}
   return {floorPrecise:Number.isFinite(lowEnd)?Math.ceil(lowEnd-0.5):null,ceilingPrecise:Number.isFinite(highEnd)?Math.floor(highEnd+0.5):null};
 }
@@ -106,8 +106,10 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
     if(temperatureF< -150||temperatureF>180)continue;
     const raw=typeof p.rawMessage==='string'?p.rawMessage:'';
     // Tenths when the METAR's T-group is present or the value is not whole; otherwise half a degree either way.
-    const precisionF=/\sT[01]\d{3}[01]\d{3}(\s|$)/u.test(raw)||!Number.isInteger(temperature.value)?0.09:unit==='wmoUnit:degC'?0.9:0.5;
-    const row={at:new Date(epoch).toISOString(),temperatureF,precisionF,qualityControl:temperature.qualityControl??null};
+    const precise=/\sT[01]\d{3}[01]\d{3}(\s|$)/u.test(raw)||!Number.isInteger(temperature.value);
+    const interval=!precise&&unit==='wmoUnit:degC'?wholeCelsiusTemperatureInterval(temperature.value):null;
+    const precisionF=precise?0.09:interval?Math.max(temperatureF-interval.lowerF,interval.upperFExclusive-temperatureF):0.5;
+    const row={at:new Date(epoch).toISOString(),temperatureF,precisionF,...(interval??{}),qualityControl:temperature.qualityControl??null};
     const old=readings.get(row.at);if(!old||row.qualityControl==='qc:V'||old.precisionF>row.precisionF)readings.set(row.at,row);
     // Synoptic six-hour extremes (remarks 1sTTT max, 2sTTT min, tenths C) count when the six hours lie inside the day.
     const remarks=raw.split(' RMK ')[1]??'';
@@ -142,6 +144,17 @@ export function asosWholeCelsiusPreimage(reportedC){
   lowerF:minF-.5,upperFExclusive:maxF+.5,assumption:'whole Fahrenheit register rounded half-up, then whole Celsius rounded half-up'});
 }
 
+/** Conservative union of two documented/plausible information paths:
+ * directly rounding continuous Celsius to whole C, or whole-F-register then
+ * whole-C ASOS. Neither path is asserted to own another provider's settlement.
+ * Preserve the asymmetric interval, avoiding a false 0.9F structural bound.
+ */
+export function wholeCelsiusTemperatureInterval(reportedC){
+ const asos=asosWholeCelsiusPreimage(reportedC);
+ return Object.freeze({lowerF:Math.min(32+(reportedC-.5)*9/5,asos.lowerF),
+  upperFExclusive:Math.max(32+(reportedC+.5)*9/5,asos.upperFExclusive)});
+}
+
 export const METAR_FEED = 'https://tgftp.nws.noaa.gov/data/observations/metar/stations';
 
 /**
@@ -164,13 +177,16 @@ export function parseMetar(raw, issued) {
   const [body, remarks = ''] = raw.split(' RMK ');
   const tenths = /\sT([01])(\d{3})[01]\d{3}(\s|$)/u.exec(` ${remarks}`);
   const whole = /\s(M?\d{2})\/(M?\d{2})?(\s|$)/u.exec(` ${body}`);
-  const temperatureF = tenths ? f(c(tenths[1], tenths[2])) : whole ? f(Number(whole[1].replace('M', '-'))) : null;
+  const reportedC=whole?Number(whole[1].replace('M', '-')):null;
+  const temperatureF = tenths ? f(c(tenths[1], tenths[2])) : whole ? f(reportedC) : null;
+  const interval=!tenths&&whole?wholeCelsiusTemperatureInterval(reportedC):null;
+  const precisionF=tenths?0.09:interval?Math.max(temperatureF-interval.lowerF,interval.upperFExclusive-temperatureF):0.9;
   const synoptic = [];
   for (const token of remarks.split(/\s+/u)) {
     const g = /^([12])([01])(\d{3})$/u.exec(token);
     if (g) synoptic.push({ at: new Date(at).toISOString(), kind: g[1] === '1' ? 'max6h' : 'min6h', temperatureF: f(c(g[2], g[3])), precisionF: 0.09 });
   }
-  return { station: m[1], at: new Date(at).toISOString(), temperatureF, precisionF: tenths ? 0.09 : 0.9, synoptic, raw };
+  return { station: m[1], at: new Date(at).toISOString(), temperatureF, precisionF, ...(interval??{}), synoptic, raw };
 }
 
 const METAR_BYTES = 4096;
@@ -261,7 +277,7 @@ export function withMetar(obs, metar) {
   if (!(at >= from && at < until)) return obs;
   const known = obs.readings.find((r) => r.at === metar.at);
   const readings = known && known.precisionF <= metar.precisionF ? obs.readings
-    : [...obs.readings.filter((r) => r.at !== metar.at), { at: metar.at, temperatureF: metar.temperatureF, precisionF: metar.precisionF, qualityControl: null, source: 'metar' }].sort((a, b) => a.at.localeCompare(b.at));
+    : [...obs.readings.filter((r) => r.at !== metar.at), { at: metar.at, temperatureF: metar.temperatureF, precisionF: metar.precisionF,...(Number.isFinite(metar.lowerF)&&Number.isFinite(metar.upperFExclusive)?{lowerF:metar.lowerF,upperFExclusive:metar.upperFExclusive}:{}),qualityControl: null, source: 'metar' }].sort((a, b) => a.at.localeCompare(b.at));
   const synoptic = [...(obs.synoptic ?? []), ...metar.synoptic.filter((g) => at - 6 * 3600000 >= from && !(obs.synoptic ?? []).some((o) => o.at === g.at && o.kind === g.kind))];
   const temps = readings.map((r) => r.temperatureF), maxF = Math.max(...temps), minF = Math.min(...temps);
   return { ...obs, count: readings.length, readings, synoptic, maxF, minF, floor: Math.floor(maxF) - 1, ceiling: Math.ceil(minF) + 1, ...preciseBounds(readings, synoptic), latest: readings.at(-1).at };
