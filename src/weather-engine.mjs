@@ -152,8 +152,12 @@ async function hourlyProjectionContext(root){
  * credentials and never places orders. A stale listing cannot masquerade as
  * a fresh contract or market midpoint.
  */
-export async function readHourlyIndexMarketCensus({client=createKalshiClient({credentials:null,timeoutMs:8000}),now=Date.now(),clock=()=>Date.now()}={}){
- if(!Number.isFinite(now))throw new TypeError('hourly index census needs a finite observation clock');
+export async function readHourlyIndexMarketCensus({client=createKalshiClient({credentials:null,timeoutMs:8000}),now=Date.now(),clock=()=>Date.now(),horizonHours=6}={}){
+ if(!Number.isFinite(now)||!Number.isFinite(horizonHours)||horizonHours<=0||horizonHours>24)
+   throw new TypeError('hourly index census requires a finite clock and a 0..24h close window');
+ const lastClose=now+horizonHours*3600000;
+ // Kalshi's public markets API forbids combining status=open with close-time
+ // bounds. Filter by close-time server-side; validate active status locally.
  const contracts=[],errors=[],coverage=[];
  await mapLimit(Object.entries(INDEX_CITIES),2,async ([city,info])=>{
   try{
@@ -161,7 +165,7 @@ export async function readHourlyIndexMarketCensus({client=createKalshiClient({cr
    if(series?.ticker!==info.series||series.frequency!=='hourly'
      ||series.contract_terms_url!==`https://assets.kalshi.com/contract_terms/${info.terms}.pdf`)
      throw new TypeError('hourly series identity, frequency or certified methodology changed');
-   const markets=await client.getMarkets({series_ticker:info.series,status:'open'});
+   const markets=await client.getMarkets({series_ticker:info.series,min_close_ts:Math.floor(now/1000),max_close_ts:Math.ceil(lastClose/1000)});
    if(!Array.isArray(markets)||markets.length>4000)
      throw new TypeError('complete bounded hourly market listing required');
    const marketObservedAt=new Date(clock()).toISOString(),received=Date.parse(marketObservedAt);
@@ -172,7 +176,7 @@ export async function readHourlyIndexMarketCensus({client=createKalshiClient({cr
     }
     seen.add(market.ticker);
     const close=Date.parse(market.close_time);
-    if(!Number.isFinite(close)||close<=Math.max(now,received)||market.status&&market.status!=='active')continue;
+    if(!Number.isFinite(close)||close<=Math.max(now,received)||close>lastClose||!['active','open'].includes(market.status))continue;
     if(market.series_ticker!==undefined&&market.series_ticker!==info.series||market.market_type!=='binary'){
      refused++;errors.push({source:'Kalshi-hourly-contract',city,ticker:market.ticker,error:'wrong market series or not a binary contract'});continue;
     }
