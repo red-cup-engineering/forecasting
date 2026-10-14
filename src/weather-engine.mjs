@@ -214,9 +214,10 @@ export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.no
  const packet={kind:'kalshi-weather-index-source',at:new Date().toISOString(),indices:fresh.cities,errors:fresh.errors,stationEvidenceId};
  await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
  const evidenceId=digest(packet);await archivePacket(join(root,'evidence',evidenceId+'.json.gz'),packet);
- // Receive the original index sensor evidence BEFORE any optional venue
- // census or model projection. Failures cannot delay custody or backdate it.
- await atomic(join(root,'index-source.json'),{at:packet.at,evidenceId,surface:null});
+ // Archive the new source before projection, but leave the previously
+ // qualified pointer readable until the replacement has been fully prepared.
+ // An intermediate surface:null used to erase valid hourly forecasts during
+ // every two-minute refresh, racing the one-minute live desk. Commit once.
  let surface=null,projectionError=null,marketCensus={contracts:[],errors:[],coverage:[],orderEffect:false};
  try{
   // Market visibility does not depend on a successful earlier heavy forecast.
@@ -237,9 +238,12 @@ export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.no
    marketCensus:{coverage:marketCensus.coverage,errors:marketCensus.errors},
    projection:'current public hourly venue rules/quotes and index with previously received station guidance; original input age checks retained'};
   retainHourlyWindow(surface,previous.surface,contracts,grades,decisionNow);
-  await atomic(join(root,'index-source.json'),{at:packet.at,evidenceId,surface});
   }
- }catch(error){projectionError=error.message;}
+ }catch(error){projectionError=error.message;surface=null;}
+ // Source custody advances even when no new model was qualified. All readers
+ // see either the prior intact source/surface pair or the new pair, never an
+ // intermediate unqualified pointer. A failure does not relabel stale prices.
+ await atomic(join(root,'index-source.json'),{at:packet.at,evidenceId,surface});
  return {at:packet.at,evidenceId,projectionError,cities:Object.keys(packet.indices),errors:[...packet.errors,...marketCensus.errors],hourlyMarketCoverage:marketCensus.coverage,hourlyMarkets:marketCensus.contracts.length,conflicts:Object.entries(packet.indices).filter(([_,p])=>p.validation?.conflicted).map(([city])=>city),surfaceContracts:surface?.contracts.length??0,orderEffect:false};
 }
 
