@@ -214,9 +214,12 @@ export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.no
  // census or model projection. Failures cannot delay custody or backdate it.
  await atomic(join(root,'index-source.json'),{at:packet.at,evidenceId,surface:null});
  let surface=null,projectionError=null,marketCensus={contracts:[],errors:[],coverage:[],orderEffect:false};
- try{if(stationEvidenceId){
+ try{
+  // Market visibility does not depend on a successful earlier heavy forecast.
+  // Without station evidence this is a read-only census and no price is certified.
   marketCensus=await readHourlyIndexMarketCensus({client:marketClient??createKalshiClient({credentials:null,fetchImpl,timeoutMs:8000}),now:Date.now()});
-  const evidence=await hourlyStationEvidence(root,stationEvidenceId,packet.indices),decisionNow=Date.now(),grades=await read(join(root,'grades.json'),{}),rows=[];
+  if(stationEvidenceId){
+   const evidence=await hourlyStationEvidence(root,stationEvidenceId,packet.indices),decisionNow=Date.now(),grades=await read(join(root,'grades.json'),{}),rows=[];
   // The market list AND quote originate from the current public venue read.
   // A slow forecast cycle's old market roster is not the two-minute census.
   const contracts=marketCensus.contracts.map(c=>weatherIndexContractScope(c,evidence,decisionNow));
@@ -231,7 +234,8 @@ export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.no
    projection:'current public hourly venue rules/quotes and index with previously received station guidance; original input age checks retained'};
   retainHourlyWindow(surface,previous.surface,contracts,grades,decisionNow);
   await atomic(join(root,'index-source.json'),{at:packet.at,evidenceId,surface});
- }}catch(error){projectionError=error.message;}
+  }
+ }catch(error){projectionError=error.message;}
  return {at:packet.at,evidenceId,projectionError,cities:Object.keys(packet.indices),errors:[...packet.errors,...marketCensus.errors],hourlyMarketCoverage:marketCensus.coverage,hourlyMarkets:marketCensus.contracts.length,conflicts:Object.entries(packet.indices).filter(([_,p])=>p.validation?.conflicted).map(([city])=>city),surfaceContracts:surface?.contracts.length??0,orderEffect:false};
 }
 
