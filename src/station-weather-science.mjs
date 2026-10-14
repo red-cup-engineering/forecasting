@@ -74,7 +74,7 @@ export function stationPointForecasts(evidence,{now=Date.now(),parameters={},lea
    }else out.push(r);
   }
  }
- const adaptive=out.filter(r=>/family-pool/.test(r.model)&&!r.model.includes('/station-postprocess-v1')&&!r.model.includes('/paired-family-ewa-v1')).map(r=>adaptiveTemperaturePool(r,learningState,{now})).filter(Boolean);
+ const adaptive=out.filter(r=>/family-pool/.test(r.model)&&!r.model.includes('/station-postprocess-v1')&&!r.model.includes('/paired-family-fixed-share-v2')).map(r=>adaptiveTemperaturePool(r,learningState,{now})).filter(Boolean);
  out.push(...adaptive);
  return out;
 }
