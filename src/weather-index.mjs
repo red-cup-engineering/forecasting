@@ -19,8 +19,10 @@ const HOUR=3600000,MINUTE=60000,execute=promisify(execFile);
 export function parseIndexMethodology(text,city){
  const normalized=text.replace(/\s+/gu,' '),version=new RegExp(`${city}-temperature-v([0-9]+\\.[0-9]+)`).exec(normalized)?.[1];
  const q=/I\. Quorum\..*?\|A\(t\)\|\s*≥\s*(\d+)\s*members.*?w_i\s*≥\s*([0-9]+(?:\.[0-9]+)?)/u.exec(normalized);
- if(!version||!q||!normalized.includes('nearest 0.01°F')||+q[1]<1||+q[2]<=0||+q[2]>1)throw new TypeError('certified index version, quorum and 0.01F precision required');
- return {configurationVersion:version,quorum:{members:+q[1],weight:+q[2]},precisionF:.01,roundingTieRule:'not specified in certified text'};
+ const membership=/station identifiers ([\s\S]*?), delivered through/u.exec(normalized)?.[1],stations=membership?[...membership.matchAll(/\b([A-Z0-9]{4}1M)\b/gu)].map(match=>match[1]):[];
+ const weight=/Each member carries an equal base weight of ([0-9]+(?:\.[0-9]+)?)/u.exec(normalized),deadline=/S\s*\+\s*D\s*\((\d+) seconds\)/u.exec(normalized);
+ if(!version||!q||!weight||!deadline||!stations.length||new Set(stations).size!==stations.length||Math.abs(stations.length*+weight[1]-1)>1e-8||!normalized.includes('nearest 0.01°F')||+q[1]<1||+q[1]>stations.length||+q[2]<=0||+q[2]>1||+deadline[1]!==300)throw new TypeError('certified index membership, weights, quorum, receipt deadline and 0.01F precision required');
+ return {configurationVersion:version,stations:stations.map(stationId=>({stationId,weight:+weight[1]})),receiptDeadlineSeconds:+deadline[1],quorum:{members:+q[1],weight:+q[2]},precisionF:.01,roundingTieRule:'not specified in certified text'};
 }
 async function indexMethodology(city,fetchImpl){
  const url=`https://assets.kalshi.com/contract_terms/${INDEX_CITIES[city].terms}.pdf`,acquired=await acquireHttpResponse(url,{fetchImpl,timeoutMs:15000});
@@ -54,9 +56,9 @@ function receivedIndexMethodology(document,city,availableAt){
  // Repeated target/minute projections share one original PDF. Recheck its
  // bytes only when the byte carrier or claimed digest changes.
  const previous=receivedMethodologyBodies.get(document);
- if(previous?.rawPdfBase64===document.rawPdfBase64&&previous.sha256===document.sha256&&previous.bytes===document.bytes)return previous.valid;
+ if(previous?.rawPdfBase64===document.rawPdfBase64&&previous.rawText===document.rawText&&previous.sha256===document.sha256&&previous.bytes===document.bytes)return previous.valid;
  const bytes=Buffer.from(document.rawPdfBase64,'base64'),valid=bytes.length===document.bytes&&bytes.subarray(0,5).toString()==='%PDF-'&&bytes.toString('base64')===document.rawPdfBase64&&createHash('sha256').update(bytes).digest('hex')===document.sha256;
- receivedMethodologyBodies.set(document,{rawPdfBase64:document.rawPdfBase64,sha256:document.sha256,bytes:document.bytes,valid});return valid;
+ receivedMethodologyBodies.set(document,{rawPdfBase64:document.rawPdfBase64,rawText:document.rawText,sha256:document.sha256,bytes:document.bytes,parsed,valid});return valid;
 }
 /** Bind eligibility to the actual received city law, rather than its URL alone.
  * Receipt/generation clocks are evidence availability, never a new law identity. */
@@ -76,12 +78,16 @@ export function weatherIndexContractScope(contract,evidence,now){
 export function indexConfiguration(packet,city,eventTime,availableAt){
  if(!Object.hasOwn(INDEX_CITIES,city))return null;
  const rows=packet?.calibrations?.calibrations;
- if(packet?.calibrations?.city!==city||packet.calibrations.units!=='celsius'||!Array.isArray(rows))return null;
+ if(packet?.calibrationSource!==`https://api.elections.kalshi.com/trade-api/v2/live_data/weather/${city}/calibrations`||packet.calibrations?.city!==city||packet.calibrations.units!=='celsius'||!Array.isArray(rows))return null;
  const c=rows.filter(c=>Number.isFinite(c.effective_at_ms)&&c.effective_at_ms<=eventTime&&Number.isFinite(c.published_at_ms)&&c.published_at_ms<=availableAt).sort((a,b)=>b.effective_at_ms-a.effective_at_ms)[0];
  const document=packet?.methodology;if(!receivedIndexMethodology(document,city,availableAt))return null;
- const prefix=city+'-temperature-v'+document.configurationVersion,version=c?.config_version;
- if(!c||typeof version!=='string'||!(version===prefix||version.startsWith(prefix+'-cal-')&&/^[0-9]{8}$/.test(version.slice((prefix+'-cal-').length)))||!Number.isFinite(c.city_reference_c)||!Array.isArray(c.stations)||!c.stations.length)return null;
+ const certified=receivedMethodologyBodies.get(document).parsed;
+ // Configuration identifiers name prospective operational records. Section 6
+ // permits offset refreshes; Section 9 reserves fixed-parameter changes for
+ // certified amendments. An identifier's prefix is not a methodology version.
+ if(!c||c.published_at_ms>c.effective_at_ms||typeof c.config_version!=='string'||!c.config_version.length||!Number.isFinite(c.city_reference_c)||!Array.isArray(c.stations)||c.stations.length!==certified.stations.length)return null;
  if(c.stations.some(s=>!/^[A-Z0-9]{4}1M$/.test(s.station_id)||!Number.isFinite(s.weight)||s.weight<=0||!Number.isFinite(s.offset_c))||new Set(c.stations.map(s=>s.station_id)).size!==c.stations.length)return null;
+ if(c.stations.some(s=>!certified.stations.some(member=>member.stationId===s.station_id&&Math.abs(member.weight-s.weight)<1e-8)))return null;
  const total=c.stations.reduce((sum,s)=>sum+s.weight,0),reference=c.stations.reduce((sum,s)=>sum+s.weight*s.offset_c,0);
  return document.quorum.members<=c.stations.length&&Math.abs(total-1)<1e-8&&Math.abs(reference-c.city_reference_c)<1e-8?c:null;
 }
@@ -118,15 +124,15 @@ export async function collectWeatherIndexEvidence(cities,{now=Date.now(),fetchIm
    catch(e){errors.push({source:'Kalshi-weather-index',city,kind:key,error:e.message});}
   }
   const current=packet.calibrations?.calibrations?.filter(c=>c.effective_at_ms<=now&&c.published_at_ms<=now).sort((a,b)=>b.effective_at_ms-a.effective_at_ms)[0];
-  const cached=methodologies[city],prefix=city+'-temperature-v'+cached?.configurationVersion;
-  const reusable=receivedIndexMethodology(cached,city,Date.now())&&(current?.config_version===prefix||current?.config_version?.startsWith(prefix+'-cal-'));
+  const cached=methodologies[city],reuseAt=Date.now();
+  const reusable=Boolean(indexConfiguration({...packet,methodology:cached},city,reuseAt,reuseAt));
   try{packet.methodology=reusable?cached:await indexMethodology(city,fetchImpl);}catch(e){errors.push({source:'Kalshi-weather-index-methodology',city,error:e.message});}
   packet.methodologyReused=reusable;packet.retrievedAt=new Date().toISOString();
-  const expected=packet.methodology?.configurationVersion??null,reported=/-temperature-v([0-9]+\.[0-9]+)/.exec(current?.config_version??'')?.[1]??null;
-  const support=cell('index:'+city,'current-methodology-version',{version:expected},{for:expected?[{source:packet.methodology.url,sha256:packet.methodology.sha256,version:expected}]:[],against:expected&&reported&&reported!==expected?[{source:packet.calibrationSource,version:reported,configVersion:current.config_version}]:[]});
   const validationAt=Date.now();
-  packet.validation={at:new Date(validationAt).toISOString(),expectedVersion:expected,reportedVersion:reported,configVersion:current?.config_version??null,compatible:Boolean(indexConfiguration(packet,city,validationAt,validationAt)),conflicted:Boolean(support.for.length&&support.against.length),address:address(support),cell:support};
-  if(!packet.validation.compatible)packet.blocker=!packet.methodology?'certified index methodology is unread':reported&&reported!==expected?`contract configuration v${expected} conflicts with published configuration v${reported}`:'no usable published index configuration';
+  const compatible=Boolean(indexConfiguration(packet,city,validationAt,validationAt));
+  const support=cell('index:'+city,'published-configuration-within-certified-methodology',{configVersion:current?.config_version??null},{for:compatible?[{source:packet.methodology.url,sha256:packet.methodology.sha256,configurationSource:packet.calibrationSource,configVersion:current.config_version}]:[],against:packet.methodology&&current&&!compatible?[{source:packet.calibrationSource,configVersion:current.config_version,reason:'configuration is not prospective or differs from certified membership/base weights or index arithmetic'}]:[]});
+  packet.validation={at:new Date(validationAt).toISOString(),initialConfigurationId:packet.methodology?city+'-temperature-v'+packet.methodology.configurationVersion:null,configVersion:current?.config_version??null,compatible,conflicted:Boolean(support.against.length),address:address(support),cell:support};
+  if(!compatible)packet.blocker=!packet.methodology?'certified index methodology is unread':'published index configuration is unavailable, nonprospective, or incompatible with certified membership/base weights or arithmetic';
  }));
  return {cities:packets,errors};
 }

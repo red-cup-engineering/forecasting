@@ -127,7 +127,21 @@ Sources: [Kalshi public API](https://docs.kalshi.com/getting_started/quick_start
 
 NOAA NBH supplies 25 hourly TMP/TSD points alongside the existing three-hour NBS, LAMP and NWS products. TSD is converted from standard deviation to Student-t scale. Index uncertainty uses a common station shock without independence-based narrowing; sensor proxies and the optional recent-reading innovation with uncalibrated three-hour decay remain explicit experiments. Contract probabilities preserve 0.01F rounding rather than daily integer rounding. Verification uses the latest eligible canonical index minute at/before the target, within 60 minutes, and checks local receipt deadlines, quorum and the configuration available at forecast time. Backfilled and late readings remain evidence but cannot become canonical truth.
 
-On October 7, Chicago's current CHIMETROWINDEX contract requires v1.1 while the public calibration endpoint supplies v1.0. Both witnesses are retained in a contradictory SignCell; dependent forecasts are blocked until the exact contract configuration is available. Original daily operations remain in place. See `data/records/2026-10-07-hourly-weather-index` for frozen source fixtures and checks.
+Certified index methodology and operational configuration identifiers are distinct.
+All four original documents authorize prospective offset refreshes as new published
+configuration records under Section 6; Section 9 calls those updates operation,
+not amendments. The certified PDF's roster, base weights, quorum, 300-second
+receipt deadline and precision bind the index. A selected original city API
+configuration must retain that roster and those weights, contain finite offsets
+and their weighted city reference, and be published no later than its effective
+time and available before use. Its actual identifier and vector remain in the
+source law and calibration cohort; identifier prefixes do not establish a conflict.
+Chicago's retained seven-record history begins with the certified initial vector
+and preserves its roster and weights through the prospective weekly updates,
+although its operational identifiers retain v1.0 and the PDF initial identifier
+is v1.1. Those identifiers are preserved without relabeling. Roster, base-weight
+or other fixed-parameter changes require certified amendment authority. Original
+source fixtures remain under `data/records/2026-10-07-joint-weather-index`.
 
 ## Supplemental family ensembles and calibration diagnostics
 
