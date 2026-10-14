@@ -140,10 +140,31 @@ export async function readWeatherIndexSources({root=weatherRoot()}={}) {
  if(pointer.surface&&pointer.surface.sourceEvidenceId!==pointer.evidenceId)throw new TypeError('hourly surface must retain its original source archive');
  return {cities:record.indices,errors:record.errors??[],surface:pointer.surface??null,evidenceId:pointer.evidenceId,at:record.at};
 }
+// Release the full latest/science records between reads. These are transient
+// projections of the original hash-bound records, not another persisted index.
+async function hourlyProjectionContext(root){
+ const latest=await read(join(root,'latest.json'),{});
+ return {stationEvidenceId:latest.forecasts?.find(row=>/^[a-f0-9]{64}$/.test(row.evidenceId??''))?.evidenceId??null,
+  contracts:(latest.contracts??[]).filter(c=>c.binding?.kind==='index-at'),
+  quotes:new Map((latest.forecasts??[]).filter(row=>row.family==='hourly-temperature').map(row=>[row.ticker,{mid:row.mid,marketObservedAt:row.marketObservedAt}])),
+ };
+}
+async function hourlyStationEvidence(root,evidenceId,indices){
+ const {record:cached}=await readWeatherSourceRecord({root,file:'evidence/'+evidenceId+'.json.gz'});
+ const stations=new Set(Object.values(indices).flatMap(packet=>(packet.calibrations?.calibrations??[]).flatMap(config=>(config.stations??[]).map(s=>s.station_id.slice(0,4)))));
+ const selected=rows=>Object.fromEntries([...stations].filter(station=>rows?.[station]).map(station=>[station,rows[station]]));
+ const guidance=packet=>packet?{runtime:packet.runtime,source:packet.source,stations:selected(packet.stations)}:null;
+ const ensemble=cached.ecmwfEnsemble;
+ return {indices,guidance:guidance(cached.guidance),hourlyGuidance:guidance(cached.hourlyGuidance),lamp:guidance(cached.lamp),local:selected(cached.local),
+  ecmwfEnsemble:ensemble?{runtime:ensemble.runtime,availableAt:ensemble.availableAt,sourceUrl:ensemble.sourceUrl,projection:ensemble.projection,stations:selected(ensemble.stations)}:null,
+  science:cached.science?{at:cached.science.at,parameters:Object.fromEntries(Object.entries(cached.science.parameters??{}).filter(([key])=>key.startsWith('index:'))),
+   forecasts:(cached.science.forecasts??[]).filter(row=>row.station?.startsWith('index:'))}:null,
+ };
+}
 export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
  const previous=await readWeatherIndexSources({root});
  const fresh=await collectWeatherIndexEvidence(Object.keys(INDEX_CITIES),{now,fetchImpl,methodologies:Object.fromEntries(Object.entries(previous.cities).map(([city,packet])=>[city,packet.methodology]))});
- const latest=await read(join(root,'latest.json'),{}),stationEvidenceId=latest.forecasts?.find(row=>/^[a-f0-9]{64}$/.test(row.evidenceId??''))?.evidenceId??null;
+ const context=await hourlyProjectionContext(root),stationEvidenceId=context.stationEvidenceId;
  const packet={kind:'kalshi-weather-index-source',at:new Date().toISOString(),indices:fresh.cities,errors:fresh.errors,stationEvidenceId};
  await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
  const evidenceId=digest(packet);await archivePacket(join(root,'evidence',evidenceId+'.json.gz'),packet);
@@ -152,11 +173,10 @@ export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.no
  await atomic(join(root,'index-source.json'),{at:packet.at,evidenceId,surface:null});
  let surface=null,projectionError=null;
  try{if(stationEvidenceId){
-  const {record:cached}=await readWeatherSourceRecord({root,file:'evidence/'+stationEvidenceId+'.json.gz'});
-  const evidence={...cached,indices:packet.indices},decisionNow=Date.now(),grades=await read(join(root,'grades.json'),{}),rows=[];
-  const contracts=(latest.contracts??[]).filter(c=>c.binding?.kind==='index-at').map(c=>weatherIndexContractScope(c,evidence,decisionNow));
+  const evidence=await hourlyStationEvidence(root,stationEvidenceId,packet.indices),decisionNow=Date.now(),grades=await read(join(root,'grades.json'),{}),rows=[];
+  const contracts=context.contracts.map(c=>weatherIndexContractScope(c,evidence,decisionNow));
   for(const c of contracts){
-   const old=latest.forecasts?.find(row=>row.ticker===c.ticker),s=stage(c,decisionNow);
+   const old=context.quotes.get(c.ticker),s=stage(c,decisionNow);
    // The market anchor retains its original availability window; an absent
    // anchor is an admitted-model-only projection supported by fuseForecast.
    const midpoint=old&&decisionNow>=Date.parse(old.marketObservedAt)&&decisionNow-Date.parse(old.marketObservedAt)<=20*60000?old.mid:null;

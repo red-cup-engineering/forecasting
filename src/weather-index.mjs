@@ -63,11 +63,15 @@ function receivedIndexMethodology(document,city,availableAt){
 export function weatherIndexContractScope(contract,evidence,now){
  const b=contract.binding;if(b?.kind!=='index-at')return contract;
  const packet=evidence.indices?.[b.city],configuration=indexConfiguration(packet,b.city,Date.parse(b.targetTime),now);
- if(!configuration)return {...contract,blocker:packet?.blocker??'hourly index methodology or target configuration is unread or incompatible'};
+ if(!configuration){
+  const indexMethodologyBlocker=packet?.blocker??'hourly index methodology or target configuration is unread or incompatible';
+  const independentBlocker=contract.blocker&&contract.blocker!==contract.indexMethodologyBlocker?contract.blocker:null;
+  return {...contract,indexMethodologyBlocker,blocker:independentBlocker??indexMethodologyBlocker};
+ }
  const document=packet.methodology,law={city:b.city,methodologyBodyNI:'ni:///sha-256;'+Buffer.from(document.sha256,'hex').toString('base64url'),methodologySha256:document.sha256,configurationVersion:configuration.config_version,cityReferenceC:configuration.city_reference_c,stations:configuration.stations.map(s=>({stationId:s.station_id,weight:s.weight,offsetC:s.offset_c})).sort((a,b)=>a.stationId.localeCompare(b.stationId)),quorum:{members:document.quorum.members,weight:document.quorum.weight},precisionF:document.precisionF,roundingTieRule:document.roundingTieRule};
  const lawId=createHash('sha256').update(JSON.stringify(law)).digest('hex'),baseRuleKey=contract.indexLaw?.baseRuleKey??contract.ruleKey;
  const ruleKey=createHash('sha256').update(JSON.stringify({baseRuleKey,indexLaw:lawId})).digest('hex');
- return {...contract,ruleKey,blocker:null,indexLaw:{id:lawId,baseRuleKey,...law}};
+ return {...contract,ruleKey,indexMethodologyBlocker:null,blocker:contract.blocker===contract.indexMethodologyBlocker?null:contract.blocker??null,indexLaw:{id:lawId,baseRuleKey,...law}};
 }
 export function indexConfiguration(packet,city,eventTime,availableAt){
  if(!Object.hasOwn(INDEX_CITIES,city))return null;
