@@ -1,8 +1,37 @@
-/** Past-only forecast-family adaptation over the existing paired daily outcome carrier. */
+/** Past-only matched-date switching-experts adaptation (Herbster–Warmuth fixed-share).\n * Physical forecasts remain distinct from market settlement and execution. */
 import {createHash} from 'node:crypto';
 import {makeTemperaturePool} from './weather-ensemble.mjs';
 const hash=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
-export const FAMILY_LEARNING_PROTOCOL=Object.freeze({id:'paired-family-ewa-v1',windowDays:14,priorDays:10,etaPerF:1,uniformShare:.1});
+/** Scientific identity: Lenticule Climate Science 2026-10-14
+ * source-bound-hourly-temperature-forecast-science, section 3.
+ * One matched TARGET DATE is one score update; it is never 5-minute pseudo-replication.
+ */
+export const FAMILY_LEARNING_PROTOCOL=Object.freeze({id:'paired-family-fixed-share-v2',windowDays:14,etaPerF:1,uniformShare:.1});
+/** Fixed-share online expert update; CRPS losses may be expressed relative to
+ * the same dated comparator because a common additive loss cancels.
+ * 'days' must be strictly ascending, individually source-admitted matched dates.
+ * This operation is a forecast learner, not a calibrated venue probability.
+ */
+export function fixedShareFamilyWeights(families,days,{etaPerF=FAMILY_LEARNING_PROTOCOL.etaPerF,uniformShare=FAMILY_LEARNING_PROTOCOL.uniformShare}={}){
+ if(!Array.isArray(families)||families.length<2||new Set(families).size!==families.length||
+    families.some(f=>typeof f!=='string'||!f)||!Array.isArray(days)||
+    !Number.isFinite(etaPerF)||etaPerF<0||!Number.isFinite(uniformShare)||uniformShare<0||uniformShare>1)
+   throw new TypeError('distinct forecast families, matched days, nonnegative learning rate and switching share required');
+ const size=families.length,base=1/size;
+ let weights=families.map(()=>base),previousDate='';
+ for(const day of days){
+  if(!day||!/^\d{4}-\d{2}-\d{2}$/.test(day.date??'')||day.date<=previousDate||
+     !day.losses||typeof day.losses!=='object'||Object.keys(day.losses).length!==size||
+     families.some(f=>!Number.isFinite(day.losses[f])||!Number.isFinite(etaPerF*day.losses[f])))
+    throw new TypeError('one complete, finite, unique chronological score per family and target date required');
+  previousDate=day.date;
+  const logWeights=families.map((f,i)=>Math.log(weights[i])-etaPerF*day.losses[f]);
+  const peak=Math.max(...logWeights),unnormalized=logWeights.map(v=>Math.exp(v-peak));
+  const total=unnormalized.reduce((a,b)=>a+b,0);
+  weights=unnormalized.map(v=>(1-uniformShare)*v/total+uniformShare*base);
+ }
+ return Object.fromEntries(families.map((f,i)=>[f,weights[i]]));
+}
 /** Uniform initialization; matched completed outcomes, including currently received partial-day means. */
 export function adaptiveTemperaturePool(base,state,{now=Date.now()}={}){
  const components=base.mixture?.components;
@@ -17,10 +46,10 @@ export function adaptiveTemperaturePool(base,state,{now=Date.now()}={}){
   const day=byDay.get(row.date)??new Map();if(day.has(c.family)){day.set(c.family,null);}else day.set(c.family,row);byDay.set(row.date,day);
  }
  const matched=[...byDay].filter(([,day])=>families.every(f=>day.get(f))&&new Set(families.map(f=>day.get(f).n)).size===1).sort(([a],[b])=>a.localeCompare(b));
- const gains=Object.fromEntries(families.map(f=>[f,matched.reduce((s,[,day])=>s+day.get(f).gainSum/day.get(f).n,0)/(FAMILY_LEARNING_PROTOCOL.priorDays+matched.length)]));
- const scores=families.map(f=>-FAMILY_LEARNING_PROTOCOL.etaPerF*gains[f]),max=Math.max(...scores),total=scores.reduce((s,x)=>s+Math.exp(x-max),0);
- const weights=Object.fromEntries(families.map((f,i)=>[f,FAMILY_LEARNING_PROTOCOL.uniformShare/families.length+(1-FAMILY_LEARNING_PROTOCOL.uniformShare)*Math.exp(scores[i]-max)/total]));
+ const dailyLosses=matched.map(([date,day])=>({date,losses:Object.fromEntries(families.map(f=>[f,day.get(f).gainSum/day.get(f).n]))}));
+ const gains=Object.fromEntries(families.map(f=>[f,dailyLosses.reduce((s,day)=>s+day.losses[f],0)/Math.max(1,dailyLosses.length)]));
+ const weights=fixedShareFamilyWeights(families,dailyLosses);
  const pool=makeTemperaturePool(components,{familyWeights:weights});if(!pool)return null;
  const witnesses=matched.map(([date,day])=>({date,samples:day.get(families[0]).n,components:families.map(f=>{const r=day.get(f);return {family:f,model:r.component,gainSumF:r.gainSum,scoreAvailableAt:r.scoreAvailableAt??state.at,sourceEvidenceId:r.sourceEvidenceId??null};})}));
- return {...base,...pool,model:base.model+'/paired-family-ewa-v1',tradeEligible:false,comparators:[{...base,comparators:undefined}],learning:{...FAMILY_LEARNING_PROTOCOL,weights,regularizedMeanComponentExcessCrpsF:gains,matchedDates:matched.length,matchedSamples:matched.reduce((s,[,day])=>s+day.get(families[0]).n,0),fitAvailableAt:new Date(now).toISOString(),outcomeReceiptBoundAt:Number.isFinite(received)&&received<=now?state.at:null,sourceDigest:hash(witnesses),witnesses,status:'forward experiment; partial-day updates remain one date contribution; fixed learning rate, prior and window untrained; no calibration, regret-bound, market-edge or profit claim'},details:{...base.details,...pool,mean:pool.meanF,scale:pool.scaleF,status:'past-only paired-family exponential weights; physical and market skill unproven'}};
+ return {...base,...pool,model:base.model+'/paired-family-fixed-share-v2',tradeEligible:false,comparators:[{...base,comparators:undefined}],learning:{...FAMILY_LEARNING_PROTOCOL,weights,regularizedMeanComponentExcessCrpsF:gains,matchedDates:matched.length,matchedSamples:matched.reduce((s,[,day])=>s+day.get(families[0]).n,0),fitAvailableAt:new Date(now).toISOString(),outcomeReceiptBoundAt:Number.isFinite(received)&&received<=now?state.at:null,sourceDigest:hash(witnesses),witnesses,status:'forward fixed-share experiment; matched scored dates only; eta and switching share untrained; no source, calibration, regret, market-edge or profit claim'},details:{...base.details,...pool,mean:pool.meanF,scale:pool.scaleF,status:'past-only scored-date fixed-share mixture; physical and market skill unproven'}};
 }
