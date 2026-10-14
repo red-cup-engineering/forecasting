@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { admitCanonicalJson, JSON_RESOURCE_ENVELOPE } from '@red-cup-engineering/json-services-section/canonical-json';
 import { verifyNiUri } from '@red-cup-engineering/uri-services-section/ni-uri';
-import { parseMetar, latestMetar, readNwsMetarSnapshot, admitNwsMetarSnapshot, METAR_FEED } from '../src/station-observations.mjs';
+import { parseMetar, latestMetar, readNwsMetarSnapshot, admitNwsMetarSnapshot, asosWholeCelsiusPreimage, METAR_FEED } from '../src/station-observations.mjs';
 
 const report = 'KBOS 131710Z 12005KT 7SM OVC008 13/12 A3002 RMK AO2 CIG 005V012 T01330122';
 const bulletin = `2026/10/13 17:10\n${report}\n`;
@@ -130,4 +130,32 @@ test('pure parser retains measured zeros and valid month rollover without invent
   assert.equal(parseMetar('KBOS 131710Z M01/M01 RMK T10001000', Date.parse('2026-10-13T17:10:00Z')).temperatureF, 32);
   for (const raw of ['KBOS 002359Z 00/00', 'KBOS 282460Z 00/00', 'KBOS 312359Z 00/00', null]) assert.equal(parseMetar(raw, issued), null);
   assert.equal(parseMetar(report, NaN), null);
+});
+
+test('ASOS conditional whole-C observation maps to exact whole-F preimage intervals, not naive conversion',()=>{
+ assert.deepEqual(asosWholeCelsiusPreimage(10).integerF,[50]);
+ assert.deepEqual(asosWholeCelsiusPreimage(11).integerF,[51,52]);
+ assert.deepEqual(asosWholeCelsiusPreimage(13).integerF,[55,56]);
+ assert.deepEqual(asosWholeCelsiusPreimage(-1).integerF,[30,31]);
+ assert.deepEqual([asosWholeCelsiusPreimage(11).lowerF,asosWholeCelsiusPreimage(11).upperFExclusive],[50.5,52.5]);
+});
+
+test('conditional inversion is exhaustive across cold and warm Celsius temperatures',()=>{
+ const roundC=f=>Math.floor((f-32)*5/9+0.5);
+ for(let c=-60;c<=70;c++){
+  const got=asosWholeCelsiusPreimage(c);
+  const brute=Array.from({length:451},(_,i)=>i-200).filter(f=>roundC(f)===c);
+  assert.deepEqual(got.integerF,brute,`C=${c}`);
+  assert.equal(got.upperFExclusive-got.lowerF,brute.length);
+  assert.ok(brute.every(f=>f>=got.lowerF&&f<got.upperFExclusive));
+ }
+});
+
+test('quantization law refuses fractional and unbounded inputs without changing ordinary METAR parser',()=>{
+ for(const c of [NaN,Infinity,10.1,'11',null,undefined,201,-201])
+  assert.throws(()=>asosWholeCelsiusPreimage(c),TypeError);
+ const report=parseMetar('KBOS 131710Z 11/05',Date.parse('2026-10-13T17:10:00Z'));
+ assert.equal(report.temperatureF,51.8);
+ assert.equal(report.precisionF,0.9);
+ assert.equal(report.integerF,undefined,'ordinary reports are not silently promoted to certified ASOS preimages');
 });
