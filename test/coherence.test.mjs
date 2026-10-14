@@ -29,6 +29,36 @@ test('bracket ladder whose asks sum below one is a Dutch book; wider asks glue',
   assert.notEqual(assessFamily(ladderFamily(ladder(wide))).verdict, 'dutch-book');
 });
 
+test('hourly Synoptic ladder has nested payout events, not a MECE sum of YES asks', () => {
+  // The certified source identity must be checked before building this family;
+  // these two markets are stipulated to share ONE settled index and target minute.
+  const hourly = (lowBid, lowAsk, highBid, highAsk) => {
+    const ev = { event_ticker: 'KXTEMPMIAH-26OCT1414', series_ticker: 'KXTEMPMIAH',
+      markets: [
+        mkt('KXTEMPMIAH-26OCT1414-T74.99', 'greater', 74.99, null, lowBid, lowAsk),
+        mkt('KXTEMPMIAH-26OCT1414-T75.99', 'greater', 75.99, null, highBid, highAsk),
+      ] };
+    const [[subject, group]] = ladderGroups(ev);
+    return ladderFamily(buildLadder(ev, subject, group, { fee_multiplier: 1 }));
+  };
+  const inverted = hourly('0.53','0.57','0.70','0.72');
+  assert.equal(inverted.nCells, 3, 'one variable split into three exclusive elementary intervals');
+  const [lowerStrike, higherStrike] = inverted.markets;
+  assert.ok(higherStrike.cells.length > 0);
+  assert.ok(higherStrike.cells.every(cell => lowerStrike.cells.includes(cell)),
+    'higher-temperature YES payout must be a subset of lower-temperature YES payout');
+  assert.notDeepEqual(lowerStrike.cells, higherStrike.cells,
+    'the two YES contracts are NOT disjoint or exhaustive outcome brackets');
+  const assessed = assessFamily(inverted);
+  assert.equal(assessed.verdict, 'dutch-book', 'buy low YES and high NO when the upper threshold costs more');
+  assert.ok(assessed.portfolio?.guaranteed > 0, 'integer portfolio has a positive worst-state payoff after exact fees');
+  const coherent = hourly('0.58','0.60','0.45','0.50');
+  assert.notEqual(assessFamily(coherent).verdict, 'dutch-book',
+    'a coherent declining threshold ladder must not manufacture an arbitrage from the sum of asks');
+  // This is payout algebra only: independent source-law receiving and simultaneous
+  // executable fills are mandatory before any trading claim.
+});
+
 test('cumulative >=X prices must be monotone', () => {
   const a = assessFamily(ladderFamily(ladder([mkt('KXHIGHX-26OCT04-T70', 'greater', 70, null, '0.60', '0.62'), mkt('KXHIGHX-26OCT04-T75', 'greater', 75, null, '0.70', '0.72')])));
   assert.equal(a.verdict, 'dutch-book');
