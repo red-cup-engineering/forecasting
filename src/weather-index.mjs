@@ -216,8 +216,8 @@ export function priceWeatherIndex(c,e,now){
  });
  if(Number.isFinite(Date.parse(e.science?.at))&&Date.parse(e.science.at)<=now){
   for(const r of e.science.forecasts??[]){
-   if(!r.model?.endsWith('/paired-family-ewa-v1')||r.station!==b.station||Date.parse(r.validTime)!==target||r.horizon!==horizon||!Number.isFinite(Date.parse(r.availableAt))||Date.parse(r.availableAt)>now||!Number.isFinite(Date.parse(r.learning?.fitAvailableAt))||Date.parse(r.learning.fitAvailableAt)>Date.parse(r.availableAt))continue;
-   const base=distributions.find(d=>d.model===r.model.slice(0,-'/paired-family-ewa-v1'.length)&&d.composition===r.composition&&d.details?.configVersion===r.details?.configVersion);if(!base)continue;
+   if(!r.model?.endsWith('/paired-family-fixed-share-v2')||r.station!==b.station||Date.parse(r.validTime)!==target||r.horizon!==horizon||!Number.isFinite(Date.parse(r.availableAt))||Date.parse(r.availableAt)>now||!Number.isFinite(Date.parse(r.learning?.fitAvailableAt))||Date.parse(r.learning.fitAvailableAt)>Date.parse(r.availableAt))continue;
+   const base=distributions.find(d=>d.model===r.model.slice(0,-'/paired-family-fixed-share-v2'.length)&&d.composition===r.composition&&d.details?.configVersion===r.details?.configVersion);if(!base)continue;
    distributions.push({...r,details:{...r.details,learning:r.learning,frozenScienceAvailableAt:r.availableAt,tradeEligible:false}});
   }
  }
