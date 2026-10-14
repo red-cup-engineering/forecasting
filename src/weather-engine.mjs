@@ -152,7 +152,7 @@ async function hourlyProjectionContext(root){
  * credentials and never places orders. A stale listing cannot masquerade as
  * a fresh contract or market midpoint.
  */
-export async function readHourlyIndexMarketCensus({client=createKalshiClient({credentials:null,timeoutMs:8000}),now=Date.now()}={}){
+export async function readHourlyIndexMarketCensus({client=createKalshiClient({credentials:null,timeoutMs:8000}),now=Date.now(),clock=()=>Date.now()}={}){
  if(!Number.isFinite(now))throw new TypeError('hourly index census needs a finite observation clock');
  const contracts=[],errors=[],coverage=[];
  await mapLimit(Object.entries(INDEX_CITIES),2,async ([city,info])=>{
@@ -164,7 +164,7 @@ export async function readHourlyIndexMarketCensus({client=createKalshiClient({cr
    const markets=await client.getMarkets({series_ticker:info.series,status:'open'});
    if(!Array.isArray(markets)||markets.length>4000)
      throw new TypeError('complete bounded hourly market listing required');
-   const marketObservedAt=new Date().toISOString(),received=Date.parse(marketObservedAt);
+   const marketObservedAt=new Date(clock()).toISOString(),received=Date.parse(marketObservedAt);
    const seen=new Set();let accepted=0,refused=0;
    for(const market of markets){
     if(!market||typeof market.ticker!=='string'||seen.has(market.ticker)){
