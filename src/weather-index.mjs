@@ -131,7 +131,7 @@ export async function collectWeatherIndexEvidence(cities,{now=Date.now(),fetchIm
   const validationAt=Date.now();
   const compatible=Boolean(indexConfiguration(packet,city,validationAt,validationAt));
   const support=cell('index:'+city,'published-configuration-within-certified-methodology',{configVersion:current?.config_version??null},{for:compatible?[{source:packet.methodology.url,sha256:packet.methodology.sha256,configurationSource:packet.calibrationSource,configVersion:current.config_version}]:[],against:packet.methodology&&current&&!compatible?[{source:packet.calibrationSource,configVersion:current.config_version,reason:'configuration is not prospective or differs from certified membership/base weights or index arithmetic'}]:[]});
-  packet.validation={at:new Date(validationAt).toISOString(),initialConfigurationId:packet.methodology?city+'-temperature-v'+packet.methodology.configurationVersion:null,configVersion:current?.config_version??null,compatible,conflicted:Boolean(support.against.length),address:address(support),cell:support};
+  packet.validation={at:new Date(validationAt).toISOString(),initialConfigurationId:packet.methodology?city+'-temperature-v'+packet.methodology.configurationVersion:null,configVersion:current?.config_version??null,compatible,conflicted:Boolean(support.for.length&&support.against.length),address:address(support),cell:support};
   if(!compatible)packet.blocker=!packet.methodology?'certified index methodology is unread':'published index configuration is unavailable, nonprospective, or incompatible with certified membership/base weights or arithmetic';
  }));
  return {cities:packets,errors};
