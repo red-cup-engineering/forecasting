@@ -184,7 +184,7 @@ export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.no
    rows.push({ticker:c.ticker,eventTicker:c.event_ticker,family:c.family,source:c.source,ruleKey:c.ruleKey,rulesHash:c.rulesHash,targetDate:c.binding.targetDate,closeTime:c.close_time,station:c.binding.station,blocker:c.blocker,evidenceId:stationEvidenceId,indexSourceEvidenceId:evidenceId,marketObservedAt:midpoint===null?null:old.marketObservedAt,models,surface:fuseForecast({mid:midpoint,models})});
   }
   surface={...forecastSurface(rows,contracts,new Date(decisionNow).toISOString()),sourceEvidenceId:evidenceId,stationEvidenceId,projection:'fresh original index with previously received station guidance; original input age checks retained'};
-  retainHourlyWindow(surface,previous.surface,rows,contracts,grades,decisionNow);
+  retainHourlyWindow(surface,previous.surface,contracts,grades,decisionNow);
   await atomic(join(root,'index-source.json'),{at:packet.at,evidenceId,surface});
  }}catch(error){projectionError=error.message;}
  return {at:packet.at,evidenceId,projectionError,cities:Object.keys(packet.indices),errors:packet.errors,conflicts:Object.entries(packet.indices).filter(([_,p])=>p.validation?.conflicted).map(([city])=>city),surfaceContracts:surface?.contracts.length??0,orderEffect:false};
@@ -464,14 +464,14 @@ export function forecastSurface(rows,contracts,at){
 /** The measurement closes forecasting, not the still-open contract. Preserve
  * original qualified knowledge on its original clock; never turn a pending
  * index into canonical truth or relabel a changed contract/calibration. */
-function retainHourlyWindow(surface,previous,rows,contracts,grades,now){
+function retainHourlyWindow(surface,previous,contracts,grades,now){
   if(previous?.version!==SURFACE_VERSION)return;
-  const fresh=new Set(surface.contracts.map(row=>row.ticker)),currentRows=new Map(rows.map(row=>[row.ticker,row]));
+  const fresh=new Set(surface.contracts.map(row=>row.ticker));
   const scope=new Map(contracts.map(contract=>[contract.ticker,contract]));
   for(const original of previous.contracts??[]){
-    const c=scope.get(original.ticker),current=currentRows.get(original.ticker);
+    const c=scope.get(original.ticker);
     const target=Date.parse(c?.binding?.targetTime),close=Date.parse(c?.close_time),sourceAt=Date.parse(original.sourceSurfaceAt);
-    if(fresh.has(original.ticker)||!c||c.blocker||c.binding?.kind!=='index-at'||current?.models?.length
+    if(fresh.has(original.ticker)||!c||c.blocker||c.binding?.kind!=='index-at'
       ||!Number.isFinite(target)||!Number.isFinite(close)||now<target||now>=close||close>target+5*60000
       ||!Number.isFinite(sourceAt)||sourceAt>target||now<sourceAt||now-sourceAt>20*60000
       ||original.ruleKey!==c.ruleKey||original.rulesHash!==c.rulesHash||original.closeTime!==c.close_time||original.targetTime!==c.binding.targetTime
