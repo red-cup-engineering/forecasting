@@ -39,6 +39,20 @@ export function climateDayStart(date, timeZone) {
   return new Date(Date.parse(`${date}T00:00:00Z`) - standard * 60_000);
 }
 
+/** The date whose standard-time climate interval contains the observation instant. */
+export function climateDate(timeZone, at = Date.now()) {
+  const instant = new Date(at);
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+    timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(instant).map(part => [part.type, part.value]));
+  const civilDate = `${parts.year}-${parts.month}-${parts.day}`;
+  // During daylight time, civil midnight begins the previous climate day's last hour.
+  return instant.getTime() < climateDayStart(civilDate, timeZone).getTime()
+    ? new Date(Date.parse(`${civilDate}T00:00:00Z`) - 86400_000).toISOString().slice(0, 10)
+    : civilDate;
+}
+
+
 /**
  * The whole-degree bounds the readings force on the report: its high is at least the round of the highest
  * lower end of any reading (each widened by its precision), its low at most the round of the lowest upper end.
