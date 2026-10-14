@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { admitCanonicalJson, JSON_RESOURCE_ENVELOPE } from '@red-cup-engineering/json-services-section/canonical-json';
 import { verifyNiUri } from '@red-cup-engineering/uri-services-section/ni-uri';
-import { parseMetar, latestMetar, readNwsMetarSnapshot, admitNwsMetarSnapshot, asosWholeCelsiusPreimage, METAR_FEED } from '../src/station-observations.mjs';
+import { parseMetar, latestMetar, readNwsMetarSnapshot, admitNwsMetarSnapshot, asosWholeCelsiusPreimage, wholeCelsiusTemperatureInterval, preciseBounds, withMetar, METAR_FEED } from '../src/station-observations.mjs';
 
 const report = 'KBOS 131710Z 12005KT 7SM OVC008 13/12 A3002 RMK AO2 CIG 005V012 T01330122';
 const bulletin = `2026/10/13 17:10\n${report}\n`;
@@ -156,6 +156,42 @@ test('quantization law refuses fractional and unbounded inputs without changing 
   assert.throws(()=>asosWholeCelsiusPreimage(c),TypeError);
  const report=parseMetar('KBOS 131710Z 11/05',Date.parse('2026-10-13T17:10:00Z'));
  assert.equal(report.temperatureF,51.8);
- assert.equal(report.precisionF,0.9);
+ assert.ok(report.precisionF>=1.3-1e-12,'whole-F preimage can extend below 0.9F half-width');
  assert.equal(report.integerF,undefined,'ordinary reports are not silently promoted to certified ASOS preimages');
+});
+
+test('coarse whole Celsius observation conservatively contains two possible conversion paths',()=>{
+ const p=wholeCelsiusTemperatureInterval(11);
+ assert.equal(p.lowerF,50.5);
+ assert.ok(Math.abs(p.upperFExclusive-52.7)<1e-12);
+ const q=wholeCelsiusTemperatureInterval(10);
+ assert.ok(q.lowerF<49.2&&q.upperFExclusive>50.8,'direct Celsius rounding is not narrowed to an assumed firmware law');
+ for(const c of [-40,-1,0,11,22,60]){
+  const p=wholeCelsiusTemperatureInterval(c),f=c*9/5+32;
+  assert.ok(p.lowerF<=f-.9+1e-12&&p.upperFExclusive>=f+.9-1e-12);
+  const a=asosWholeCelsiusPreimage(c);
+  assert.ok(p.lowerF<=a.lowerF&&p.upperFExclusive>=a.upperFExclusive);
+ }
+});
+
+test('station extremum uses asymmetric whole-C intervals instead of an unsafe 0.9F half-width',()=>{
+ const report=parseMetar('KBOS 141200Z 11/05',Date.parse('2026-10-14T12:00:00Z'));
+ assert.ok(report.lowerF<=50.5);
+ assert.ok(report.upperFExclusive>=52.7-1e-12);
+ const obs={station:'KBOS',date:'2026-10-14',from:'2026-10-14T04:00:00Z',count:0,
+  readings:[],synoptic:[],maxF:null,minF:null};
+ const combined=withMetar(obs,report);
+ assert.equal(combined.count,1);
+ assert.ok(combined.readings[0].lowerF<=50.5);
+ assert.equal(combined.floorPrecise,50);
+ assert.equal(combined.ceilingPrecise,53);
+ assert.deepEqual(preciseBounds([{temperatureF:51.8,precisionF:.9,lowerF:50.5,upperFExclusive:52.7}]),
+  {floorPrecise:50,ceilingPrecise:53});
+});
+
+test('a valid tenths-C T-group retains distinct precision and is not silently widened as whole C',()=>{
+ const report=parseMetar('KBOS 141200Z 11/05 RMK AO2 T01050050',Date.parse('2026-10-14T12:00:00Z'));
+ assert.equal(report.precisionF,.09);
+ assert.equal(report.lowerF,undefined);
+ assert.equal(report.upperFExclusive,undefined);
 });
