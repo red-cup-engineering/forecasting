@@ -6,7 +6,7 @@ import {collectRelationalWeatherNowcast} from './weather-relational-nowcast.mjs'
 import {collectWeatherStrategyResearch} from './weather-strategy-research.mjs';
 import {collectRelationalTemperatureScience} from './weather-relational-temperature.mjs';
 import {deriveDailyTemperatureExtremes} from './weather-temperature-extremes.mjs';
-import {INDEX_CITIES} from './weather-index.mjs';
+import {INDEX_CITIES,weatherIndexContractScope} from './weather-index.mjs';
 import {TEMPERATURE_MARKETS} from './temperature-market-model.mjs';
 import {planWeatherReasoningCadence,temperatureReasoningTimeZones} from './weather-reasoning-cadence.mjs';
 import { binarySettlement, marketSettlementTiming } from '@red-cup-engineering/kalshi-services-section/market-facts';
@@ -430,7 +430,7 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
       catch(e){evidence.errors.push({source:'fresh-market-quotes',error:e.message});}
     }
     const decisionNow=Date.now();
-    const contracts=universe.markets.map(c=>{const fresh=freshQuotes.get(c.ticker);if(!fresh)return c;const changed=digest({primary:c.rules_primary,secondary:c.rules_secondary})!==digest({primary:fresh.rules_primary,secondary:fresh.rules_secondary});return {...c,...fresh,...(changed?{ruleKey:weatherRuleKey(fresh,c.seriesTicker,c.source,c.stationRule),binding:null,blocker:'rules changed during collection; rebind next cycle'}:{})};}).map(c=>({...c,rulesHash:digest({primary:c.rules_primary,secondary:c.rules_secondary})}));
+    const contracts=universe.markets.map(c=>{const fresh=freshQuotes.get(c.ticker);if(!fresh)return c;const changed=digest({primary:c.rules_primary,secondary:c.rules_secondary})!==digest({primary:fresh.rules_primary,secondary:fresh.rules_secondary});return {...c,...fresh,...(changed?{ruleKey:weatherRuleKey(fresh,c.seriesTicker,c.source,c.stationRule),binding:null,blocker:'rules changed during collection; rebind next cycle'}:{})};}).map(c=>weatherIndexContractScope({...c,rulesHash:digest({primary:c.rules_primary,secondary:c.rules_secondary})},evidence,decisionNow));
     for(const c of contracts)if(c.binding?.kind==='index-at'&&evidence.indices?.[c.binding.city]?.blocker)c.blocker=evidence.indices[c.binding.city].blocker;
     const ex=await experiments(root,contracts,decisionNow),pending=await read(join(root,'pending.json'),{}),rows=[],opportunities=[];
     await mapLimit(contracts,3,async c=>{
@@ -521,7 +521,7 @@ export async function weatherParticipation({root=weatherRoot(),client=weatherCli
     if(cursor)discoveryErrors.push({series:template.seriesTicker,error:'live listing discovery reached the selected contract envelope; coverage incomplete'});
     for(const market of markets){
      if(forecasts.some(r=>r.ticker===market.ticker)||Date.parse(market.close_time)<=Date.parse(receivedAt))continue;
-     const c=weatherContract(market,series);c.rulesHash=digest({primary:c.rules_primary,secondary:c.rules_secondary});
+     const c=weatherIndexContractScope(weatherContract(market,series),evidence,Date.parse(receivedAt));c.rulesHash=digest({primary:c.rules_primary,secondary:c.rules_secondary});
      const models=weatherEstimates(c,evidence,Date.parse(receivedAt));if(!models.length)continue;
      const b=c.binding,stageValue=stage(c,Date.parse(receivedAt)),bands=models.map(m=>({...m,band:probabilityBand({...c,station:b?.station??null,stage:stageValue},m,state.grades??{})}));byTicker.set(c.ticker,c);
      forecasts.push({ticker:c.ticker,eventTicker:c.event_ticker,closeTime:c.close_time,...marketSettlementTiming(c),family:c.family,station:'index:'+b.city,rulesHash:c.rulesHash,ruleKey:c.ruleKey,stage:stageValue,mid:mid(c),models:bands,evidenceId:sourceId,derivedAt:receivedAt,...forecastCell(c,models)});
