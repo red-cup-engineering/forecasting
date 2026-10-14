@@ -45,7 +45,8 @@
     "./fees": "./src/fees.mjs",
     "./climate-report": "./src/climate-report.mjs",
     "./kalshi-sheaf": "./src/kalshi-sheaf.mjs",
-    "./kalshi-sheaf-signgraph": "./src/kalshi-sheaf-signgraph.mjs"
+    "./kalshi-sheaf-signgraph": "./src/kalshi-sheaf-signgraph.mjs",
+    "./outcome-calibration": "./src/outcome-calibration.mjs"
   },
   "scripts": {
     "check": "node --check src/forecasting.mjs && node --check src/evidence-fusion.mjs && node --check scripts/ingest-forecasting-question.mjs && node --check scripts/fuse-forecast.mjs && node --check scripts/record-forecast.mjs && node --check scripts/score-forecast.mjs && node --check scripts/derive-calibration-record.mjs && node --check scripts/resolve-set-of-forecast-questions.mjs && node --check apps/forecasting-cli.mjs && node --check apps/forecast-weather-markets-cli.mjs && node --check apps/forecasting-daily-cycle.mjs && node --check src/station-observations.mjs && node --check test/station-observations.test.mjs",
