@@ -19,10 +19,29 @@ export function weatherRuleKey(market,seriesTicker,source,station) {
     .replace(/\s+/g,' ').trim();
   return digest({series:seriesTicker,source,station,strike:market.strike_type,template});
 }
+/** The controlling contract clause governs, not warnings mentioning other providers.
+ * In September 2026 some hourly series changed publisher; never infer source
+ * from a stray mention in a deprecated/migration disclaimer.
+ */
+export function authoritativeWeatherSource(market){
+ const classify=s=>/synoptic data/iu.test(s)?'synoptic':/the weather company|weather[.]com\/kalshi/iu.test(s)?'twc':
+   /national weather service|nws climatological|climate report/iu.test(s)?'nws-cli':
+   /national hurricane center|\bnhc\b/iu.test(s)?'nhc':null;
+ const primary=String(market?.rules_primary??''),secondary=String(market?.rules_secondary??'');
+ const clauses=text=>[...text.matchAll(/\b(?:as reported by|according to|outcome verified (?:by|from))\s+(?:the\s+)?(Synoptic Data|The Weather Company|National Weather Service(?:'s)?(?: Climatological Report)?|NWS Climatological Report|National Hurricane Center)\b/giu)].map(m=>classify(m[1]));
+ for(const text of [primary,secondary]){
+  const explicit=[...new Set(clauses(text).filter(Boolean))];
+  if(explicit.length>1)return null;
+  if(explicit.length===1)return explicit[0];
+ }
+ const mentions=[...new Set((primary.match(/Synoptic Data|The Weather Company|weather[.]com\/kalshi|National Weather Service|NWS Climatological|Climate Report|National Hurricane Center|\bNHC\b/giu)??[]).map(classify).filter(Boolean))];
+ return mentions.length===1?mentions[0]:null;
+}
+
 export function weatherContract(market, series) {
   const rules = `${market.rules_primary ?? ''}\n${market.rules_secondary ?? ''}`;
   const title = `${series.title} ${market.title}`;
-  const source = /Synoptic/i.test(rules) ? 'synoptic' : /Weather Company|weather\.com\/kalshi/i.test(rules) ? 'twc' : /National Weather Service|NWS|Climate Report/i.test(rules) ? 'nws-cli' : /National Hurricane Center|NHC/i.test(rules) ? 'nhc' : null;
+  const source = authoritativeWeatherSource(market);
   const stationRule = /\bCLI[A-Z0-9]{3}\b/.exec(rules)?.[0] ?? null;
   let family = /hurricane|tropical storm/i.test(title) ? 'tropical' : /snow|ski|opening|closing/i.test(title) ? 'snow' : /rain|precipitation/i.test(title) ? 'precipitation' : /temp|heat|hottest/i.test(title) ? 'temperature' : 'other';
   let binding = null;
