@@ -21,15 +21,20 @@ export async function readNwsResponse(url,{fetchImpl=fetch,headers={},timeoutMs=
    await wait(Math.max(0,(origins.get(target.origin)??0)-Date.now()));
    const remaining=deadline-Date.now();if(remaining<=0)throw refused('original acquisition deadline exhausted');
    signal=AbortSignal.timeout(remaining);attempts++;
-   const response=await fetchImpl(target,{headers,signal});
+   let response;
+   try { response=await fetchImpl(target,{headers,signal}); }
+   catch(error) {
+    latest={status:null,receivedAt:new Date().toISOString(),code:error.code??error.name,networkFailure:true};
+    return {ok:false,refusal:latest};
+   }
    if(response.ok)return {ok:true,value:response};
    const at=Date.now(),retryAfterMs=retryAfterDelayMs(response.headers?.get('retry-after'),at);
    latest={status:response.status,receivedAt:new Date(at).toISOString(),retryAfterMs};
    await response.body?.cancel().catch(()=>{});
-   if(response.status===429){receipts.push(latest);if(retryAfterMs!==null)origins.set(target.origin,Math.max(origins.get(target.origin)??0,at+retryAfterMs));}
+   if(response.status===429||response.status===503){receipts.push(latest);if(retryAfterMs!==null)origins.set(target.origin,Math.max(origins.get(target.origin)??0,at+retryAfterMs));}
    return {ok:false,refusal:latest};
   },
-  isRetryable:refusal=>refusal.status===429,
+  isRetryable:refusal=>refusal.status===429||[500,502,503,504].includes(refusal.status)||refusal.networkFailure===true&&Date.now()<deadline,
   delay:milliseconds=>wait(Math.max(milliseconds,(origins.get(target.origin)??0)-Date.now())),
  });
  if(!result.ok)throw refused(`HTTP ${latest?.status??'unknown'}`);
