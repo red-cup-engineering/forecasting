@@ -394,7 +394,7 @@ export async function allocateLiveWeather({root=weatherRoot(),capitalUsd,encumbe
 export function forecastSurface(rows,contracts,at){
   const byTicker=new Map(contracts.map(c=>[c.ticker,c]));
   return {type:'KalshiForecastSurface',version:SURFACE_VERSION,at,contracts:rows.filter(r=>r.surface&&(r.surface.admitted.length||r.surface.structural.length)&&!r.blocker).map(r=>{const c=byTicker.get(r.ticker);
-    return {ticker:r.ticker,eventTicker:r.eventTicker,seriesTicker:c?.seriesTicker??r.ticker.split('-')[0],family:r.family,targetDate:r.targetDate,closeTime:r.closeTime,rulesHash:r.rulesHash,feeMultiplier:c?.feeMultiplier??1,feeType:c?.feeType??'quadratic',station:r.station,...r.surface};})};
+    return {ticker:r.ticker,eventTicker:r.eventTicker,seriesTicker:c?.seriesTicker??r.ticker.split('-')[0],family:r.family,settlementSource:r.source,ruleKey:r.ruleKey,targetDate:r.targetDate,closeTime:r.closeTime,rulesHash:r.rulesHash,feeMultiplier:c?.feeMultiplier??1,feeType:c?.feeType??'quadratic',station:r.station,...r.surface};})};
 }
 /** Version 2: structural bounds are observation-derived only (forecast-surface STRUCTURAL_KINDS). */
 export const SURFACE_VERSION=2;

@@ -64,6 +64,7 @@ export function fuseForecast({ mid, models }) {
   const bandHigh = admitted.length ? pool([...market, ...admitted.map((m) => m.band.high)],weights) : p;
   return {
     p, low: Math.max(low, Math.min(p, bandLow)), high: Math.min(high, Math.max(p, bandHigh)),
+    capitalWeight:admitted.length?Math.max(...admitted.map(m=>m.band.weight??1)):1,
     mid: market[0] ?? null, admitted: admitted.map((m) => m.id), structural,
   };
 }
