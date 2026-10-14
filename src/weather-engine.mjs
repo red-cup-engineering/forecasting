@@ -207,9 +207,9 @@ async function hourlyStationEvidence(root,evidenceId,indices){
    forecasts:(cached.science.forecasts??[]).filter(row=>row.station?.startsWith('index:'))}:null,
  };
 }
-export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.now(),fetchImpl=fetch,marketClient}={}) {
+export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.now(),fetchImpl=fetch,marketClient,sourceCollector=collectWeatherIndexEvidence}={}) {
  const previous=await readWeatherIndexSources({root});
- const fresh=await collectWeatherIndexEvidence(Object.keys(INDEX_CITIES),{now,fetchImpl,methodologies:Object.fromEntries(Object.entries(previous.cities).map(([city,packet])=>[city,packet.methodology]))});
+ const fresh=await sourceCollector(Object.keys(INDEX_CITIES),{now,fetchImpl,methodologies:Object.fromEntries(Object.entries(previous.cities).map(([city,packet])=>[city,packet.methodology]))});
  const context=await hourlyProjectionContext(root),stationEvidenceId=context.stationEvidenceId;
  const packet={kind:'kalshi-weather-index-source',at:new Date().toISOString(),indices:fresh.cities,errors:fresh.errors,stationEvidenceId};
  await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
