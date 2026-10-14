@@ -6,7 +6,7 @@ import {collectRelationalWeatherNowcast} from './weather-relational-nowcast.mjs'
 import {collectWeatherStrategyResearch} from './weather-strategy-research.mjs';
 import {collectRelationalTemperatureScience} from './weather-relational-temperature.mjs';
 import {deriveDailyTemperatureExtremes} from './weather-temperature-extremes.mjs';
-import {INDEX_CITIES,weatherIndexContractScope} from './weather-index.mjs';
+import {INDEX_CITIES,weatherIndexContractScope,collectWeatherIndexEvidence} from './weather-index.mjs';
 import {TEMPERATURE_MARKETS} from './temperature-market-model.mjs';
 import {planWeatherReasoningCadence,temperatureReasoningTimeZones} from './weather-reasoning-cadence.mjs';
 import { binarySettlement, marketSettlementTiming } from '@red-cup-engineering/kalshi-services-section/market-facts';
@@ -126,6 +126,47 @@ export async function weatherStationEvidence({stations,root=weatherRoot(),now=Da
   const evidence=await collectStationWeatherEvidence(stations,{cacheDir:join(root,'nbm'),now,fetchImpl});
   const evidenceId=await archiveWeatherEvidence(evidence,root);
   return {evidenceId,...evidence,orderEffect:false};
+}
+/** Original index sources are published by the existing settlement-source job.
+ * The heavyweight weather cycle and desk reuse this immutable packet. A source
+ * receipt never refreshes the clocks of its reused station or market inputs.
+ */
+export async function readWeatherIndexSources({root=weatherRoot()}={}) {
+ const pointer=await read(join(root,'index-source.json'),null);
+ if(!pointer)return {cities:{},errors:[{source:'Kalshi-weather-index',error:'no settlement-source receipt published'}],surface:null};
+ if(!/^[a-f0-9]{64}$/.test(pointer.evidenceId??''))throw new TypeError('original index source archive reference required');
+ const {record}=await readWeatherSourceRecord({root,file:'evidence/'+pointer.evidenceId+'.json.gz'});
+ if(record.kind!=='kalshi-weather-index-source')throw new TypeError('original index source packet required');
+ if(pointer.surface&&pointer.surface.sourceEvidenceId!==pointer.evidenceId)throw new TypeError('hourly surface must retain its original source archive');
+ return {cities:record.indices,errors:record.errors??[],surface:pointer.surface??null,evidenceId:pointer.evidenceId,at:record.at};
+}
+export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
+ const previous=await readWeatherIndexSources({root});
+ const fresh=await collectWeatherIndexEvidence(Object.keys(INDEX_CITIES),{now,fetchImpl,methodologies:Object.fromEntries(Object.entries(previous.cities).map(([city,packet])=>[city,packet.methodology]))});
+ const latest=await read(join(root,'latest.json'),{}),stationEvidenceId=latest.forecasts?.find(row=>/^[a-f0-9]{64}$/.test(row.evidenceId??''))?.evidenceId??null;
+ const packet={kind:'kalshi-weather-index-source',at:new Date().toISOString(),indices:fresh.cities,errors:fresh.errors,stationEvidenceId};
+ await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
+ const evidenceId=digest(packet);await archivePacket(join(root,'evidence',evidenceId+'.json.gz'),packet);
+ // Commit original source custody before optional projection work. Missing
+ // cached guidance cannot delay, replace or invent a source observation.
+ await atomic(join(root,'index-source.json'),{at:packet.at,evidenceId,surface:null});
+ let surface=null,projectionError=null;
+ try{if(stationEvidenceId){
+  const {record:cached}=await readWeatherSourceRecord({root,file:'evidence/'+stationEvidenceId+'.json.gz'});
+  const evidence={...cached,indices:packet.indices},decisionNow=Date.now(),grades=await read(join(root,'grades.json'),{}),rows=[];
+  const contracts=(latest.contracts??[]).filter(c=>c.binding?.kind==='index-at').map(c=>weatherIndexContractScope(c,evidence,decisionNow));
+  for(const c of contracts){
+   const old=latest.forecasts?.find(row=>row.ticker===c.ticker),s=stage(c,decisionNow);
+   // The market anchor retains its original availability window; an absent
+   // anchor is an admitted-model-only projection supported by fuseForecast.
+   const midpoint=old&&decisionNow>=Date.parse(old.marketObservedAt)&&decisionNow-Date.parse(old.marketObservedAt)<=20*60000?old.mid:null;
+   const models=weatherEstimates(c,evidence,decisionNow).map(m=>({...m,band:probabilityBand({...c,station:c.binding.station,stage:s},m,grades)}));
+   rows.push({ticker:c.ticker,eventTicker:c.event_ticker,family:c.family,source:c.source,ruleKey:c.ruleKey,rulesHash:c.rulesHash,targetDate:c.binding.targetDate,closeTime:c.close_time,station:c.binding.station,blocker:c.blocker,surface:fuseForecast({mid:midpoint,models})});
+  }
+  surface={...forecastSurface(rows,contracts,new Date(decisionNow).toISOString()),sourceEvidenceId:evidenceId,stationEvidenceId,projection:'fresh original index with previously received station guidance; original input age checks retained'};
+  await atomic(join(root,'index-source.json'),{at:packet.at,evidenceId,surface});
+ }}catch(error){projectionError=error.message;}
+ return {at:packet.at,evidenceId,projectionError,cities:Object.keys(packet.indices),errors:packet.errors,conflicts:Object.entries(packet.indices).filter(([_,p])=>p.validation?.conflicted).map(([city])=>city),surfaceContracts:surface?.contracts.length??0,orderEffect:false};
 }
 /** Public city index and station science, without requiring any market listing. */
 export async function weatherIndexEvidence({cities,root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}){
@@ -400,8 +441,11 @@ export function forecastSurface(rows,contracts,at){
 export const SURFACE_VERSION=2;
 /** The latest surface, or null when it is older than `maxAgeMs` or of another version. */
 export async function readForecastSurface({root=weatherRoot(),now=Date.now(),maxAgeMs=20*60000}={}){
-  const s=await read(join(root,'surface.json'),null);
-  return s&&s.version===SURFACE_VERSION&&now-Date.parse(s.at)<=maxAgeMs?s:null;
+  const s=await read(join(root,'surface.json'),null),index=(await readWeatherIndexSources({root})).surface;
+  const eligible=value=>value&&value.version===SURFACE_VERSION&&now>=Date.parse(value.at)&&now-Date.parse(value.at)<=maxAgeMs;
+  if(!eligible(index))return eligible(s)?s:null;
+  const daily=eligible(s)?s.contracts.filter(row=>row.family!=='hourly-temperature'):[];
+  return {...index,contracts:[...daily,...index.contracts]};
 }
 /** A run killed mid-write leaves `<file>.<pid>.tmp` behind; remove those whose writer is gone. */
 async function removeDeadTemporaries(root){
@@ -420,7 +464,8 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
     await removeDeadTemporaries(root);
     const grades=await read(join(root,'grades.json'),{});
     const universe=await discoverWeather(client);
-    const evidence=await collectWeatherEvidence(universe.markets,{cacheDir:join(root,'nbm'),now:Date.now(),fetchImpl});
+    const indexEvidence=await readWeatherIndexSources({root});
+    const evidence=await collectWeatherEvidence(universe.markets,{cacheDir:join(root,'nbm'),now:Date.now(),fetchImpl,indexEvidence});
     const evidenceId=await archiveWeatherEvidence(evidence,root);
     const quoteTimes=new Map(),freshQuotes=new Map();
     const quoted=universe.markets;

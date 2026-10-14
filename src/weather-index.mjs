@@ -67,7 +67,7 @@ export function weatherIndexContractScope(contract,evidence,now){
  const document=packet.methodology,law={city:b.city,methodologyBodyNI:'ni:///sha-256;'+Buffer.from(document.sha256,'hex').toString('base64url'),methodologySha256:document.sha256,configurationVersion:configuration.config_version,cityReferenceC:configuration.city_reference_c,stations:configuration.stations.map(s=>({stationId:s.station_id,weight:s.weight,offsetC:s.offset_c})).sort((a,b)=>a.stationId.localeCompare(b.stationId)),quorum:{members:document.quorum.members,weight:document.quorum.weight},precisionF:document.precisionF,roundingTieRule:document.roundingTieRule};
  const lawId=createHash('sha256').update(JSON.stringify(law)).digest('hex'),baseRuleKey=contract.indexLaw?.baseRuleKey??contract.ruleKey;
  const ruleKey=createHash('sha256').update(JSON.stringify({baseRuleKey,indexLaw:lawId})).digest('hex');
- return {...contract,ruleKey,indexLaw:{id:lawId,baseRuleKey,...law}};
+ return {...contract,ruleKey,blocker:null,indexLaw:{id:lawId,baseRuleKey,...law}};
 }
 export function indexConfiguration(packet,city,eventTime,availableAt){
  if(!Object.hasOwn(INDEX_CITIES,city))return null;
@@ -99,7 +99,7 @@ export function reproduceIndex(point,config){
  for(const s of accepted){const c=config.stations.find(c=>c.station_id===s.station_id);if(!c)return null;weighted+=c.weight*((s.temp_f-32)*5/9-c.offset_c+config.city_reference_c);total+=c.weight;}
  if(!total)return null;return Math.round((weighted/total*9/5+32)*100)/100;
 }
-export async function collectWeatherIndexEvidence(cities,{now=Date.now(),fetchImpl=fetch}={}){
+export async function collectWeatherIndexEvidence(cities,{now=Date.now(),fetchImpl=fetch,methodologies={}}={}){
  const requested=[...new Set(cities)];if(!requested.length||requested.some(c=>!Object.hasOwn(INDEX_CITIES,c)))throw new TypeError('known weather-index city required');
  const packets={},errors=[];
  await Promise.all(requested.map(async city=>{
@@ -113,9 +113,11 @@ export async function collectWeatherIndexEvidence(cities,{now=Date.now(),fetchIm
    }
    catch(e){errors.push({source:'Kalshi-weather-index',city,kind:key,error:e.message});}
   }
-  try{packet.methodology=await indexMethodology(city,fetchImpl);}catch(e){errors.push({source:'Kalshi-weather-index-methodology',city,error:e.message});}
-  packet.retrievedAt=new Date().toISOString();
   const current=packet.calibrations?.calibrations?.filter(c=>c.effective_at_ms<=now&&c.published_at_ms<=now).sort((a,b)=>b.effective_at_ms-a.effective_at_ms)[0];
+  const cached=methodologies[city],prefix=city+'-temperature-v'+cached?.configurationVersion;
+  const reusable=receivedIndexMethodology(cached,city,Date.now())&&(current?.config_version===prefix||current?.config_version?.startsWith(prefix+'-cal-'));
+  try{packet.methodology=reusable?cached:await indexMethodology(city,fetchImpl);}catch(e){errors.push({source:'Kalshi-weather-index-methodology',city,error:e.message});}
+  packet.methodologyReused=reusable;packet.retrievedAt=new Date().toISOString();
   const expected=packet.methodology?.configurationVersion??null,reported=/-temperature-v([0-9]+\.[0-9]+)/.exec(current?.config_version??'')?.[1]??null;
   const support=cell('index:'+city,'current-methodology-version',{version:expected},{for:expected?[{source:packet.methodology.url,sha256:packet.methodology.sha256,version:expected}]:[],against:expected&&reported&&reported!==expected?[{source:packet.calibrationSource,version:reported,configVersion:current.config_version}]:[]});
   const validationAt=Date.now();

@@ -78,12 +78,12 @@ export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.
 }
 export async function collectWeatherEvidence(contracts,options={}) {
   const requests=new Map(),now=options.now??Date.now(),cities=[...new Set(contracts.filter(c=>c.binding?.kind==='index-at').map(c=>c.binding.city))];
-  const indexEvidence=cities.length?await collectWeatherIndexEvidence(cities,{now,fetchImpl:options.fetchImpl}):{cities:{},errors:[]};
+  const indexEvidence=options.indexEvidence??(cities.length?await collectWeatherIndexEvidence(cities,{now,fetchImpl:options.fetchImpl}):{cities:{},errors:[]});
   function request(station,timeZone,targetDate){if(!requests.has(station))requests.set(station,{station,timeZone,targetDates:[]});const r=requests.get(station);if(!r.targetDates.includes(targetDate))r.targetDates.push(targetDate);}
   for(const c of contracts)if(c.binding&&c.binding.kind!=='index-at'){const b=c.binding;request(b.station,b.timeZone,b.targetDate);}
   const configurationAvailableAt=Date.now();
   for(const city of cities){
-   const cityContracts=contracts.filter(c=>c.binding?.city===city),dates=[...new Set(cityContracts.map(c=>c.binding.targetDate))],packet=indexEvidence.cities[city];
+   const cityContracts=contracts.filter(c=>c.binding?.city===city),dates=[...new Set(cityContracts.map(c=>c.binding.targetDate))],packet=indexEvidence.cities[city];if(!packet)continue;
    const targetTimes=[configurationAvailableAt,...cityContracts.map(c=>Date.parse(c.binding.targetTime)).filter(Number.isFinite),...(packet.calibrations?.calibrations??[]).filter(c=>c.published_at_ms<=configurationAvailableAt&&c.effective_at_ms<=configurationAvailableAt+24*3600000&&c.effective_at_ms>configurationAvailableAt).map(c=>c.effective_at_ms)];
    for(const targetTime of new Set(targetTimes)){const cfg=indexConfiguration(packet,city,targetTime,configurationAvailableAt);if(!cfg)continue;for(const member of cfg.stations)for(const date of dates)request(member.station_id.slice(0,4),INDEX_CITIES[city].timeZone,date);}
   }
