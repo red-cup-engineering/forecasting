@@ -1,3 +1,4 @@
+import {readNwsResponse,readNwsJson} from './nws-source.mjs';
 /**
  * A station's temperature extremes so far in its climate day, from the NWS
  * observation API (api.weather.gov; public, asks only for a descriptive
@@ -17,6 +18,9 @@
  * at least the highest LOWER end of any reading, so the report's whole-degree
  * high is at least that rounded; the minimum mirrors it.
  */
+import {createHash} from 'node:crypto';
+import {gzipSync} from 'node:zlib';
+import {precipitationWitnesses} from './weather-precipitation.mjs';
 import { readBody } from '@red-cup-engineering/http-services-section/body/web';
 import { makeNiUri } from '@red-cup-engineering/uri-services-section/ni-uri';
 import { admitCanonicalJson, JSON_RESOURCE_ENVELOPE } from '@red-cup-engineering/json-services-section/canonical-json';
@@ -37,6 +41,19 @@ export function climateDayStart(date, timeZone) {
   const year = noon.getUTCFullYear();
   const standard = Math.min(offsetMinutes(new Date(Date.UTC(year, 0, 15))), offsetMinutes(new Date(Date.UTC(year, 6, 15))));
   return new Date(Date.parse(`${date}T00:00:00Z`) - standard * 60_000);
+}
+
+/** The date whose standard-time climate interval contains the observation instant. */
+export function climateDate(timeZone, at = Date.now()) {
+  const instant = new Date(at);
+  const parts = Object.fromEntries(new Intl.DateTimeFormat('en-US', {
+    timeZone, year: 'numeric', month: '2-digit', day: '2-digit',
+  }).formatToParts(instant).map(part => [part.type, part.value]));
+  const civilDate = `${parts.year}-${parts.month}-${parts.day}`;
+  // During daylight time, civil midnight begins the previous climate day's last hour.
+  return instant.getTime() < climateDayStart(civilDate, timeZone).getTime()
+    ? new Date(Date.parse(`${civilDate}T00:00:00Z`) - 86400_000).toISOString().slice(0, 10)
+    : civilDate;
 }
 
 /**
@@ -66,14 +83,20 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
   const url = new URL(`${baseUrl}/stations/${station}/observations`);
   url.searchParams.set('start', from.toISOString());
   url.searchParams.set('end', until.toISOString());
-  url.searchParams.set('limit','500');
-  const readings=new Map(),visited=new Set(),synoptic=[];let next=url.href;
+  // Keep full GeoJSON station packets within the existing 1 MiB source
+  // envelope. Eight 200-record pages still cover a minute-resolution day.
+  url.searchParams.set('limit','200');
+  const readings=new Map(),visited=new Set(),synoptic=[],pages=[];let next=url.href;
   while(next){
     const pageUrl=new URL(next,url);if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname||visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');
     visited.add(pageUrl.href);
-    const res=await fetchImpl(pageUrl,{headers:{'user-agent':userAgent,accept:'application/geo+json'},signal:AbortSignal.timeout(30000)});
-    if(!res.ok)throw new Error(`station-observations: GET ${pageUrl} answered ${res.status}`);
-    const page=await res.json();next=page.pagination?.next??null;
+    const acquired=await readNwsResponse(pageUrl,{fetchImpl,headers:{'user-agent':userAgent,accept:'application/geo+json'},timeoutMs:30000});
+    const {response:res,signal}=acquired;
+    const rawBytes=await readBody({body:res.body,headers:res.headers,signal},{maxBytes:JSON_RESOURCE_ENVELOPE.maxSourceBytes,decodeContentEncoding:false});
+    const page=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(rawBytes)),receivedAt=new Date().toISOString();
+    if(!page||!Array.isArray(page.features))throw new Error('station-observations: GeoJSON feature page required');
+    pages.push({url:pageUrl.href,receivedAt,transport:{attempts:acquired.attempts,rateLimits:acquired.rateLimits},identity:makeNiUri(rawBytes),sha256:createHash('sha256').update(rawBytes).digest('hex'),bytes:rawBytes.byteLength,encoding:'gzip-base64',body:gzipSync(rawBytes).toString('base64'),packet:page});
+    next=page.pagination?.next??null;
     for(const feature of page.features??[]) {
     const p=feature?.properties,temperature=p?.temperature,at=p?.timestamp,epoch=Date.parse(at);
     if(!Number.isFinite(epoch)||epoch<from.getTime()||epoch>until.getTime()||epoch>=from.getTime()+86400000||typeof temperature?.value!=='number'||!Number.isFinite(temperature.value))continue;
@@ -95,11 +118,12 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
     }
   }
   }
+  const receivedAt=new Date().toISOString(),precipitation=precipitationWitnesses(pages,{station,start:from.getTime(),end:from.getTime()+86400000,observedUntil:until.getTime(),receivedAt}),rawPages=pages.map(({packet,...raw})=>raw);
   const trace=[...readings.values()].sort((a,b)=>a.at.localeCompare(b.at));
-  if(!trace.length)return {...empty,source:url.href,receivedAt:new Date().toISOString()};
+  if(!trace.length)return {...empty,source:url.href,receivedAt,precipitation,rawPages};
   const temps=trace.map(r=>r.temperatureF),maxF=Math.max(...temps),minF=Math.min(...temps);
   const {floorPrecise,ceilingPrecise}=preciseBounds(trace,synoptic);
-  return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,floorPrecise,ceilingPrecise,latest:trace.at(-1).at,readings:trace,synoptic,source:url.href,receivedAt:new Date().toISOString()};
+  return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,floorPrecise,ceilingPrecise,latest:trace.at(-1).at,readings:trace,synoptic,source:url.href,receivedAt,precipitation,rawPages};
 }
 
 export const METAR_FEED = 'https://tgftp.nws.noaa.gov/data/observations/metar/stations';
@@ -143,8 +167,9 @@ function metarStation(station) {
 
 async function readMetarBulletin(station, { fetchImpl = fetch, feed = METAR_FEED, userAgent = NWS_USER_AGENT } = {}) {
   metarStation(station); // before constructing or acquiring any network resource
-  const url = `${feed}/${station}.TXT`, signal = AbortSignal.timeout(10000);
-  const res = await fetchImpl(url, { headers: { 'user-agent': userAgent, accept: 'text/plain' }, redirect: 'error', signal });
+  const url = `${feed}/${station}.TXT`;
+  const acquired = await readNwsResponse(url, { fetchImpl, headers: { 'user-agent': userAgent, accept: 'text/plain' }, redirect: 'error', timeoutMs: 10000 });
+  const { response: res, signal } = acquired;
   if (!res.ok || res.redirected || res.url && res.url !== url) {
     await res.body?.cancel().catch(() => {});
     if (!res.ok) throw new Error(`metar ${station}: ${res.status}`);
@@ -163,7 +188,7 @@ async function readMetarBulletin(station, { fetchImpl = fetch, feed = METAR_FEED
   if (!Number.isFinite(issued) || new Date(issued).toISOString() !== issuedAt) throw new Error('METAR bulletin issue stamp must be a real UTC calendar instant');
   const report = parseMetar(raw, issued);
   if (report && report.station !== station) throw new Error('METAR bulletin does not match its requested station');
-  return { report, bytes, text, url, issuedAt };
+  return { report, bytes, text, url, issuedAt, transport: { attempts: acquired.attempts, rateLimits: acquired.rateLimits } };
 }
 
 /** The station's latest METAR from NWS's feed; retains the existing report-or-null API. */
@@ -200,7 +225,7 @@ export async function readNwsMetarSnapshot(request, { fetchImpl = fetch, now = (
   return admitCanonicalJson(JSON.stringify({
     observation: source.report,
     source: { url: source.url, identity: makeNiUri(source.bytes), bytes: source.bytes.byteLength, text: source.text,
-      issuedAt: source.issuedAt, receivedAt,
+      issuedAt: source.issuedAt, receivedAt, transport: source.transport,
       freshness: { observedAgeSeconds, bulletinAgeSeconds, maximumAgeSeconds: 7200 },
       attribution: 'NOAA National Weather Service',
       rights: { basis: 'public-domain US government information', authority: 'https://www.weather.gov/disclaimer/',
@@ -242,9 +267,7 @@ const stationPoints = new Map();
  */
 export async function activeTemperatureHazards({ station }, { fetchImpl = fetch, baseUrl = NWS_API, userAgent = NWS_USER_AGENT } = {}) {
   const get = async (url) => {
-    const response = await fetchImpl(url, { headers: { 'User-Agent': userAgent, Accept: 'application/geo+json' }, signal: AbortSignal.timeout(10000) });
-    if (!response.ok) throw new Error(`NWS ${url}: ${response.status}`);
-    return response.json();
+    return readNwsJson(url,{fetchImpl,headers:{'User-Agent':userAgent,Accept:'application/geo+json'},timeoutMs:10000});
   };
   if (!stationPoints.has(station)) {
     const [lon, lat] = (await get(`${baseUrl}/stations/${station}`)).geometry.coordinates;

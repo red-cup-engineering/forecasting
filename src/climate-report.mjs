@@ -1,3 +1,4 @@
+import {readNwsJson} from './nws-source.mjs';
 /**
  * The NWS Daily Climate Report (CLI product), the document Kalshi's temperature markets settle on (The Weather
  * Company reports it). Pure parsing, plus a reader for the latest report of one climate site.
@@ -28,7 +29,7 @@ export function parseClimateReport(text, issued) {
 
 /** The latest climate report for `site` (the CLI code without "CLI", e.g. OKC) covering `date`, or null. */
 export async function latestClimateReport({ site, date }, { fetchImpl = fetch, baseUrl = NWS_API, userAgent = NWS_USER_AGENT } = {}) {
-  const get = async (url) => { const res = await fetchImpl(url, { headers: { 'user-agent': userAgent, accept: 'application/ld+json' }, signal: AbortSignal.timeout(10000) }); if (!res.ok) throw new Error(`${url}: ${res.status}`); return res.json(); };
+  const get=url=>readNwsJson(url,{fetchImpl,headers:{'user-agent':userAgent,accept:'application/ld+json'},timeoutMs:10000});
   const listing = await get(`${baseUrl}/products/types/CLI/locations/${site}`);
   for (const item of (listing['@graph'] ?? []).slice(0, 3)) {
     const report = parseClimateReport((await get(`${baseUrl}/products/${item.id}`)).productText, item.issuanceTime);

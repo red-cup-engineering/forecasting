@@ -1,3 +1,5 @@
+import {readNwsJson} from './nws-source.mjs';
+import {sameDayRainModels} from './weather-precipitation.mjs';
 import {collectEcmwfEnsemble} from './weather-ecmwf-ensemble.mjs';
 import {access} from 'node:fs/promises';
 import {homedir} from 'node:os';
@@ -20,9 +22,7 @@ import { mapLimit } from './weather-universe.mjs';
 import { cell, merge, address } from '@red-cup-engineering/signcell/cell';
 
 async function nws(url, fetchImpl) {
-  const r=await fetchImpl(url,{headers:{'User-Agent':NWS_USER_AGENT,Accept:'application/geo+json'},signal:AbortSignal.timeout(10000)});
-  if(!r.ok)throw new Error(`NWS ${r.status}: ${url}`);
-  return r.json();
+  return readNwsJson(url,{fetchImpl,headers:{'User-Agent':NWS_USER_AGENT,Accept:'application/geo+json'},timeoutMs:10000});
 }
 /** Public station evidence for research and forecasting, independent of any market. */
 export async function collectStationWeatherEvidence(requests,{cacheDir,now=Date.now(),fetchImpl=fetch,marketCollection=false}={}) {
@@ -94,11 +94,11 @@ export function weatherEstimates(c,e,now) {
   const b=c.binding;if(!b)return [];
   if(b.kind==='index-at')return priceWeatherIndex(c,e,now);
   if(b.kind==='rain') {
-    if(!e.guidance)return [];
-    const r=priceRainMarket(c,{guidance:e.guidance,now});
-    const out=r.priced?[{id:'nbm-rain-logistic-2026-10-04',p:r.probability,details:r}]:[];
+    const out=sameDayRainModels(c,e,now);
+    const r=e.guidance?priceRainMarket(c,{guidance:e.guidance,now}):{priced:false};
+    if(r.priced)out.unshift({id:'nbm-rain-logistic-2026-10-04',p:r.probability,details:r});
     const a=Number(c.yes_ask_dollars),bid=Number(c.yes_bid_dollars);
-    const pooled=priceRainPoolMarket(c,{guidance:e.guidance,marketProbability:a>bid&&a<=1&&bid>=0?(a+bid)/2:null,now});if(pooled)out.push(pooled);
+    const pooled=e.guidance&&priceRainPoolMarket(c,{guidance:e.guidance,marketProbability:a>bid&&a<=1&&bid>=0?(a+bid)/2:null,now});if(pooled)out.push(pooled);
     return out;
   }
   const bracket={strikeType:c.strike_type,floorStrike:c.floor_strike,capStrike:c.cap_strike};

@@ -48,6 +48,7 @@ export function inDecisionWindow({ kind, targetDate, timeZone }, windows = TAILS
 /** The loss rate a bet against a certified tail is sized on: the larger of the model's probability and the per-settlement-day posterior mean. */
 export function tailLossRate(probability, kind, posterior = TAILS.lossRatePosterior) {
   const evidence = posterior[kind];
+  if(Number.isFinite(evidence?.lossMean)&&evidence.lossMean>=0&&evidence.lossMean<=1)return Math.max(probability,evidence.lossMean);
   return Math.max(probability, (evidence.losses + 1) / (evidence.clusters + 2));
 }
 
@@ -57,7 +58,7 @@ export function tailLossRate(probability, kind, posterior = TAILS.lossRatePoster
  * @param {{guidance: object, observed?: object|null, hazards: {warm: string[], cold: string[]}|null, timeZone: string, now?: number, maxGuidanceAgeHours?: number, rules?: object}} evidence
  * @returns {{eligible: true, probability: number, lossRate: number, side: 'warm'|'cold', priced: object} | {eligible: false, reason: string, priced?: object}}
  */
-export function predictTemperatureTail(market, { guidance, observed = null, hazards, timeZone, now = Date.now(), maxGuidanceAgeHours = 8, rules = TAILS }) {
+export function predictTemperatureTail(market, { guidance, observed = null, hazards, timeZone, now = Date.now(), maxGuidanceAgeHours = 8, rules = TAILS,posteriors=null }) {
   const priced = priceTemperatureBracket(market, { guidance, observed, maxGuidanceAgeHours, now });
   if (!priced.priced) return { eligible: false, reason: priced.reason };
   if (!inDecisionWindow({ kind: priced.kind, targetDate: priced.targetDate, timeZone }, rules.windows, now)) return { eligible: false, reason: 'outside the measured decision window', priced };
@@ -67,5 +68,5 @@ export function predictTemperatureTail(market, { guidance, observed = null, haza
   if (!side) return { eligible: false, reason: 'bracket straddles the forecast mean', priced };
   const regime = regimeVerdict(side, hazards);
   if (!regime.ok) return { eligible: false, reason: regime.reason, ...(regime.unread ? { unread: true } : {}), priced };
-  return { eligible: true, probability: priced.probability, lossRate: tailLossRate(priced.probability, priced.kind, rules.lossRatePosterior), side, priced };
+  return { eligible: true, probability: priced.probability, lossRate: tailLossRate(priced.probability,priced.kind,posteriors?.[priced.kind]?posteriors:rules.lossRatePosterior), side, priced };
 }

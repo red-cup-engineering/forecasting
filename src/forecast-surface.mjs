@@ -13,7 +13,9 @@
  *               count: a model's bounds conditional on its own forecast (weather-temperature-extremes'
  *               Frechet bounds over hourly marginals) are a forecast, and are graded like one.
  *   admitted    models graded better than the mid. The surface is the logit pool of the mid and each
- *               admitted model, equally weighted; its band pools their calibration bands the same way.
+ *               admitted model, weighted by its measured lower/mean skill ratio; its band
+ *               pools their calibration bands the same way. Other independently
+ *               admitted hypothesis models retain their declared full contribution.
  *
  * Without an admitted model or a structural bound the surface is the mid with a zero-width band, which
  * no executable price beats: the desk trades only what the house knows better than the book.
@@ -22,7 +24,10 @@ const EPS = 1e-4;
 const clamp = (p) => Math.min(1 - EPS, Math.max(EPS, p));
 const logit = (p) => Math.log(clamp(p) / (1 - clamp(p)));
 const expit = (x) => 1 / (1 + Math.exp(-x));
-const pool = (ps) => expit(ps.reduce((s, p) => s + logit(p), 0) / ps.length);
+const pool = (ps, weights) => {
+  const total=weights.reduce((s,w)=>s+w,0);
+  return expit(ps.reduce((s,p,i)=>s+weights[i]*logit(p),0)/total);
+};
 
 export const STRUCTURAL_KINDS = Object.freeze(['station-observation']);
 
@@ -47,16 +52,19 @@ export function fuseForecast({ mid, models }) {
     low = Math.max(low, s.low); high = Math.min(high, s.high); structural.push(model.id);
   }
   if (low > high) return null;
-  const admitted = models.filter((m) => m.band?.admitted && Number.isFinite(m.p) && !structuralBounds(m));
+  const admitted = models.filter((m) => m.band?.admitted && Number.isFinite(m.p) && !structuralBounds(m)
+    && (m.band.weight===undefined||Number.isFinite(m.band.weight)&&m.band.weight>0&&m.band.weight<=1));
   const market = Number.isFinite(mid) ? [mid] : [];
   if (!market.length && !admitted.length && !structural.length) return null;
-  const point = market.length || admitted.length ? pool([...market, ...admitted.map((m) => m.p)]) : (low + high) / 2;
+  const weights=[...market.map(()=>1),...admitted.map(m=>m.band.weight??1)];
+  const point = market.length || admitted.length ? pool([...market, ...admitted.map((m) => m.p)],weights) : (low + high) / 2;
   const p = Math.min(high, Math.max(low, point));
   // The statistical band: each admitted model contributes its calibration band, the market its point.
-  const bandLow = admitted.length ? pool([...market, ...admitted.map((m) => m.band.low)]) : p;
-  const bandHigh = admitted.length ? pool([...market, ...admitted.map((m) => m.band.high)]) : p;
+  const bandLow = admitted.length ? pool([...market, ...admitted.map((m) => m.band.low)],weights) : p;
+  const bandHigh = admitted.length ? pool([...market, ...admitted.map((m) => m.band.high)],weights) : p;
   return {
     p, low: Math.max(low, Math.min(p, bandLow)), high: Math.min(high, Math.max(p, bandHigh)),
+    capitalWeight:admitted.length?Math.max(...admitted.map(m=>m.band.weight??1)):1,
     mid: market[0] ?? null, admitted: admitted.map((m) => m.id), structural,
   };
 }

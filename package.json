@@ -46,6 +46,7 @@
     "./climate-report": "./src/climate-report.mjs",
     "./kalshi-sheaf": "./src/kalshi-sheaf.mjs",
     "./kalshi-sheaf-signgraph": "./src/kalshi-sheaf-signgraph.mjs",
+    "./outcome-calibration": "./src/outcome-calibration.mjs",
     "./coops-water-level": "./src/coops-water-level.mjs"
   },
   "scripts": {

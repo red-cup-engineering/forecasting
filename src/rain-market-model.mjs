@@ -1,3 +1,4 @@
+import {tailLossRate} from './temperature-tail-prediction.mjs';
 import {poolProbabilities} from './probability-calibration.mjs';
 /**
  * The house's price for one Kalshi daily-rain market (series KXRAIN): "total
@@ -126,10 +127,10 @@ export function priceRainMarket(market, { guidance, maxGuidanceAgeHours = 8, now
  * near certain: a YES holder's bet). Never smaller than the model's own probability of losing.
  * @returns {{side: 'tail'|'favourite', lossRate: number} | null}
  */
-export function rainSide(priced, sides = RAIN_MARKETS.sides) {
+export function rainSide(priced,sides=RAIN_MARKETS.sides,posteriors={}) {
   if (!priced?.priced) return null;
-  if (priced.probability <= sides.tail.maxModelProbability) return { side: 'tail', lossRate: Math.max(priced.probability, sides.tail.lossRate) };
-  if (priced.probability >= sides.favourite.minModelProbability) return { side: 'favourite', lossRate: Math.max(1 - priced.probability, sides.favourite.lossRate) };
+  if (priced.probability <= sides.tail.maxModelProbability) return { side: 'tail', lossRate:Math.max(priced.probability,posteriors.tail?.lossMean??tailLossRate(0,'tail',{tail:{losses:sides.tail.outOfSample.settledYes,clusters:sides.tail.outOfSample.markets}})) };
+  if (priced.probability >= sides.favourite.minModelProbability) return { side: 'favourite', lossRate:Math.max(1-priced.probability,posteriors.favourite?.lossMean??tailLossRate(0,'favourite',{favourite:{losses:sides.favourite.outOfSample.settledNo,clusters:sides.favourite.outOfSample.markets}})) };
   return null;
 }
 
