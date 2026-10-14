@@ -3,6 +3,9 @@ import {createHash} from 'node:crypto';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {cell,address} from '@red-cup-engineering/signcell/cell';
+import {acquireHttpResponse} from '@red-cup-engineering/http-services-section/acquire-response';
+import {readBody} from '@red-cup-engineering/http-services-section/body/web';
+import {JSON_RESOURCE_ENVELOPE} from '@red-cup-engineering/json-services-section/canonical-json';
 /** Forecast and verify the published city index using its actual versioned configuration. */
 import {makeTemperaturePool,postprocessTemperature,temperatureCdf} from './weather-ensemble.mjs';
 export const INDEX_CITIES={
@@ -20,10 +23,10 @@ export function parseIndexMethodology(text,city){
  return {configurationVersion:version,quorum:{members:+q[1],weight:+q[2]},precisionF:.01,roundingTieRule:'not specified in certified text'};
 }
 async function indexMethodology(city,fetchImpl){
- const url=`https://assets.kalshi.com/contract_terms/${INDEX_CITIES[city].terms}.pdf`,r=await fetchImpl(url,{signal:AbortSignal.timeout(15000)});if(!r.ok)throw new Error(`certified methodology HTTP ${r.status}`);
- const bytes=Buffer.from(await r.arrayBuffer());if(bytes.length>2*1024*1024||bytes.subarray(0,5).toString()!=='%PDF-')throw new Error('bounded certified PDF required');
+ const url=`https://assets.kalshi.com/contract_terms/${INDEX_CITIES[city].terms}.pdf`,acquired=await acquireHttpResponse(url,{fetchImpl,timeoutMs:15000});
+ const bytes=Buffer.from(await readBody({body:acquired.response.body,headers:acquired.response.headers,signal:acquired.signal},{maxBytes:2*1024*1024,decodeContentEncoding:false}));if(bytes.subarray(0,5).toString()!=='%PDF-')throw new Error('bounded certified PDF required');
  const availableAt=new Date().toISOString(),job=execute('pdftotext',['-layout','-','-'],{timeout:10000,maxBuffer:512*1024});job.child.stdin.end(bytes);const {stdout}=await job;
- return {url,availableAt,decodedAt:new Date().toISOString(),sha256:createHash('sha256').update(bytes).digest('hex'),bytes:bytes.length,rawPdfBase64:bytes.toString('base64'),rawText:stdout,...parseIndexMethodology(stdout,city)};
+ return {url,responseUrl:acquired.url,receivedAt:acquired.receivedAt,attempts:acquired.attempts,rateLimits:acquired.rateLimits,availableAt,decodedAt:new Date().toISOString(),sha256:createHash('sha256').update(bytes).digest('hex'),bytes:bytes.length,rawPdfBase64:bytes.toString('base64'),rawText:stdout,...parseIndexMethodology(stdout,city)};
 }
 
 const months={Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
@@ -101,9 +104,13 @@ export async function collectWeatherIndexEvidence(cities,{now=Date.now(),fetchIm
  const packets={},errors=[];
  await Promise.all(requested.map(async city=>{
   const base=`https://api.elections.kalshi.com/trade-api/v2/live_data/weather/${city}`,query=new URLSearchParams({from:String(Math.floor(now-2*HOUR)),to:String(Math.floor(now)),detailed:'true'});
-  const packet=packets[city]={calibrationSource:base+'/calibrations',indexSource:base+'?'+query};
+  const packet=packets[city]={calibrationSource:base+'/calibrations',indexSource:base+'?'+query,receipts:{}};
   for(const [key,url] of [['calibrations',packet.calibrationSource],['index',packet.indexSource]]){
-   try{const r=await fetchImpl(url,{signal:AbortSignal.timeout(15000)});if(!r.ok)throw new Error(`HTTP ${r.status}`);packet[key]=await r.json();}
+   try{
+    const acquired=await acquireHttpResponse(url,{fetchImpl,timeoutMs:15000}),bytes=Buffer.from(await readBody({body:acquired.response.body,headers:acquired.response.headers,signal:acquired.signal},{maxBytes:JSON_RESOURCE_ENVELOPE.maxSourceBytes,decodeContentEncoding:false})),availableAt=new Date().toISOString();
+    packet.receipts[key]={url,responseUrl:acquired.url,receivedAt:acquired.receivedAt,availableAt,decodedAt:null,sha256:createHash('sha256').update(bytes).digest('hex'),bytes:bytes.length,rawJsonBase64:bytes.toString('base64'),attempts:acquired.attempts,rateLimits:acquired.rateLimits};
+    packet[key]=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));packet.receipts[key].decodedAt=new Date().toISOString();
+   }
    catch(e){errors.push({source:'Kalshi-weather-index',city,kind:key,error:e.message});}
   }
   try{packet.methodology=await indexMethodology(city,fetchImpl);}catch(e){errors.push({source:'Kalshi-weather-index-methodology',city,error:e.message});}
