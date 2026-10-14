@@ -126,6 +126,22 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
   return {station,date,from:from.toISOString(),count:trace.length,maxF,minF,floor:Math.floor(maxF)-1,ceiling:Math.ceil(minF)+1,floorPrecise,ceilingPrecise,latest:trace.at(-1).at,readings:trace,synoptic,source:url.href,receivedAt,precipitation,rawPages};
 }
 
+/** Conditional inverse image of an ASOS body temperature under the specific
+ * whole-F-then-whole-C cascade. The observation-chain premise is required;
+ * an arbitrary Celsius station report or T-group is NOT this operator.
+ * Science: Lenticule Climate Science, 2026-10-14 source-bound hourly study §2.
+ * This pure law never proves a Kalshi settlement and has no order effect.
+ */
+export function asosWholeCelsiusPreimage(reportedC){
+ if(!Number.isSafeInteger(reportedC)||reportedC< -200||reportedC>200)
+   throw new TypeError('finite, physically bounded, whole Celsius observation required');
+ const minF=Math.ceil(32+9/5*(reportedC-.5));
+ const maxF=Math.ceil(32+9/5*(reportedC+.5))-1;
+ if(maxF<minF||maxF-minF>1)throw new RangeError('the conditional ASOS quantization preimage is inconsistent');
+ return Object.freeze({reportedC,integerF:Object.freeze(Array.from({length:maxF-minF+1},(_,i)=>minF+i)),
+  lowerF:minF-.5,upperFExclusive:maxF+.5,assumption:'whole Fahrenheit register rounded half-up, then whole Celsius rounded half-up'});
+}
+
 export const METAR_FEED = 'https://tgftp.nws.noaa.gov/data/observations/metar/stations';
 
 /**
