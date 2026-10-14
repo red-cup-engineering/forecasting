@@ -144,11 +144,53 @@ export async function readWeatherIndexSources({root=weatherRoot()}={}) {
 // projections of the original hash-bound records, not another persisted index.
 async function hourlyProjectionContext(root){
  const latest=await read(join(root,'latest.json'),{});
- return {stationEvidenceId:latest.forecasts?.find(row=>/^[a-f0-9]{64}$/.test(row.evidenceId??''))?.evidenceId??null,
-  contracts:(latest.contracts??[]).filter(c=>c.binding?.kind==='index-at'),
-  quotes:new Map((latest.forecasts??[]).filter(row=>row.family==='hourly-temperature').map(row=>[row.ticker,{mid:row.mid,marketObservedAt:row.marketObservedAt}])),
- };
+ return {stationEvidenceId:latest.forecasts?.find(row=>/^[a-f0-9]{64}$/.test(row.evidenceId??''))?.evidenceId??null};
 }
+/** Every two-minute index-source tick reads CURRENT hourly listings and rule
+ * bodies from the public venue, independently of the slower station-forecast
+ * cycle. The venue client is unsigned: the source job does not need account
+ * credentials and never places orders. A stale listing cannot masquerade as
+ * a fresh contract or market midpoint.
+ */
+export async function readHourlyIndexMarketCensus({client=createKalshiClient({credentials:null,timeoutMs:8000}),now=Date.now()}={}){
+ if(!Number.isFinite(now))throw new TypeError('hourly index census needs a finite observation clock');
+ const contracts=[],errors=[],coverage=[];
+ await mapLimit(Object.entries(INDEX_CITIES),2,async ([city,info])=>{
+  try{
+   const series=await client.getSeries(info.series);
+   if(series?.ticker!==info.series||series.frequency!=='hourly'
+     ||series.contract_terms_url!==`https://assets.kalshi.com/contract_terms/${info.terms}.pdf`)
+     throw new TypeError('hourly series identity, frequency or certified methodology changed');
+   const markets=await client.getMarkets({series_ticker:info.series,status:'open'});
+   if(!Array.isArray(markets)||markets.length>4000)
+     throw new TypeError('complete bounded hourly market listing required');
+   const marketObservedAt=new Date().toISOString(),received=Date.parse(marketObservedAt);
+   const seen=new Set();let accepted=0,refused=0;
+   for(const market of markets){
+    if(!market||typeof market.ticker!=='string'||seen.has(market.ticker)){
+     refused++;errors.push({source:'Kalshi-hourly-contract',city,ticker:market?.ticker??null,error:'missing or duplicate market identity'});continue;
+    }
+    seen.add(market.ticker);
+    const close=Date.parse(market.close_time);
+    if(!Number.isFinite(close)||close<=Math.max(now,received)||market.status&&market.status!=='active')continue;
+    if(market.series_ticker!==undefined&&market.series_ticker!==info.series||market.market_type!=='binary'){
+     refused++;errors.push({source:'Kalshi-hourly-contract',city,ticker:market.ticker,error:'wrong market series or not a binary contract'});continue;
+    }
+    const contract=weatherContract(market,series);
+    if(contract.family!=='hourly-temperature'||contract.source!=='synoptic'
+      ||contract.binding?.kind!=='index-at'||contract.binding.city!==city){
+     refused++;errors.push({source:'Kalshi-hourly-contract',city,ticker:market.ticker,error:contract.blocker??'source, measurement time or methodology not bound'});continue;
+    }
+    accepted++;
+    contracts.push({...contract,rulesHash:digest({primary:market.rules_primary,secondary:market.rules_secondary}),
+      marketObservedAt,marketMid:mid(market)});
+   }
+   coverage.push({city,seriesTicker:info.series,receivedAt:marketObservedAt,listed:markets.length,accepted,refused});
+  }catch(error){errors.push({source:'Kalshi-hourly-census',city,error:error.message});}
+ });
+ return {contracts,errors,coverage,orderEffect:false};
+}
+
 async function hourlyStationEvidence(root,evidenceId,indices){
  const {record:cached}=await readWeatherSourceRecord({root,file:'evidence/'+evidenceId+'.json.gz'});
  const stations=new Set(Object.values(indices).flatMap(packet=>(packet.calibrations?.calibrations??[]).flatMap(config=>(config.stations??[]).map(s=>s.station_id.slice(0,4)))));
@@ -161,34 +203,38 @@ async function hourlyStationEvidence(root,evidenceId,indices){
    forecasts:(cached.science.forecasts??[]).filter(row=>row.station?.startsWith('index:'))}:null,
  };
 }
-export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
+export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.now(),fetchImpl=fetch,marketClient}={}) {
  const previous=await readWeatherIndexSources({root});
  const fresh=await collectWeatherIndexEvidence(Object.keys(INDEX_CITIES),{now,fetchImpl,methodologies:Object.fromEntries(Object.entries(previous.cities).map(([city,packet])=>[city,packet.methodology]))});
  const context=await hourlyProjectionContext(root),stationEvidenceId=context.stationEvidenceId;
  const packet={kind:'kalshi-weather-index-source',at:new Date().toISOString(),indices:fresh.cities,errors:fresh.errors,stationEvidenceId};
  await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
  const evidenceId=digest(packet);await archivePacket(join(root,'evidence',evidenceId+'.json.gz'),packet);
- // Commit original source custody before optional projection work. Missing
- // cached guidance cannot delay, replace or invent a source observation.
+ // Receive the original index sensor evidence BEFORE any optional venue
+ // census or model projection. Failures cannot delay custody or backdate it.
  await atomic(join(root,'index-source.json'),{at:packet.at,evidenceId,surface:null});
- let surface=null,projectionError=null;
+ let surface=null,projectionError=null,marketCensus={contracts:[],errors:[],coverage:[],orderEffect:false};
  try{if(stationEvidenceId){
+  marketCensus=await readHourlyIndexMarketCensus({client:marketClient??createKalshiClient({credentials:null,fetchImpl,timeoutMs:8000}),now:Date.now()});
   const evidence=await hourlyStationEvidence(root,stationEvidenceId,packet.indices),decisionNow=Date.now(),grades=await read(join(root,'grades.json'),{}),rows=[];
-  const contracts=context.contracts.map(c=>weatherIndexContractScope(c,evidence,decisionNow));
+  // The market list AND quote originate from the current public venue read.
+  // A slow forecast cycle's old market roster is not the two-minute census.
+  const contracts=marketCensus.contracts.map(c=>weatherIndexContractScope(c,evidence,decisionNow));
   for(const c of contracts){
-   const old=context.quotes.get(c.ticker),s=stage(c,decisionNow);
-   // The market anchor retains its original availability window; an absent
-   // anchor is an admitted-model-only projection supported by fuseForecast.
-   const midpoint=old&&decisionNow>=Date.parse(old.marketObservedAt)&&decisionNow-Date.parse(old.marketObservedAt)<=20*60000?old.mid:null;
+   const s=stage(c,decisionNow);
+   const midpoint=Number.isFinite(c.marketMid)&&decisionNow>=Date.parse(c.marketObservedAt)&&decisionNow-Date.parse(c.marketObservedAt)<=20*60000?c.marketMid:null;
    const models=weatherEstimates(c,evidence,decisionNow).map(m=>({...m,band:probabilityBand({...c,station:c.binding.station,stage:s},m,grades)}));
-   rows.push({ticker:c.ticker,eventTicker:c.event_ticker,family:c.family,source:c.source,ruleKey:c.ruleKey,rulesHash:c.rulesHash,targetDate:c.binding.targetDate,closeTime:c.close_time,station:c.binding.station,blocker:c.blocker,evidenceId:stationEvidenceId,indexSourceEvidenceId:evidenceId,marketObservedAt:midpoint===null?null:old.marketObservedAt,models,surface:fuseForecast({mid:midpoint,models})});
+   rows.push({ticker:c.ticker,eventTicker:c.event_ticker,family:c.family,source:c.source,ruleKey:c.ruleKey,rulesHash:c.rulesHash,targetDate:c.binding.targetDate,closeTime:c.close_time,station:c.binding.station,blocker:c.blocker,evidenceId:stationEvidenceId,indexSourceEvidenceId:evidenceId,marketObservedAt:midpoint===null?null:c.marketObservedAt,models,surface:fuseForecast({mid:midpoint,models})});
   }
-  surface={...forecastSurface(rows,contracts,new Date(decisionNow).toISOString()),sourceEvidenceId:evidenceId,stationEvidenceId,projection:'fresh original index with previously received station guidance; original input age checks retained'};
+  surface={...forecastSurface(rows,contracts,new Date(decisionNow).toISOString()),sourceEvidenceId:evidenceId,stationEvidenceId,
+   marketCensus:{coverage:marketCensus.coverage,errors:marketCensus.errors},
+   projection:'current public hourly venue rules/quotes and index with previously received station guidance; original input age checks retained'};
   retainHourlyWindow(surface,previous.surface,contracts,grades,decisionNow);
   await atomic(join(root,'index-source.json'),{at:packet.at,evidenceId,surface});
  }}catch(error){projectionError=error.message;}
- return {at:packet.at,evidenceId,projectionError,cities:Object.keys(packet.indices),errors:packet.errors,conflicts:Object.entries(packet.indices).filter(([_,p])=>p.validation?.conflicted).map(([city])=>city),surfaceContracts:surface?.contracts.length??0,orderEffect:false};
+ return {at:packet.at,evidenceId,projectionError,cities:Object.keys(packet.indices),errors:[...packet.errors,...marketCensus.errors],hourlyMarketCoverage:marketCensus.coverage,hourlyMarkets:marketCensus.contracts.length,conflicts:Object.entries(packet.indices).filter(([_,p])=>p.validation?.conflicted).map(([city])=>city),surfaceContracts:surface?.contracts.length??0,orderEffect:false};
 }
+
 /** Public city index and station science, without requiring any market listing. */
 export async function weatherIndexEvidence({cities,root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}){
  if(!Array.isArray(cities)||cities.length<1||cities.length>4||cities.some(c=>!Object.hasOwn(INDEX_CITIES,c)))throw new TypeError('provide 1..4 known city indices');
