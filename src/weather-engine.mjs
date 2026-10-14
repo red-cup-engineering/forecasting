@@ -9,7 +9,7 @@ import {deriveDailyTemperatureExtremes} from './weather-temperature-extremes.mjs
 import {INDEX_CITIES} from './weather-index.mjs';
 import {TEMPERATURE_MARKETS} from './temperature-market-model.mjs';
 import {planWeatherReasoningCadence,temperatureReasoningTimeZones} from './weather-reasoning-cadence.mjs';
-import { binarySettlement } from '@red-cup-engineering/kalshi-services-section/market-facts';
+import { binarySettlement, marketSettlementTiming } from '@red-cup-engineering/kalshi-services-section/market-facts';
 import {randomUUID,createHash} from 'node:crypto';
 import {updateStationScience,readStationScience,readStationSciencePage,stationPointForecasts} from './station-weather-science.mjs';
 import {admitWeatherPageWire,weatherReadPage,weatherStatusInventory} from './weather-read-page.mjs';
@@ -363,7 +363,7 @@ async function quoteWeatherContract(c,models,evidence,client,surface) {
     const {price,depth}=levels[0];
     // One-lot rounding overestimates aggregate fees; custody execution applies the actual live fee.
     const fee=orderFee(1,price,{multiplier:c.feeMultiplier}),edge=side.p-price-fee;
-    if(edge>0)out.push({ticker:c.ticker,eventTicker:c.event_ticker,targetDate:c.binding?.targetDate,closeTime:fresh.close_time,exchangeIndex:c.exchange_index,side:side.side,price,depth,fee,edge,winLower:side.p,admitted:true,modelIds:qualified.map(m=>m.id),rulesHash:c.rulesHash,observedAt:new Date().toISOString(),quoteExpiresAt:new Date(Date.now()+60000).toISOString()});
+    if(edge>0)out.push({ticker:c.ticker,eventTicker:c.event_ticker,targetDate:c.binding?.targetDate,closeTime:fresh.close_time,...marketSettlementTiming(fresh),exchangeIndex:c.exchange_index,side:side.side,price,depth,fee,edge,winLower:side.p,admitted:true,modelIds:qualified.map(m=>m.id),rulesHash:c.rulesHash,observedAt:new Date().toISOString(),quoteExpiresAt:new Date(Date.now()+60000).toISOString()});
   }
   return out;
 }
@@ -394,7 +394,7 @@ export async function allocateLiveWeather({root=weatherRoot(),capitalUsd,encumbe
 export function forecastSurface(rows,contracts,at){
   const byTicker=new Map(contracts.map(c=>[c.ticker,c]));
   return {type:'KalshiForecastSurface',version:SURFACE_VERSION,at,contracts:rows.filter(r=>r.surface&&(r.surface.admitted.length||r.surface.structural.length)&&!r.blocker).map(r=>{const c=byTicker.get(r.ticker);
-    return {ticker:r.ticker,eventTicker:r.eventTicker,seriesTicker:c?.seriesTicker??r.ticker.split('-')[0],family:r.family,settlementSource:r.source,ruleKey:r.ruleKey,targetDate:r.targetDate,closeTime:r.closeTime,rulesHash:r.rulesHash,feeMultiplier:c?.feeMultiplier??1,feeType:c?.feeType??'quadratic',station:r.station,...r.surface};})};
+    return {ticker:r.ticker,eventTicker:r.eventTicker,seriesTicker:c?.seriesTicker??r.ticker.split('-')[0],family:r.family,settlementSource:r.source,ruleKey:r.ruleKey,targetDate:r.targetDate,closeTime:r.closeTime,...marketSettlementTiming(c),rulesHash:r.rulesHash,feeMultiplier:c?.feeMultiplier??1,feeType:c?.feeType??'quadratic',station:r.station,...r.surface};})};
 }
 /** Version 2: structural bounds are observation-derived only (forecast-surface STRUCTURAL_KINDS). */
 export const SURFACE_VERSION=2;
@@ -439,7 +439,7 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
       const midpoint=quoteTimes.has(c.ticker)?mid(c):null,b=c.binding,modelBands=models.map(m=>({...m,band:probabilityBand({...c,station:b?.station??null,stage:s},m,grades)}));
       const surface=fuseForecast({mid:midpoint,models:modelBands});
       const support=forecastCell(c,models);
-      const row={ticker:c.ticker,eventTicker:c.event_ticker,title:c.title,family:c.family,source:c.source,stage:s,targetDate:b?.targetDate??null,closeTime:c.close_time,ruleKey:c.ruleKey,rulesHash:c.rulesHash,station:b?.station??null,...(b?.kind==='rain'?{rainNowcast:sameDayRainEvidence(c,evidence,decisionNow)}:{}),mid:midpoint,marketObservedAt:quoteTimes.get(c.ticker)??null,models:modelBands,evidenceId,settlementReport:sourceReport(c,evidence.settlement),...support,modal:['high','low'].includes(b?.kind)?modalTemperatureReading(c,evidence,{at:new Date().toISOString()}):null,blocker:c.blocker,surface};
+      const row={ticker:c.ticker,eventTicker:c.event_ticker,title:c.title,family:c.family,source:c.source,stage:s,targetDate:b?.targetDate??null,closeTime:c.close_time,...marketSettlementTiming(c),ruleKey:c.ruleKey,rulesHash:c.rulesHash,station:b?.station??null,...(b?.kind==='rain'?{rainNowcast:sameDayRainEvidence(c,evidence,decisionNow)}:{}),mid:midpoint,marketObservedAt:quoteTimes.get(c.ticker)??null,models:modelBands,evidenceId,settlementReport:sourceReport(c,evidence.settlement),...support,modal:['high','low'].includes(b?.kind)?modalTemperatureReading(c,evidence,{at:new Date().toISOString()}):null,blocker:c.blocker,surface};
       rows.push(row);
       if(models.length&&midpoint!==null&&c.status==='active'&&Date.parse(c.close_time)>Date.now()){
         // The surface is graded like any model: house-surface-v1 against the mid is the house's own skill.
@@ -524,7 +524,7 @@ export async function weatherParticipation({root=weatherRoot(),client=weatherCli
      const c=weatherContract(market,series);c.rulesHash=digest({primary:c.rules_primary,secondary:c.rules_secondary});
      const models=weatherEstimates(c,evidence,Date.parse(receivedAt));if(!models.length)continue;
      const b=c.binding,stageValue=stage(c,Date.parse(receivedAt)),bands=models.map(m=>({...m,band:probabilityBand({...c,station:b?.station??null,stage:stageValue},m,state.grades??{})}));byTicker.set(c.ticker,c);
-     forecasts.push({ticker:c.ticker,eventTicker:c.event_ticker,closeTime:c.close_time,family:c.family,station:'index:'+b.city,rulesHash:c.rulesHash,ruleKey:c.ruleKey,stage:stageValue,mid:mid(c),models:bands,evidenceId:sourceId,derivedAt:receivedAt,...forecastCell(c,models)});
+     forecasts.push({ticker:c.ticker,eventTicker:c.event_ticker,closeTime:c.close_time,...marketSettlementTiming(c),family:c.family,station:'index:'+b.city,rulesHash:c.rulesHash,ruleKey:c.ruleKey,stage:stageValue,mid:mid(c),models:bands,evidenceId:sourceId,derivedAt:receivedAt,...forecastCell(c,models)});
     }
    }catch(e){discoveryErrors.push({series:template.seriesTicker,error:e.message});}});
   }
