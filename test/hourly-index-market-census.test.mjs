@@ -31,8 +31,8 @@ function mock({miami=[market()],chicago=[],nyc=[],['la-coastal']:coastal=[],badS
    if(city===failedCity)throw new Error('market venue unavailable');
    return {...series(city),...(badSeries[city]??{})};
   },
-  async getMarkets({series_ticker,status}){
-   calls.push(['markets',series_ticker,status]);
+  async getMarkets({series_ticker,status,min_close_ts,max_close_ts}){
+   calls.push(['markets',series_ticker,{status,min_close_ts,max_close_ts}]);
    const city=Object.keys(INDEX_CITIES).find(c=>INDEX_CITIES[c].series===series_ticker);
    return quotes[city];
   },
@@ -103,4 +103,26 @@ test('wrong series in a fetched page never inherits the requested index rules',a
  const census=await readHourlyIndexMarketCensus({client,now:at,clock});
  assert.equal(census.contracts.length,0);
  assert.ok(census.errors.some(e=>e.error==='wrong market series or not a binary contract'));
+});
+
+test('fast census uses compatible Kalshi close-time filters, not incompatible open-status query',async()=>{
+ const {client,calls}=mock({miami:[market('miami',{status:'open'})]});
+ const r=await readHourlyIndexMarketCensus({client,now:at,clock});
+ assert.equal(r.contracts.length,1);
+ for(const row of calls.filter(c=>c[0]==='markets')){
+  assert.equal(row[2].status,undefined);
+  assert.equal(row[2].min_close_ts,Math.floor(at/1000));
+  assert.equal(row[2].max_close_ts,Math.ceil((at+6*3600000)/1000));
+ }
+});
+
+test('paused, stale and distant markets do not consume the fast six-hour hour-turnover lane',async()=>{
+ const {client}=mock({miami:[
+  market('miami',{ticker:'PAUSED',status:'paused'}),
+  market('miami',{ticker:'FAR',close_time:'2026-10-14T20:05:00Z'}),
+  market('miami',{ticker:'READY',status:'open'}),
+ ]});
+ const r=await readHourlyIndexMarketCensus({client,now:at,clock});
+ assert.deepEqual(r.contracts.map(c=>c.ticker),['READY']);
+ await assert.rejects(readHourlyIndexMarketCensus({client,now:at,clock,horizonHours:25}),TypeError);
 });
