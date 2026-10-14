@@ -7,6 +7,42 @@ It provides question ingestion, SignChain claim
 fusion, proper scoring rules, and calibration tracking.
 Stakes go through `kalshi-stake-path-service` inside its capped envelope.
 
+## Present source ownership and extraction boundary (2026-10-14)
+
+This is currently the **mixed legacy implementation** at
+`red-cup-engineering/kalshi-engineering-services-section/services/forecasting-service`;
+its published package identifier is `@red-cup-engineering/forecasting`.
+This is **not** a standalone `red-cup-engineering/forecasting` GitHub repo.
+The public x402 seller consumes its `./station-observations` and
+`./coops-water-level` exports in two held NOAA candidates. Do not treat
+location under Kalshi as engineering/scientific ownership of NOAA observations.
+
+The target weather-specific section is
+`red-cup-engineering/weather-system-engineering-services-section`:
+it should own meteorological source admission, station readings, physical
+data transforms, measured uncertainty, forecasts and their original data
+provenance, independently of which market buys the result. **General**
+question forecasting, evidence fusion and proper scoring remain reusable
+forecasting capabilities, not exclusively a weather service. Kalshi owns
+market-specific settlement rules, quotes, positions, and trading behavior;
+it should consume weather rather than own the source data provider.
+
+The **extraction is not yet complete**: preserve the original current exports,
+the Kalshi consumer, and Causeway marketplace PR #5 until a single properly
+owned package, repository and installed parent mount are independently
+received. Required receiving checks: exact exports and their consumers;
+NWS METAR and CO-OPS request bounds, source bytes/NI, timestamps,
+quality/datum/units, rights and CARE authority where applicable;
+unchanged caller-facing inputs and outputs; source and actual network
+test failures; then canonical x402 SKU/ActivityPub compilation and real
+seller/Node receiving. Do not implement another NOAA fetcher or clone the
+forecasting package to meet a naming criterion.
+
+Scientific authority and distinctions are maintained in
+[Lenticule Climate Science's current hourly-temperature article](https://github.com/lenticule-science/climate-science-services-section/blob/main/content/text/documents/articles/2026-10-14-source-bound-hourly-temperature-forecast-science.md).
+This README controls today's actual package consumers, not semantic proof,
+permissions or an uncompleted repository migration.
+
 ## Pipeline
 
 1. **Ingest** (`scripts/ingest-forecasting-question.mjs`) — validates and
