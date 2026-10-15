@@ -84,11 +84,13 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
   url.searchParams.set('start', from.toISOString());
   url.searchParams.set('end', until.toISOString());
   // Keep full GeoJSON station packets within the existing 1 MiB source
-  // envelope. Eight 200-record pages still cover a minute-resolution day.
-  url.searchParams.set('limit','200');
+  // envelope. A 200-record page measured 0.77-0.83 MiB on 2026-10-15 (about
+  // 4.1 KiB per record), too little margin for longer remarks; 100-record
+  // pages measure about 0.4 MiB. Sixteen pages still cover a minute-resolution day.
+  url.searchParams.set('limit','100');
   const readings=new Map(),visited=new Set(),synoptic=[],pages=[];let next=url.href;
   while(next){
-    const pageUrl=new URL(next,url);if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname||visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');
+    const pageUrl=new URL(next,url);if(!pageUrl.searchParams.has('limit'))pageUrl.searchParams.set('limit',url.searchParams.get('limit'));if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname||visited.has(pageUrl.href)||visited.size>=16)throw new Error('station-observations: invalid or excessive observation pagination');
     visited.add(pageUrl.href);
     const acquired=await readNwsResponse(pageUrl,{fetchImpl,headers:{'user-agent':userAgent,accept:'application/geo+json'},timeoutMs:30000});
     const {response:res,signal}=acquired;
@@ -96,7 +98,11 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
     const page=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(rawBytes)),receivedAt=new Date().toISOString();
     if(!page||!Array.isArray(page.features))throw new Error('station-observations: GeoJSON feature page required');
     pages.push({url:pageUrl.href,receivedAt,transport:{attempts:acquired.attempts,rateLimits:acquired.rateLimits},identity:makeNiUri(rawBytes),sha256:createHash('sha256').update(rawBytes).digest('hex'),bytes:rawBytes.byteLength,encoding:'gzip-base64',body:gzipSync(rawBytes).toString('base64'),packet:page});
+    // NWS's `next` link keeps only a cursor: it drops `limit` (the next page then returns the default 500
+    // records, over 1 MiB) and ignores `start`/`end`, walking backward in time. Carry the limit above, and
+    // stop once a page reaches the start of the climate day.
     next=page.pagination?.next??null;
+    if(page.features.some(f=>Date.parse(f?.properties?.timestamp)<=from.getTime()))next=null;
     for(const feature of page.features??[]) {
     const p=feature?.properties,temperature=p?.temperature,at=p?.timestamp,epoch=Date.parse(at);
     if(!Number.isFinite(epoch)||epoch<from.getTime()||epoch>until.getTime()||epoch>=from.getTime()+86400000||typeof temperature?.value!=='number'||!Number.isFinite(temperature.value))continue;
