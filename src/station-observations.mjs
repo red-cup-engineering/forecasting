@@ -84,11 +84,13 @@ export async function observedExtremes({ station, date, timeZone, now = Date.now
   url.searchParams.set('start', from.toISOString());
   url.searchParams.set('end', until.toISOString());
   // Keep full GeoJSON station packets within the existing 1 MiB source
-  // envelope. Eight 200-record pages still cover a minute-resolution day.
-  url.searchParams.set('limit','200');
+  // envelope. A 200-record page measured 0.77-0.83 MiB on 2026-10-15 (about
+  // 4.1 KiB per record), too little margin for longer remarks; 100-record
+  // pages measure about 0.4 MiB. Sixteen pages still cover a minute-resolution day.
+  url.searchParams.set('limit','100');
   const readings=new Map(),visited=new Set(),synoptic=[],pages=[];let next=url.href;
   while(next){
-    const pageUrl=new URL(next,url);if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname||visited.has(pageUrl.href)||visited.size>=8)throw new Error('station-observations: invalid or excessive observation pagination');
+    const pageUrl=new URL(next,url);if(pageUrl.origin!==url.origin||pageUrl.pathname!==url.pathname||visited.has(pageUrl.href)||visited.size>=16)throw new Error('station-observations: invalid or excessive observation pagination');
     visited.add(pageUrl.href);
     const acquired=await readNwsResponse(pageUrl,{fetchImpl,headers:{'user-agent':userAgent,accept:'application/geo+json'},timeoutMs:30000});
     const {response:res,signal}=acquired;
