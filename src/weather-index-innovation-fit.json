@@ -1,0 +1,31 @@
+{
+ "fitThrough": "2026-10-14",
+ "cities": {
+  "miami": {
+   "gain": 0.873,
+   "decayHours": 8,
+   "rows": 4098,
+   "mseF2": 4.658
+  },
+  "nyc": {
+   "gain": 1.012,
+   "decayHours": 6,
+   "rows": 3945,
+   "mseF2": 2.033
+  },
+  "chicago": {
+   "gain": 1.172,
+   "decayHours": 4,
+   "rows": 4002,
+   "mseF2": 2.812
+  },
+  "la-coastal": {
+   "gain": 0.943,
+   "decayHours": 12,
+   "rows": 3986,
+   "mseF2": 3.634
+  }
+ },
+ "record": "data/records/2026-10-15-hourly-index-innovation/README.md",
+ "model": "a*exp(-lag/decayHours) on the recent index innovation; NBH guidance only"
+}

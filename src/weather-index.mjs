@@ -1,5 +1,7 @@
 import {ecmwfStationDistributions} from './weather-ecmwf-ensemble.mjs';
 import {createHash} from 'node:crypto';
+import {readFileSync} from 'node:fs';
+import {innovationWeight} from './weather-index-innovation.mjs';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {cell,address} from '@red-cup-engineering/signcell/cell';
@@ -15,6 +17,8 @@ export const INDEX_CITIES={
  'la-coastal':{timeZone:'America/Los_Angeles',version:'1.0',series:'KXTEMPLAXHS',terms:'LAWINDEX'},
 };
 const HOUR=3600000,MINUTE=60000,execute=promisify(execFile);
+/** Per-city recent-reading parameters from `scripts/hourly-index-backtest.mjs --fit`; absent cities keep only v1. */
+const INNOVATION_FIT=JSON.parse(readFileSync(new URL('./weather-index-innovation-fit.json',import.meta.url),'utf8'));
 /** Certified document, rather than a manually maintained quorum copy, defines eligibility. */
 export function parseIndexMethodology(text,city){
  const normalized=text.replace(/\s+/gu,' '),version=new RegExp(`${city}-temperature-v([0-9]+\\.[0-9]+)`).exec(normalized)?.[1];
@@ -184,6 +188,11 @@ export function indexDistributions(city,e,target,now){
    const base=reference.reduce((sum,r,i)=>sum+c.stations[i].weight*(r.mean+1.8*(c.city_reference_c-c.stations[i].offset_c)),0),innovation=anchor.v-base,decay=Math.exp(-(target-anchor.t)/(3*HOUR));
    const shifted=mean+innovation*decay;
    out.push({model:model+'/recent-innovation-v1',meanF:shifted,scaleF:scale,nu:5,source:packet.indexSource,details:{...details,mean:shifted,baseMeanF:mean,anchorValueF:anchor.v,anchorTime:new Date(anchor.t).toISOString(),anchorStatus:anchor.status,anchorSource:packet.indexSource,anchorBackfilledForecast:reference.some(r=>r.backfilled),innovationF:innovation,innovationWeight:decay,status:'forward experiment; three-hour decay is uncalibrated; spread retained'}});
+   const fit=provider==='nbh'?INNOVATION_FIT.cities?.[city]:null;
+   if(fit){
+    const weight=innovationWeight(target-anchor.t,fit),fitted=mean+innovation*weight;
+    out.push({model:model+'/recent-innovation-v2',meanF:fitted,scaleF:scale,nu:5,source:packet.indexSource,details:{...details,mean:fitted,baseMeanF:mean,anchorValueF:anchor.v,anchorTime:new Date(anchor.t).toISOString(),anchorStatus:anchor.status,anchorSource:packet.indexSource,anchorBackfilledForecast:reference.some(r=>r.backfilled),innovationF:innovation,innovationWeight:weight,innovationFit:{gain:fit.gain,decayHours:fit.decayHours,fitThrough:INNOVATION_FIT.fitThrough,record:INNOVATION_FIT.record},status:'forward experiment; gain and decay fitted per city on past index minutes and NBH guidance; spread retained'}});
+   }
   }
  }
  const joint=jointEcmwfIndexDistribution(city,e,target,now);if(joint)out.push(joint);

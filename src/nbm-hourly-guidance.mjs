@@ -6,7 +6,7 @@ const HOUR=3600000;
 export function hourlyBulletinUrl(runtime,base=NBM_OPEN_DATA){const d=new Date(runtime),day=d.toISOString().slice(0,10).replaceAll('-',''),hh=d.toISOString().slice(11,13);return `${base}/blend.${day}/${hh}/text/blend_nbhtx.t${hh}z`;}
 export function parseNbhBulletin(text,stations){
  const wanted=stations?new Set(stations):null,out=new Map();
- const header=/^[^\S\n]*(\S+)[^\S\n]+NBM V[\d.]+ NBH GUIDANCE[^\S\n]+(\d\d)\/(\d\d)\/(\d{4})[^\S\n]+(\d\d)(\d\d) UTC[^\S\n]*$/gm;
+ const header=/^[^\S\n]*(\S+)[^\S\n]+NBM V[\d.]+ NBH GUIDANCE[^\S\n]+(\d{1,2})\/(\d{1,2})\/(\d{4})[^\S\n]+(\d\d)(\d\d) UTC[^\S\n]*$/gm;
  for(const m of text.matchAll(header)){
   const [,station,mm,dd,yyyy,hh,mi]=m;if(wanted&&!wanted.has(station))continue;
   const runtime=Date.UTC(+yyyy,+mm-1,+dd,+hh,+mi);if(+mi!==0||!Number.isFinite(runtime))continue;
