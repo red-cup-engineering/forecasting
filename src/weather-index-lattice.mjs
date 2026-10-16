@@ -46,6 +46,9 @@ export const GAUSS_HERMITE = Object.freeze((() => {
   return nodes;
 })());
 
+/** Three-point Gauss-Hermite for E[f(Z)], Z ~ N(0,1): the volatility regimes. */
+const REGIMES = Object.freeze([{ z: -Math.sqrt(3), w: 1 / 6 }, { z: 0, w: 2 / 3 }, { z: Math.sqrt(3), w: 1 / 6 }]);
+
 /** A reading's resolution in degrees C: one-minute ASOS reports whole degrees, the METAR fallback tenths. */
 export const resolutionOf = (source) => (source === 'metar' ? 0.1 : 1);
 /** A published station value (temp_f) as degrees C on its resolution. */
@@ -108,19 +111,28 @@ export const latentMean = (state) => { let m = 0; for (let k = 0; k < POINTS; k 
  * change `shift` (C) over that horizon and the `resolution` it will read at. `commonHorizon` is the horizon over
  * which every station still shares the regional shock (from the latest reading of any of them); a station whose
  * reading is older carries the rest of that shock as its own.
+ *
+ * The weather's own volatility scales the latent motion: `scale` is its expected level over the horizon (diurnal and
+ * recent), and the regime around that level is lognormal with spread `regimeSpread`, integrated by three-point
+ * Gauss-Hermite. The mixture gives the sum the heavy tails the stations show (a two-degree move in ten minutes is
+ * about one in a hundred, not the Gaussian's never).
  * @returns {{min: number, pmf: Float64Array}} pmf[s - min] = P(sum of tenths = s)
  */
-export function sumDistribution(stations, { commonHorizon, sigmaCommon, sigmaStation, sigmaDrift = 0, tau, tauMetar = tau }) {
+export function sumDistribution(stations, { commonHorizon, sigmaCommon, sigmaStation, sigmaDrift = 0, tau, tauMetar = tau, scale = 1, regimeSpread = 0 }) {
   const hc = Math.max(0, commonHorizon);
-  const common = Math.sqrt(sigmaCommon * sigmaCommon * hc + sigmaDrift * sigmaDrift * hc * hc);
-  const owns = stations.map(({ horizon, resolution }) => {
-    const h = Math.max(0, horizon), noise = resolution < 1 ? tauMetar : tau;
-    return Math.sqrt(sigmaStation * sigmaStation * h + sigmaCommon * sigmaCommon * Math.max(0, h - hc) + noise * noise);
-  });
   // Sums are kept in units of `base` tenths: whole degrees when every station reads whole degrees.
   const base = stations.every(({ resolution }) => resolution >= 1) ? 10 : 1;
   let total = null, totalMin = 0;
-  for (const { z, w } of GAUSS_HERMITE) {
+  const regimes = regimeSpread > 0 ? REGIMES : [{ z: 0, w: 1 }];
+  for (const regime of regimes) {
+  const level = scale * Math.exp(regimeSpread * regime.z), sc = sigmaCommon * level, ss = sigmaStation * level;
+  const common = Math.sqrt(sc * sc * hc + sigmaDrift * sigmaDrift * hc * hc);
+  const owns = stations.map(({ horizon, resolution }) => {
+    const h = Math.max(0, horizon), noise = resolution < 1 ? tauMetar : tau;
+    return Math.sqrt(ss * ss * h + sc * sc * Math.max(0, h - hc) + noise * noise);
+  });
+  for (const { z, w: shockWeight } of GAUSS_HERMITE) {
+    const w = shockWeight * regime.w;
     let pmf = Float64Array.of(1), min = 0;
     for (let i = 0; i < stations.length; i += 1) {
       const { state, shift = 0, resolution } = stations[i], sd = owns[i], unit = Math.round(resolution * 10) / base;
@@ -145,6 +157,7 @@ export function sumDistribution(stations, { commonHorizon, sigmaCommon, sigmaSta
     }
     if (!total) { total = new Float64Array(pmf.length + 2000 / base); totalMin = min - 1000 / base; }
     for (let s = 0; s < pmf.length; s += 1) { const at = s + min - totalMin; if (pmf[s] && at >= 0 && at < total.length) total[at] += w * pmf[s]; }
+  }
   }
   let first = 0, last = total.length - 1;
   while (first < last && total[first] < 1e-13) first += 1;
@@ -202,8 +215,12 @@ export function strikeProbabilities(distribution, strikes) {
  * @param {(station: string, from: number, to: number) => number|null} [guidance] forecast change (C) of a station's
  *   temperature between two instants, from the latest guidance published by `from`
  */
-export function createDriftPredictors({ climate, localHour, trendMinutes, climateHalfLifeDays = 7, guidance = null }) {
+export function createDriftPredictors({ climate, climateVariance = null, localHour, trendMinutes, climateHalfLifeDays = 7, volatilityMinutes = 60, guidance = null }) {
   const diurnal = Float64Array.from({ length: 24 }, (_, h) => climate[h] ?? 0);
+  // The mean squared one-minute change of a station's reading by local hour (C^2), kept like the drift climatology,
+  // and the city's squared changes over the last volatilityMinutes.
+  const variance = Float64Array.from({ length: 24 }, (_, h) => climateVariance?.[h] ?? 0);
+  const recent = [];
   // Each local hour is seen 60 minutes a day: the per-minute weight that halves its memory in the half-life.
   const keep = climateHalfLifeDays > 0 ? Math.pow(0.5, 1 / (60 * climateHalfLifeDays)) : 1;
   const histories = new Map();
@@ -234,8 +251,11 @@ export function createDriftPredictors({ climate, localHour, trendMinutes, climat
       if (previous && t <= previous.t) return;
       if (previous && t - previous.t === MINUTE) {
         // One station's one-minute change is 1/members of the city's: the weight that keeps the hour's memory.
-        const hour = localHour(t), k = Math.pow(keep, 1 / Math.max(1, members));
-        diurnal[hour] = k * diurnal[hour] + (1 - k) * (celsius - previous.c);
+        const hour = localHour(t), k = Math.pow(keep, 1 / Math.max(1, members)), change = celsius - previous.c;
+        diurnal[hour] = k * diurnal[hour] + (1 - k) * change;
+        variance[hour] = variance[hour] > 0 ? k * variance[hour] + (1 - k) * change * change : change * change;
+        recent.push({ t, d2: change * change });
+        while (recent.length && recent[0].t <= t - volatilityMinutes * MINUTE) recent.shift();
       }
       history.push({ t, c: celsius });
       while (history.length > 1 && history[0].t < t - (trendMinutes + 30) * MINUTE) history.shift();
@@ -246,7 +266,22 @@ export function createDriftPredictors({ climate, localHour, trendMinutes, climat
       const [trend, clim] = commonFeatures(t, h), forecast = guidance ? guidance(station, t, t + h * MINUTE) : null;
       return [trend, clim, Number.isFinite(forecast) ? forecast : 0];
     },
+    /**
+     * The weather's volatility at instant t over h minutes, as ratios: `diurnal`, the root of the hour climatology's
+     * variance over the horizon to its daily mean, and `recent`, the root of the last volatilityMinutes' variance to
+     * the climatology of this hour (1 when either is not yet known).
+     */
+    volatility(t, h) {
+      let mean = 0; for (const v of variance) mean += v / 24;
+      if (!(mean > 0)) return { diurnal: 1, recent: 1 };
+      let over = 0, minutes = 0;
+      for (let m = t, end = t + Math.max(1, h) * MINUTE; m < end;) { const next = Math.min(end, (Math.floor(m / 3_600_000) + 1) * 3_600_000); over += ((next - m) / MINUTE) * variance[localHour(m + 1)]; minutes += (next - m) / MINUTE; m = next; }
+      const now = variance[localHour(t)];
+      let r = 0, n = 0; for (const x of recent) if (x.t <= t && x.t > t - volatilityMinutes * MINUTE) { r += x.d2; n += 1; }
+      return { diurnal: Math.sqrt(over / minutes / mean), recent: n >= volatilityMinutes / 2 && now > 0 ? Math.sqrt(r / n / now) : 1 };
+    },
     diurnal: () => Float64Array.from(diurnal),
+    variance: () => Float64Array.from(variance),
   });
 }
 
@@ -264,12 +299,16 @@ export function driftCoefficients(drift, h) {
  * One city's index, tracked reading by reading: the station filters, the drift predictors, and the distribution of
  * the index at any later minute. The same tracker serves research replays and the live market maker.
  * @param {{sigmaCommon: number, sigmaStation: number, sigmaDrift: number, tau: number, tauMetar?: number,
- *   trendMinutes: number, climateHalfLifeDays: number, drift: {horizons: number[], coefficients: number[][]}}} params
+ *   trendMinutes: number, climateHalfLifeDays: number, drift: {horizons: number[], coefficients: number[][]},
+ *   volatilityPersistence?: number, regimeSpread?: number}} params
+ * @param {number[]} [climateVariance] prior mean squared one-minute change of a station by local hour (C^2)
  * @param {object[]} calibrations the city's published calibrations (live_data/weather/{city}/calibrations)
  */
-export function createIndexTracker({ params, climate, localHour, calibrations, guidance = null }) {
-  const { sigmaCommon, sigmaStation, sigmaDrift = 0, tau, tauMetar = tau, trendMinutes, climateHalfLifeDays, drift } = params;
-  const predictors = createDriftPredictors({ climate, localHour, trendMinutes, climateHalfLifeDays, guidance });
+export function createIndexTracker({ params, climate, climateVariance = null, localHour, calibrations, guidance = null }) {
+  const { sigmaCommon, sigmaStation, sigmaDrift = 0, tau, tauMetar = tau, trendMinutes, climateHalfLifeDays, drift, volatilityPersistence = 0, regimeSpread = 0 } = params;
+  const predictors = createDriftPredictors({ climate, climateVariance, localHour, trendMinutes, climateHalfLifeDays, guidance });
+  // The latent motion's scale over h minutes from t: the hour's level, times recent over usual to a fitted power.
+  const scaleOf = (t, h) => { const v = predictors.volatility(t, h); return v.diurnal * Math.pow(Math.min(3, Math.max(1 / 3, v.recent)), volatilityPersistence); };
   const step = Math.sqrt(sigmaCommon ** 2 + sigmaStation ** 2);
   const stations = new Map();
   let latest = null;
@@ -286,7 +325,7 @@ export function createIndexTracker({ params, climate, localHour, calibrations, g
       const accepted = code === 'ok' && Number.isFinite(celsius);
       if (station.filter && station.last !== null) {
         const gap = (t - station.last) / MINUTE;
-        station.filter = advance(station.filter, { drift: shiftOf(id, station.last, gap), sd: step * Math.sqrt(gap) });
+        station.filter = advance(station.filter, { drift: shiftOf(id, station.last, gap), sd: step * Math.sqrt(gap) * scaleOf(station.last, gap) });
       }
       if (accepted) {
         const resolution = resolutionOf(source);
@@ -311,7 +350,8 @@ export function createIndexTracker({ params, climate, localHour, calibrations, g
         const s = stations.get(id), horizon = Math.max(0, (target - s.last) / MINUTE);
         return { state: s.filter, horizon, shift: shiftOf(id, s.last, horizon), resolution: resolutionOf(s.source) };
       });
-      const sum = sumDistribution(inputs, { commonHorizon: Math.max(0, (target - latest) / MINUTE), sigmaCommon, sigmaStation, sigmaDrift, tau, tauMetar });
+      const commonHorizon = Math.max(0, (target - latest) / MINUTE);
+      const sum = sumDistribution(inputs, { commonHorizon, sigmaCommon, sigmaStation, sigmaDrift, tau, tauMetar, scale: scaleOf(latest, Math.max(1, commonHorizon)), regimeSpread });
       const value = indexLawAt.valueOf(accepted), out = [];
       for (let k = 0; k < sum.pmf.length; k += 1) if (sum.pmf[k] > 0) out.push({ value: value(sum.min + k), p: sum.pmf[k] });
       return out;

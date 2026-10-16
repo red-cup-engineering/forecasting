@@ -43,16 +43,16 @@ for (const name of (await readdir(join(data, 'trades'))).filter((n) => n.startsW
   for (const line of (await readFile(join(data, 'trades', name), 'utf8')).split('\n').filter(Boolean)) {
     const trade = JSON.parse(line), market = markets.get(trade.ticker), at = Date.parse(trade.created_time);
     if (!market || at < from || at >= to) continue;
-    trades.push({ at, market, price: Number(trade.yes_price_dollars), count: Number(trade.count_fp), taker: trade.taker_side });
+    trades.push({ at, market, ticker: trade.ticker, price: Number(trade.yes_price_dollars), count: Number(trade.count_fp), taker: trade.taker_side });
   }
 }
 trades.sort((a, b) => a.at - b.at);
 
-const tracker = createIndexTracker({ params: fit.params, climate: fit.climateDriftCPerMinuteByLocalHour, localHour, calibrations: await loadCalibrations(values.city), guidance: await loadGuidance() });
+const tracker = createIndexTracker({ params: fit.params, climate: fit.climateDriftCPerMinuteByLocalHour, climateVariance: fit.climateVarianceC2PerMinuteByLocalHour, localHour, calibrations: await loadCalibrations(values.city), guidance: await loadGuidance() });
 const clip = (p) => Math.min(0.995, Math.max(0.005, p));
 const buckets = [5, 10, 20, 30, 45, 61], margins = [0, 1, 2, 3, 5];
 const rows = Object.fromEntries(buckets.map((b) => [b, { trades: 0, contracts: 0, modelLog: 0, marketLog: 0, modelBrier: 0, marketBrier: 0, maker: Object.fromEntries(margins.map((m) => [m, { contracts: 0, pnl: 0 }])) }]));
-const reliability = {};
+const reliability = {}, scored = [], lastPrice = new Map();
 let next = 0, cache = new Map();
 for (const trade of trades) {
   while (next < arrivals.length && arrivals[next].at <= trade.at) { const a = arrivals[next]; tracker.observe(a.r.id, a.t, a.r); cache = new Map(); next += 1; }
@@ -63,6 +63,10 @@ for (const trade of trades) {
   if (!distribution) continue;
   let q = 0; for (const d of distribution) if (d.value > market.strike) q += d.p;
   const lead = (market.settle - trade.at) / 60_000, bucket = buckets.find((b) => lead < b) ?? 61, row = rows[bucket], y = market.yes, w = trade.count;
+  // Every scored trade, with the market's own last price before it, for the stacking and margin fit (stack-market.mjs).
+  const previous = lastPrice.get(trade.ticker);
+  scored.push({ at: trade.at, ticker: trade.ticker, lead, q, price: trade.price, previous: previous?.price ?? null, previousAgeS: previous ? (trade.at - previous.at) / 1000 : null, taker: trade.taker, count: w, y });
+  lastPrice.set(trade.ticker, { price: trade.price, at: trade.at });
   const bin = `${lead < 20 ? 'short' : 'long'}:${Math.min(9, Math.floor(q * 10))}`, rel = (reliability[bin] ??= { n: 0, q: 0, y: 0, p: 0 });
   rel.n += w; rel.q += w * q; rel.y += w * y; rel.p += w * trade.price;
   row.trades += 1; row.contracts += w;
@@ -84,5 +88,6 @@ for (const [b, r] of Object.entries(rows)) {
     makerAgainstTakers: Object.fromEntries(Object.entries(r.maker).map(([m, v]) => [`margin${m}c`, { contracts: Math.round(v.contracts), pnlUsd: Math.round(v.pnl * 100) / 100, perContractCents: v.contracts ? Math.round((10000 * v.pnl) / v.contracts) / 100 : null }])) };
 }
 await writeFile(join(here, '..', 'results', `market-${values.city}.json`), JSON.stringify(report, null, 2) + '\n');
+await writeFile(join(data, `scored-${values.city}.jsonl`), scored.map((r) => JSON.stringify(r)).join('\n') + '\n');
 for (const [k, v] of Object.entries(report.reliability)) process.stdout.write(`${k} n ${v.contracts} model ${v.model.toFixed(3)} realized ${v.realized.toFixed(3)} market ${v.market.toFixed(3)}\n`);
 for (const [lead, r] of Object.entries(report.byLeadMinutes)) process.stdout.write(`lead ${lead.padStart(3)} contracts ${String(r.contracts).padStart(7)} logloss model ${r.modelLogLoss.toFixed(3)} market ${r.marketLogLoss.toFixed(3)} | brier model ${r.modelBrier.toFixed(4)} market ${r.marketBrier.toFixed(4)} | maker@2c ${JSON.stringify(r.makerAgainstTakers.margin2c)}\n`);

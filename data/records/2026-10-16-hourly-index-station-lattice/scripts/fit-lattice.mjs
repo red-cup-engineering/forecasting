@@ -29,22 +29,22 @@ const MIN = 60_000, horizons = values.horizons.split(',').map(Number), every = N
 const localHour = localHourOf(values.city);
 const window = (spec) => spec.split(':').map((d, i) => Date.parse(`${d}T00:00:00Z`) + (i ? 86_400_000 : 0));
 
-/** Mean one-minute change of a station's whole-degree reading by local hour over a window: the climatology prior. */
+/** Mean and mean square of the one-minute change of a station's whole-degree reading by local hour over a window: the climatology priors. */
 function climatology(minutes, [from, to]) {
-  const sum = new Array(24).fill(0), n = new Array(24).fill(0), last = new Map();
+  const sum = new Array(24).fill(0), squares = new Array(24).fill(0), n = new Array(24).fill(0), last = new Map();
   for (const m of minutes) {
     for (const r of m.records) {
       const prev = last.get(r.id);
-      if (r.code === 'ok' && r.source !== 'metar' && prev && prev.t === m.t - MIN && m.t >= from && m.t < to) { sum[localHour(m.t)] += r.celsius - prev.c; n[localHour(m.t)] += 1; }
+      if (r.code === 'ok' && r.source !== 'metar' && prev && prev.t === m.t - MIN && m.t >= from && m.t < to) { const d = r.celsius - prev.c, h = localHour(m.t); sum[h] += d; squares[h] += d * d; n[h] += 1; }
       last.set(r.id, r.code === 'ok' && r.source !== 'metar' ? { t: m.t, c: r.celsius } : null);
     }
   }
-  return sum.map((s, h) => (n[h] ? s / n[h] : 0));
+  return { drift: sum.map((s, h) => (n[h] ? s / n[h] : 0)), variance: squares.map((s, h) => (n[h] ? s / n[h] : 0)) };
 }
 
 /** Least squares of reading change on the drift predictors, per horizon. */
 function regressDrift(minutes, settings, [from, to], climate, guidance) {
-  const predictors = createDriftPredictors({ climate, localHour, guidance, ...settings });
+  const predictors = createDriftPredictors({ climate: climate.drift, localHour, guidance, ...settings });
   const byT = new Map(minutes.map((m) => [m.t, m]));
   const normal = horizons.map(() => ({ xx: [[0, 0, 0], [0, 0, 0], [0, 0, 0]], xy: [0, 0, 0], yy: 0, y: 0, n: 0 }));
   for (const m of minutes) {
@@ -83,7 +83,7 @@ function solve3({ xx, xy }) {
 
 /** Score the tracker: log likelihood of the published index and Brier of the K.99 strikes around it, by horizon. */
 function run(minutes, params, [from, to], climate, guidance, calibrations) {
-  const tracker = createIndexTracker({ params, climate, localHour, calibrations, guidance });
+  const tracker = createIndexTracker({ params, climate: climate.drift, climateVariance: climate.variance, localHour, calibrations, guidance });
   const pending = new Map(), scores = Object.fromEntries(horizons.map((h) => [h, { n: 0, logLik: 0, brier: 0, brierN: 0 }]));
   const first = Math.max(0, minutes.findIndex((m) => m.t >= from - 86_400_000)), last = to + Math.max(...horizons) * MIN;
   for (let i = first; i < minutes.length && minutes[i].t <= last; i += 1) {
@@ -130,8 +130,9 @@ process.stdout.write(`drift chosen: trend ${drift.trendMinutes} half-life ${drif
 
 const objective = (scores) => horizons.reduce((s, h) => s + scores[h].meanLogLik, 0) / horizons.length;
 const fixed = { trendMinutes: drift.trendMinutes, climateHalfLifeDays: drift.climateHalfLifeDays, drift: { horizons, coefficients: drift.fitted.coefficients } };
-const space = { sigmaCommon: [0.02, 0.03, 0.05, 0.08], sigmaStation: [0.02, 0.04, 0.06, 0.09], sigmaDrift: [0, 0.002, 0.005, 0.01], tau: [0.03, 0.05, 0.08, 0.15], tauMetar: [0.1, 0.3, 0.6] };
-let best = { params: { sigmaCommon: 0.03, sigmaStation: 0.06, sigmaDrift: 0.005, tau: 0.05, tauMetar: 0.3, ...fixed } };
+const space = { sigmaCommon: [0.02, 0.03, 0.05, 0.08], sigmaStation: [0.02, 0.04, 0.06, 0.09], sigmaDrift: [0, 0.002, 0.005, 0.01], tau: [0.03, 0.05, 0.08, 0.15], tauMetar: [0.1, 0.3, 0.6],
+  volatilityPersistence: [0, 0.5, 1], regimeSpread: [0, 0.25, 0.5, 0.75] };
+let best = { params: { sigmaCommon: 0.03, sigmaStation: 0.06, sigmaDrift: 0.005, tau: 0.05, tauMetar: 0.3, volatilityPersistence: 0.5, regimeSpread: 0.5, ...fixed } };
 best.value = objective(run(minutes, best.params, fit, climate, guidance, calibrations));
 for (let pass = 0; pass < Number(values.passes); pass += 1) {
   let moved = false;
@@ -147,7 +148,8 @@ for (let pass = 0; pass < Number(values.passes); pass += 1) {
 }
 const outOfSample = run(minutes, best.params, test, climate, guidance, calibrations);
 const report = { city: values.city, fit: values.fit, test: values.test, every, params: best.params, fitObjective: best.value,
-  driftUnexplainedFraction: Object.fromEntries(horizons.map((h, k) => [h, drift.fitted.unexplained[k]])), climateDriftCPerMinuteByLocalHour: climate, outOfSample };
+  driftUnexplainedFraction: Object.fromEntries(horizons.map((h, k) => [h, drift.fitted.unexplained[k]])), climateDriftCPerMinuteByLocalHour: climate.drift,
+  climateVarianceC2PerMinuteByLocalHour: climate.variance, outOfSample };
 await mkdir(join(here, '..', 'results'), { recursive: true });
 await writeFile(join(here, '..', 'results', `lattice-${values.city}.json`), JSON.stringify(report, null, 2) + '\n');
 process.stdout.write(`${JSON.stringify(report.params)}\n${JSON.stringify(report.outOfSample)}\n`);

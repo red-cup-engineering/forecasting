@@ -29,7 +29,10 @@ export async function loadMinutes(city) {
       const records = (point.stations ?? []).map((s) => ({
         id: s.station_id, code: s.code === 'ok' && Number.isFinite(s.temp_f) ? 'ok' : (s.code ?? 'missing'), source: s.source ?? null,
         celsius: s.code === 'ok' && Number.isFinite(s.temp_f) ? celsiusOf(s.temp_f, s.source) : null,
-        received: s.received_at_ms ?? point.t + 300_000,
+        // When the record could be known: a one-minute reading when Kalshi received it (never before its minute
+        // ended); a METAR fallback only once the minute became official without its one-minute reading (its
+        // received_at_ms is the METAR's own receipt, up to an hour earlier); anything else when official.
+        received: s.code === 'ok' && s.source !== 'metar' && Number.isFinite(s.received_at_ms) ? Math.max(s.received_at_ms, point.t + MIN) : point.t + 300_000,
       }));
       if (records.length) minutes.push({ t: point.t, v: point.v ?? null, status: point.status, records });
     }
