@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { hypothesesDir } from '../src/hypotheses/run.mjs';
 import { RegistrationError, entriesFromTape, requireAfterRegistration, snapshotTarget } from '../src/hypotheses/entry.mjs';
 import { quoteFromCandles, syncForwardQuotes, tapeFor } from '../src/hypotheses/data.mjs';
-import { orderFee } from '../src/fees.mjs';
+import { orderFee } from '@red-cup-engineering/forecasting/fees';
 
 // The cent-per-order hypotheses are scored on the fee they registered: whole cents per order, not the account grid.
 const CENT = { gridCents: 1 };

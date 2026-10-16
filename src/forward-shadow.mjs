@@ -2,7 +2,7 @@
  * Shared pure pieces of the forward shadow tests (claims C1, deep-terminal): Kalshi taker fee, delete-one-group
  * jackknife, t statistic, verdict, append-only JSONL, paced public GET. Shadow only: nothing here can place an order.
  */
-import { orderFee as kalshiOrderFee } from './fees.mjs';
+import { orderFee as kalshiOrderFee } from '@red-cup-engineering/forecasting/fees';
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { join } from 'node:path';

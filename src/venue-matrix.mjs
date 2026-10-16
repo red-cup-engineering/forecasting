@@ -23,7 +23,7 @@
  *               live from each market's feeSchedule (NFL/CFB 0.03; other sports 0.05 as the fee page documents).
  * The per-share continuous form is used here; cent rounding is a per-order effect that vanishes at size.
  */
-import { THETA } from './fees.mjs';
+import { THETA } from '@red-cup-engineering/forecasting/fees';
 import { readingOfSides, sidesOfReading } from '@red-cup-engineering/computer-data-engineering-services-section/four';
 
 const EPS = 1e-9;

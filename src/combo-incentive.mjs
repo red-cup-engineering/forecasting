@@ -15,7 +15,7 @@
  * K((1+1/K)^n - 1), the point estimate used when K is supplied.
  */
 
-import { THETA } from './fees.mjs';
+import { THETA } from '@red-cup-engineering/forecasting/fees';
 import { legMeta } from './combo-pricer.mjs';
 
 export const CLIFF = 0.25;

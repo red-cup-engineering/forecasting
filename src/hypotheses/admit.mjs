@@ -15,7 +15,7 @@
  */
 import { mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { fuseForecast } from '../forecast-surface.mjs';
+import { fuseForecast } from '@red-cup-engineering/forecasting/forecast-surface';
 import { quoteQualifies } from './entry.mjs';
 import { modelDirectory } from './store.mjs';
 

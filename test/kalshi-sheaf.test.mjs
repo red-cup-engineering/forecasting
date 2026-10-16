@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { bracketProb, buildSheaf, dirichlet, fitCalibrationLink, fitLadder, harmonicExtension, partiallyIdentifiedHarmonicExtension, sheafSpectrum } from "../src/kalshi-sheaf.mjs";
+import { bracketProb, buildSheaf, dirichlet, fitCalibrationLink, fitLadder, harmonicExtension, partiallyIdentifiedHarmonicExtension, sheafSpectrum } from "@red-cup-engineering/forecasting/kalshi-sheaf";
 
 const I1 = [[1]];
 const edge = (id, u, v, a = 1, w = 1) => ({ id, u, v, Fu: [[a]], Fv: I1, W: [[w]] });

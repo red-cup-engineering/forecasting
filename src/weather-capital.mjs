@@ -1,4 +1,4 @@
-import {THETA, MAKER_THETA, orderFee} from './fees.mjs';
+import {THETA, MAKER_THETA, orderFee} from '@red-cup-engineering/forecasting/fees';
 import {binaryMakerPlacementBounds,binaryPostedLossBounds} from '@red-cup-engineering/mandate-portfolio-allocation-service/binary-maker-game';
 
 const pips=x=>{const n=Math.round(x*10000);if(!Number.isSafeInteger(n)||Math.abs(x*10000-n)>1e-6)throw new RangeError('centicent monetary input required');return n;};
