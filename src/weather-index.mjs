@@ -2,6 +2,7 @@ import {ecmwfStationDistributions} from './weather-ecmwf-ensemble.mjs';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
 import {innovationWeight} from './weather-index-innovation.mjs';
+import {rateEnvelopeModel} from './weather-index-rate-envelope.mjs';
 import {execFile} from 'node:child_process';
 import {promisify} from 'node:util';
 import {cell,address} from '@red-cup-engineering/signcell/cell';
@@ -230,5 +231,8 @@ export function priceWeatherIndex(c,e,now){
    distributions.push({...r,details:{...r.details,learning:r.learning,frozenScienceAvailableAt:r.availableAt,tradeEligible:false}});
   }
  }
- return distributions.flatMap(r=>{const p=indexBracketProbability(c,r);return Number.isFinite(p)?[{id:r.model,p,details:{...r.details,probabilityBounds:indexBracketProbabilityBounds(c,r)}}]:[];});
+ const priced=distributions.flatMap(r=>{const p=indexBracketProbability(c,r);return Number.isFinite(p)?[{id:r.model,p,details:{...r.details,probabilityBounds:indexBracketProbabilityBounds(c,r)}}]:[];});
+ // What the index can still reach before the target minute decides far strikes outright.
+ const envelope=rateEnvelopeModel(c,b,canonicalIndexPoints(e.indices?.[b.city],b.city,now),now);
+ return envelope?[...priced,envelope]:priced;
 }
