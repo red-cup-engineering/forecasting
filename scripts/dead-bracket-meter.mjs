@@ -16,7 +16,7 @@
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 import { observedExtremes, preciseBounds } from '../src/station-observations.mjs';
-import { feePerContract } from '../src/fees.mjs';
+import { feePerContract } from '@red-cup-engineering/forecasting/fees';
 
 const API = 'https://api.elections.kalshi.com/trade-api/v2';
 const CONFIG = JSON.parse(readFileSync(new URL('../content/config/temperature-markets.json', import.meta.url), 'utf8'));

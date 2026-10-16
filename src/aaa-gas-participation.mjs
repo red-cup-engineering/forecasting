@@ -25,7 +25,7 @@ import {bindScreenedOutcomeFillResearch}
 import {projectObservedScenarioConditioningSign}
  from '@red-cup-engineering/mandate-portfolio-allocation-service/settlement-sign-evidence';
 import {analyzeAaaGasMarketGame,projectAaaGasScenarioLadder} from './aaa-gas-market-game.mjs';
-import {orderFeeCentsOfFills} from './fees.mjs';
+import {orderFeeCentsOfFills} from '@red-cup-engineering/forecasting/fees';
 
 const finite=x=>typeof x==='number'&&Number.isFinite(x);
 const centPrice=p=>finite(p)&&p>0&&p<1&&Math.abs(p*100-Math.round(p*100))<1e-8;

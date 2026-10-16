@@ -9,12 +9,12 @@
 //           "same quantity" case (Kalshi vs Polymarket); not present in this data.
 import {
   bracketBounds, bracketProb, fitCalibrationLink, fitLadder, harmonicExtension, zeros,
-} from "./kalshi-sheaf.mjs";
+} from "@red-cup-engineering/forecasting/kalshi-sheaf";
 import {
   buildMarketSheafFromSignGraph as buildSheaf,
   marketSheafDirichlet as dirichlet,
   marketSheafVertexTension as vertexTension,
-} from "./kalshi-sheaf-signgraph.mjs";
+} from "@red-cup-engineering/forecasting/kalshi-sheaf-signgraph";
 
 export const STATIONS = {
   AUS: [30.19, -97.67], MDW: [41.79, -87.75], DEN: [39.86, -104.67], LAX: [33.94, -118.41], MIA: [25.79, -80.29],

@@ -23,7 +23,7 @@
 import {binaryMakerPlacementBounds,rankBinaryMakerPlacements} from '@red-cup-engineering/mandate-portfolio-allocation-service/binary-maker-game';
 import {ladderGroups,buildLadder,ladderFamily} from './coherence-families.mjs';
 import {assessFamily} from './coherence.mjs';
-import {orderFeeCentsOfFills} from './fees.mjs';
+import {orderFeeCentsOfFills} from '@red-cup-engineering/forecasting/fees';
 import {eventDate} from '@red-cup-engineering/kalshi-services-section/market-facts';
 import {projectJointThresholdScenarios} from '@red-cup-engineering/mandate-portfolio-allocation-service/joint-threshold-pushforward';
 

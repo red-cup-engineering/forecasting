@@ -6,8 +6,8 @@ import path from "node:path";
 import {
   STATIONS, assemble, bracketProb, dayISO, edgeTemplates, fitSheafMaps, ladderAt, loadEvents, neighbourPairs, snapshot, snapshotTimes, vid,
 } from "../src/kalshi-sheaf-market.mjs";
-import { partiallyIdentifiedHarmonicExtension, jacobiEigen } from "../src/kalshi-sheaf.mjs";
-import {marketSheafDirichlet as dirichlet,marketSheafVertexTension as vertexTension} from "../src/kalshi-sheaf-signgraph.mjs";
+import { partiallyIdentifiedHarmonicExtension, jacobiEigen } from "@red-cup-engineering/forecasting/kalshi-sheaf";
+import {marketSheafDirichlet as dirichlet,marketSheafVertexTension as vertexTension} from "@red-cup-engineering/forecasting/kalshi-sheaf-signgraph";
 
 const here = path.dirname(new URL(import.meta.url).pathname);
 const rec = path.join(here, "../data/records/2026-10-04-kalshi-sheaf");
