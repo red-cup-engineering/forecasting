@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {readHourlyIndexMarketCensus} from '../src/weather-engine.mjs';
+import {readHourlyIndexMarketCensus} from '@red-cup-engineering/forecasting/weather-engine';
 import {INDEX_CITIES} from '../src/weather-index.mjs';
 
 const at=Date.parse('2026-10-14T13:00:00Z');

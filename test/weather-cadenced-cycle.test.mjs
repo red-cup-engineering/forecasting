@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {mkdtempSync,rmSync,writeFileSync,readFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {weatherCadencePlan,runCadencedWeatherCycle,weatherStatus,boundedWeatherStatus} from '../src/weather-engine.mjs';
+import {weatherCadencePlan,runCadencedWeatherCycle,weatherStatus,boundedWeatherStatus} from '@red-cup-engineering/forecasting/weather-engine';
 
 const when=Date.parse('2026-07-15T18:32:00Z');
 const fixture=t=>{
