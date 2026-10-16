@@ -45,3 +45,32 @@ export async function latestLampGuidance({stations,cacheDir,now=Date.now(),fetch
  }
  throw new Error('no LAMP station bulletin in the previous three hours');
 }
+/**
+ * A station's forecast temperature change (C) between two instants, from the latest bulletin published by the first,
+ * linear between the bulletin's hourly values (and back along its first hour to the bulletin's own runtime). A
+ * bulletin ({runtime, stations: {ICAO: {rows: [{validTime, temperatureF}]}}}, the shape latestLampGuidance returns)
+ * is usable from its runtime plus `latencyMs`; NOMADS posts the HH30 bulletin at about HH36.
+ * @returns {(station: string, from: number, to: number) => number|null}
+ */
+export function lampTemperatureChange(bulletins,{latencyMs=10*60000}={}){
+ const runs=bulletins.map(b=>({usable:Date.parse(b.runtime)+latencyMs,stations:b.stations})).filter(b=>Number.isFinite(b.usable)).sort((a,b)=>a.usable-b.usable);
+ const curves=new WeakMap();
+ const curveOf=(run,station)=>{
+  let byStation=curves.get(run);if(!byStation)curves.set(run,byStation=new Map());
+  if(!byStation.has(station)){const rows=(run.stations[station]?.rows??[]).map(r=>({t:Date.parse(r.validTime),f:r.temperatureF})).filter(r=>Number.isFinite(r.t)&&Number.isFinite(r.f)).sort((a,b)=>a.t-b.t);byStation.set(station,rows.length>=2?rows:null);}
+  return byStation.get(station);
+ };
+ const at=(rows,t)=>{
+  if(t>rows.at(-1).t)return null;
+  let i=1;while(i<rows.length-1&&rows[i].t<t)i+=1;
+  const a=rows[i-1],b=rows[i];return a.f+(b.f-a.f)*(t-a.t)/(b.t-a.t);
+ };
+ return (station,from,to)=>{
+  let lo=0,hi=runs.length-1,found=-1;while(lo<=hi){const mid=(lo+hi)>>1;if(runs[mid].usable<=from){found=mid;lo=mid+1;}else hi=mid-1;}
+  for(let i=found;i>=0&&i>found-3;i-=1){
+   const rows=curveOf(runs[i],station);if(!rows||from<rows[0].t-3600000)continue;
+   const a=at(rows,from),b=at(rows,to);if(a!==null&&b!==null)return (b-a)/1.8;
+  }
+  return null;
+ };
+}
