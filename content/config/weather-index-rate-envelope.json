@@ -1,0 +1,1299 @@
+{
+ "kind": "kalshi-city-index-rate-envelope",
+ "version": 1,
+ "description": "The largest rise and fall Kalshi's published city temperature index made over each horizon, from every pair of normal-status minute readings in the window. Derived by scripts/hourly-index-rate-envelope.mjs; sources are the original live_data/weather responses by sha256.",
+ "window": {
+  "firstDay": "2026-09-01",
+  "lastDay": "2026-10-14"
+ },
+ "horizonsMinutes": [
+  1,
+  2,
+  3,
+  5,
+  10,
+  15,
+  20,
+  30,
+  45,
+  60,
+  90,
+  120,
+  180
+ ],
+ "derivedAt": "2026-10-15T23:52:09.687Z",
+ "cities": {
+  "miami": {
+   "minutes": 61590,
+   "horizons": {
+    "1": {
+     "pairs": 60879,
+     "maxRiseF": 1.08,
+     "maxFallF": 1.44,
+     "p999RiseF": 0.72,
+     "p999FallF": 1.08
+    },
+    "2": {
+     "pairs": 60808,
+     "maxRiseF": 1.44,
+     "maxFallF": 1.44,
+     "p999RiseF": 1.08,
+     "p999FallF": 1.08
+    },
+    "3": {
+     "pairs": 60765,
+     "maxRiseF": 1.44,
+     "maxFallF": 2.16,
+     "p999RiseF": 1.08,
+     "p999FallF": 1.44
+    },
+    "5": {
+     "pairs": 60821,
+     "maxRiseF": 1.8,
+     "maxFallF": 2.88,
+     "p999RiseF": 1.44,
+     "p999FallF": 1.8
+    },
+    "10": {
+     "pairs": 60715,
+     "maxRiseF": 2.52,
+     "maxFallF": 4.68,
+     "p999RiseF": 1.8,
+     "p999FallF": 2.88
+    },
+    "15": {
+     "pairs": 60753,
+     "maxRiseF": 2.88,
+     "maxFallF": 6.48,
+     "p999RiseF": 2.16,
+     "p999FallF": 3.96
+    },
+    "20": {
+     "pairs": 60552,
+     "maxRiseF": 2.88,
+     "maxFallF": 7.92,
+     "p999RiseF": 2.16,
+     "p999FallF": 5.4
+    },
+    "30": {
+     "pairs": 60541,
+     "maxRiseF": 3.6,
+     "maxFallF": 9.72,
+     "p999RiseF": 2.88,
+     "p999FallF": 6.84
+    },
+    "45": {
+     "pairs": 60396,
+     "maxRiseF": 4.68,
+     "maxFallF": 11.52,
+     "p999RiseF": 3.96,
+     "p999FallF": 9.72
+    },
+    "60": {
+     "pairs": 60334,
+     "maxRiseF": 6.12,
+     "maxFallF": 11.88,
+     "p999RiseF": 5.04,
+     "p999FallF": 10.8
+    },
+    "90": {
+     "pairs": 60253,
+     "maxRiseF": 7.56,
+     "maxFallF": 13.32,
+     "p999RiseF": 6.84,
+     "p999FallF": 12.24
+    },
+    "120": {
+     "pairs": 60170,
+     "maxRiseF": 8.64,
+     "maxFallF": 15.12,
+     "p999RiseF": 8.28,
+     "p999FallF": 14.04
+    },
+    "180": {
+     "pairs": 60009,
+     "maxRiseF": 10.44,
+     "maxFallF": 15.12,
+     "p999RiseF": 9.72,
+     "p999FallF": 14.76
+    }
+   },
+   "sources": [
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1788220800000&to=1788307200000",
+     "sha256": "bd92ec9c63f41a3f49cc2357c910ad7baaa3148e1edaf34b8d4c8bbf50c8dccc",
+     "bytes": 93650
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1788307200000&to=1788393600000",
+     "sha256": "b36f9afe3451f7a9266343061ed9fdd2a5bb2d2726b5ecb5e87411c11eb0c2e0",
+     "bytes": 93266
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1788393600000&to=1788480000000",
+     "sha256": "f4d0e81d2d06392b5de6015d8da9754b3bf3b94d8deeaf6e58dc30571e5f2959",
+     "bytes": 93151
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1788480000000&to=1788566400000",
+     "sha256": "e39f7dd7516d915a961b8b49864c43f689919e262c716f956adab062f435bfa7",
+     "bytes": 92753
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1788566400000&to=1788652800000",
+     "sha256": "b61bda5791fe56a678c29a4f84c4048a8b39cd1c69876164beb44e637278d745",
+     "bytes": 93541
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1788652800000&to=1788739200000",
+     "sha256": "ef974f6b8687beb994aa40100c578b03515d87a35bfb46abe8038862dd1969fb",
+     "bytes": 93322
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1788739200000&to=1788825600000",
+     "sha256": "cfa56ecc1fe32b196ae41a8b84a07e418cc954c4e01dd0b668ea20afab73c474",
+     "bytes": 93508
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1788825600000&to=1788912000000",
+     "sha256": "0df1d534b55d43d515d2082304707dbbc3052321cb0ef4d8effdef770b2635b6",
+     "bytes": 92943
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1788912000000&to=1788998400000",
+     "sha256": "3c2c5a6e73a20f864f298d7d8de207692245755f95b19f5631bce4f0e88c9e47",
+     "bytes": 93502
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1788998400000&to=1789084800000",
+     "sha256": "b8745dde667657fc7e67b791defcf05c2c0e473063493c285e4eaca61288094a",
+     "bytes": 93549
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1789084800000&to=1789171200000",
+     "sha256": "f9eedfbdf8b3382d19ce5b24a3d37cde9561b09da439c96e87a62d41ff1f6c60",
+     "bytes": 93496
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1789171200000&to=1789257600000",
+     "sha256": "53083aef5a882f0dc09de30c36c0a5b6f22ba0c5734070e72189ed5706e4f408",
+     "bytes": 93380
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1789257600000&to=1789344000000",
+     "sha256": "a1b932632e39c793902d4a785a4a0044d57fd05f2064fc705d9547d5a8fd2e2c",
+     "bytes": 93328
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1789344000000&to=1789430400000",
+     "sha256": "78b7d638a11c5fb00251cf08b9739051fc4ceeedff2d6f7b2c9cd946626e342d",
+     "bytes": 93536
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1789430400000&to=1789516800000",
+     "sha256": "0a38f45982fe53c4ec12d6beef76fdd004090ac49884bbb1ff3d940da1cc6db9",
+     "bytes": 93659
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1789516800000&to=1789603200000",
+     "sha256": "a9b5b85c197a001b1a0f62fdf6013703f5bd5431f139e3ad9a6b0aa0292646ca",
+     "bytes": 93400
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1789603200000&to=1789689600000",
+     "sha256": "bf997088c6a1db36e8fddcdcc74b73e8b92bf0f8ac8aa62d5cee898b4cfa3807",
+     "bytes": 93434
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1789689600000&to=1789776000000",
+     "sha256": "e91a96b206c17470684c6c4afa4d69fb6e57c54e14c6cd8ed0cbe8d6260c8b43",
+     "bytes": 92990
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1789776000000&to=1789862400000",
+     "sha256": "5fdf987085e82be8a38097f51aeb71052e23224e852e81865a7e8d8f9e77db6f",
+     "bytes": 93301
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1789862400000&to=1789948800000",
+     "sha256": "b73048f1f080129ded1b6ba427149624a757f6b8bbad3cd6a48df2a8c6b7fa38",
+     "bytes": 93380
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1789948800000&to=1790035200000",
+     "sha256": "a73b569a354286ed5f9d9244f3a225b330651f433f9edda33643f493725474dd",
+     "bytes": 93288
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1790035200000&to=1790121600000",
+     "sha256": "fb306144f446779161643ec952edf28ae99bb8b3d39497493f043973f95e3081",
+     "bytes": 92980
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1790121600000&to=1790208000000",
+     "sha256": "2779ca957062656e11c07dd7eb5ffe1e109f96f379be238ae26634e1b0f5262b",
+     "bytes": 92809
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1790208000000&to=1790294400000",
+     "sha256": "1945aad61a497a1eb31094c91c6d5f37333ffad2a06f2d4ad492ed01f773adb6",
+     "bytes": 92889
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1790294400000&to=1790380800000",
+     "sha256": "884988f4644d8ab65b1ab33c51b332965a9e0d6d6d669f52da6a4065f2e1bc4b",
+     "bytes": 93415
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1790380800000&to=1790467200000",
+     "sha256": "732e6da749761118aa8e50cc3fb03c7c29b65c46f3b85c375f5263ee90b0b0c3",
+     "bytes": 93167
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1790467200000&to=1790553600000",
+     "sha256": "95800b16196b05c934d04800a9395a03094ce3dff1157827ce14c48449db04be",
+     "bytes": 93225
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1790553600000&to=1790640000000",
+     "sha256": "b9a3628fe08d4fcf9006b088419d0c6e1ea6a3b10d3fe749c8b1b61fbaa4c762",
+     "bytes": 93370
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1790640000000&to=1790726400000",
+     "sha256": "d7a52127523d4078b1a6a65374e9fb279ca371d96c6539c478ce5552209c38ee",
+     "bytes": 93765
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1790726400000&to=1790812800000",
+     "sha256": "8e55a62d058d38133bd7d4103952f781fd5e00cc1851800a99cd8cb7c8a829b1",
+     "bytes": 93331
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1790812800000&to=1790899200000",
+     "sha256": "a3e8f3aed29e25043387cbb5307bde2e35a6a9274b09339d26ac04b39993982d",
+     "bytes": 93572
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1790899200000&to=1790985600000",
+     "sha256": "345b6f0a7a6cf6f7d93010fb1b5c210d60be924fe906dd3da2aa6cfff9721b8b",
+     "bytes": 92957
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1790985600000&to=1791072000000",
+     "sha256": "9a5d1ad09d1ae370b59e4043ef09a046f3b36390397a62ee0535df30f2ba5b3d",
+     "bytes": 92984
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791072000000&to=1791158400000",
+     "sha256": "a13a4dc3b142863b417550e2e198a0062295b0698a7092c993f3dfd67b69b47c",
+     "bytes": 93323
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791158400000&to=1791244800000",
+     "sha256": "c828132c4caa6d9a444a5c27bddbc6417a1f14eced9d2745aead5d383e6a0aaf",
+     "bytes": 93815
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791244800000&to=1791331200000",
+     "sha256": "15ecfe2ad360731b9508dfda43698c15e02554bca3223e718add9ec7d9f1f48b",
+     "bytes": 93576
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791331200000&to=1791417600000",
+     "sha256": "351c6526b8f7b9238330d439448ee28512df82315c4beb8228dd017697f3f7c9",
+     "bytes": 93324
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791417600000&to=1791504000000",
+     "sha256": "4d4ddd80160ffdbb5277013c8c059949a1e82a8a5f4a235418ea0cc6dedd9478",
+     "bytes": 93385
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791504000000&to=1791590400000",
+     "sha256": "854f16d39d421d572df25fe49dcb450715658be78d70f58153fc4353d68db1ca",
+     "bytes": 89072
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791590400000&to=1791676800000",
+     "sha256": "06404cc86c4ef0119b0c2b731f2ca03ca2f2c3b27dbf9e0ef5c3862b75248347",
+     "bytes": 91158
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791676800000&to=1791763200000",
+     "sha256": "60d1ba1cf23d632ebf805f7afe50cda535150afbe4e43fe3783110d3568bf14f",
+     "bytes": 93318
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791763200000&to=1791849600000",
+     "sha256": "408963dd1e2454ee447b5355624a1ac582e92a94d27244ef6ae3aea24eb9396d",
+     "bytes": 93447
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791849600000&to=1791936000000",
+     "sha256": "73596ae3d7776cfccd7520b9b5225dc4813b2b4a0c8ab6a3d57dab7ee45abb17",
+     "bytes": 93592
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/miami?from=1791936000000&to=1792022400000",
+     "sha256": "bfef04c93c301736447b9fa8229b23a1befcf6c29d9dfe50144503a8e22884f5",
+     "bytes": 93342
+    }
+   ]
+  },
+  "chicago": {
+   "minutes": 50063,
+   "horizons": {
+    "1": {
+     "pairs": 38225,
+     "maxRiseF": 1.08,
+     "maxFallF": 1.44,
+     "p999RiseF": 0.72,
+     "p999FallF": 1.08
+    },
+    "2": {
+     "pairs": 38269,
+     "maxRiseF": 1.44,
+     "maxFallF": 1.44,
+     "p999RiseF": 1.08,
+     "p999FallF": 1.08
+    },
+    "3": {
+     "pairs": 42442,
+     "maxRiseF": 1.44,
+     "maxFallF": 1.44,
+     "p999RiseF": 1.08,
+     "p999FallF": 1.44
+    },
+    "5": {
+     "pairs": 38909,
+     "maxRiseF": 1.8,
+     "maxFallF": 1.8,
+     "p999RiseF": 1.44,
+     "p999FallF": 1.44
+    },
+    "10": {
+     "pairs": 42296,
+     "maxRiseF": 2.16,
+     "maxFallF": 2.52,
+     "p999RiseF": 1.8,
+     "p999FallF": 1.8
+    },
+    "15": {
+     "pairs": 39462,
+     "maxRiseF": 2.88,
+     "maxFallF": 2.88,
+     "p999RiseF": 2.16,
+     "p999FallF": 2.52
+    },
+    "20": {
+     "pairs": 41442,
+     "maxRiseF": 3.24,
+     "maxFallF": 3.96,
+     "p999RiseF": 2.88,
+     "p999FallF": 2.88
+    },
+    "30": {
+     "pairs": 40847,
+     "maxRiseF": 4.68,
+     "maxFallF": 4.68,
+     "p999RiseF": 3.96,
+     "p999FallF": 3.6
+    },
+    "45": {
+     "pairs": 40243,
+     "maxRiseF": 6.12,
+     "maxFallF": 5.76,
+     "p999RiseF": 5.76,
+     "p999FallF": 5.04
+    },
+    "60": {
+     "pairs": 40199,
+     "maxRiseF": 7.56,
+     "maxFallF": 6.84,
+     "p999RiseF": 7.2,
+     "p999FallF": 6.12
+    },
+    "90": {
+     "pairs": 40114,
+     "maxRiseF": 10.44,
+     "maxFallF": 8.64,
+     "p999RiseF": 10.08,
+     "p999FallF": 7.92
+    },
+    "120": {
+     "pairs": 40041,
+     "maxRiseF": 12.6,
+     "maxFallF": 10.44,
+     "p999RiseF": 12.24,
+     "p999FallF": 9.72
+    },
+    "180": {
+     "pairs": 39855,
+     "maxRiseF": 16.56,
+     "maxFallF": 13.32,
+     "p999RiseF": 16.2,
+     "p999FallF": 12.96
+    }
+   },
+   "sources": [
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1788220800000&to=1788307200000",
+     "sha256": "a883897a7d5e0583938aab3ee057d422f8aacc05cf597e0920dd823e61d0f247",
+     "bytes": 144214
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1788307200000&to=1788393600000",
+     "sha256": "a8f437969943d6157a58690042b3118984048dc69e25868db2b2c840f4d3cce4",
+     "bytes": 144489
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1788393600000&to=1788480000000",
+     "sha256": "6e31f7b03681a1a3afc00029d959396b7b1b4af269d0f749417a8348ac939cfe",
+     "bytes": 144423
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1788480000000&to=1788566400000",
+     "sha256": "ef79fed26a8af86dc6addd20d35df0920fd030727f2b6b63a03cf3c8cad4c97a",
+     "bytes": 125787
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1788566400000&to=1788652800000",
+     "sha256": "383edf762293d744b63c52c7f6cc4881b769c7ff43163b8d7eb19aeb6caac5ad",
+     "bytes": 93922
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1788652800000&to=1788739200000",
+     "sha256": "bc8dbb7f864ea498e042bc8644e5dd43cb4a2a3383f03fb9371a35e388f1d400",
+     "bytes": 93601
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1788739200000&to=1788825600000",
+     "sha256": "f792c913762e473e3db96f1487ca79fdef8a86da2be511415bdd16a9041afc46",
+     "bytes": 93891
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1788825600000&to=1788912000000",
+     "sha256": "9d01639fa72d0681b3d841bbb6ef8b966d7b93d2aeb5389bcc90114760acca25",
+     "bytes": 94089
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1788912000000&to=1788998400000",
+     "sha256": "554a78d53d383119dfcf89582ffed3f92defa5cca04b8f0c99cc13742be4541f",
+     "bytes": 94147
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1788998400000&to=1789084800000",
+     "sha256": "b4f4905761c67dc29e046ad61b315a3fc76a7ea43bee86e184d02fd9c85228ff",
+     "bytes": 94189
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1789084800000&to=1789171200000",
+     "sha256": "d509dcb2e562fec9b0a43401bf919e1b172ac0efe4261c323605ce1e38eb8a0e",
+     "bytes": 94116
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1789171200000&to=1789257600000",
+     "sha256": "dffdecb1977555a6491383a5d9e0f6702ff101146b41fcc9202f4b4cf12c8886",
+     "bytes": 93727
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1789257600000&to=1789344000000",
+     "sha256": "a5b175cf6ac2b0f277144a303a8d5af81e41c9dead29e43467fb663bd84a2e89",
+     "bytes": 93998
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1789344000000&to=1789430400000",
+     "sha256": "1af8bbae2ec2293fc5c44f674442133901115c8b50c1ea7f2863a404eb6e75b2",
+     "bytes": 94032
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1789430400000&to=1789516800000",
+     "sha256": "0a8351dd812e4ad59783a513989884524b4461150c7903daa921db2690da672f",
+     "bytes": 94158
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1789516800000&to=1789603200000",
+     "sha256": "318f8ff4c65e64a67628d98c1dbff3f9168cadf13d7b50712a93e1e54fe8e8d1",
+     "bytes": 93948
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1789603200000&to=1789689600000",
+     "sha256": "7d9803f5d94b607c8796c01076a99ee7cedecb6e9bb26cebe2a0c354c044f884",
+     "bytes": 93770
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1789689600000&to=1789776000000",
+     "sha256": "3bb975b62e5db830c763fcad56699e24924fc2a49aff6e3cf1f2dbde2183c35b",
+     "bytes": 94042
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1789776000000&to=1789862400000",
+     "sha256": "4ec1b183b2562ef76b7d6e502e02e625d34f86261f9aaaf2273d14da132ea94d",
+     "bytes": 93935
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1789862400000&to=1789948800000",
+     "sha256": "faef2f4466c3a76a1584e2464a1e358769e33e82e803cf45715c2401f648b2eb",
+     "bytes": 94062
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1789948800000&to=1790035200000",
+     "sha256": "18b1c13d9df8535c39e63a7f237a89ee89ff1a3fd996c7ae4d35037d4a12a861",
+     "bytes": 93911
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1790035200000&to=1790121600000",
+     "sha256": "c213c16586b232c3de07b76a7a1c87a6615f1a512b86e32892d01bc15d345545",
+     "bytes": 93932
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1790121600000&to=1790208000000",
+     "sha256": "2683b607e964a5bc2c484b2732ea389bfc6343786910f451147ba03423aa17c7",
+     "bytes": 94191
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1790208000000&to=1790294400000",
+     "sha256": "c6d0e6734ea6502a48d188c5996d51a0e98d4af434b81eb3a9f67f2ad7a5da0d",
+     "bytes": 94079
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1790294400000&to=1790380800000",
+     "sha256": "bbf15481749569cadd0550f9dcb8adcb64de65148e58cbe38378922fda04900b",
+     "bytes": 93398
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1790380800000&to=1790467200000",
+     "sha256": "bd3164912fdc4d07be5d87af0f2e9bc51203f66ef000265ada401eeb79f0f4c4",
+     "bytes": 93775
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1790467200000&to=1790553600000",
+     "sha256": "abc2368524da926e5abf8633edf482447ccd6e4d75b06222b413b111a5150791",
+     "bytes": 94082
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1790553600000&to=1790640000000",
+     "sha256": "4d9b86680c88b313de44ec09761dbcb7b8dfaf081af0a11c2b31f94752c6267d",
+     "bytes": 93856
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1790640000000&to=1790726400000",
+     "sha256": "85f6ef55c85a6c478fe31a2d79e486f6d9a946a875086a5be9b03b956a20ad80",
+     "bytes": 93953
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1790726400000&to=1790812800000",
+     "sha256": "d81948d7f9a5712ee8b1d4a7715470991b904e0464e1d1a3c8ac685e0a5578dd",
+     "bytes": 93845
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1790812800000&to=1790899200000",
+     "sha256": "73e654730697b816798b67ed04d88ad8e3ed388b017ff72f65a338db044b2a50",
+     "bytes": 95167
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1790899200000&to=1790985600000",
+     "sha256": "e8afe87773d24dbcf6b06ec55915031d8d4cc2d48879f8e1761ee653c685e0e7",
+     "bytes": 94299
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1790985600000&to=1791072000000",
+     "sha256": "54ecf12ec117501cf0b4453be5835bf0657ec5b02ddd3f67f9b64239604125dd",
+     "bytes": 94335
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1791072000000&to=1791158400000",
+     "sha256": "db64ced5ebb44c2c890d1d7d39c5701cd51e7363b192d4aa7eb67fe7c6d89884",
+     "bytes": 94121
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1791158400000&to=1791244800000",
+     "sha256": "16d6371d69bc9f554df6e1eb08a98ed7d5a40ac2661eea8e9e46dc7261132d23",
+     "bytes": 93893
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1791244800000&to=1791331200000",
+     "sha256": "41f99bcfddfb0103d5abd2af6e47b49945a245ac23e92d2338248e7d0bf5ff46",
+     "bytes": 93993
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1791331200000&to=1791417600000",
+     "sha256": "ec44efb7e71098501d7e8bfc394c35fdd6bd702d9ffd3ee2a8620f795ec205e4",
+     "bytes": 93634
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1791417600000&to=1791504000000",
+     "sha256": "fd909a0be87b04f60b6162865103340f7888ad982a63e14dbdc6ea474d4f8a06",
+     "bytes": 93891
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1791504000000&to=1791590400000",
+     "sha256": "ff69aac9cc61232d36090633c6ec412deaca29fcdb22dc344af7e932cad42cd1",
+     "bytes": 91074
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1791590400000&to=1791676800000",
+     "sha256": "cda53acad3a2b7ee6005d5ee1df1221b80ea6bf86d933fcf625870e82fcea5d5",
+     "bytes": 93843
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1791676800000&to=1791763200000",
+     "sha256": "6340c7a3f9c30b544c5124b9c7461c3b85cad4a06be4b08faf6afc48a650803c",
+     "bytes": 93959
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1791763200000&to=1791849600000",
+     "sha256": "dd86152953c90d36000bc9f70d7db3009c1bdfead3d2d5eb6392f6766a0029fb",
+     "bytes": 93977
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1791849600000&to=1791936000000",
+     "sha256": "a530fe336585d2696b7824dbdde959cddf495489ac6bc544cedd2b6819d551f4",
+     "bytes": 93977
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/chicago?from=1791936000000&to=1792022400000",
+     "sha256": "7bac42e011e19c340eccee5ff2c130d5fe3560c25bf3aa206e279404aa781a99",
+     "bytes": 93896
+    }
+   ]
+  },
+  "nyc": {
+   "minutes": 53260,
+   "horizons": {
+    "1": {
+     "pairs": 52430,
+     "maxRiseF": 0.89,
+     "maxFallF": 0.91,
+     "p999RiseF": 0.46,
+     "p999FallF": 0.68
+    },
+    "2": {
+     "pairs": 52387,
+     "maxRiseF": 1.13,
+     "maxFallF": 1.12,
+     "p999RiseF": 0.68,
+     "p999FallF": 0.9
+    },
+    "3": {
+     "pairs": 52425,
+     "maxRiseF": 1.35,
+     "maxFallF": 1.35,
+     "p999RiseF": 0.9,
+     "p999FallF": 0.9
+    },
+    "5": {
+     "pairs": 52281,
+     "maxRiseF": 1.58,
+     "maxFallF": 1.58,
+     "p999RiseF": 1.13,
+     "p999FallF": 1.13
+    },
+    "10": {
+     "pairs": 52280,
+     "maxRiseF": 2.03,
+     "maxFallF": 2.03,
+     "p999RiseF": 1.57,
+     "p999FallF": 1.58
+    },
+    "15": {
+     "pairs": 52179,
+     "maxRiseF": 2.25,
+     "maxFallF": 2.7,
+     "p999RiseF": 2.03,
+     "p999FallF": 2.02
+    },
+    "20": {
+     "pairs": 52100,
+     "maxRiseF": 2.7,
+     "maxFallF": 2.93,
+     "p999RiseF": 2.48,
+     "p999FallF": 2.47
+    },
+    "30": {
+     "pairs": 51988,
+     "maxRiseF": 3.83,
+     "maxFallF": 3.38,
+     "p999RiseF": 3.6,
+     "p999FallF": 3.15
+    },
+    "45": {
+     "pairs": 51982,
+     "maxRiseF": 5.85,
+     "maxFallF": 5.18,
+     "p999RiseF": 4.95,
+     "p999FallF": 4.05
+    },
+    "60": {
+     "pairs": 51941,
+     "maxRiseF": 6.75,
+     "maxFallF": 6.29,
+     "p999RiseF": 6.3,
+     "p999FallF": 5.17
+    },
+    "90": {
+     "pairs": 51746,
+     "maxRiseF": 10.13,
+     "maxFallF": 7.2,
+     "p999RiseF": 9,
+     "p999FallF": 6.75
+    },
+    "120": {
+     "pairs": 51656,
+     "maxRiseF": 12.6,
+     "maxFallF": 8.33,
+     "p999RiseF": 11.92,
+     "p999FallF": 7.87
+    },
+    "180": {
+     "pairs": 51391,
+     "maxRiseF": 16.88,
+     "maxFallF": 11.25,
+     "p999RiseF": 16.65,
+     "p999FallF": 10.57
+    }
+   },
+   "sources": [
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1788220800000&to=1788307200000",
+     "sha256": "0339290105acdb57c958ef11d5ae409808cb874d2bdc800ea106d2b35c73e865",
+     "bytes": 144488
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1788307200000&to=1788393600000",
+     "sha256": "9c8c11283475ef098bec7c8690d72478508da4e87e04ea650c9f1039cac1e363",
+     "bytes": 140293
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1788393600000&to=1788480000000",
+     "sha256": "6a51fc0f6536441d17e4bfff75e5b6714ca9086099385c45212bc906ea5296a4",
+     "bytes": 143768
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1788480000000&to=1788566400000",
+     "sha256": "566dffa0655cbf1cbadff7e48c0f52361d5f3f4b0edf06cd485c33ec7e456ef6",
+     "bytes": 125373
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1788566400000&to=1788652800000",
+     "sha256": "475d301b5efb92d69d13999f2c3d0f6f9287a7f9f08eeabfc32bf7f61a1afce5",
+     "bytes": 93413
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1788652800000&to=1788739200000",
+     "sha256": "f2fe8024a08179dd2f7b5a256d6d32e56768acebbafe894a9a381baabdff6cf9",
+     "bytes": 94482
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1788739200000&to=1788825600000",
+     "sha256": "c7e6d55d18697f2ee426f80cf4beed794072b9b1033060244e7273a0987c25b0",
+     "bytes": 96359
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1788825600000&to=1788912000000",
+     "sha256": "2127a450660cbdb4af4b88c2b984b9b935d8d2fb8bc04cb1f2c004a4453e0378",
+     "bytes": 96187
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1788912000000&to=1788998400000",
+     "sha256": "1d2ac195f0cefb5af2f19a24ede12409a99264686df0ad31e0d7e6473b7ddbce",
+     "bytes": 95168
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1788998400000&to=1789084800000",
+     "sha256": "8b9ce6228afc7b51378180c9ef5bd611e25889f4c8605434ee1072868bd88a79",
+     "bytes": 94763
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1789084800000&to=1789171200000",
+     "sha256": "144ed6c6160b5fca278dd632fe45556be72524b95a8e9ce1a8eb264f2dc97ceb",
+     "bytes": 93644
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1789171200000&to=1789257600000",
+     "sha256": "64937feccdc394f221834a2f017ac765fa56c770683a8152e0a7ad8669991d3d",
+     "bytes": 95496
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1789257600000&to=1789344000000",
+     "sha256": "bc78f9ef8d95f8d40b69876d68ff6e47b2a57bc738010e5808d8b5157173c3ec",
+     "bytes": 74021
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1789344000000&to=1789430400000",
+     "sha256": "0d21145aa3ae42b750f47d5f23a2999ad387a1d65e2b47051de690fa25db530f",
+     "bytes": 91794
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1789430400000&to=1789516800000",
+     "sha256": "7d653085d4a0fbfe62e04141c0db0af9b8acba50a4ee9817ddd464f1a4d5a785",
+     "bytes": 93177
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1789516800000&to=1789603200000",
+     "sha256": "61eb80d2d1dc142c36a6ea9112deb4ba728dbb71f0217653b1e395e75e9e5892",
+     "bytes": 93195
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1789603200000&to=1789689600000",
+     "sha256": "31873f25da13e2a09cbd673d52b8d2d30e6ceab636b7c2adf00f4d2b43069bf2",
+     "bytes": 93290
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1789689600000&to=1789776000000",
+     "sha256": "c905721f80ed7746fc366dce10d2b8eddd0609466fbc26313b603310b79175cb",
+     "bytes": 93317
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1789776000000&to=1789862400000",
+     "sha256": "3f7414d8fc65aceeb1d71c88792b04e16afc1f7c6ab0730e92fc1ddcd1a3d177",
+     "bytes": 93149
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1789862400000&to=1789948800000",
+     "sha256": "030dcb2e9c5a57044dd8294f9f8ae6830d88404f024f70cab5a33580446071e8",
+     "bytes": 93059
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1789948800000&to=1790035200000",
+     "sha256": "f9aacfe3fc6914362bf251512c5885a049ef03e915bff0892e4c728fa65a06b9",
+     "bytes": 92785
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1790035200000&to=1790121600000",
+     "sha256": "6ecf59b5a3fc30923cbfc36e923f00706288b3f4bb88613a9b9808528d36e185",
+     "bytes": 93048
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1790121600000&to=1790208000000",
+     "sha256": "224b6e01c662dbbc266fa3c91aa3fa63d4c98de384d74905b0dc859f1e4b8c6b",
+     "bytes": 93394
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1790208000000&to=1790294400000",
+     "sha256": "57348e47e9fc2a8b29b77c602a1c8d959ebfdef5dd5d0e664a9e973867e1f5b7",
+     "bytes": 92624
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1790294400000&to=1790380800000",
+     "sha256": "798bbdc8bbdb4f85153b07aee2d0bdc4331815d05690fed161e16e90c73f2d0e",
+     "bytes": 92993
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1790380800000&to=1790467200000",
+     "sha256": "947939569ac4012f1d688df9fca21022ffb1c93ff66602f28f1ebadaee0d3fb1",
+     "bytes": 92722
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1790467200000&to=1790553600000",
+     "sha256": "4ef39438a54a1fdb5a752b83d71a3c0cdf0d048bab043337ef42f1d8895ef093",
+     "bytes": 92897
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1790553600000&to=1790640000000",
+     "sha256": "94e228222ee6af16be611b62e8f5920406fe4efb95032bfb3b1627331e912be9",
+     "bytes": 93239
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1790640000000&to=1790726400000",
+     "sha256": "6ad254282165c7a72e1339021cf98c464facf88099b41e413f5e06092df4a374",
+     "bytes": 92770
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1790726400000&to=1790812800000",
+     "sha256": "d2940079ac662ccfd046f0d5aae67cf1994e4f3520866a4da7399046cddb069a",
+     "bytes": 92972
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1790812800000&to=1790899200000",
+     "sha256": "c6278c5b1f97b643869304b3792f55854a88d8bad697e37f64379e9a60db27bc",
+     "bytes": 92781
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1790899200000&to=1790985600000",
+     "sha256": "cb947f980f297107432f520604d22358e0cc5595e8f48f0523fd134689e192e2",
+     "bytes": 93020
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1790985600000&to=1791072000000",
+     "sha256": "c1250e0f8ff1a81ca73692bff20bef6b8cc63bbab042bbb07a5627476f064266",
+     "bytes": 92911
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791072000000&to=1791158400000",
+     "sha256": "d57255c6a1b37758a62ff9680afe34e5accfdc849645ad40a2ed4c838573848a",
+     "bytes": 93044
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791158400000&to=1791244800000",
+     "sha256": "1ed2239e27467276f83748e133071ef5d22219363bdab2021860d9c7d371ac86",
+     "bytes": 92833
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791244800000&to=1791331200000",
+     "sha256": "65c657ed399bcfc030d74d4d510ec951d27cd2b61d117bcdfabebc48323fb65b",
+     "bytes": 92067
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791331200000&to=1791417600000",
+     "sha256": "e895f18033bbe9e01e6badf64fcdf10d244427115c68b9a2ee63b9a4036e4c73",
+     "bytes": 91840
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791417600000&to=1791504000000",
+     "sha256": "f70c4a9c4effac5b3308f00da13d5bac6984c4c201c4a762f3a623a6b7f42fe3",
+     "bytes": 93289
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791504000000&to=1791590400000",
+     "sha256": "b81b8b6c63ae20ba26dccba11b9efa2a98150c06ba356bd3f5dadd0dcc17fc3a",
+     "bytes": 87241
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791590400000&to=1791676800000",
+     "sha256": "224ef17bc132dcb773a8f88014c5af3589f0f0a710a82c6d52f030a9fd4334fe",
+     "bytes": 90612
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791676800000&to=1791763200000",
+     "sha256": "17466f7b3146fee60ca84074cccd2ac8197b54d899d904318ed1fd607027d2f6",
+     "bytes": 93217
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791763200000&to=1791849600000",
+     "sha256": "c17d96f9439b3618eb3141d6a52229c19e674e5e6ea817502ef67215340bc44c",
+     "bytes": 93214
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791849600000&to=1791936000000",
+     "sha256": "a4b2dfd60702fb0f0f04b8e330be9c4c73db72b13debc780b9d06d87adf2c528",
+     "bytes": 93276
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/nyc?from=1791936000000&to=1792022400000",
+     "sha256": "88372f15d970434fde506b2822500a517ee1b45185c4b83e7135639c7eb89d8c",
+     "bytes": 93253
+    }
+   ]
+  },
+  "la-coastal": {
+   "minutes": 59397,
+   "horizons": {
+    "1": {
+     "pairs": 59099,
+     "maxRiseF": 1.08,
+     "maxFallF": 1.08,
+     "p999RiseF": 0.72,
+     "p999FallF": 1.08
+    },
+    "2": {
+     "pairs": 59021,
+     "maxRiseF": 1.44,
+     "maxFallF": 1.44,
+     "p999RiseF": 1.08,
+     "p999FallF": 1.08
+    },
+    "3": {
+     "pairs": 58982,
+     "maxRiseF": 1.44,
+     "maxFallF": 2.16,
+     "p999RiseF": 1.08,
+     "p999FallF": 1.44
+    },
+    "5": {
+     "pairs": 58902,
+     "maxRiseF": 1.8,
+     "maxFallF": 2.52,
+     "p999RiseF": 1.44,
+     "p999FallF": 1.44
+    },
+    "10": {
+     "pairs": 58803,
+     "maxRiseF": 2.16,
+     "maxFallF": 2.52,
+     "p999RiseF": 1.8,
+     "p999FallF": 1.8
+    },
+    "15": {
+     "pairs": 58742,
+     "maxRiseF": 3.24,
+     "maxFallF": 3.6,
+     "p999RiseF": 2.52,
+     "p999FallF": 2.16
+    },
+    "20": {
+     "pairs": 58652,
+     "maxRiseF": 3.6,
+     "maxFallF": 3.6,
+     "p999RiseF": 2.88,
+     "p999FallF": 2.88
+    },
+    "30": {
+     "pairs": 58568,
+     "maxRiseF": 4.68,
+     "maxFallF": 5.04,
+     "p999RiseF": 3.96,
+     "p999FallF": 3.6
+    },
+    "45": {
+     "pairs": 58446,
+     "maxRiseF": 6.12,
+     "maxFallF": 5.4,
+     "p999RiseF": 5.76,
+     "p999FallF": 4.32
+    },
+    "60": {
+     "pairs": 58367,
+     "maxRiseF": 7.92,
+     "maxFallF": 5.76,
+     "p999RiseF": 7.2,
+     "p999FallF": 5.04
+    },
+    "90": {
+     "pairs": 58234,
+     "maxRiseF": 11.52,
+     "maxFallF": 7.56,
+     "p999RiseF": 10.8,
+     "p999FallF": 6.84
+    },
+    "120": {
+     "pairs": 58136,
+     "maxRiseF": 14.4,
+     "maxFallF": 9,
+     "p999RiseF": 13.32,
+     "p999FallF": 8.28
+    },
+    "180": {
+     "pairs": 57973,
+     "maxRiseF": 19.08,
+     "maxFallF": 11.16,
+     "p999RiseF": 18.36,
+     "p999FallF": 10.44
+    }
+   },
+   "sources": [
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1788220800000&to=1788307200000",
+     "sha256": "98fae85db2e52e3221869a32bd79612ab4d00988325af913d91b06044fe099b7",
+     "bytes": 136017
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1788307200000&to=1788393600000",
+     "sha256": "ebe5f953335a2406708f27d26bf3d164dc9883e0e93f70ad195fd98e847adeb8",
+     "bytes": 143574
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1788393600000&to=1788480000000",
+     "sha256": "ccb911ff2fd70db12c687d9c185892fc5729e1b45a4b1d14f3ff0fe7c65ecfd5",
+     "bytes": 143095
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1788480000000&to=1788566400000",
+     "sha256": "d9d5373140926cb439e5eccd33d68c2223350ab0c46af3320e5a48b77ca81532",
+     "bytes": 125028
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1788566400000&to=1788652800000",
+     "sha256": "fde1f2363bf988a6ff80893f8aae50163b4f4a56b6d490fe96ed089711974e7a",
+     "bytes": 93359
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1788652800000&to=1788739200000",
+     "sha256": "d6669efcb04bd218799ce9406ee04e7b43ad80c6a54d1a6cc681a1094fb3e38f",
+     "bytes": 93412
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1788739200000&to=1788825600000",
+     "sha256": "2db33550b53241b2b90c18b4d1cb3d1a6bf83b449b1d7f1a0adb78f2c4750b45",
+     "bytes": 93134
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1788825600000&to=1788912000000",
+     "sha256": "5ca9c4bb2da00fe58079442bb68a01c37c8a3d369c40df4901c8e7230c0d073b",
+     "bytes": 93262
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1788912000000&to=1788998400000",
+     "sha256": "f2309f27a7ee3bda67df5c326ec0abd1bdfdf74fe141a6a210c76b08846bc50c",
+     "bytes": 93618
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1788998400000&to=1789084800000",
+     "sha256": "fdbc6339fb1203ca9ddf40b99687b52afda145e6ff87b7a28160d9ab371cdc7d",
+     "bytes": 93997
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1789084800000&to=1789171200000",
+     "sha256": "cbde83d15128eaa25c398039b4b28ed6669c5acd4e0213a4d3586585cc65882b",
+     "bytes": 93432
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1789171200000&to=1789257600000",
+     "sha256": "5793c539632164dd4bc1f289eaaa05b0104e486cfaf75a44e3c14b8dafa0d9e2",
+     "bytes": 93553
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1789257600000&to=1789344000000",
+     "sha256": "07ae159037573e0e8e22da2968ceecd284d5a60985146dcf68dc95e45bef63d4",
+     "bytes": 93307
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1789344000000&to=1789430400000",
+     "sha256": "fc1c3a61e07679ecb3c41885f33a642bb79505c6fe9a4c4c07c5525b2ee1316e",
+     "bytes": 93414
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1789430400000&to=1789516800000",
+     "sha256": "177d9e386ba055addcf2461b80ad63e794a617a0aa096c9147f9d6de830a6ad4",
+     "bytes": 93956
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1789516800000&to=1789603200000",
+     "sha256": "0fe11cb7395e0cfb86e18db43da90dd53e20bff76e46bd3a9406fb2938a298ae",
+     "bytes": 96597
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1789603200000&to=1789689600000",
+     "sha256": "64825d892141ba250ac36760df9bcfb04baa8ae9159b2447232e27dbe44f6800",
+     "bytes": 83008
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1789689600000&to=1789776000000",
+     "sha256": "65bc106edbb7fd943ff3033cb57712a91fb9f134e5e58418d9d4895f38d63fd9",
+     "bytes": 93517
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1789776000000&to=1789862400000",
+     "sha256": "e44a16840150be08a8f7501331587d3ba14452c48f75ba979495ceb589b1c317",
+     "bytes": 93255
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1789862400000&to=1789948800000",
+     "sha256": "9a74a161bb1be8462b5fb596d12290885a2e499af409b9a0fe24ecd78968e0aa",
+     "bytes": 93197
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1789948800000&to=1790035200000",
+     "sha256": "b1c1f7af1281d32373d3570e4f8e0b690a581c9f9f009ed747f1660ef7bf2617",
+     "bytes": 93497
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1790035200000&to=1790121600000",
+     "sha256": "3f5cbba6203eab53e03abf8b4abd881fd208769b7ed0178fcd3d42389b18706a",
+     "bytes": 93536
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1790121600000&to=1790208000000",
+     "sha256": "e2c542e0f179258b34764b46b5d09ecde4976adbfb6e5c7d83212b5cb52c5bd6",
+     "bytes": 93465
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1790208000000&to=1790294400000",
+     "sha256": "42868cfb7e08b6af7635b2ada1f0a13cc6b6ac2e5f08581adfa5b36c8d52da51",
+     "bytes": 93419
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1790294400000&to=1790380800000",
+     "sha256": "d7e9b04e83332a110c3e33b9429b0b95722a43b06fecff22a742ea1e956edbe8",
+     "bytes": 93655
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1790380800000&to=1790467200000",
+     "sha256": "47f99390a0432c1399d1dc3e265fec2aaeb0625c7328078a314e5f6da0c9ff10",
+     "bytes": 93494
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1790467200000&to=1790553600000",
+     "sha256": "705ba84a86d220677c0592f530b0253648d7c7891ce5f60346b7e6500e878a98",
+     "bytes": 93549
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1790553600000&to=1790640000000",
+     "sha256": "98bb200742f646c59aa3566c02781c8b21bc989ac3e7331657d858d01cf943cd",
+     "bytes": 93400
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1790640000000&to=1790726400000",
+     "sha256": "bf1390d4626647c543607be58ea0399307c9fae798dae6e76c0f91cb6894f094",
+     "bytes": 93561
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1790726400000&to=1790812800000",
+     "sha256": "f65450f87894c51ecc46371c5263fb9b3a7c1565067dd94f5ad11e74715ec24a",
+     "bytes": 93270
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1790812800000&to=1790899200000",
+     "sha256": "d3eeaee93dbb9834e4ae01614b708b0b9f2683a6a4a75c6b61555d973dee9349",
+     "bytes": 93534
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1790899200000&to=1790985600000",
+     "sha256": "55f59a3b267dc10f00793162ea4fd90e073c9135527ae4d5cf8edeace9c48cad",
+     "bytes": 93229
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1790985600000&to=1791072000000",
+     "sha256": "f8b1a42face8ee8303647273885586002041282293cef62dcb3ff903fc82f766",
+     "bytes": 93530
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791072000000&to=1791158400000",
+     "sha256": "f9f680832523f47b36de5a383b049916bbb721d57e64b764cdb1a2d09f9e6202",
+     "bytes": 93240
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791158400000&to=1791244800000",
+     "sha256": "ed4cfc50c4dc4353fca707dba1f9b998e4c954b10da0d873b6d08e499d631995",
+     "bytes": 93238
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791244800000&to=1791331200000",
+     "sha256": "61693a0ed7d1add66bbe8314ba63d98e0b91e66ce1dc3f2cc5d4edef9e8f8481",
+     "bytes": 93507
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791331200000&to=1791417600000",
+     "sha256": "0a22eb9d351dd712d25f1fc4196e97b2745b22f11feb418046ec5862e25a81af",
+     "bytes": 93151
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791417600000&to=1791504000000",
+     "sha256": "21552f55c7370b9fa972c044445c1bf8c31b2bde78b4f04c5383942d49c0873d",
+     "bytes": 93561
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791504000000&to=1791590400000",
+     "sha256": "ede6b63a4be72ae354e13aaf38a563344b14dad61fbd194f282c3cd000a569bf",
+     "bytes": 90033
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791590400000&to=1791676800000",
+     "sha256": "a9f0789c3d64761551dd69b455760141141f41794e378733ee70d295bfb6c303",
+     "bytes": 92043
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791676800000&to=1791763200000",
+     "sha256": "ca17ba36ab26f104a79ccd6b91fd34d2091970f2cd7f04d61b8021e367fc44d9",
+     "bytes": 93456
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791763200000&to=1791849600000",
+     "sha256": "65ea7f4d5bcc45e39d23462c8d3e809b0f017e24c8da06a1c4717be275b230b8",
+     "bytes": 93422
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791849600000&to=1791936000000",
+     "sha256": "55831e5694eb8bae39d65a16c4121c167d9e599d1c29fccd266d1f201bff75c7",
+     "bytes": 93456
+    },
+    {
+     "url": "https://api.elections.kalshi.com/trade-api/v2/live_data/weather/la-coastal?from=1791936000000&to=1792022400000",
+     "sha256": "64d67f32aab65552b0900def325948a457558c11f204d963541b48316170a0ed",
+     "bytes": 93308
+    }
+   ]
+  }
+ }
+}

@@ -12,6 +12,10 @@
  *               They need no track record and always clip the surface. Only the kinds in STRUCTURAL_KINDS
  *               count: a model's bounds conditional on its own forecast (weather-temperature-extremes'
  *               Frechet bounds over hourly marginals) are a forecast, and are graded like one.
+ *               index-rate-envelope is empirical, not a rule of the contract: Kalshi's city index cannot
+ *               reach a strike further from its latest reading than it has ever moved in the time left
+ *               (weather-index-rate-envelope.mjs, with a safety margin and a falsifier that withdraws it
+ *               when recent readings exceed the envelope).
  *   admitted    models graded better than the mid. The surface is the logit pool of the mid and each
  *               admitted model, weighted by its measured lower/mean skill ratio; its band
  *               pools their calibration bands the same way. Other independently
@@ -29,7 +33,7 @@ const pool = (ps, weights) => {
   return expit(ps.reduce((s,p,i)=>s+weights[i]*logit(p),0)/total);
 };
 
-export const STRUCTURAL_KINDS = Object.freeze(['station-observation']);
+export const STRUCTURAL_KINDS = Object.freeze(['station-observation', 'index-rate-envelope']);
 
 /** A model's structural bounds when they are of a structural kind, bind, and are valid. */
 export function structuralBounds(model) {

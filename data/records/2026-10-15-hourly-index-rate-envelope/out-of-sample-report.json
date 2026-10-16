@@ -1,0 +1,60 @@
+{
+ "fit": {
+  "fitFirst": "2026-09-01",
+  "fitLast": "2026-09-30"
+ },
+ "test": {
+  "testFirst": "2026-10-01",
+  "testLast": "2026-10-14"
+ },
+ "cities": {
+  "miami": {
+   "decisions": 625560,
+   "decided": 211913,
+   "wrong": 0,
+   "decidedByLeadMinutes": {
+    "1-5": 34205,
+    "6-15": 54473,
+    "16-30": 53435,
+    "31-60": 69800
+   },
+   "examples": []
+  },
+  "chicago": {
+   "decisions": 498360,
+   "decided": 227180,
+   "wrong": 0,
+   "decidedByLeadMinutes": {
+    "1-5": 31317,
+    "6-15": 54418,
+    "16-30": 64221,
+    "31-60": 77224
+   },
+   "examples": []
+  },
+  "nyc": {
+   "decisions": 633240,
+   "decided": 352984,
+   "wrong": 0,
+   "decidedByLeadMinutes": {
+    "1-5": 38521,
+    "6-15": 72371,
+    "16-30": 94278,
+    "31-60": 147814
+   },
+   "examples": []
+  },
+  "la-coastal": {
+   "decisions": 636960,
+   "decided": 312671,
+   "wrong": 0,
+   "decidedByLeadMinutes": {
+    "1-5": 39025,
+    "6-15": 70372,
+    "16-30": 84442,
+    "31-60": 118832
+   },
+   "examples": []
+  }
+ }
+}
