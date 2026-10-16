@@ -167,6 +167,7 @@ const information=(correct=1,extra={})=>({
  scope,computeCostUsd:.005,repricingCostBoundUsd:.01,
  model:{
   id:'pretrained-AAA-price-movement-signal',
+  conditionedOnForecastId:scenario().id,
   availableAt:'2026-10-12T18:15:00Z',
   sourceEvidenceIds:['authorized-prior-price-data'],
   signals:[
@@ -297,7 +298,6 @@ test('manual hypothetical fill estimates may not be silently combined with a his
 
 test('one received AAA source observation revises the full shared scenario ladder and research action',()=>{
  const signalStudy=information(.8);
- signalStudy.model.conditionedOnForecastId=scenario().id;
  const observation={
   id:'received-AAA-source-indication-1',signalId:'low-source-indication',
   observedAt:'2026-10-12T19:20:00Z',availableAt:'2026-10-12T19:30:00Z',
@@ -327,7 +327,6 @@ test('one received AAA source observation revises the full shared scenario ladde
 
 test('an unscoped or unavailable observation cannot silently reprice the AAA ladder',()=>{
  const info=information(.8);
- info.model.conditionedOnForecastId=scenario().id;
  const obs={id:'new-report',signalId:'low-source-indication',
   observedAt:'2026-10-12T19:20:00Z',
   availableAt:'2026-10-12T19:30:00Z',evidenceIds:['publisher-receipt']};

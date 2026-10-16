@@ -1,4 +1,3 @@
-import {tailLossRate} from './temperature-tail-prediction.mjs';
 import {poolProbabilities} from './probability-calibration.mjs';
 /**
  * The house's price for one Kalshi daily-rain market (series KXRAIN): "total
@@ -124,13 +123,15 @@ export function priceRainMarket(market, { guidance, maxGuidanceAgeHours = 8, now
 /**
  * The side of the market's long-shot bias a priced rain market falls on, if either, and the loss rate a bet on that
  * side is sized on (rain-markets.json `sides`): `tail` (rain very unlikely: a NO holder's bet) or `favourite` (rain
- * near certain: a YES holder's bet). Never smaller than the model's own probability of losing.
+ * near certain: a YES holder's bet). Never smaller than the model's own probability of losing. A graded
+ * per-settlement-day posterior sizes the side when supplied; without one the record's rule-of-three bound does, because
+ * its counts are markets and same-day markets are not independent trials.
  * @returns {{side: 'tail'|'favourite', lossRate: number} | null}
  */
 export function rainSide(priced,sides=RAIN_MARKETS.sides,posteriors={}) {
   if (!priced?.priced) return null;
-  if (priced.probability <= sides.tail.maxModelProbability) return { side: 'tail', lossRate:Math.max(priced.probability,posteriors.tail?.lossMean??tailLossRate(0,'tail',{tail:{losses:sides.tail.outOfSample.settledYes,clusters:sides.tail.outOfSample.markets}})) };
-  if (priced.probability >= sides.favourite.minModelProbability) return { side: 'favourite', lossRate:Math.max(1-priced.probability,posteriors.favourite?.lossMean??tailLossRate(0,'favourite',{favourite:{losses:sides.favourite.outOfSample.settledNo,clusters:sides.favourite.outOfSample.markets}})) };
+  if (priced.probability <= sides.tail.maxModelProbability) return { side: 'tail', lossRate:Math.max(priced.probability,posteriors.tail?.lossMean??sides.tail.lossRate) };
+  if (priced.probability >= sides.favourite.minModelProbability) return { side: 'favourite', lossRate:Math.max(1-priced.probability,posteriors.favourite?.lossMean??sides.favourite.lossRate) };
   return null;
 }
 

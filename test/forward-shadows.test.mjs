@@ -31,12 +31,12 @@ test('C1 snapshot timing: window, late, once', () => {
   assert.equal(snapshotKind(-1, false), null);
 });
 
-test('C1 entries: YES ask in [0.15, 0.65], buy NO at 1 - bid', () => {
+test('C1 entries: YES ask in [0.15, 0.65], buy NO at 1 - bid, only against a YES bid', () => {
   const mk = (t, bid, ask) => ({ ticker: t, yes_bid_dollars: String(bid), yes_ask_dollars: String(ask), floor_strike: 1 });
   const es = c1Entries([mk('a', 0.1, 0.14), mk('b', 0.1, 0.15), mk('c', 0.6, 0.65), mk('d', 0.6, 0.66), mk('e', 0, 0.3)], 1);
-  assert.deepEqual(es.map((e) => e.ticker), ['b', 'c', 'e']);
+  // e has no YES bid, so no NO is offered: it is not an entry.
+  assert.deepEqual(es.map((e) => e.ticker), ['b', 'c']);
   assert.equal(es[0].no_price, 0.9); assert.equal(es[0].fee_order, 0.07);
-  assert.equal(es[2].no_price, 1); // no bid: NO costs 1, a certain loss of fee
   assert.equal(entryNet(es[0], 'no'), 1 - 0.9 - 0.007);
   assert.equal(entryNet(es[0], 'yes'), -0.9 - 0.007);
 });

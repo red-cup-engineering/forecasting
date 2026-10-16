@@ -27,6 +27,8 @@ export function c1Entries(markets, mult) {
   for (const m of markets) {
     const ask = num(m.yes_ask_dollars); const bid = num(m.yes_bid_dollars);
     if (ask === null || bid === null || !(ask >= C1.askLo && ask <= C1.askHi)) continue;
+    // NO is offered only against a resting YES bid; without one there is no NO to buy at any price.
+    if (!(bid > 0)) continue;
     const noPrice = Math.round((1 - bid) * 1e4) / 1e4; // buy NO at 1 - yes bid
     const fee = orderFee(mult, noPrice, C1.count);
     out.push({

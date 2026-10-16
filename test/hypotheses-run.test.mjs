@@ -1,13 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { sidesOfReading } from '@red-cup-engineering/computer-data-engineering-services-section/four';
 import { createFetcher, BudgetExhausted } from '../src/hypotheses/fetcher.mjs';
 import { readStatuses, runHypotheses, hypothesesDir } from '../src/hypotheses/run.mjs';
 import { admittedHypothesisModels, hypothesisSurface } from '../src/hypotheses/admit.mjs';
-import { openStore } from '../src/hypotheses/store.mjs';
+import { FEED, hypothesisDirectory, modelDirectory, openStore } from '../src/hypotheses/store.mjs';
+import { feedRows } from '@red-cup-engineering/kalshi-services-section/seavt-log';
 
 const NOW = Date.parse('2027-02-01T00:00:00Z');
 const WEEKS = 14; // settled weekly events after registration
@@ -43,7 +44,7 @@ function fixture({ seedProspectiveReceipts = true } = {}) {
   // as forward evidence. Instead, explicitly seed synthetic OBSERVATIONS dated
   // at their original forward window; the test never calls these real trades.
   if (seedProspectiveReceipts) {
-    const store = openStore(join(root, 'cache'));
+    const store = openStore(root);
     for (let i = 0; i < WEEKS; i++) {
       const close = Date.parse('2026-10-15T12:25:00Z') + i * 7 * 86400e3;
       const observedAt = new Date(close - 86400e3).toISOString();
@@ -65,9 +66,9 @@ test('a run encodes entries, passes the criterion, emits a surface model, and sk
   assert.equal(t1.clusters, WEEKS);
   assert.deepEqual(sidesOfReading(t1.reading), [true, false]);
   assert.equal(t1.status, 'passed');
-  assert.ok(existsSync(join(root, 'admitted', 'test-t1.json')));
-  assert.ok(!existsSync(join(root, 'late-favourite-r1')), 'killed hypotheses leave no ledger');
-  const model = JSON.parse(readFileSync(join(root, 'admitted', 'test-t1.json'), 'utf8'));
+  assert.ok(existsSync(join(modelDirectory(root), 'test-t1.json')));
+  assert.ok(!existsSync(hypothesisDirectory(root, 'late-favourite-r1')), 'killed hypotheses leave no ledger');
+  const model = JSON.parse(readFileSync(join(modelDirectory(root), 'test-t1.json'), 'utf8'));
   assert.equal(model.model.id, 'hypothesis:test-t1');
   assert.equal(model.model.band.admitted, true);
   assert.ok(model.model.p < 0.2 && model.model.band.low <= model.model.p && model.model.p <= model.model.band.high, JSON.stringify(model.model));
@@ -84,15 +85,15 @@ test('a run encodes entries, passes the criterion, emits a surface model, and sk
 test('idempotent: a second run preserves the same forward ledger and appends no duplicate observations', async () => {
   const { root, content } = fixture(), calls = [];
   await runHypotheses({ requestBudget: 100, root, contentDir: content, now: NOW, fetcher: createFetcher({ budget: 100, client: fakeClient(calls) }) });
-  const ledger1 = readFileSync(join(root, 'test-t1', 'ledger.json'), 'utf8');
-  const cache1 = readdirSync(join(root, 'cache', 'data', 'logs'), { recursive: true }).length;
+  const ledger1 = readFileSync(join(hypothesisDirectory(root, 'test-t1'), 'ledger.json'), 'utf8');
+  const cache1 = [...feedRows(root, FEED)].length;
   const calls2 = [];
   const r2 = await runHypotheses({ requestBudget: 100, root, contentDir: content, now: NOW + 3600e3, fetcher: createFetcher({ budget: 100, client: fakeClient(calls2) }) });
-  assert.equal(readFileSync(join(root, 'test-t1', 'ledger.json'), 'utf8'), ledger1);
+  assert.equal(readFileSync(join(hypothesisDirectory(root, 'test-t1'), 'ledger.json'), 'utf8'), ledger1);
   assert.equal(r2.sync.newQuotes ?? 0, 0);
   assert.equal(r2.sync.newMarkets ?? 0, 0);
   assert.equal(calls2.filter((p) => p === '/markets/candlesticks').length, 0);
-  assert.equal(readdirSync(join(root, 'cache', 'data', 'logs'), { recursive: true }).length, cache1);
+  assert.equal([...feedRows(root, FEED)].length, cache1);
   // A no-fetch verdict run reproduces the status.
   const r3 = await runHypotheses({ mode: 'verdict', root, contentDir: content, now: NOW });
   assert.equal(r3.hypotheses.find((x) => x.id === 'test-t1').mean, r2.hypotheses.find((x) => x.id === 'test-t1').mean);
@@ -113,7 +114,7 @@ test('the request budget stops a run cleanly and the next run resumes', async ()
 test('observations are SEAVT rows in the flat-file journal layout', async () => {
   const { root, content } = fixture();
   await runHypotheses({ requestBudget: 100, root, contentDir: content, now: NOW, fetcher: createFetcher({ budget: 100, client: fakeClient([]) }) });
-  const store = openStore(join(root, 'cache'));
+  const store = openStore(root);
   assert.equal(store.get('T-00-200', 'market').result, 'no');
   assert.equal(store.get('T-00-200', 'quote:close:-1440').bid, 0.38);
   const statuses = readStatuses({ root, contentDir: hypothesesDir });
@@ -128,6 +129,6 @@ test('settled candle history without an original forward-window witness cannot p
   assert.equal(hypothesis.clusters, 0);
   assert.equal(hypothesis.status, 'forward');
   assert.equal(result.sync.newQuotes ?? 0, 0);
-  assert.equal(existsSync(join(root, 'admitted', 'test-t1.json')), false);
-  assert.equal(openStore(join(root, 'cache')).get('T-00-200', 'quote:close:-1440'), undefined);
+  assert.equal(existsSync(join(modelDirectory(root), 'test-t1.json')), false);
+  assert.equal(openStore(root).get('T-00-200', 'quote:close:-1440'), undefined);
 });
