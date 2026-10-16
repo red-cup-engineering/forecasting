@@ -16,8 +16,9 @@ const market=(city='miami',overrides={})=>({
   series_ticker:INDEX_CITIES[city].series,
   market_type:'binary',status:'active',close_time:'2026-10-14T14:05:00Z',
   title:'Hourly temperature threshold',
-  rules_primary:'Will the index be above 80 degrees Fahrenheit for Oct 14, 2026 at 10 AM EDT?',
-  rules_secondary:'Synoptic Data measured under Kalshi Weather Index Methodology',
+  // The live contracts' wording (KXTEMPMIAH, 2026-10-15): the controlling clause names Synoptic Data.
+  rules_primary:'If the temperature recorded at Miami, FL for Oct 14, 2026 at 10 AM EDT as reported by Synoptic Data, is above 80°, then the market resolves to Yes.',
+  rules_secondary:'The official final value for this market is determined strictly by the temperature reported by Synoptic Data, calculated in accordance with the Kalshi Weather Index Methodology. Alternative sources—such as NWS Climatological Reports or Google Weather—may serve as references, but are not authoritative and will not be used for market resolution.',
   strike_type:'greater',floor_strike:80,
   yes_bid_dollars:'0.40',yes_ask_dollars:'0.44',
   ...overrides,
@@ -88,7 +89,7 @@ test('market outage blocks that city only; another independently bound city is s
   ticker:'KXTEMPCHIHS-26OCT14-T80',
   series_ticker:INDEX_CITIES.chicago.series,
   event_ticker:'KXTEMPCHIHS-26OCT14',
-  rules_primary:'Will Chicago be above 80 degrees Fahrenheit for Oct 14, 2026 at 9 AM CDT?',
+  rules_primary:'If the temperature recorded at Chicago Metro Area for Oct 14, 2026 at 10 AM EDT as reported by Synoptic Data, is above 80°, then the market resolves to Yes.',
  });
  const {client}=mock({failedCity:'miami',chicago:[active],miami:[]});
  const census=await readHourlyIndexMarketCensus({client,now:at,clock});

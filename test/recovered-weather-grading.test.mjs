@@ -3,11 +3,14 @@ import assert from 'node:assert/strict';
 import {mkdtemp,writeFile,rm} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {createHash} from 'node:crypto';
 import {scoreWeather} from '@red-cup-engineering/forecasting/weather-engine';
 test('recovered hourly weather capability keeps unverified and post-settlement rows out of confidence',async()=>{
  const root=await mkdtemp(join(tmpdir(),'weather-grading-'));
  try{
-  const row={id:'valid',ticker:'TEST',family:'hourly-temperature',source:'test',station:'index:test',ruleKey:'test-rule',stage:'0-6h',eventTicker:'TEST',targetDate:'2026-10-06',closeTime:'2026-10-06T20:00:00Z',at:'2026-10-06T18:00:00Z',mid:0.5,outcome:1,models:[{id:'synthetic-model',p:0.8}],settlementEvidenceVersion:1,settlement:{settledAt:'2026-10-06T21:00:00Z'}};
+  // Pooled grades exist only within one exact rule identity, a 64-hex rule hash.
+  const ruleKey=createHash('sha256').update('test-rule').digest('hex');
+  const row={id:'valid',ticker:'TEST',family:'hourly-temperature',source:'test',station:'index:test',ruleKey,stage:'0-6h',eventTicker:'TEST',targetDate:'2026-10-06',closeTime:'2026-10-06T20:00:00Z',at:'2026-10-06T18:00:00Z',mid:0.5,outcome:1,models:[{id:'synthetic-model',p:0.8}],settlementEvidenceVersion:1,settlement:{settledAt:'2026-10-06T21:00:00Z'}};
   const late={...row,id:'late',ticker:'LATE',eventTicker:'LATE',at:'2026-10-06T22:00:00Z'};
   const unverified={...row,id:'unverified',ticker:'UNVERIFIED',eventTicker:'UNVERIFIED',settlementEvidenceVersion:undefined};
   await writeFile(join(root,'resolved.jsonl'),[late,unverified,row].map(x=>JSON.stringify(x)).join('\n')+'\n');

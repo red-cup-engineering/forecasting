@@ -20,7 +20,10 @@ test('independently retained live NOAA source reproduces its exact NI identity a
   assert.equal(fixture.observation.at,'2026-10-13T21:15:00.000Z');
   assert.equal(fixture.source.freshness.observedAgeSeconds,520.002);
   const replay = await readNwsMetarSnapshot({station:'KDLH'}, {now:()=>fixture.source.receivedAt,fetchImpl:async()=>response(fixture.source.text)});
-  assert.deepEqual(replay,fixture);
+  // The acquisition receipt belongs to this read, not to the retained source.
+  const {transport,...source}=replay.source;
+  assert.deepEqual(transport,{attempts:1,rateLimits:[]});
+  assert.deepEqual({...replay,source},fixture);
 });
 
 test('latestMetar retains the exact parsed report API and an admitted injectable feed', async () => {
@@ -30,7 +33,7 @@ test('latestMetar retains the exact parsed report API and an admitted injectable
   assert.deepEqual(Object.keys(value).sort(), ['at', 'precisionF', 'raw', 'station', 'synoptic', 'temperatureF']);
   assert.equal(value.temperatureF, 55.94);
   assert.equal(value.precisionF, 0.09);
-  assert.equal(call.url, 'https://fixture.example/metar/KBOS.TXT');
+  assert.equal(String(call.url), 'https://fixture.example/metar/KBOS.TXT');
   assert.equal(call.init.redirect, 'error');
   assert.equal(call.init.signal instanceof AbortSignal, true);
   assert.equal(await latestMetar({ station: 'KBOS' }, { fetchImpl: async () => response('') }), null);
@@ -49,7 +52,7 @@ test('original bulletin bytes and rights survive the bounded canonical snapshot'
   const text = '\uFEFF' + bulletin.replaceAll('\n', '\r\n');
   let url;
   const value = await readNwsMetarSnapshot({ station: 'KBOS' }, { now, fetchImpl: async input => { url = input; return response(text); } });
-  assert.equal(url, `${METAR_FEED}/KBOS.TXT`);
+  assert.equal(String(url), `${METAR_FEED}/KBOS.TXT`);
   assert.equal(value.source.text, text);
   assert.equal(value.source.bytes, bytes(text).byteLength);
   assert.equal(verifyNiUri(bytes(value.source.text), value.source.identity), true);
@@ -89,7 +92,7 @@ test('successful source receipt states measured age and refuses stale or future 
 
 test('a different admitted US station retains its own original identity and source', async () => {
   const value = await readNwsMetarSnapshot({station:'KDLH'}, {now,fetchImpl:async url=> {
-    assert.equal(url,`${METAR_FEED}/KDLH.TXT`);
+    assert.equal(String(url),`${METAR_FEED}/KDLH.TXT`);
     return response(bulletin.replaceAll('KBOS','KDLH'));
   }});
   assert.equal(value.observation.station,'KDLH');

@@ -77,7 +77,9 @@ test("runForecastingDailyCycle scores a newly resolved Kalshi question exactly o
     const kalshiSettledFetch = async (url) => {
       const parsed = new URL(url);
       if (parsed.pathname === "/trade-api/v2/markets") {
-        return { ok: true, json: async () => ({ markets: [{ ticker: "KXHIGHNY-26SEP04-T86", result: "no" }], cursor: "" }) };
+        // A definitive settlement as the venue reports one: finalized, binary, with its settlement clock and payout.
+        return { ok: true, json: async () => ({ markets: [{ ticker: "KXHIGHNY-26SEP04-T86", status: "finalized", market_type: "binary", result: "no",
+          settlement_ts: "2026-09-05T11:08:41Z", settlement_value_dollars: "0.0000", notional_value_dollars: "1.0000" }], cursor: "" }) };
       }
       return { ok: false, status: 503, json: async () => ({}) };
     };
