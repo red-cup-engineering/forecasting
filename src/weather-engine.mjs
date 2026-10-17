@@ -11,7 +11,9 @@ import {TEMPERATURE_MARKETS} from './temperature-market-model.mjs';
 import {planWeatherReasoningCadence,temperatureReasoningTimeZones} from './weather-reasoning-cadence.mjs';
 import { binarySettlement, marketSettlementTiming } from '@red-cup-engineering/kalshi-services-section/market-facts';
 import {randomUUID,createHash} from 'node:crypto';
-import {updateStationScience,readStationScience,readStationSciencePage,stationPointForecasts} from './station-weather-science.mjs';
+import {updateStationScience,readStationScience,readStationSciencePage,stationPointForecasts,stationScienceReport,readScienceState,scienceStateAt} from './station-weather-science.mjs';
+import {loadWeatherEvidence,sealDerivedRecord,putEvidence,readEvidenceRecord} from './weather-evidence-record.mjs';
+import {openLedger,readLedger,forgetLedgerCache,niOf} from './weather-ledger.mjs';
 import {admitWeatherPageWire,weatherReadPage,weatherStatusInventory} from './weather-read-page.mjs';
 import {readWeatherSourceRecord} from './weather-source-record.mjs';
 import { readFile, writeFile, mkdir, rename, readdir, appendFile, rm, stat, link } from 'node:fs/promises';
@@ -19,7 +21,7 @@ import { createReadStream } from 'node:fs';
 import { createInterface } from 'node:readline';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
-import { gzipSync, gunzipSync } from 'node:zlib';
+import { gzipSync } from 'node:zlib';
 import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
 import { digest, discoverWeather, weatherRuleKey, weatherContract, mapLimit } from './weather-universe.mjs';
 import { collectWeatherEvidence, collectStationWeatherEvidence, weatherEstimates, forecastCell } from './weather-evidence.mjs';
@@ -62,6 +64,9 @@ async function locked(root,fn){
   try{return await fn();}finally{await rm(lock,{force:true});}
 }
 
+/** Hold the single-flight weather cycle lock around maintenance that must not overlap a cycle. */
+export const withWeatherCycleLock=(root,fn)=>locked(root,fn);
+
 export async function weatherCashBudget({client=createKalshiClient(),exchangeIndex=0}={}) {
   if(!Number.isInteger(exchangeIndex)||exchangeIndex<0)throw new TypeError('weather exchange index required');
   const [balance,orders]=await Promise.all([
@@ -86,12 +91,15 @@ async function archivePacket(path,evidence){
 }
 async function archiveWeatherEvidence(evidence,root) {
   await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
-  const sourceEvidenceId=digest(evidence);await archivePacket(join(root,'evidence',`${sourceEvidenceId}.json.gz`),evidence);
+  const sourceEvidenceId=await putEvidence(root,evidence);
   evidence.dailyExtremes=deriveDailyTemperatureExtremes(evidence,{now:Date.now()});
   try{evidence.science=await locked(join(root,'station-science'),()=>updateStationScience(evidence,{root:join(root,'station-science'),now:Date.now(),sourceEvidenceId}));}
-  catch(e){if(e.code!=='WEATHER_CYCLE_RUNNING')throw e;const report=await readStationScience({root:join(root,'station-science')});evidence.science={...report,status:'another station-science update is running',forecasts:stationPointForecasts(evidence,{parameters:report.parameters}),outcomes:[]};}
+  catch(e){if(e.code!=='WEATHER_CYCLE_RUNNING')throw e;const {state,revision}=await readScienceState(join(root,'station-science')),report=stationScienceReport(state);evidence.science={...report,revision,status:'another station-science update is running',forecasts:stationPointForecasts(evidence,{parameters:report.parameters}),outcomes:[]};}
   evidence.sourceEvidenceId=sourceEvidenceId;
-  const evidenceId=digest(evidence);await archivePacket(join(root,'evidence',`${evidenceId}.json.gz`),evidence);return evidenceId;
+  // The in-memory evidence keeps the whole report for this cycle's own decisions; only what is new is stored,
+  // under the names of its inputs (see weather-evidence-record.mjs).
+  const record=sealDerivedRecord({sourceEvidenceId,at:evidence.at,dailyExtremes:evidence.dailyExtremes,science:evidence.science});
+  return putEvidence(root,record);
 }
 /** Independent, empirical metrology experiment; raw archive retained by content address. */
 export async function weatherRelationalScience({region='nyc',root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
@@ -135,7 +143,7 @@ export async function readWeatherIndexSources({root=weatherRoot()}={}) {
  const pointer=await read(join(root,'index-source.json'),null);
  if(!pointer)return {cities:{},errors:[{source:'Kalshi-weather-index',error:'no settlement-source receipt published'}],surface:null};
  if(!/^[a-f0-9]{64}$/.test(pointer.evidenceId??''))throw new TypeError('original index source archive reference required');
- const {record}=await readWeatherSourceRecord({root,file:'evidence/'+pointer.evidenceId+'.json.gz'});
+ const {record}=await readEvidenceRecord({root,evidenceId:pointer.evidenceId});
  if(record.kind!=='kalshi-weather-index-source')throw new TypeError('original index source packet required');
  if(pointer.surface&&pointer.surface.sourceEvidenceId!==pointer.evidenceId)throw new TypeError('hourly surface must retain its original source archive');
  return {cities:record.indices,errors:record.errors??[],surface:pointer.surface??null,evidenceId:pointer.evidenceId,at:record.at};
@@ -196,7 +204,7 @@ export async function readHourlyIndexMarketCensus({client=createKalshiClient({cr
 }
 
 async function hourlyStationEvidence(root,evidenceId,indices){
- const {record:cached}=await readWeatherSourceRecord({root,file:'evidence/'+evidenceId+'.json.gz'});
+ const cached=await loadWeatherEvidence({root,evidenceId});
  const stations=new Set(Object.values(indices).flatMap(packet=>(packet.calibrations?.calibrations??[]).flatMap(config=>(config.stations??[]).map(s=>s.station_id.slice(0,4)))));
  const selected=rows=>Object.fromEntries([...stations].filter(station=>rows?.[station]).map(station=>[station,rows[station]]));
  const guidance=packet=>packet?{runtime:packet.runtime,source:packet.source,stations:selected(packet.stations)}:null;
@@ -213,7 +221,7 @@ export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.no
  const context=await hourlyProjectionContext(root),stationEvidenceId=context.stationEvidenceId;
  const packet={kind:'kalshi-weather-index-source',at:new Date().toISOString(),indices:fresh.cities,errors:fresh.errors,stationEvidenceId};
  await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
- const evidenceId=digest(packet);await archivePacket(join(root,'evidence',evidenceId+'.json.gz'),packet);
+ const evidenceId=await putEvidence(root,packet);
  // Archive the new source before projection, but leave the previously
  // qualified pointer readable until the replacement has been fully prepared.
  // An intermediate surface:null used to erase valid hourly forecasts during
@@ -254,9 +262,10 @@ export async function weatherIndexEvidence({cities,root=weatherRoot(),now=Date.n
  const evidence=await collectWeatherEvidence(contracts,{cacheDir:join(root,'nbm'),now,fetchImpl});
  const evidenceId=await archiveWeatherEvidence(evidence,root);return {evidenceId,...evidence,orderEffect:false};
 }
-export async function weatherEvidence({root=weatherRoot(),evidenceId,station,rawFieldSha256}={}) {
+/** A cycle's evidence joined from its stored parts (weather-evidence-record.mjs); `detail` "full" re-derives science from the ledger. */
+export async function weatherEvidence({root=weatherRoot(),evidenceId,station,rawFieldSha256,detail}={}) {
   if(!/^[a-f0-9]{64}$/.test(evidenceId??''))throw new TypeError('content-addressed evidenceId required');
-  const e=JSON.parse(gunzipSync(await readFile(join(root,'evidence',`${evidenceId}.json.gz`))));
+  const e=await loadWeatherEvidence({root,evidenceId,detail:detail??(station?'full':'used')});
   if(rawFieldSha256!==undefined){
    if(!/^[a-f0-9]{64}$/.test(rawFieldSha256)||!e.ecmwfEnsemble?.fields?.some(r=>r.sha256===rawFieldSha256))throw new TypeError('field must belong to this archived ECMWF evidence');
    const bytes=await readFile(join(root,'ecmwf','raw',rawFieldSha256));if(createHash('sha256').update(bytes).digest('hex')!==rawFieldSha256)throw new Error('immutable field hash mismatch');
@@ -313,8 +322,33 @@ export function boundedWeatherStatus(snapshot, maxGradeMembers = 128) {
   };
 }
 
-export async function weatherStatus({root=weatherRoot(),maxGradeMembers=128}={}) {
-  const result=await read(join(root,'latest.json'),{status:'no weather cycle recorded',orderEffect:false});
+const NO_CYCLE={status:'no weather cycle recorded',orderEffect:false};
+/**
+ * latest.json stores the cycle once and refers to what is stored elsewhere: its grades are
+ * grades.json (`gradesSource`), its science report is the station-science ledger at
+ * `science.revision`. readLatest joins them back so a reader sees the record it always saw.
+ * With a joined grades file the source revision names both files; `science` re-derives the full report.
+ */
+export async function readLatest({root=weatherRoot(),emptyRecord=NO_CYCLE,sourceRevision,science=false}={}){
+  const {record,source}=await readWeatherSourceRecord({root,file:'latest.json',emptyRecord});
+  let revision=source.revision;
+  if(record.gradesSource==='grades.json'){
+    let bytes;try{bytes=await readFile(join(root,'grades.json'));}catch(error){if(error.code!=='ENOENT')throw error;bytes=Buffer.from('{}');}
+    record.grades=JSON.parse(bytes.toString('utf8'));delete record.gradesSource;
+    revision=niOf(Buffer.from(source.revision+'\n'+niOf(bytes)));
+  }
+  if(sourceRevision!==undefined&&sourceRevision!==revision)throw new Error('weather source revision changed; restart paging from offset zero');
+  if(science&&record.science?.revision){
+    const sciRoot=join(root,'station-science'),head=await readLedger(sciRoot);
+    const state=head.head?.revision===record.science.revision?{state:(await readScienceState(sciRoot)).state}:await scienceStateAt(sciRoot,record.science.revision);
+    if(state){const {revision:_r,...slim}=record.science;record.science={...stationScienceReport(state.state),...slim,revision:record.science.revision};}
+  }
+  return {record,source:{...source,revision}};
+}
+/** The part of a cycle's science report that latest.json keeps; the rest is the ledger revision. */
+const slimScience=science=>science?Object.fromEntries(['at','status','scored','forecasted','pending','missingOutcomes','revision'].filter(k=>science[k]!==undefined).map(k=>[k,science[k]])):science;
+export async function weatherStatus({root=weatherRoot(),maxGradeMembers=128,science=true}={}) {
+  const {record:result}=await readLatest({root,science});
   let running=null;const lock=await read(join(root,'cycle.lock'),null);
   if(lock&&await processStart(lock.pid)===lock.start)running={startedAt:new Date(lock.at).toISOString()};
   return boundedWeatherStatus({...result,running,lastFailure:await read(join(root,'last-failure.json'),null)},maxGradeMembers);
@@ -322,7 +356,7 @@ export async function weatherStatus({root=weatherRoot(),maxGradeMembers=128}={})
 
 /** Bounded operation projection; internal consumers retain weatherStatus's full read. */
 export async function weatherStatusPage({root=weatherRoot(),field,offset=0,limit=100,sourceRevision}={}){
- const {record,source}=await readWeatherSourceRecord({root,file:'latest.json',emptyRecord:{status:'no weather cycle recorded',orderEffect:false},sourceRevision});
+ const {record,source}=await readLatest({root,sourceRevision});
  if(field!==undefined)return weatherReadPage(record,{source,field,allowedFields:['contracts','forecasts','grades','errors','opportunities','research','scoring'],offset,limit,sourceRevision,metadata:{orderEffect:false}});
  const lock=await read(join(root,'cycle.lock'),null);
  const running=lock&&await processStart(lock.pid)===lock.start?{startedAt:new Date(lock.at).toISOString()}:null;
@@ -334,7 +368,7 @@ export async function weatherStatusPage({root=weatherRoot(),field,offset=0,limit
  * plus any live contract bindings. No extra scheduler or source ownership.
  */
 export async function weatherCadencePlan({root=weatherRoot(),now=Date.now(),policy}={}){
-  const status=await weatherStatus({root});
+  const status=await weatherStatus({root,science:false});
   const timeZones=temperatureReasoningTimeZones({
     series:TEMPERATURE_MARKETS.series,contracts:status.contracts??[],
   });
@@ -370,7 +404,7 @@ export async function runCadencedWeatherCycle({
 }
 
 export async function triggerWeatherCycle({root=weatherRoot()}={}) {
-  const state=await weatherStatus({root});
+  const state=await weatherStatus({root,science:false});
   if(state.running)return {status:'already-running',...state.running,orderEffect:false};
   const startedAt=new Date().toISOString();
   runWeatherCycle({root}).then(()=>rm(join(root,'last-failure.json'),{force:true}),async e=>{
@@ -396,8 +430,33 @@ async function gradeHistory(root){
   for await(const r of resolvedRows(root))if(gradable(r))for(const m of r.models){const k=key(r,m);if(first.get(k)!==r.at)continue;first.delete(k);accumulator.add({...r,models:[m]});}
   return accumulator.report();
 }
+/**
+ * The desk's pending forecasts are a ledger (weather-ledger.mjs) in <root>/pending: {rows:{id:forecast}}.
+ * A cycle commits only the forecasts it adds, scoring only the ones it settles. A pre-ledger
+ * pending.json is imported once, verified by reading the ledger back, then removed.
+ */
+async function openPending(root){
+  const dir=join(root,'pending'),led=await openLedger(dir);
+  if(!led.head){
+    const legacy=await read(join(root,'pending.json'),null);
+    if(legacy!==null){
+      await led.commit({snapshot:{rows:legacy}});forgetLedgerCache(dir);
+      if(digest((await readLedger(dir)).state.rows)!==digest(legacy))throw new Error('pending import does not reproduce pending.json; pending.json kept');
+      await rm(join(root,'pending.json'),{force:true});
+      return openPending(root);
+    }
+  }
+  led.state.rows??={};
+  return led;
+}
+/** Rewrite a file only when its content changed; returns whether it was written. */
+async function atomicIfChanged(path,value){
+  const text=JSON.stringify(value)+'\n';
+  try{if(await readFile(path,'utf8')===text)return false;}catch(e){if(e.code!=='ENOENT')throw e;}
+  const tmp=`${path}.${process.pid}.tmp`;await writeFile(tmp,text,{mode:0o600});await rename(tmp,path);return true;
+}
 async function scorePending(root,client,now) {
-  const pending=await read(join(root,'pending.json'),{}),settled=[];const errors=[];
+  const pendingLedger=await openPending(root),pending=pendingLedger.state.rows,settled=[],removed=[];const errors=[];
   // Query each market once. Rain can settle before close; do not wait for the nominal close time.
   const tickers=[...new Set(Object.values(pending).map(r=>r.ticker))],markets=new Map();
   if(client.getMarkets){
@@ -413,16 +472,17 @@ async function scorePending(root,client,now) {
     const rulesHash=digest({primary:m.rules_primary,secondary:m.rules_secondary});
     if(!r.rulesHash||r.rulesHash!==rulesHash){errors.push({id,ticker:r.ticker,error:'settlement rules do not match the issued forecast'});continue;}
     if(!Number.isFinite(Date.parse(r.at))||Date.parse(r.at)>=Date.parse(settlement.settledAt)){errors.push({id,ticker:r.ticker,error:'forecast was not issued before definitive settlement'});continue;}
-    settled.push({...r,id,outcome:settlement.outcome,scoredAt:new Date(now).toISOString(),venueResult:settlement.result,settledAt:settlement.settledAt,settlement,settlementEvidenceVersion:1});delete pending[id];
+    settled.push({...r,id,outcome:settlement.outcome,scoredAt:new Date(now).toISOString(),venueResult:settlement.result,settledAt:settlement.settledAt,settlement,settlementEvidenceVersion:1});delete pending[id];removed.push(id);
   }
 
   // A per-record immutable score file makes recovery after interruption idempotent.
   await mkdir(join(root,'scores'),{recursive:true});
   const known=new Set();for await(const r of resolvedRows(root))known.add(r.id);
   for(const r of settled){try{await writeFile(join(root,'scores',`${r.id}.json`),JSON.stringify(r)+'\n',{flag:'wx',mode:0o600});}catch(e){if(e.code!=='EEXIST')throw e;}}
-  for(const file of await readdir(join(root,'scores'))){const r=await read(join(root,'scores',file));if(!known.has(r.id)){await appendFile(join(root,'resolved.jsonl'),JSON.stringify(r)+'\n',{mode:0o600});known.add(r.id);}}
-  await atomic(join(root,'pending.json'),pending);
-  const grades=await gradeHistory(root);await atomic(join(root,'grades.json'),grades);
+  // resolved.jsonl is the record; a score file only makes the append idempotent, so it goes once appended.
+  for(const file of await readdir(join(root,'scores'))){const r=await read(join(root,'scores',file));if(!known.has(r.id)){await appendFile(join(root,'resolved.jsonl'),JSON.stringify(r)+'\n',{mode:0o600});known.add(r.id);}await rm(join(root,'scores',file),{force:true});}
+  if(removed.length)await pendingLedger.commit({applied:true,del:{rows:removed}});else pendingLedger.release();
+  const grades=await gradeHistory(root);await atomicIfChanged(join(root,'grades.json'),grades);
   return {settled:settled.length,pending:Object.keys(pending).length,errors,grades};
 }
 export async function scoreWeather({root=weatherRoot(),client=weatherClient(),now=Date.now()}={}) {
@@ -435,7 +495,7 @@ export async function admitWeatherModel(input,{root=weatherRoot(),now=Date.now()
   if(new URL(input.sourceUrl).protocol!=='https:')throw new TypeError('model provenance must use https');
   const issue=Date.parse(input.issuedAt),expiry=Date.parse(input.validUntil);
   if(!Number.isFinite(issue)||!Number.isFinite(expiry)||issue>now||issue<now-86400000||expiry<=now||expiry>now+16*86400000)throw new TypeError('model issue/expiry must be current, with at most 16-day validity');
-  const current=await weatherStatus({root}); const contracts=new Map((current.contracts??[]).map(c=>[c.ticker,c]));
+  const current=await weatherStatus({root,science:false}); const contracts=new Map((current.contracts??[]).map(c=>[c.ticker,c]));
   const forecasts=input.forecasts??[],ensembles=input.ensembles??[];
   if(!Array.isArray(forecasts)||!Array.isArray(ensembles)||forecasts.length+ensembles.length<1||forecasts.length+ensembles.length>2000)throw new TypeError('provide 1..2000 forecasts or station ensembles');
   for(const r of forecasts){const c=contracts.get(r.ticker);if(!c||Date.parse(c.close_time)<=now||r.rulesHash!==c.rulesHash||typeof r.probability!=='number'||!Number.isFinite(r.probability)||r.probability<0||r.probability>1)throw new TypeError('forecast must name a current contract, exact rulesHash and unit probability');}
@@ -488,7 +548,7 @@ async function quoteWeatherContract(c,models,evidence,client,surface) {
   return out;
 }
 export async function allocateLiveWeather({root=weatherRoot(),capitalUsd,encumberedUsd=0,client=weatherClient(),portfolioClient,now=Date.now()}={}) {
-  const state=await weatherStatus({root});
+  const state=await weatherStatus({root,science:false});
   if(!Number.isFinite(Date.parse(state.at))||now-Date.parse(state.at)>15*60000)throw new Error('weather evidence is older than fifteen minutes; run weather_cycle before allocating');
   const contracts=new Map((state.contracts??[]).map(c=>[c.ticker,c])),errors=[];
   const candidates=(state.forecasts??[]).filter(r=>{
@@ -588,7 +648,7 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
     const decisionNow=Date.now();
     const contracts=universe.markets.map(c=>{const fresh=freshQuotes.get(c.ticker);if(!fresh)return c;const changed=digest({primary:c.rules_primary,secondary:c.rules_secondary})!==digest({primary:fresh.rules_primary,secondary:fresh.rules_secondary});return {...c,...fresh,...(changed?{ruleKey:weatherRuleKey(fresh,c.seriesTicker,c.source,c.stationRule),binding:null,blocker:'rules changed during collection; rebind next cycle'}:{})};}).map(c=>weatherIndexContractScope({...c,rulesHash:digest({primary:c.rules_primary,secondary:c.rules_secondary})},evidence,decisionNow));
     for(const c of contracts)if(c.binding?.kind==='index-at'&&evidence.indices?.[c.binding.city]?.blocker)c.blocker=evidence.indices[c.binding.city].blocker;
-    const ex=await experiments(root,contracts,decisionNow),pending=await read(join(root,'pending.json'),{}),rows=[],opportunities=[];
+    const ex=await experiments(root,contracts,decisionNow),pendingLedger=await openPending(root),pending=pendingLedger.state.rows,addedPending={},rows=[],opportunities=[];
     await mapLimit(contracts,3,async c=>{
       const s=stage(c,decisionNow),models=weatherEstimates(c,evidence,decisionNow);
       models.push(...(ex.get(c.ticker)?.values()??[]));
@@ -602,21 +662,22 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
         const graded=[...models.map(m=>({id:m.id,p:m.p,details:m.details})),...(surface?[{id:'house-surface-v1',p:surface.p,details:{admitted:surface.admitted,structural:surface.structural,low:surface.low,high:surface.high}}]:[])];
         const forecast={at:new Date().toISOString(),...row,models:graded};
         const id=digest({ticker:c.ticker,stage:s,rules:c.rulesHash,models:graded.map(m=>m.id).sort()});
-        pending[id]??=forecast;
+        if(!(id in pending))pending[id]=addedPending[id]=forecast;
       }
       try{opportunities.push(...await quoteWeatherContract(c,modelBands,evidence,client,surface));}catch(e){row.bookError=e.message;}
 
     });
     const at=new Date().toISOString();
     await atomic(join(root,'surface.json'),forecastSurface(rows,contracts,at));
-    await atomic(join(root,'pending.json'),pending);
+    await pendingLedger.commit({applied:true,set:{rows:addedPending}});
     const scoring=await scorePending(root,client,Date.now());
     const families={};for(const c of contracts){families[c.family]??={markets:0,modelled:0,volume24h:0};families[c.family].markets++;families[c.family].volume24h+=Number(c.volume_24h_fp??0);if(rows.find(r=>r.ticker===c.ticker)?.models.length)families[c.family].modelled++;}
     const research=Object.entries(families).filter(([_,v])=>v.modelled<v.markets).sort((a,b)=>b[1].volume24h-a[1].volume24h).map(([family,v])=>({family,...v,nextEffect:family==='hourly-temperature'?'bind official station/time and score short-horizon observation-conditioned forecasts':family==='precipitation'?'bind interval totals; validate probabilistic accumulation forecasts':family==='tropical'?'bind NHC event definitions and calibrate track/intensity ensembles':family==='snow'?'bind reporting station and validate snow accumulation ensembles':'bind settlement transformation and submit versioned forecasts'}));
     const {forecasts:physicalForecasts,outcomes:physicalOutcomes,...science}=evidence.science??{};
     const regionalTransitions=(evidence.relational?.regions??[]).filter(r=>r.regionalTransition).map(r=>({region:r.region,...r.regionalTransition}));
     const result={science,regionalTransitions,...(cadence?{cadence}:{}),at,collectionStartedAt:new Date(now).toISOString(),complete:universe.complete,series:universe.series,marketCount:contracts.length,modelled:rows.filter(r=>r.models.length).length,families,errors:[...universe.errors,...evidence.errors],scoring:{settled:scoring.settled,pending:scoring.pending,errors:scoring.errors},grades:scoring.grades,forecasts:rows,contracts,opportunities,research,allocation:allocateWeather(opportunities.filter(o=>Date.parse(o.quoteExpiresAt)>Date.now()),{capitalUsd,encumberedUsd}),orderEffect:false};
-    await atomic(join(root,'latest.json'),result);
+    const {grades:_grades,science:fullScience,...kept}=result;
+    await atomic(join(root,'latest.json'),{science:slimScience(fullScience),gradesSource:'grades.json',...kept});
     return result;
   });
 }
@@ -655,7 +716,7 @@ export async function weatherParticipation({root=weatherRoot(),client=weatherCli
  if(tickers!==undefined&&(!Array.isArray(tickers)||tickers.length<1||tickers.length>2000||new Set(tickers).size!==tickers.length||tickers.some(t=>typeof t!=='string'||t.length>120)))throw new TypeError('1..2000 distinct weather tickers required');
  if(quoteIntents!==undefined&&(!Array.isArray(quoteIntents)||quoteIntents.length<1||quoteIntents.length>4000||quoteIntents.some(q=>!q||typeof q.ticker!=='string'||q.ticker.length>120||!['yes','no'].includes(q.side)||!Number.isFinite(q.price)||q.price<=0||q.price>=1||(q.quantity!==undefined&&(!Number.isInteger(q.quantity)||q.quantity<1||q.quantity>10000)))))throw new TypeError('scoped quote intents require a ticker, side, finite price and optional whole quantity');
  if(maxMarkets!==undefined&&(!Number.isInteger(maxMarkets)||maxMarkets<1||maxMarkets>2000||tickers!==undefined))throw new TypeError('maxMarkets must be 1..2000 for automatic selection');
- const {record:state}=await readWeatherSourceRecord({root,file:'latest.json',emptyRecord:{status:'no weather cycle recorded'}});if(!Number.isFinite(Date.parse(state.at))||Date.parse(state.at)>now||now-Date.parse(state.at)>15*60000)throw new TypeError('weather evidence needs a causal receipt within fifteen minutes');
+ const {record:state}=await readLatest({root,emptyRecord:{status:'no weather cycle recorded'}});if(!Number.isFinite(Date.parse(state.at))||Date.parse(state.at)>now||now-Date.parse(state.at)>15*60000)throw new TypeError('weather evidence needs a causal receipt within fifteen minutes');
  const byTicker=new Map((state.contracts??[]).map(c=>[c.ticker,c]));let forecasts=(state.forecasts??[]).filter(r=>r.models?.some(m=>Number.isFinite(m.p))&&Date.parse(r.closeTime)>now),availableCapitalUsd=Math.max(0,capitalUsd-encumberedUsd);
  const liveIndexDiscovery=[],discoveryErrors=[];
  if(tickers===undefined){

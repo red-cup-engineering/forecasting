@@ -3,19 +3,24 @@ import {readdir,stat,readFile,mkdir,writeFile} from 'node:fs/promises';
 import {resolve,join} from 'node:path';
 import {gunzipSync} from 'node:zlib';
 import {updateStationScience,readStationScience} from '../src/station-weather-science.mjs';
+import {evidenceStore,readEvidenceRecord,DERIVED_KIND} from '../src/weather-evidence-record.mjs';
 const args=process.argv.slice(2),options={};
-for(let i=0;i<args.length;i+=2){if(!['--archives','--universe','--output'].includes(args[i])||!args[i+1])throw new Error('usage: --archives EVIDENCE_DIRECTORY --universe LATEST_JSON --output NEW_REPLAY_DIRECTORY');options[args[i].slice(2)]=resolve(args[i+1]);}
-if(!options.archives||!options.universe||!options.output)throw new Error('archives, universe and output required');
+for(let i=0;i<args.length;i+=2){if(!['--archives','--root','--universe','--output'].includes(args[i])||!args[i+1])throw new Error('usage: (--archives EVIDENCE_DIRECTORY | --root WEATHER_STATE_DIR) --universe LATEST_JSON --output NEW_REPLAY_DIRECTORY');options[args[i].slice(2)]=resolve(args[i+1]);}
+if(!options.archives===!options.root||!options.universe||!options.output)throw new Error('exactly one of archives or root, and universe and output required');
 // Refuse existing outputs, especially live state. Replay is an isolated retrospective experiment.
 await mkdir(options.output,{recursive:false,mode:0o700});
+async function collect(iterator){const out=[];for await(const x of iterator)out.push(x);return out;}
 const universe=JSON.parse(await readFile(options.universe,'utf8')),bindings=new Map();
 for(const c of universe.contracts??[]){const b=c.binding;if(b)bindings.set(b.station,{station:b.station,timeZone:b.timeZone});}
-const files=await Promise.all((await readdir(options.archives)).filter(n=>/^[a-f0-9]{64}\.json\.gz$/.test(n)).map(async name=>({name,mtime:(await stat(join(options.archives,name))).mtimeMs})));
+// Records are archive files, or refs in the weather root's content tree store; the write time of the file or ref is the availability clock.
+const files=options.root
+ ?await Promise.all([...await collect(evidenceStore(options.root).refs('evidence/'))].map(async ref=>({name:ref.slice(9)+'.json.gz',mtime:(await stat(join(options.root,'content-tree','refs',...ref.split('/')))).mtimeMs})))
+ :await Promise.all((await readdir(options.archives)).filter(n=>/^[a-f0-9]{64}\.json\.gz$/.test(n)).map(async name=>({name,mtime:(await stat(join(options.archives,name))).mtimeMs})));
 files.sort((a,b)=>a.mtime-b.mtime||a.name.localeCompare(b.name));
 let packets=0,skipped=0,scored=0,forecasted=0;const outcomes=[];
 for(const {name,mtime} of files){
- const e=JSON.parse(gunzipSync(await readFile(join(options.archives,name))));
- if(e.science||![e.local,e.guidance,e.hourlyGuidance,e.lamp,e.indices,e.observations].some(v=>v&&typeof v==='object'&&!Array.isArray(v))||Date.parse(e.at)>mtime){skipped++;continue;}
+ const e=options.root?(await readEvidenceRecord({root:options.root,evidenceId:name.slice(0,64)})).record:JSON.parse(gunzipSync(await readFile(join(options.archives,name))));
+ if(e.science||e.kind===DERIVED_KIND||![e.local,e.guidance,e.hourlyGuidance,e.lamp,e.indices,e.observations].some(v=>v&&typeof v==='object'&&!Array.isArray(v))||Date.parse(e.at)>mtime){skipped++;continue;}
  e.stations??=[...bindings.values()].filter(r=>e.local?.[r.station]||e.guidance?.stations?.[r.station]);
  const result=await updateStationScience(e,{root:options.output,now:mtime,sourceEvidenceId:name.slice(0,64)});
  packets++;scored+=result.scored;forecasted+=result.forecasted;outcomes.push(...result.outcomes);

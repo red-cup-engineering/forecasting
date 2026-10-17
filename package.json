@@ -1,6 +1,6 @@
 {
   "name": "@red-cup-engineering/forecasting",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "type": "module",
   "repository": {
     "type": "git",
@@ -61,10 +61,14 @@
     "./weather-index-lattice": "./src/weather-index-lattice.mjs",
     "./weather-index-lattice-fit.json": "./src/weather-index-lattice-fit.json",
     "./weather-index-rate-envelope": "./src/weather-index-rate-envelope.mjs",
-    "./weather-index-rate-envelope.json": "./content/config/weather-index-rate-envelope.json"
+    "./weather-index-rate-envelope.json": "./content/config/weather-index-rate-envelope.json",
+    "./weather-ledger": "./src/weather-ledger.mjs",
+    "./weather-evidence-record": "./src/weather-evidence-record.mjs",
+    "./weather-evidence-migration": "./src/weather-evidence-migration.mjs",
+    "./migrate-weather-evidence": "./apps/migrate-weather-evidence.mjs"
   },
   "scripts": {
-    "check": "node --check src/forecasting.mjs && node --check src/evidence-fusion.mjs && node --check scripts/ingest-forecasting-question.mjs && node --check scripts/fuse-forecast.mjs && node --check scripts/record-forecast.mjs && node --check scripts/score-forecast.mjs && node --check scripts/derive-calibration-record.mjs && node --check scripts/resolve-set-of-forecast-questions.mjs && node --check apps/forecasting-cli.mjs && node --check apps/forecast-weather-markets-cli.mjs && node --check apps/forecasting-daily-cycle.mjs && node --check src/station-observations.mjs && node --check src/coops-water-level.mjs && node --check test/coops-water-level.test.mjs && node --check test/station-observations.test.mjs",
+    "check": "node --check src/forecasting.mjs && node --check src/evidence-fusion.mjs && node --check scripts/ingest-forecasting-question.mjs && node --check scripts/fuse-forecast.mjs && node --check scripts/record-forecast.mjs && node --check scripts/score-forecast.mjs && node --check scripts/derive-calibration-record.mjs && node --check scripts/resolve-set-of-forecast-questions.mjs && node --check apps/forecasting-cli.mjs && node --check apps/forecast-weather-markets-cli.mjs && node --check apps/forecasting-daily-cycle.mjs && node --check src/station-observations.mjs && node --check src/coops-water-level.mjs && node --check test/coops-water-level.test.mjs && node --check test/station-observations.test.mjs && node --check src/weather-ledger.mjs && node --check src/weather-evidence-record.mjs && node --check src/weather-evidence-migration.mjs && node --check apps/migrate-weather-evidence.mjs && node --check test/weather-evidence-record.test.mjs",
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
@@ -81,7 +85,8 @@
     "@red-cup-engineering/mandate-portfolio-allocation-service": "0.2.2",
     "@red-cup-engineering/position-sizing-service": "0.3.3",
     "@red-cup-engineering/http-services-section": "0.6.2",
-    "@red-cup-engineering/kalshi-services-section": "0.1.3"
+    "@red-cup-engineering/kalshi-services-section": "0.1.3",
+    "@red-cup-engineering/computer-file-engineering-services-section": "0.5.0"
   },
   "engines": {
     "node": ">=22"

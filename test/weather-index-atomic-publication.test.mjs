@@ -64,3 +64,26 @@ test('an unqualified venue census failure still admits the new source once, with
  assert.equal(record.surface,null);
  assert.ok(original.evidenceId);
 });
+
+test('the hourly projection reads its station evidence through the derived record and its stored source',async t=>{
+ const {writeFileSync}=await import('node:fs');
+ const {putEvidence,sealDerivedRecord}=await import('../src/weather-evidence-record.mjs');
+ const root=mkdtempSync(join(tmpdir(),'kalshi-index-derived-'));
+ t.after(()=>rmSync(root,{recursive:true,force:true}));
+ const source={at:'2026-10-10T12:00:00.000Z',stations:[],local:{},observations:{},errors:[],indices:{}};
+ const sourceEvidenceId=await putEvidence(root,source);
+ const row={station:'index:nyc',model:'kalshi-index-family-pool-v1/paired-family-fixed-share-v2',validTime:'2026-10-10T13:00:00.000Z'};
+ const other={station:'index:nyc',model:'kalshi-index-family-pool-v1',validTime:'2026-10-10T13:00:00.000Z'};
+ const record=sealDerivedRecord({sourceEvidenceId,at:source.at,dailyExtremes:{forecasts:[],gaps:[]},
+  science:{at:source.at,scored:0,forecasted:2,parameters:{'index:nyc/m/0-3h':{ready:true},'KNYC/m/0-3h':{ready:true}},forecasts:[row,other]}});
+ const stationEvidenceId=await putEvidence(root,record);
+ assert.deepEqual(Object.keys(record.science.parameters),['index:nyc/m/0-3h']);
+ assert.deepEqual(record.science.forecasts,[row]);
+ writeFileSync(join(root,'latest.json'),JSON.stringify({at:source.at,forecasts:[{evidenceId:stationEvidenceId}]}));
+ const done=await publishWeatherIndexSources({root,sourceCollector:collector,marketClient:client()});
+ assert.equal(done.projectionError,null);
+ const pointer=JSON.parse(readFileSync(join(root,'index-source.json'),'utf8'));
+ assert.equal(pointer.evidenceId,done.evidenceId);
+ assert.ok(pointer.surface,'a surface was projected from the joined station evidence');
+ assert.equal(pointer.surface.stationEvidenceId,stationEvidenceId);
+});
