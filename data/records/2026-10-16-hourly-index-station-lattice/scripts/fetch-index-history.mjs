@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 /**
  * Fetch Kalshi's per-minute city index with every member station's reading (detailed=true), one UTC day per
- * request, into data/index/<city>/<date>.json. Public endpoint; paced well under the read budget.
+ * request, into data/index/<city>/<date>.json, and each city's published calibrations (the offsets and reference
+ * of every configuration version) into data/calibrations/<city>.json. Public endpoints; paced well under the read
+ * budget.
  *   node scripts/fetch-index-history.mjs --from 2026-09-01 --to 2026-10-16 [--cities nyc,miami,chicago,la-coastal]
  */
 import { mkdir, writeFile, access } from 'node:fs/promises';
@@ -16,6 +18,10 @@ const day = 86_400_000;
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 for (const city of values.cities.split(',')) {
   await mkdir(join(root, city), { recursive: true });
+  const calibrations = await fetch(`${base}/${city}/calibrations`, { headers: { accept: 'application/json' } });
+  if (!calibrations.ok) throw new Error(`${city} calibrations: ${calibrations.status}`);
+  await mkdir(join(root, '..', 'calibrations'), { recursive: true });
+  await writeFile(join(root, '..', 'calibrations', `${city}.json`), await calibrations.text());
   for (let t = Date.parse(`${values.from}T00:00:00Z`); t <= Date.parse(`${values.to}T00:00:00Z`); t += day) {
     const date = new Date(t).toISOString().slice(0, 10), file = join(root, city, `${date}.json`);
     if (await access(file).then(() => true, () => false)) continue;

@@ -1,0 +1,144 @@
+{
+  "city": "miami",
+  "split": "2026-10-09",
+  "buckets": {
+    "<5": {
+      "fitTrades": 12297,
+      "testTrades": 15463,
+      "coefficients": {
+        "model": 0.48588350658309526,
+        "market": 0.7059497318727828,
+        "intercept": 0.08544854030763757
+      },
+      "testLogLoss": {
+        "model": 0.3390279436944645,
+        "marketPrevious": 0.3248306527172802,
+        "stacked": 0.32463652110688473,
+        "tradePrice": 0.32120126648993885
+      },
+      "marginCents": 1,
+      "fitMakerUsd": 6622,
+      "fitContracts": 127385,
+      "testMaker": {
+        "usd": 7820,
+        "contracts": 137483,
+        "centsPerContract": 5.69
+      }
+    },
+    "<10": {
+      "fitTrades": 8533,
+      "testTrades": 12374,
+      "coefficients": {
+        "model": 0.24953880931061326,
+        "market": 0.7243625853232478,
+        "intercept": -0.23149855200889416
+      },
+      "testLogLoss": {
+        "model": 0.32910526718365307,
+        "marketPrevious": 0.2875473741893066,
+        "stacked": 0.28717557345415967,
+        "tradePrice": 0.2886494656080797
+      },
+      "marginCents": 1,
+      "fitMakerUsd": 2713,
+      "fitContracts": 111170,
+      "testMaker": {
+        "usd": 6914,
+        "contracts": 135645,
+        "centsPerContract": 5.1
+      }
+    },
+    "<20": {
+      "fitTrades": 15965,
+      "testTrades": 23983,
+      "coefficients": {
+        "model": -0.11238846157332325,
+        "market": 1.197588688976662,
+        "intercept": -0.14293378942969898
+      },
+      "testLogLoss": {
+        "model": 0.3566952385166062,
+        "marketPrevious": 0.2979725263214111,
+        "stacked": 0.2930304253316692,
+        "tradePrice": 0.29656698663862885
+      },
+      "marginCents": 0,
+      "fitMakerUsd": 2601,
+      "fitContracts": 277366,
+      "testMaker": {
+        "usd": 13528,
+        "contracts": 330583,
+        "centsPerContract": 4.09
+      }
+    },
+    "<30": {
+      "fitTrades": 14195,
+      "testTrades": 20664,
+      "coefficients": {
+        "model": -0.20054726336626166,
+        "market": 1.16837003434416,
+        "intercept": -0.024067821268036534
+      },
+      "testLogLoss": {
+        "model": 0.30029391437242314,
+        "marketPrevious": 0.2461844527499787,
+        "stacked": 0.2501167733730937,
+        "tradePrice": 0.2452749927051109
+      },
+      "marginCents": 0,
+      "fitMakerUsd": 5404,
+      "fitContracts": 236034,
+      "testMaker": {
+        "usd": -574,
+        "contracts": 352183,
+        "centsPerContract": -0.16
+      }
+    },
+    "<45": {
+      "fitTrades": 19657,
+      "testTrades": 27363,
+      "coefficients": {
+        "model": -0.2061179791615316,
+        "market": 1.3802034088267903,
+        "intercept": -0.09727230113765382
+      },
+      "testLogLoss": {
+        "model": 0.30565501105490706,
+        "marketPrevious": 0.25950133965098426,
+        "stacked": 0.2608527231566736,
+        "tradePrice": 0.2563097030461642
+      },
+      "marginCents": 0,
+      "fitMakerUsd": 7439,
+      "fitContracts": 268860,
+      "testMaker": {
+        "usd": 5655,
+        "contracts": 319211,
+        "centsPerContract": 1.77
+      }
+    },
+    "<61": {
+      "fitTrades": 17453,
+      "testTrades": 24393,
+      "coefficients": {
+        "model": -0.22197172650160105,
+        "market": 1.246464717071612,
+        "intercept": 0.06109010311202288
+      },
+      "testLogLoss": {
+        "model": 0.2495946956970064,
+        "marketPrevious": 0.1873763242628135,
+        "stacked": 0.18766007495897838,
+        "tradePrice": 0.1868257741008792
+      },
+      "marginCents": 1,
+      "fitMakerUsd": 9361,
+      "fitContracts": 173900,
+      "testMaker": {
+        "usd": 6565,
+        "contracts": 179314,
+        "centsPerContract": 3.66
+      }
+    }
+  }
+}
