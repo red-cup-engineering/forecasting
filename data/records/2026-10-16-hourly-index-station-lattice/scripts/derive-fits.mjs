@@ -7,6 +7,11 @@
  *     weather model's calibration given a fill of that side and the margin per band of the model's probability, null
  *     where the band did not hold up out of sample (results/calibration-<city>.json), with the calibration's bins in
  *     `calibrationEdges`, keeping the rest of that policy as it stands.
+ *
+ * Settled in advance first. The desk's cash goes first to what the weather has already settled within the hour: a
+ * YES bid only where the model puts YES beyond doubt (its highest band), a NO bid only where it puts YES out of reach
+ * (its lowest band). Those quotes turn over within the hour and carry the least risk. Every other band keeps its
+ * held-out evidence (`heldOut`, `heldUpMarginCents`) and quotes nothing until that market making is working.
  *   node scripts/derive-fits.mjs
  */
 import { readFile, writeFile } from 'node:fs/promises';
@@ -32,7 +37,11 @@ for (const city of cities) {
   policy.calibrationEdges = c.edges;
   policy.cities[city].leads = Object.fromEntries(Object.entries(c.buckets).map(([bucket, sides]) => [bucket, Object.fromEntries(Object.entries(sides).map(([side, s]) => [side, {
     calibration: s.calibration,
-    bands: s.bands.map((b) => ({ from: b.from, to: b.to, marginCents: b.marginCents, heldOut: b.folds.map((f) => ({ marginCents: f.marginCents, centsPerContract: f.heldCentsPerContract ?? null, contracts: f.heldContracts ?? 0 })) })),
+    bands: s.bands.map((b, i) => {
+      const settled = side === 'yes' ? i === s.bands.length - 1 : i === 0;
+      return { from: b.from, to: b.to, marginCents: settled ? b.marginCents : null, heldUpMarginCents: b.marginCents, settledInAdvance: settled,
+        heldOut: b.folds.map((f) => ({ marginCents: f.marginCents, centsPerContract: f.heldCentsPerContract ?? null, contracts: f.heldContracts ?? 0 })) };
+    }),
   }]))]));
 }
 policy.derivedFrom = `forecasting-service/data/records/${record}`;
