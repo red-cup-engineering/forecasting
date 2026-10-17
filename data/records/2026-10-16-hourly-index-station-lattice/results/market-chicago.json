@@ -1,0 +1,401 @@
+{
+  "city": "chicago",
+  "series": "KXTEMPCHIHS",
+  "window": [
+    "2026-10-01",
+    "2026-10-17"
+  ],
+  "params": {
+    "sigmaCommon": 0.02,
+    "sigmaStation": 0.06,
+    "sigmaDrift": 0.005,
+    "tau": 0.03,
+    "tauMetar": 0.3,
+    "volatilityPersistence": 0.5,
+    "regimeSpread": 0.5,
+    "trendMinutes": 60,
+    "climateHalfLifeDays": 20,
+    "drift": {
+      "horizons": [
+        2,
+        5,
+        10,
+        20,
+        30,
+        45,
+        60
+      ],
+      "coefficients": [
+        [
+          0.14160909792861812,
+          0.26641844519755414,
+          0.6613766469612619
+        ],
+        [
+          0.21769971628467394,
+          0.1733369078264903,
+          0.6849385924983833
+        ],
+        [
+          0.2726329487922038,
+          0.1256894015281944,
+          0.563916764797287
+        ],
+        [
+          0.30559845921458595,
+          0.2613518904589422,
+          0.4362132652119115
+        ],
+        [
+          0.258378078012972,
+          0.2600932175996044,
+          0.46788094168246486
+        ],
+        [
+          0.19319962393078866,
+          0.19518159756198594,
+          0.6045880795637982
+        ],
+        [
+          0.14797635660754424,
+          0.22884784927592308,
+          0.6103362971583495
+        ]
+      ]
+    }
+  },
+  "byLeadMinutes": {
+    "<5": {
+      "trades": 9194,
+      "contracts": 179478,
+      "modelLogLoss": 0.3238469771859473,
+      "marketLogLoss": 0.3310255099999564,
+      "modelBrier": 0.09869399056007493,
+      "marketBrier": 0.10441774878610148,
+      "makerAgainstTakers": {
+        "margin0c": {
+          "contracts": 98876,
+          "pnlUsd": 4114.13,
+          "perContractCents": 4.16
+        },
+        "margin1c": {
+          "contracts": 84356,
+          "pnlUsd": 4201.56,
+          "perContractCents": 4.98
+        },
+        "margin2c": {
+          "contracts": 66485,
+          "pnlUsd": 3918.61,
+          "perContractCents": 5.89
+        },
+        "margin3c": {
+          "contracts": 54532,
+          "pnlUsd": 3682.42,
+          "perContractCents": 6.75
+        },
+        "margin5c": {
+          "contracts": 41585,
+          "pnlUsd": 3380.72,
+          "perContractCents": 8.13
+        }
+      }
+    },
+    "<10": {
+      "trades": 6735,
+      "contracts": 144177,
+      "modelLogLoss": 0.3449424963385531,
+      "marketLogLoss": 0.334943757073841,
+      "modelBrier": 0.10991676696781241,
+      "marketBrier": 0.10683240896040716,
+      "makerAgainstTakers": {
+        "margin0c": {
+          "contracts": 79952,
+          "pnlUsd": 2685.19,
+          "perContractCents": 3.36
+        },
+        "margin1c": {
+          "contracts": 69928,
+          "pnlUsd": 2687.18,
+          "perContractCents": 3.84
+        },
+        "margin2c": {
+          "contracts": 57078,
+          "pnlUsd": 2527.69,
+          "perContractCents": 4.43
+        },
+        "margin3c": {
+          "contracts": 46174,
+          "pnlUsd": 2410.27,
+          "perContractCents": 5.22
+        },
+        "margin5c": {
+          "contracts": 34808,
+          "pnlUsd": 2015.13,
+          "perContractCents": 5.79
+        }
+      }
+    },
+    "<20": {
+      "trades": 13327,
+      "contracts": 259362,
+      "modelLogLoss": 0.40573962027642463,
+      "marketLogLoss": 0.3521772746776769,
+      "modelBrier": 0.1304509612501459,
+      "marketBrier": 0.11155888065999184,
+      "makerAgainstTakers": {
+        "margin0c": {
+          "contracts": 136686,
+          "pnlUsd": 2361.67,
+          "perContractCents": 1.73
+        },
+        "margin1c": {
+          "contracts": 121140,
+          "pnlUsd": 1871.93,
+          "perContractCents": 1.55
+        },
+        "margin2c": {
+          "contracts": 99324,
+          "pnlUsd": 921.66,
+          "perContractCents": 0.93
+        },
+        "margin3c": {
+          "contracts": 82845,
+          "pnlUsd": 449.83,
+          "perContractCents": 0.54
+        },
+        "margin5c": {
+          "contracts": 62495,
+          "pnlUsd": 76.19,
+          "perContractCents": 0.12
+        }
+      }
+    },
+    "<30": {
+      "trades": 10337,
+      "contracts": 206845,
+      "modelLogLoss": 0.4683482579991371,
+      "marketLogLoss": 0.39318464264771186,
+      "modelBrier": 0.14862410262374157,
+      "marketBrier": 0.12523130458210918,
+      "makerAgainstTakers": {
+        "margin0c": {
+          "contracts": 106138,
+          "pnlUsd": 2494.33,
+          "perContractCents": 2.35
+        },
+        "margin1c": {
+          "contracts": 96342,
+          "pnlUsd": 2462.25,
+          "perContractCents": 2.56
+        },
+        "margin2c": {
+          "contracts": 85722,
+          "pnlUsd": 2253.15,
+          "perContractCents": 2.63
+        },
+        "margin3c": {
+          "contracts": 77440,
+          "pnlUsd": 2083.65,
+          "perContractCents": 2.69
+        },
+        "margin5c": {
+          "contracts": 63669,
+          "pnlUsd": 1954.51,
+          "perContractCents": 3.07
+        }
+      }
+    },
+    "<45": {
+      "trades": 15303,
+      "contracts": 292939,
+      "modelLogLoss": 0.4816111276635164,
+      "marketLogLoss": 0.365173176303053,
+      "modelBrier": 0.1491510720201426,
+      "marketBrier": 0.11555080847605707,
+      "makerAgainstTakers": {
+        "margin0c": {
+          "contracts": 144105,
+          "pnlUsd": -1771.26,
+          "perContractCents": -1.23
+        },
+        "margin1c": {
+          "contracts": 129630,
+          "pnlUsd": -1344.66,
+          "perContractCents": -1.04
+        },
+        "margin2c": {
+          "contracts": 116513,
+          "pnlUsd": -974.98,
+          "perContractCents": -0.84
+        },
+        "margin3c": {
+          "contracts": 103830,
+          "pnlUsd": -728.41,
+          "perContractCents": -0.7
+        },
+        "margin5c": {
+          "contracts": 87444,
+          "pnlUsd": -607.5,
+          "perContractCents": -0.69
+        }
+      }
+    },
+    "<61": {
+      "trades": 22244,
+      "contracts": 324093,
+      "modelLogLoss": 0.502051245368602,
+      "marketLogLoss": 0.4073103247804671,
+      "modelBrier": 0.16421469938184094,
+      "marketBrier": 0.13190577730656466,
+      "makerAgainstTakers": {
+        "margin0c": {
+          "contracts": 142606,
+          "pnlUsd": -3425.42,
+          "perContractCents": -2.4
+        },
+        "margin1c": {
+          "contracts": 132077,
+          "pnlUsd": -3359.1,
+          "perContractCents": -2.54
+        },
+        "margin2c": {
+          "contracts": 121277,
+          "pnlUsd": -2643.19,
+          "perContractCents": -2.18
+        },
+        "margin3c": {
+          "contracts": 111159,
+          "pnlUsd": -2535.67,
+          "perContractCents": -2.28
+        },
+        "margin5c": {
+          "contracts": 97546,
+          "pnlUsd": -2574.28,
+          "perContractCents": -2.64
+        }
+      }
+    }
+  },
+  "reliability": {
+    "long:0": {
+      "contracts": 149092,
+      "model": 0.03426006603168019,
+      "realized": 0.07194568144815489,
+      "market": 0.09639745610002647
+    },
+    "long:1": {
+      "contracts": 73920,
+      "model": 0.14633312346063201,
+      "realized": 0.17962401821318608,
+      "market": 0.2109564222544708
+    },
+    "long:2": {
+      "contracts": 54878,
+      "model": 0.24787581293342462,
+      "realized": 0.27800363205259054,
+      "market": 0.30286609256959873
+    },
+    "long:3": {
+      "contracts": 51753,
+      "model": 0.3510780981494563,
+      "realized": 0.2806363832575021,
+      "market": 0.3212056304270908
+    },
+    "long:4": {
+      "contracts": 47134,
+      "model": 0.4507549784020793,
+      "realized": 0.4300748150098479,
+      "market": 0.42488008021455587
+    },
+    "long:5": {
+      "contracts": 55916,
+      "model": 0.5513410853266432,
+      "realized": 0.42393286756108395,
+      "market": 0.48319369644397137
+    },
+    "long:6": {
+      "contracts": 50372,
+      "model": 0.6495652053524068,
+      "realized": 0.5149838341510555,
+      "market": 0.5642640875953566
+    },
+    "long:7": {
+      "contracts": 55320,
+      "model": 0.749864236320088,
+      "realized": 0.6638417456110445,
+      "market": 0.6203342815215016
+    },
+    "long:8": {
+      "contracts": 69951,
+      "model": 0.8508908313466742,
+      "realized": 0.775679010051308,
+      "market": 0.718889401310341
+    },
+    "long:9": {
+      "contracts": 215542,
+      "model": 0.9697381348489099,
+      "realized": 0.8976506020043857,
+      "market": 0.8751959681260157
+    },
+    "short:0": {
+      "contracts": 169813,
+      "model": 0.025715627689320394,
+      "realized": 0.05989961307426791,
+      "market": 0.07276207144390466
+    },
+    "short:1": {
+      "contracts": 45557,
+      "model": 0.1451050334861191,
+      "realized": 0.1455042894737942,
+      "market": 0.18009413508873678
+    },
+    "short:2": {
+      "contracts": 26618,
+      "model": 0.24975216890758353,
+      "realized": 0.1918334486058166,
+      "market": 0.29478266472162346
+    },
+    "short:3": {
+      "contracts": 27039,
+      "model": 0.3484972064481841,
+      "realized": 0.2832204712469811,
+      "market": 0.32565538908757413
+    },
+    "short:4": {
+      "contracts": 28319,
+      "model": 0.44607933966367463,
+      "realized": 0.3159784141718972,
+      "market": 0.42779206796386066
+    },
+    "short:5": {
+      "contracts": 30529,
+      "model": 0.5550573470341161,
+      "realized": 0.4931155960778468,
+      "market": 0.5030642582580909
+    },
+    "short:6": {
+      "contracts": 26998,
+      "model": 0.6487370005906948,
+      "realized": 0.5352117997282015,
+      "market": 0.5954857431556733
+    },
+    "short:7": {
+      "contracts": 33324,
+      "model": 0.7511512512874342,
+      "realized": 0.7225617807055021,
+      "market": 0.7064208181892379
+    },
+    "short:8": {
+      "contracts": 41466,
+      "model": 0.8537321734707186,
+      "realized": 0.802867222737906,
+      "market": 0.7798902423701775
+    },
+    "short:9": {
+      "contracts": 153355,
+      "model": 0.9716077827353032,
+      "realized": 0.9432311682553028,
+      "market": 0.9285360844708168
+    }
+  }
+}
