@@ -11,35 +11,36 @@
         "folds": [
           {
             "marginCents": 0,
-            "heldUsd": 223,
-            "heldContracts": 14910,
-            "heldCentsPerContract": 1.49,
+            "heldUsd": -38,
+            "heldContracts": 11011,
+            "heldCentsPerContract": -0.35,
             "heldLogLoss": {
               "model": 0.3721740772515162,
               "marketPrevious": 0.35661307067643344,
-              "stacked": 0.35388552106201604,
+              "stacked": 0.3515493801282253,
               "tradePrice": 0.35070163940540294
             }
           },
           {
-            "marginCents": 3,
-            "heldUsd": 159,
-            "heldContracts": 3196,
-            "heldCentsPerContract": 4.97,
+            "marginCents": 0,
+            "heldUsd": 421,
+            "heldContracts": 8722,
+            "heldCentsPerContract": 4.83,
             "heldLogLoss": {
               "model": 0.3189052336804363,
               "marketPrevious": 0.34317127794480873,
-              "stacked": 0.3182341625739411,
+              "stacked": 0.3134051415977205,
               "tradePrice": 0.32445375499660933
             }
           }
         ],
         "coefficients": {
-          "model": 0.47195053189216996,
-          "market": 0.48409333130852655,
-          "intercept": -0.32597810903055396
+          "model": 0.3845642107028819,
+          "market": 0.08899107356748624,
+          "price": 0.5199227638416628,
+          "intercept": -0.27109664553230567
         },
-        "marginCents": 1
+        "marginCents": null
       },
       "no": {
         "trades": [
@@ -49,33 +50,34 @@
         "folds": [
           {
             "marginCents": 0,
-            "heldUsd": 2504,
-            "heldContracts": 23039,
-            "heldCentsPerContract": 10.87,
+            "heldUsd": 2380,
+            "heldContracts": 21250,
+            "heldCentsPerContract": 11.2,
             "heldLogLoss": {
               "model": 0.29477781652240514,
               "marketPrevious": 0.3233966368374368,
-              "stacked": 0.3274545548965085,
+              "stacked": 0.3344268201171867,
               "tradePrice": 0.33540002561039134
             }
           },
           {
             "marginCents": 1,
-            "heldUsd": -195,
-            "heldContracts": 30632,
-            "heldCentsPerContract": -0.64,
+            "heldUsd": -288,
+            "heldContracts": 30390,
+            "heldCentsPerContract": -0.95,
             "heldLogLoss": {
               "model": 0.3204725369108392,
               "marketPrevious": 0.32633195429534806,
-              "stacked": 0.3419617702941297,
+              "stacked": 0.34321034999879096,
               "tradePrice": 0.3182972117085406
             }
           }
         ],
         "coefficients": {
-          "model": 0.6638858749624453,
-          "market": 0.3003963576902401,
-          "intercept": -0.09467467640070569
+          "model": 0.657359738590828,
+          "market": 0.26182306947852657,
+          "price": 0.046223658577791045,
+          "intercept": -0.09956371746092607
         },
         "marginCents": null
       }
@@ -89,33 +91,34 @@
         "folds": [
           {
             "marginCents": 1,
-            "heldUsd": -752,
-            "heldContracts": 11660,
-            "heldCentsPerContract": -6.45,
+            "heldUsd": -755,
+            "heldContracts": 12347,
+            "heldCentsPerContract": -6.11,
             "heldLogLoss": {
               "model": 0.5071459549947965,
               "marketPrevious": 0.4134488410130843,
-              "stacked": 0.48430666998166805,
+              "stacked": 0.5066625176965267,
               "tradePrice": 0.40584487099318894
             }
           },
           {
-            "marginCents": 6,
-            "heldUsd": 78,
-            "heldContracts": 479,
-            "heldCentsPerContract": 16.27,
+            "marginCents": 2,
+            "heldUsd": 71,
+            "heldContracts": 451,
+            "heldCentsPerContract": 15.78,
             "heldLogLoss": {
               "model": 0.33187141871669495,
               "marketPrevious": 0.39109832278224715,
-              "stacked": 0.408906381283574,
+              "stacked": 0.4090168852687988,
               "tradePrice": 0.39630664337678195
             }
           }
         ],
         "coefficients": {
-          "model": 0.3784485934363912,
-          "market": 0.5441855864545092,
-          "intercept": -0.25501178142792985
+          "model": 0.36032148511923484,
+          "market": 0.34693509434650965,
+          "price": 0.220268585093993,
+          "intercept": -0.23758395669024163
         },
         "marginCents": null
       },
@@ -127,33 +130,34 @@
         "folds": [
           {
             "marginCents": 5,
-            "heldUsd": 1084,
-            "heldContracts": 9210,
-            "heldCentsPerContract": 11.78,
+            "heldUsd": 1092,
+            "heldContracts": 9079,
+            "heldCentsPerContract": 12.03,
             "heldLogLoss": {
               "model": 0.29962400854820126,
               "marketPrevious": 0.26956949412346715,
-              "stacked": 0.26852710714412203,
+              "stacked": 0.2684022795959859,
               "tradePrice": 0.27478373322946503
             }
           },
           {
             "marginCents": 0,
-            "heldUsd": 1184,
-            "heldContracts": 26337,
-            "heldCentsPerContract": 4.5,
+            "heldUsd": 1285,
+            "heldContracts": 26769,
+            "heldCentsPerContract": 4.8,
             "heldLogLoss": {
               "model": 0.29780566337352643,
               "marketPrevious": 0.30197062193810065,
-              "stacked": 0.2928669966325368,
+              "stacked": 0.29511501186764466,
               "tradePrice": 0.3051184536263782
             }
           }
         ],
         "coefficients": {
-          "model": 0.41059108103911385,
-          "market": 0.7429263702024204,
-          "intercept": -0.11858195018953169
+          "model": 0.3939109792203989,
+          "market": 0.5862172834627076,
+          "price": 0.17632491435862532,
+          "intercept": -0.12904869208964825
         },
         "marginCents": 0
       }
@@ -167,33 +171,34 @@
         "folds": [
           {
             "marginCents": 0,
-            "heldUsd": -1670,
-            "heldContracts": 33700,
-            "heldCentsPerContract": -4.96,
+            "heldUsd": -2143,
+            "heldContracts": 38536,
+            "heldCentsPerContract": -5.56,
             "heldLogLoss": {
               "model": 0.46545563121423494,
               "marketPrevious": 0.385811992298689,
-              "stacked": 0.3910188179863551,
+              "stacked": 0.38493639741519037,
               "tradePrice": 0.37209014236918
             }
           },
           {
-            "marginCents": 8,
-            "heldUsd": 31,
-            "heldContracts": 593,
-            "heldCentsPerContract": 5.18,
+            "marginCents": 0,
+            "heldUsd": 332,
+            "heldContracts": 7614,
+            "heldCentsPerContract": 4.36,
             "heldLogLoss": {
               "model": 0.40983870303939307,
               "marketPrevious": 0.377321382008304,
-              "stacked": 0.399134167961094,
+              "stacked": 0.3978168513499104,
               "tradePrice": 0.37253387870490506
             }
           }
         ],
         "coefficients": {
-          "model": 0.2060192846717541,
-          "market": 0.8550665391064113,
-          "intercept": -0.22566155646389108
+          "model": 0.1474834895536061,
+          "market": 0.106316071037708,
+          "price": 0.8360816222001509,
+          "intercept": -0.1476204292180042
         },
         "marginCents": null
       },
@@ -205,33 +210,34 @@
         "folds": [
           {
             "marginCents": 0,
-            "heldUsd": 503,
-            "heldContracts": 34150,
-            "heldCentsPerContract": 1.47,
+            "heldUsd": 416,
+            "heldContracts": 34067,
+            "heldCentsPerContract": 1.22,
             "heldLogLoss": {
               "model": 0.4230371179526447,
               "marketPrevious": 0.3539490600183192,
-              "stacked": 0.3649487169139104,
+              "stacked": 0.35758820540950587,
               "tradePrice": 0.33784400000675424
             }
           },
           {
             "marginCents": 0,
-            "heldUsd": -250,
-            "heldContracts": 63780,
-            "heldCentsPerContract": -0.39,
+            "heldUsd": -1372,
+            "heldContracts": 71659,
+            "heldCentsPerContract": -1.92,
             "heldLogLoss": {
               "model": 0.351355492897355,
               "marketPrevious": 0.34043520410463063,
-              "stacked": 0.34155140340352125,
+              "stacked": 0.3525649067622983,
               "tradePrice": 0.33885840772146825
             }
           }
         ],
         "coefficients": {
-          "model": 0.23899282699360286,
-          "market": 0.7196242243457575,
-          "intercept": -0.03359040519881772
+          "model": 0.1812008449996037,
+          "market": -0.04233399147947397,
+          "price": 0.8552337241978558,
+          "intercept": -0.08336306060671293
         },
         "marginCents": null
       }
@@ -244,34 +250,35 @@
         ],
         "folds": [
           {
-            "marginCents": 0,
-            "heldUsd": -1097,
-            "heldContracts": 20527,
-            "heldCentsPerContract": -5.34,
+            "marginCents": 2,
+            "heldUsd": -905,
+            "heldContracts": 18107,
+            "heldCentsPerContract": -5,
             "heldLogLoss": {
               "model": 0.4891213750476237,
               "marketPrevious": 0.41128124800138754,
-              "stacked": 0.4174650805813935,
+              "stacked": 0.4091238777856493,
               "tradePrice": 0.3972427829997733
             }
           },
           {
-            "marginCents": 9,
-            "heldUsd": -49,
-            "heldContracts": 515,
-            "heldCentsPerContract": -9.41,
+            "marginCents": 5,
+            "heldUsd": 3,
+            "heldContracts": 12,
+            "heldCentsPerContract": 24,
             "heldLogLoss": {
               "model": 0.4717374413317122,
               "marketPrevious": 0.3991582427658806,
-              "stacked": 0.4121030320049396,
+              "stacked": 0.4038173549869445,
               "tradePrice": 0.3936635727537332
             }
           }
         ],
         "coefficients": {
-          "model": 0.18302628631830142,
-          "market": 0.9462880351242721,
-          "intercept": -0.2571589001962523
+          "model": 0.14070760114347733,
+          "market": 0.06893248959197128,
+          "price": 0.9580446177662366,
+          "intercept": -0.185900028596059
         },
         "marginCents": null
       },
@@ -282,34 +289,35 @@
         ],
         "folds": [
           {
-            "marginCents": 4,
-            "heldUsd": 2001,
-            "heldContracts": 10114,
-            "heldCentsPerContract": 19.79,
+            "marginCents": 0,
+            "heldUsd": 1536,
+            "heldContracts": 30047,
+            "heldCentsPerContract": 5.11,
             "heldLogLoss": {
               "model": 0.5113100415766987,
               "marketPrevious": 0.40473288107142363,
-              "stacked": 0.41709251980674117,
+              "stacked": 0.4166688407745784,
               "tradePrice": 0.4243901459466541
             }
           },
           {
             "marginCents": 2,
-            "heldUsd": -359,
-            "heldContracts": 38820,
-            "heldCentsPerContract": -0.92,
+            "heldUsd": -382,
+            "heldContracts": 39722,
+            "heldCentsPerContract": -0.96,
             "heldLogLoss": {
               "model": 0.4141592092626035,
               "marketPrevious": 0.3623194188300892,
-              "stacked": 0.3816485075916748,
+              "stacked": 0.38141160973904176,
               "tradePrice": 0.3636761291051301
             }
           }
         ],
         "coefficients": {
-          "model": 0.1466942469323267,
-          "market": 0.8077204359203388,
-          "intercept": -0.1347122934320772
+          "model": 0.1381107319314887,
+          "market": 0.6178500081920493,
+          "price": 0.20272419658465762,
+          "intercept": -0.14742642595636432
         },
         "marginCents": null
       }
@@ -322,34 +330,35 @@
         ],
         "folds": [
           {
-            "marginCents": 1,
-            "heldUsd": -1411,
-            "heldContracts": 22883,
-            "heldCentsPerContract": -6.17,
+            "marginCents": 3,
+            "heldUsd": -607,
+            "heldContracts": 17292,
+            "heldCentsPerContract": -3.51,
             "heldLogLoss": {
               "model": 0.5643821303847846,
               "marketPrevious": 0.4223057758322569,
-              "stacked": 0.42097010158000486,
+              "stacked": 0.41725824776345394,
               "tradePrice": 0.4100451431647565
             }
           },
           {
             "marginCents": 1,
-            "heldUsd": 181,
-            "heldContracts": 5214,
-            "heldCentsPerContract": 3.48,
+            "heldUsd": 3,
+            "heldContracts": 8,
+            "heldCentsPerContract": 37,
             "heldLogLoss": {
               "model": 0.5130291211732206,
               "marketPrevious": 0.4143173249321958,
-              "stacked": 0.4295105482987571,
+              "stacked": 0.415760739494305,
               "tradePrice": 0.4007465084767273
             }
           }
         ],
         "coefficients": {
-          "model": 0.07474361179663071,
-          "market": 0.9995412649507653,
-          "intercept": -0.3015116723628777
+          "model": 0.010675879161520404,
+          "market": -0.010035364726208834,
+          "price": 1.1503860378333244,
+          "intercept": -0.19186110286411526
         },
         "marginCents": null
       },
@@ -360,34 +369,35 @@
         ],
         "folds": [
           {
-            "marginCents": 0,
-            "heldUsd": 1641,
-            "heldContracts": 29310,
-            "heldCentsPerContract": 5.6,
+            "marginCents": 1,
+            "heldUsd": 932,
+            "heldContracts": 27649,
+            "heldCentsPerContract": 3.37,
             "heldLogLoss": {
               "model": 0.4591555587271998,
               "marketPrevious": 0.329186884908901,
-              "stacked": 0.35113222770204017,
+              "stacked": 0.3418334267905468,
               "tradePrice": 0.3239681446268485
             }
           },
           {
-            "marginCents": 2,
-            "heldUsd": -1753,
-            "heldContracts": 41909,
-            "heldCentsPerContract": -4.18,
+            "marginCents": 4,
+            "heldUsd": -1690,
+            "heldContracts": 28959,
+            "heldCentsPerContract": -5.83,
             "heldLogLoss": {
               "model": 0.4295984559074144,
               "marketPrevious": 0.35574424535710464,
-              "stacked": 0.36225847195401634,
+              "stacked": 0.3574519787057764,
               "tradePrice": 0.3522970056374602
             }
           }
         ],
         "coefficients": {
-          "model": 0.0783911588941179,
-          "market": 1.1132073957490773,
-          "intercept": 0.12617938350617156
+          "model": 0.028394168288317964,
+          "market": 0.36764141301337766,
+          "price": 0.8389373178715025,
+          "intercept": 0.11902618370982446
         },
         "marginCents": null
       }
@@ -401,33 +411,34 @@
         "folds": [
           {
             "marginCents": 0,
-            "heldUsd": -33,
-            "heldContracts": 17445,
-            "heldCentsPerContract": -0.19,
+            "heldUsd": -71,
+            "heldContracts": 16201,
+            "heldCentsPerContract": -0.44,
             "heldLogLoss": {
               "model": 0.5494107832074748,
               "marketPrevious": 0.40614067459103687,
-              "stacked": 0.41366722682793605,
+              "stacked": 0.41171824145969405,
               "tradePrice": 0.4075803262533282
             }
           },
           {
             "marginCents": 0,
-            "heldUsd": 1191,
-            "heldContracts": 23461,
-            "heldCentsPerContract": 5.08,
+            "heldUsd": 926,
+            "heldContracts": 20016,
+            "heldCentsPerContract": 4.63,
             "heldLogLoss": {
               "model": 0.5167743422208112,
               "marketPrevious": 0.4520766295734041,
-              "stacked": 0.44480674656959013,
+              "stacked": 0.44099411924526816,
               "tradePrice": 0.44800636668859717
             }
           }
         ],
         "coefficients": {
-          "model": 0.12553507743727982,
-          "market": 1.0418928308291948,
-          "intercept": -0.23448105980331221
+          "model": 0.08868236394467456,
+          "market": 0.5931557263459998,
+          "price": 0.5212370197125135,
+          "intercept": -0.17447922127858184
         },
         "marginCents": null
       },
@@ -438,34 +449,35 @@
         ],
         "folds": [
           {
-            "marginCents": 8,
-            "heldUsd": -378,
-            "heldContracts": 5492,
-            "heldCentsPerContract": -6.88,
+            "marginCents": 1,
+            "heldUsd": -221,
+            "heldContracts": 17561,
+            "heldCentsPerContract": -1.26,
             "heldLogLoss": {
               "model": 0.5698797059638093,
               "marketPrevious": 0.4555425859578758,
-              "stacked": 0.463665078857947,
+              "stacked": 0.45021135742062013,
               "tradePrice": 0.43825717102602574
             }
           },
           {
-            "marginCents": 0,
-            "heldUsd": -814,
-            "heldContracts": 28725,
-            "heldCentsPerContract": -2.83,
+            "marginCents": null,
+            "heldUsd": 0,
+            "heldContracts": 0,
+            "heldCentsPerContract": null,
             "heldLogLoss": {
               "model": 0.4542130877068666,
               "marketPrevious": 0.39028499229873853,
-              "stacked": 0.3828424876373272,
+              "stacked": 0.37756003922594883,
               "tradePrice": 0.3841856989263857
             }
           }
         ],
         "coefficients": {
-          "model": 0.1323409325286938,
-          "market": 0.9800009595178776,
-          "intercept": 0.15617897166179545
+          "model": 0.06768998356384386,
+          "market": 0.21757936235593028,
+          "price": 0.8908374755304984,
+          "intercept": 0.1260926788781122
         },
         "marginCents": null
       }
