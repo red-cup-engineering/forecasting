@@ -3,141 +3,471 @@
   "split": "2026-10-09",
   "buckets": {
     "<5": {
-      "fitTrades": 4545,
-      "testTrades": 4629,
-      "coefficients": {
-        "model": 0.5998100929692677,
-        "market": 0.402736460361855,
-        "intercept": 0.03132210212452715
+      "yes": {
+        "trades": [
+          2028,
+          2183
+        ],
+        "folds": [
+          {
+            "marginCents": 0,
+            "heldUsd": 223,
+            "heldContracts": 14910,
+            "heldCentsPerContract": 1.49,
+            "heldLogLoss": {
+              "model": 0.3721740772515162,
+              "marketPrevious": 0.35661307067643344,
+              "stacked": 0.35388552106201604,
+              "tradePrice": 0.35070163940540294
+            }
+          },
+          {
+            "marginCents": 3,
+            "heldUsd": 159,
+            "heldContracts": 3196,
+            "heldCentsPerContract": 4.97,
+            "heldLogLoss": {
+              "model": 0.3189052336804363,
+              "marketPrevious": 0.34317127794480873,
+              "stacked": 0.3182341625739411,
+              "tradePrice": 0.32445375499660933
+            }
+          }
+        ],
+        "coefficients": {
+          "model": 0.47195053189216996,
+          "market": 0.48409333130852655,
+          "intercept": -0.32597810903055396
+        },
+        "marginCents": 1
       },
-      "testLogLoss": {
-        "model": 0.3295604265459774,
-        "marketPrevious": 0.33832441569537414,
-        "stacked": 0.32454093333296846,
-        "tradePrice": 0.3422767152637289
-      },
-      "marginCents": 8,
-      "fitMakerUsd": 915,
-      "fitContracts": 10383,
-      "testMaker": {
-        "usd": 1790,
-        "contracts": 10419,
-        "centsPerContract": 17.18
+      "no": {
+        "trades": [
+          2517,
+          2446
+        ],
+        "folds": [
+          {
+            "marginCents": 0,
+            "heldUsd": 2504,
+            "heldContracts": 23039,
+            "heldCentsPerContract": 10.87,
+            "heldLogLoss": {
+              "model": 0.29477781652240514,
+              "marketPrevious": 0.3233966368374368,
+              "stacked": 0.3274545548965085,
+              "tradePrice": 0.33540002561039134
+            }
+          },
+          {
+            "marginCents": 1,
+            "heldUsd": -195,
+            "heldContracts": 30632,
+            "heldCentsPerContract": -0.64,
+            "heldLogLoss": {
+              "model": 0.3204725369108392,
+              "marketPrevious": 0.32633195429534806,
+              "stacked": 0.3419617702941297,
+              "tradePrice": 0.3182972117085406
+            }
+          }
+        ],
+        "coefficients": {
+          "model": 0.6638858749624453,
+          "market": 0.3003963576902401,
+          "intercept": -0.09467467640070569
+        },
+        "marginCents": null
       }
     },
     "<10": {
-      "fitTrades": 3329,
-      "testTrades": 3391,
-      "coefficients": {
-        "model": 0.7187181844903874,
-        "market": 0.33103029874386325,
-        "intercept": -0.027710554249723716
+      "yes": {
+        "trades": [
+          1356,
+          1407
+        ],
+        "folds": [
+          {
+            "marginCents": 1,
+            "heldUsd": -752,
+            "heldContracts": 11660,
+            "heldCentsPerContract": -6.45,
+            "heldLogLoss": {
+              "model": 0.5071459549947965,
+              "marketPrevious": 0.4134488410130843,
+              "stacked": 0.48430666998166805,
+              "tradePrice": 0.40584487099318894
+            }
+          },
+          {
+            "marginCents": 6,
+            "heldUsd": 78,
+            "heldContracts": 479,
+            "heldCentsPerContract": 16.27,
+            "heldLogLoss": {
+              "model": 0.33187141871669495,
+              "marketPrevious": 0.39109832278224715,
+              "stacked": 0.408906381283574,
+              "tradePrice": 0.39630664337678195
+            }
+          }
+        ],
+        "coefficients": {
+          "model": 0.3784485934363912,
+          "market": 0.5441855864545092,
+          "intercept": -0.25501178142792985
+        },
+        "marginCents": null
       },
-      "testLogLoss": {
-        "model": 0.3847574429300618,
-        "marketPrevious": 0.32859430160561887,
-        "stacked": 0.35010017993206366,
-        "tradePrice": 0.32855002138776723
-      },
-      "marginCents": 0,
-      "fitMakerUsd": 2158,
-      "fitContracts": 41889,
-      "testMaker": {
-        "usd": 677,
-        "contracts": 38552,
-        "centsPerContract": 1.76
+      "no": {
+        "trades": [
+          1973,
+          1984
+        ],
+        "folds": [
+          {
+            "marginCents": 5,
+            "heldUsd": 1084,
+            "heldContracts": 9210,
+            "heldCentsPerContract": 11.78,
+            "heldLogLoss": {
+              "model": 0.29962400854820126,
+              "marketPrevious": 0.26956949412346715,
+              "stacked": 0.26852710714412203,
+              "tradePrice": 0.27478373322946503
+            }
+          },
+          {
+            "marginCents": 0,
+            "heldUsd": 1184,
+            "heldContracts": 26337,
+            "heldCentsPerContract": 4.5,
+            "heldLogLoss": {
+              "model": 0.29780566337352643,
+              "marketPrevious": 0.30197062193810065,
+              "stacked": 0.2928669966325368,
+              "tradePrice": 0.3051184536263782
+            }
+          }
+        ],
+        "coefficients": {
+          "model": 0.41059108103911385,
+          "market": 0.7429263702024204,
+          "intercept": -0.11858195018953169
+        },
+        "marginCents": 0
       }
     },
     "<20": {
-      "fitTrades": 6603,
-      "testTrades": 6690,
-      "coefficients": {
-        "model": 0.3278490264804781,
-        "market": 0.7062481371214364,
-        "intercept": 0.09474258076642225
+      "yes": {
+        "trades": [
+          2950,
+          2846
+        ],
+        "folds": [
+          {
+            "marginCents": 0,
+            "heldUsd": -1670,
+            "heldContracts": 33700,
+            "heldCentsPerContract": -4.96,
+            "heldLogLoss": {
+              "model": 0.46545563121423494,
+              "marketPrevious": 0.385811992298689,
+              "stacked": 0.3910188179863551,
+              "tradePrice": 0.37209014236918
+            }
+          },
+          {
+            "marginCents": 8,
+            "heldUsd": 31,
+            "heldContracts": 593,
+            "heldCentsPerContract": 5.18,
+            "heldLogLoss": {
+              "model": 0.40983870303939307,
+              "marketPrevious": 0.377321382008304,
+              "stacked": 0.399134167961094,
+              "tradePrice": 0.37253387870490506
+            }
+          }
+        ],
+        "coefficients": {
+          "model": 0.2060192846717541,
+          "market": 0.8550665391064113,
+          "intercept": -0.22566155646389108
+        },
+        "marginCents": null
       },
-      "testLogLoss": {
-        "model": 0.4414412214973259,
-        "marketPrevious": 0.36777341782428047,
-        "stacked": 0.37663752489079216,
-        "tradePrice": 0.3527023602269077
-      },
-      "marginCents": 0,
-      "fitMakerUsd": 2973,
-      "fitContracts": 78301,
-      "testMaker": {
-        "usd": -1149,
-        "contracts": 68836,
-        "centsPerContract": -1.67
+      "no": {
+        "trades": [
+          3653,
+          3844
+        ],
+        "folds": [
+          {
+            "marginCents": 0,
+            "heldUsd": 503,
+            "heldContracts": 34150,
+            "heldCentsPerContract": 1.47,
+            "heldLogLoss": {
+              "model": 0.4230371179526447,
+              "marketPrevious": 0.3539490600183192,
+              "stacked": 0.3649487169139104,
+              "tradePrice": 0.33784400000675424
+            }
+          },
+          {
+            "marginCents": 0,
+            "heldUsd": -250,
+            "heldContracts": 63780,
+            "heldCentsPerContract": -0.39,
+            "heldLogLoss": {
+              "model": 0.351355492897355,
+              "marketPrevious": 0.34043520410463063,
+              "stacked": 0.34155140340352125,
+              "tradePrice": 0.33885840772146825
+            }
+          }
+        ],
+        "coefficients": {
+          "model": 0.23899282699360286,
+          "market": 0.7196242243457575,
+          "intercept": -0.03359040519881772
+        },
+        "marginCents": null
       }
     },
     "<30": {
-      "fitTrades": 5071,
-      "testTrades": 5224,
-      "coefficients": {
-        "model": 0.1816816831269289,
-        "market": 1.0092752272349352,
-        "intercept": 0.022013487960807942
+      "yes": {
+        "trades": [
+          2124,
+          2110
+        ],
+        "folds": [
+          {
+            "marginCents": 0,
+            "heldUsd": -1097,
+            "heldContracts": 20527,
+            "heldCentsPerContract": -5.34,
+            "heldLogLoss": {
+              "model": 0.4891213750476237,
+              "marketPrevious": 0.41128124800138754,
+              "stacked": 0.4174650805813935,
+              "tradePrice": 0.3972427829997733
+            }
+          },
+          {
+            "marginCents": 9,
+            "heldUsd": -49,
+            "heldContracts": 515,
+            "heldCentsPerContract": -9.41,
+            "heldLogLoss": {
+              "model": 0.4717374413317122,
+              "marketPrevious": 0.3991582427658806,
+              "stacked": 0.4121030320049396,
+              "tradePrice": 0.3936635727537332
+            }
+          }
+        ],
+        "coefficients": {
+          "model": 0.18302628631830142,
+          "market": 0.9462880351242721,
+          "intercept": -0.2571589001962523
+        },
+        "marginCents": null
       },
-      "testLogLoss": {
-        "model": 0.5019415586121705,
-        "marketPrevious": 0.407497727888539,
-        "stacked": 0.41702363748082427,
-        "tradePrice": 0.41292800571545696
-      },
-      "marginCents": 0,
-      "fitMakerUsd": 1435,
-      "fitContracts": 56156,
-      "testMaker": {
-        "usd": 674,
-        "contracts": 54324,
-        "centsPerContract": 1.24
+      "no": {
+        "trades": [
+          2947,
+          3114
+        ],
+        "folds": [
+          {
+            "marginCents": 4,
+            "heldUsd": 2001,
+            "heldContracts": 10114,
+            "heldCentsPerContract": 19.79,
+            "heldLogLoss": {
+              "model": 0.5113100415766987,
+              "marketPrevious": 0.40473288107142363,
+              "stacked": 0.41709251980674117,
+              "tradePrice": 0.4243901459466541
+            }
+          },
+          {
+            "marginCents": 2,
+            "heldUsd": -359,
+            "heldContracts": 38820,
+            "heldCentsPerContract": -0.92,
+            "heldLogLoss": {
+              "model": 0.4141592092626035,
+              "marketPrevious": 0.3623194188300892,
+              "stacked": 0.3816485075916748,
+              "tradePrice": 0.3636761291051301
+            }
+          }
+        ],
+        "coefficients": {
+          "model": 0.1466942469323267,
+          "market": 0.8077204359203388,
+          "intercept": -0.1347122934320772
+        },
+        "marginCents": null
       }
     },
     "<45": {
-      "fitTrades": 7543,
-      "testTrades": 7644,
-      "coefficients": {
-        "model": 0.03512830575710092,
-        "market": 1.1999652114290567,
-        "intercept": 0.18073107427978044
+      "yes": {
+        "trades": [
+          3293,
+          2912
+        ],
+        "folds": [
+          {
+            "marginCents": 1,
+            "heldUsd": -1411,
+            "heldContracts": 22883,
+            "heldCentsPerContract": -6.17,
+            "heldLogLoss": {
+              "model": 0.5643821303847846,
+              "marketPrevious": 0.4223057758322569,
+              "stacked": 0.42097010158000486,
+              "tradePrice": 0.4100451431647565
+            }
+          },
+          {
+            "marginCents": 1,
+            "heldUsd": 181,
+            "heldContracts": 5214,
+            "heldCentsPerContract": 3.48,
+            "heldLogLoss": {
+              "model": 0.5130291211732206,
+              "marketPrevious": 0.4143173249321958,
+              "stacked": 0.4295105482987571,
+              "tradePrice": 0.4007465084767273
+            }
+          }
+        ],
+        "coefficients": {
+          "model": 0.07474361179663071,
+          "market": 0.9995412649507653,
+          "intercept": -0.3015116723628777
+        },
+        "marginCents": null
       },
-      "testLogLoss": {
-        "model": 0.5020554442930956,
-        "marketPrevious": 0.36715058268701556,
-        "stacked": 0.3785781683130161,
-        "tradePrice": 0.3590609289774503
-      },
-      "marginCents": 1,
-      "fitMakerUsd": 1166,
-      "fitContracts": 71535,
-      "testMaker": {
-        "usd": 79,
-        "contracts": 64041,
-        "centsPerContract": 0.12
+      "no": {
+        "trades": [
+          4250,
+          4732
+        ],
+        "folds": [
+          {
+            "marginCents": 0,
+            "heldUsd": 1641,
+            "heldContracts": 29310,
+            "heldCentsPerContract": 5.6,
+            "heldLogLoss": {
+              "model": 0.4591555587271998,
+              "marketPrevious": 0.329186884908901,
+              "stacked": 0.35113222770204017,
+              "tradePrice": 0.3239681446268485
+            }
+          },
+          {
+            "marginCents": 2,
+            "heldUsd": -1753,
+            "heldContracts": 41909,
+            "heldCentsPerContract": -4.18,
+            "heldLogLoss": {
+              "model": 0.4295984559074144,
+              "marketPrevious": 0.35574424535710464,
+              "stacked": 0.36225847195401634,
+              "tradePrice": 0.3522970056374602
+            }
+          }
+        ],
+        "coefficients": {
+          "model": 0.0783911588941179,
+          "market": 1.1132073957490773,
+          "intercept": 0.12617938350617156
+        },
+        "marginCents": null
       }
     },
     "<61": {
-      "fitTrades": 9506,
-      "testTrades": 10923,
-      "coefficients": {
-        "model": 0.23312183892901756,
-        "market": 1.0845150905967675,
-        "intercept": -0.0723331253241812
+      "yes": {
+        "trades": [
+          4093,
+          4678
+        ],
+        "folds": [
+          {
+            "marginCents": 0,
+            "heldUsd": -33,
+            "heldContracts": 17445,
+            "heldCentsPerContract": -0.19,
+            "heldLogLoss": {
+              "model": 0.5494107832074748,
+              "marketPrevious": 0.40614067459103687,
+              "stacked": 0.41366722682793605,
+              "tradePrice": 0.4075803262533282
+            }
+          },
+          {
+            "marginCents": 0,
+            "heldUsd": 1191,
+            "heldContracts": 23461,
+            "heldCentsPerContract": 5.08,
+            "heldLogLoss": {
+              "model": 0.5167743422208112,
+              "marketPrevious": 0.4520766295734041,
+              "stacked": 0.44480674656959013,
+              "tradePrice": 0.44800636668859717
+            }
+          }
+        ],
+        "coefficients": {
+          "model": 0.12553507743727982,
+          "market": 1.0418928308291948,
+          "intercept": -0.23448105980331221
+        },
+        "marginCents": null
       },
-      "testLogLoss": {
-        "model": 0.5613690585668868,
-        "marketPrevious": 0.43500206932289665,
-        "stacked": 0.44320381259654473,
-        "tradePrice": 0.42550223456854636
-      },
-      "marginCents": 2,
-      "fitMakerUsd": 2014,
-      "fitContracts": 50879,
-      "testMaker": {
-        "usd": 553,
-        "contracts": 47456,
-        "centsPerContract": 1.16
+      "no": {
+        "trades": [
+          5413,
+          6245
+        ],
+        "folds": [
+          {
+            "marginCents": 8,
+            "heldUsd": -378,
+            "heldContracts": 5492,
+            "heldCentsPerContract": -6.88,
+            "heldLogLoss": {
+              "model": 0.5698797059638093,
+              "marketPrevious": 0.4555425859578758,
+              "stacked": 0.463665078857947,
+              "tradePrice": 0.43825717102602574
+            }
+          },
+          {
+            "marginCents": 0,
+            "heldUsd": -814,
+            "heldContracts": 28725,
+            "heldCentsPerContract": -2.83,
+            "heldLogLoss": {
+              "model": 0.4542130877068666,
+              "marketPrevious": 0.39028499229873853,
+              "stacked": 0.3828424876373272,
+              "tradePrice": 0.3841856989263857
+            }
+          }
+        ],
+        "coefficients": {
+          "model": 0.1323409325286938,
+          "market": 0.9800009595178776,
+          "intercept": 0.15617897166179545
+        },
+        "marginCents": null
       }
     }
   }
