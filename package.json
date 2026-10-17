@@ -2,6 +2,11 @@
   "name": "@red-cup-engineering/forecasting",
   "version": "0.6.2",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/red-cup-engineering/kalshi-services-section.git",
+    "directory": "services/forecasting-service"
+  },
   "description": "Forecasting as skill-for-fee: calibrated-judgment forecasting sold as a service, the explicit inversion of capital-at-risk trading -- question ingestion, metrologic bilattice evidence fusion, proper scoring rules, and calibration tracking, with no capital ever placed at risk. Also composes the calibration-gated Kalshi weather-market forecasting loop (forecast-weather-markets-cli.mjs).",
   "exports": {
     "./forecasting": "./src/forecasting.mjs",
