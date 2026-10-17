@@ -150,3 +150,23 @@ policy. `diagnose-lattice.mjs` scores the lattice's bias and dispersion by
 local hour (`results/diagnose-<city>.json`): the turning points around sunrise
 and sunset (NYC 08:00 −0.68 °F, 18:00 +0.86 °F at 60 minutes) are its largest
 remaining errors.
+
+## Fair value is the weather (2026-10-17, later)
+
+Stacking with the market, even per taker side, gave the station model almost
+no weight beyond 10–20 minutes. The desk then priced off the market and bought
+long shots the weather had already ruled out. `calibrate-model.mjs` replaces
+it: per lead and quote side, the model's q is calibrated monotonically on the
+fills of that side, with evidence counted in distinct ladders (Jeffreys
+posterior). A band of q quotes only where its margin held up in two-fold
+cross-validation.
+
+Where the model puts a strike out of reach (q < .01), takers buying YES lost
+3–5¢ a contract in every city, and selling to them held up at nearly every
+lead. Where it puts a strike beyond doubt (q > .99), the YES bid held up at
+short leads in NYC, Miami and Chicago. The high tail is overconfident at long
+leads and in LA, most likely the index falling when a station leaves the
+average. The calibration carries that until the model represents it.
+`results/calibration-<city>.json` has every band and fold; `derive-fits.mjs`
+writes the policy. `stack-market.mjs` and its results stay as the record of
+what stacking found.
