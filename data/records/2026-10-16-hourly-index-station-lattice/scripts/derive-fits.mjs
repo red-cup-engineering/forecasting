@@ -3,8 +3,9 @@
  * Derive what the live market maker reads from this record's results, so no fitted number is copied by hand:
  *   - forecasting src/weather-index-lattice-fit.json: per city, the lattice parameters and the climatology priors
  *     (results/lattice-<city>.json);
- *   - Kalshi content/config/weather-market-making.json `cities.<city>.leads`: per lead bucket, the stacking
- *     coefficients and the margin (results/stack-<city>.json), keeping the rest of that policy as it stands.
+ *   - Kalshi content/config/weather-market-making.json `cities.<city>.leads`: per lead bucket and quote side, the
+ *     fill-conditioned stacking coefficients and the margin, null where the side did not hold up out of sample
+ *     (results/stack-<city>.json), keeping the rest of that policy as it stands.
  *   node scripts/derive-fits.mjs
  */
 import { readFile, writeFile } from 'node:fs/promises';
@@ -27,10 +28,10 @@ await writeFile(join(forecasting, 'src', 'weather-index-lattice-fit.json'), JSON
 const policyFile = join(kalshi, 'content', 'config', 'weather-market-making.json'), policy = await read(policyFile);
 for (const city of cities) {
   const s = await read(join(results, `stack-${city}.json`));
-  policy.cities[city].leads = Object.fromEntries(Object.entries(s.buckets).map(([bucket, b]) => [bucket, {
+  policy.cities[city].leads = Object.fromEntries(Object.entries(s.buckets).map(([bucket, sides]) => [bucket, Object.fromEntries(Object.entries(sides).map(([side, b]) => [side, {
     stacking: b.coefficients ?? null, marginCents: b.marginCents ?? null,
-    evidence: b.testMaker ? { testCentsPerContract: b.testMaker.centsPerContract, testContracts: b.testMaker.contracts, testLogLoss: b.testLogLoss } : null,
-  }]));
+    evidence: b.folds ? { heldOut: b.folds.map((f) => ({ marginCents: f.marginCents, centsPerContract: f.heldCentsPerContract, contracts: f.heldContracts })) } : { trades: b.trades },
+  }]))]));
 }
 policy.derivedFrom = `forecasting-service/data/records/${record}`;
 await writeFile(policyFile, JSON.stringify(policy, null, 2) + '\n');

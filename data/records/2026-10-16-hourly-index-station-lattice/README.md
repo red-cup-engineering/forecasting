@@ -129,3 +129,24 @@ node scripts/derive-fits.mjs
 - the city fits, in forecasting `src/weather-index-lattice-fit.json`;
 - the lead policies (stacking and margin), in Kalshi
   `content/config/weather-market-making.json`.
+
+## Fair value given the fill (2026-10-17)
+
+The first shadow day on Cold Red Gate (211 settled fills, 1,932 contracts) was
+worth +$155 at the stacked fair value at each fill and realized −$13: fills at
+a fair value below 0.9 for the desk's side won about 12 points less often than
+the fair value said. A resting quote fills only when a taker chooses to trade
+against it, so `stack-market.mjs` now fits the stacking per taker side
+(Glosten–Milgrom): the YES bid is valued at P(YES | a taker sells YES), the NO
+bid at P(YES | a taker buys YES). A side quotes only where its margin earned in
+two-fold cross-validation over the October halves.
+
+Takers buying YES (filling the NO bid) overpay almost everywhere: NYC holds up
+at every lead (2.4–7.9¢ a contract held out), Miami at most. Takers selling YES
+are mostly informed: the YES bid holds up only at NYC <10, Miami <5, <30 and
+<61, and Chicago <5. Chicago and LA hold up in two cells each.
+`results/stack-<city>.json` has every fold; `derive-fits.mjs` writes the
+policy. `diagnose-lattice.mjs` scores the lattice's bias and dispersion by
+local hour (`results/diagnose-<city>.json`): the turning points around sunrise
+and sunset (NYC 08:00 −0.68 °F, 18:00 +0.86 °F at 60 minutes) are its largest
+remaining errors.
