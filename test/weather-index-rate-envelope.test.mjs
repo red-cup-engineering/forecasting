@@ -60,3 +60,14 @@ test('the surface counts the envelope as structural knowledge', () => {
   const now=target-10*MINUTE,model=rateEnvelopeModel({strike_type:'greater',floor_strike:100},binding,flat(now-6*MINUTE,70),now,envelope);
   assert.deepEqual(structuralBounds(model),{kind:KIND,low:0,high:0});
 });
+
+test('the reachable range is the latest reading widened by the envelope and the safety margin, and told only with a fresh anchor inside the envelope', async () => {
+  const {reachableRange}=await import('../src/weather-index-rate-envelope.mjs');
+  const now=target-30*MINUTE,points=flat(now-MINUTE,70);
+  const range=reachableRange({city:'nyc',points,now,target,envelope});
+  // 31 minutes from the anchor reads the 60 minute row: rise 7, fall 6
+  assert.equal(range.low,70-6*SAFETY);assert.equal(range.high,70+7*SAFETY);assert.equal(range.horizonMinutes,60);
+  assert.equal(reachableRange({city:'nyc',points,now:now+20*MINUTE,target,envelope}),null,'a stale anchor tells no bound');
+  assert.equal(reachableRange({city:'chicago',points,now,target,envelope}),null,'a city without a table tells no bound');
+  assert.equal(reachableRange({city:'nyc',points:[...flat(now-10*MINUTE,70,170),...flat(now-MINUTE,76,10)],now,target,envelope}),null,'readings that outran the envelope tell no bound');
+});

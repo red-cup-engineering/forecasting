@@ -46,6 +46,19 @@ export function exceedsEnvelope(city,points,envelope=ENVELOPE){
  return false;
 }
 
+/**
+ * The range [low, high] (F) the index can reach at `target` (ms) from the latest published reading, or null when no bound
+ * is told (no fresh anchor, or the city's recent readings have themselves moved further than the envelope).
+ * @param {{city: string, points: {t: number, v: number}[], now: number, target: number, envelope?: object}} input points: published readings, ascending
+ */
+export function reachableRange({city,points,now,target,envelope=ENVELOPE}){
+ const past=(points??[]).filter(p=>p.t<=now&&Number.isFinite(p.v)),anchor=past.at(-1);
+ if(!anchor||now-anchor.t>MAX_ANCHOR_AGE_MS||anchor.t>target)return null;
+ if(exceedsEnvelope(city,past.filter(p=>now-p.t<=FALSIFIER_WINDOW_MS),envelope))return null;
+ const reach=envelopeAt(city,(target-anchor.t)/MINUTE,envelope);if(!reach)return null;
+ return {low:anchor.v-reach.fallF*SAFETY,high:anchor.v+reach.riseF*SAFETY,anchor,horizonMinutes:reach.horizonMinutes};
+}
+
 /** The YES interval of a bracket on the certified 0.01F index, as [low, high] in F. */
 export function yesInterval(market){
  const cent=v=>Math.round(v*100)/100,precise=v=>Number.isFinite(v)&&Math.abs(v-cent(v))<1e-9;
@@ -67,11 +80,8 @@ export function yesInterval(market){
 export function rateEnvelopeModel(market,binding,points,now,envelope=ENVELOPE){
  const target=Date.parse(binding?.targetTime),interval=yesInterval(market);
  if(!Number.isFinite(target)||!interval||!Array.isArray(points)||!points.length)return null;
- const past=points.filter(p=>p.t<=now),anchor=past.at(-1);
- if(!anchor||now-anchor.t>MAX_ANCHOR_AGE_MS||anchor.t>target)return null;
- if(exceedsEnvelope(binding.city,past.filter(p=>now-p.t<=FALSIFIER_WINDOW_MS),envelope))return null;
- const reach=envelopeAt(binding.city,(target-anchor.t)/MINUTE,envelope);if(!reach)return null;
- const lowF=anchor.v-reach.fallF*SAFETY,highF=anchor.v+reach.riseF*SAFETY;
+ const range=reachableRange({city:binding.city,points,now,target,envelope});if(!range)return null;
+ const {anchor,low:lowF,high:highF}=range,reach={horizonMinutes:range.horizonMinutes};
  const p=interval[0]<=lowF&&highF<=interval[1]?1:highF<interval[0]||lowF>interval[1]?0:null;
  if(p===null)return null;
  return {id:MODEL,p,details:{structuralProbabilityBounds:{kind:KIND,low:p,high:p},
