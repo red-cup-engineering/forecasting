@@ -5,9 +5,12 @@
  * Fair value given the fill (Glosten-Milgrom). A resting quote fills only when a taker chooses to trade against it,
  * so its value is the contract's expectation given that choice, not the unconditional one. The desk's YES bid is
  * filled by takers selling YES (the tape's taker side "no"); its NO bid by takers buying YES (taker side "yes").
- * Per lead bucket and per quote side, logistic stacking fits P(YES) = sigmoid(a logit q + b logit p + c) on the
- * trades of that taker side (q the model, p the market's last trade before this one), weighted by contracts, by
- * Newton's method on the log likelihood. The two fits differ by exactly the information a taker's direction carries.
+ * Per lead bucket and per quote side, logistic stacking fits P(YES) = sigmoid(a logit q + b logit p + d logit x + c)
+ * on the trades of that taker side (q the model, p the market's last trade before this one, x the price this trade
+ * filled at), weighted by contracts, by Newton's method on the log likelihood. The two fits differ by exactly the
+ * information a taker's direction carries, and the price term by what a taker willing to pay that price knows: a
+ * taker buying YES at 97 cents is right far more often than one buying at 50 (the favourite-longshot bias), so a
+ * maker's value given a fill depends on the price it fills at, not only on its side.
  * A side without enough support in a bucket is a side to abstain in.
  *
  * Margin. A maker resting at its fair value minus m is filled by the takers who disagree with it by at least m. Per
@@ -33,16 +36,17 @@ const split = Date.parse(`${values.split}T00:00:00Z`);
 const BUCKETS = [5, 10, 20, 30, 45, 61], MARGINS = Array.from({ length: 11 }, (_, i) => i);
 const clip = (p) => Math.min(0.995, Math.max(0.005, p)), logit = (p) => Math.log(clip(p) / (1 - clip(p))), sigmoid = (x) => 1 / (1 + Math.exp(-x));
 const bucketOf = (lead) => BUCKETS.find((b) => lead < b) ?? 61;
-const features = (r) => [logit(r.q), logit(r.previous), 1];
+const features = (r) => [logit(r.q), logit(r.previous), logit(r.price), 1];
 
 /** Weighted logistic regression by Newton's method (with a 1e-6 ridge for an uninformative feature). */
 function logistic(data) {
-  let beta = [1, 0, 0];
+  const n = features(data[0]).length;
+  let beta = Array.from({ length: n }, (_, i) => (i === 0 ? 1 : 0));
   for (let iteration = 0; iteration < 50; iteration += 1) {
-    const g = [0, 0, 0], h = [[1e-6, 0, 0], [0, 1e-6, 0], [0, 0, 1e-6]];
+    const g = new Array(n).fill(0), h = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (_, j) => (i === j ? 1e-6 : 0)));
     for (const r of data) {
-      const x = features(r), p = sigmoid(x[0] * beta[0] + x[1] * beta[1] + x[2] * beta[2]), w = r.count;
-      for (let i = 0; i < 3; i += 1) { g[i] += w * (r.y - p) * x[i]; for (let j = 0; j < 3; j += 1) h[i][j] += w * p * (1 - p) * x[i] * x[j]; }
+      const x = features(r), p = sigmoid(x.reduce((s, v, i) => s + v * beta[i], 0)), w = r.count;
+      for (let i = 0; i < n; i += 1) { g[i] += w * (r.y - p) * x[i]; for (let j = 0; j < n; j += 1) h[i][j] += w * p * (1 - p) * x[i] * x[j]; }
     }
     const step = solve(h, g);
     beta = beta.map((b, i) => b + step[i]);
@@ -94,7 +98,7 @@ for (const bucket of BUCKETS) {
     });
     const holds = folds.every((f) => f.marginCents !== null && f.heldUsd > 0), all = choose(ofSide);
     sides[side] = {
-      trades: halves.map((h) => h.length), folds, coefficients: { model: all.beta[0], market: all.beta[1], intercept: all.beta[2] },
+      trades: halves.map((h) => h.length), folds, coefficients: { model: all.beta[0], market: all.beta[1], price: all.beta[2], intercept: all.beta[3] },
       marginCents: holds && all.best.pnl > 0 ? all.best.m : null,
     };
   }

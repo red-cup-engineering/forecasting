@@ -1,0 +1,1549 @@
+{
+ "city": "nyc",
+ "split": "2026-10-09",
+ "edges": [
+  0,
+  0.001,
+  0.003,
+  0.01,
+  0.02,
+  0.05,
+  0.1,
+  0.2,
+  0.3,
+  0.4,
+  0.5,
+  0.6,
+  0.7,
+  0.8,
+  0.9,
+  0.95,
+  0.98,
+  0.99,
+  0.997,
+  0.999,
+  1.000001
+ ],
+ "bands": [
+  0,
+  0.01,
+  0.1,
+  0.9,
+  0.99,
+  1.000001
+ ],
+ "buckets": {
+  "<5": {
+   "yes": {
+    "trades": [
+     2372,
+     2755
+    ],
+    "calibration": [
+     0.005263157894736842,
+     0.01198724642080854,
+     0.013489840044507942,
+     0.031512578343263695,
+     0.0641483019992323,
+     0.0641483019992323,
+     0.3059707761129932,
+     0.3059707761129932,
+     0.37227260491235914,
+     0.37227260491235914,
+     0.47503435175499276,
+     0.5150031490092372,
+     0.5980422358664939,
+     0.7343100295658574,
+     0.7343100295658574,
+     0.9836512894448418,
+     0.9836512894448418,
+     0.9836512894448418,
+     0.9836512894448418,
+     0.9880952380952381
+    ],
+    "bands": [
+     {
+      "from": 0,
+      "to": 0.01,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.01,
+      "to": 0.1,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 1,
+        "heldUsd": -11,
+        "heldContracts": 2281,
+        "heldCentsPerContract": -0.49
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": -155,
+        "heldContracts": 5644,
+        "heldCentsPerContract": -2.75
+       }
+      ]
+     },
+     {
+      "from": 0.1,
+      "to": 0.9,
+      "marginCents": 3,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 461,
+        "heldContracts": 8940,
+        "heldCentsPerContract": 5.16
+       },
+       {
+        "marginCents": 10,
+        "heldUsd": 325,
+        "heldContracts": 6335,
+        "heldCentsPerContract": 5.13
+       }
+      ]
+     },
+     {
+      "from": 0.9,
+      "to": 0.99,
+      "marginCents": 0,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 476,
+        "heldContracts": 2804,
+        "heldCentsPerContract": 16.99
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 72,
+        "heldContracts": 1434,
+        "heldCentsPerContract": 5.01
+       }
+      ]
+     },
+     {
+      "from": 0.99,
+      "to": 1.000001,
+      "marginCents": 0,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 148,
+        "heldContracts": 2229,
+        "heldCentsPerContract": 6.65
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 75,
+        "heldContracts": 1667,
+        "heldCentsPerContract": 4.52
+       }
+      ]
+     }
+    ]
+   },
+   "no": {
+    "trades": [
+     2802,
+     3203
+    ],
+    "calibration": [
+     0.0032258064516129032,
+     0.009327945400806541,
+     0.009327945400806541,
+     0.03651378536506638,
+     0.03651378536506638,
+     0.060513536709402536,
+     0.3071378335086792,
+     0.3457253694098903,
+     0.3457253694098903,
+     0.3457253694098903,
+     0.43859166679678413,
+     0.43859166679678413,
+     0.6949320604118965,
+     0.8763758131049875,
+     0.8763758131049875,
+     0.9735566529291544,
+     0.9735566529291544,
+     0.9857142857142858,
+     0.9857142857142858,
+     0.9871794871794872
+    ],
+    "bands": [
+     {
+      "from": 0,
+      "to": 0.01,
+      "marginCents": 0,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 1186,
+        "heldContracts": 29451,
+        "heldCentsPerContract": 4.03
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 1015,
+        "heldContracts": 17806,
+        "heldCentsPerContract": 5.7
+       }
+      ]
+     },
+     {
+      "from": 0.01,
+      "to": 0.1,
+      "marginCents": 0,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 345,
+        "heldContracts": 6467,
+        "heldCentsPerContract": 5.33
+       },
+       {
+        "marginCents": 4,
+        "heldUsd": 363,
+        "heldContracts": 2489,
+        "heldCentsPerContract": 14.57
+       }
+      ]
+     },
+     {
+      "from": 0.1,
+      "to": 0.9,
+      "marginCents": 1,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 300,
+        "heldContracts": 15636,
+        "heldCentsPerContract": 1.92
+       },
+       {
+        "marginCents": 7,
+        "heldUsd": 67,
+        "heldContracts": 8635,
+        "heldCentsPerContract": 0.77
+       }
+      ]
+     },
+     {
+      "from": 0.9,
+      "to": 0.99,
+      "marginCents": 2,
+      "folds": [
+       {
+        "marginCents": 3,
+        "heldUsd": 234,
+        "heldContracts": 688,
+        "heldCentsPerContract": 34.06
+       },
+       {
+        "marginCents": 5,
+        "heldUsd": 43,
+        "heldContracts": 1542,
+        "heldCentsPerContract": 2.81
+       }
+      ]
+     },
+     {
+      "from": 0.99,
+      "to": 1.000001,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "<10": {
+   "yes": {
+    "trades": [
+     1820,
+     1686
+    ],
+    "calibration": [
+     0.00819672131147541,
+     0.01792712512830083,
+     0.019007045326621095,
+     0.019007045326621095,
+     0.019074713772147357,
+     0.14756560219096343,
+     0.2668301106203687,
+     0.3415835687442897,
+     0.3415835687442897,
+     0.3415835687442897,
+     0.4502257283108286,
+     0.65681868557573,
+     0.65681868557573,
+     0.65681868557573,
+     0.7947390602582496,
+     0.9428155610891202,
+     0.9769230769230769,
+     0.9769230769230769,
+     0.9769230769230769,
+     0.9772727272727273
+    ],
+    "bands": [
+     {
+      "from": 0,
+      "to": 0.01,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.01,
+      "to": 0.1,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.1,
+      "to": 0.9,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": 1,
+        "heldUsd": -794,
+        "heldContracts": 6630,
+        "heldCentsPerContract": -11.97
+       }
+      ]
+     },
+     {
+      "from": 0.9,
+      "to": 0.99,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 172,
+        "heldContracts": 1633,
+        "heldCentsPerContract": 10.51
+       },
+       {
+        "marginCents": 1,
+        "heldUsd": -6,
+        "heldContracts": 541,
+        "heldCentsPerContract": -1.07
+       }
+      ]
+     },
+     {
+      "from": 0.99,
+      "to": 1.000001,
+      "marginCents": 0,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 36,
+        "heldContracts": 502,
+        "heldCentsPerContract": 7.2
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 79,
+        "heldContracts": 1449,
+        "heldCentsPerContract": 5.47
+       }
+      ]
+     }
+    ]
+   },
+   "no": {
+    "trades": [
+     2249,
+     2763
+    ],
+    "calibration": [
+     0.004032258064516129,
+     0.010564349433796248,
+     0.013165003547303098,
+     0.013165003547303098,
+     0.02391501140456886,
+     0.12496877766471828,
+     0.23789401739063948,
+     0.23789401739063948,
+     0.2685333926564256,
+     0.4201567519681731,
+     0.5317608597993325,
+     0.6379190754014857,
+     0.6785481278945065,
+     0.7921471707380957,
+     0.8651286293913418,
+     0.9072379482455148,
+     0.9797688102477946,
+     0.9814814814814815,
+     0.9814814814814815,
+     0.9814814814814815
+    ],
+    "bands": [
+     {
+      "from": 0,
+      "to": 0.01,
+      "marginCents": 0,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 1229,
+        "heldContracts": 29299,
+        "heldCentsPerContract": 4.19
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 1150,
+        "heldContracts": 24458,
+        "heldCentsPerContract": 4.7
+       }
+      ]
+     },
+     {
+      "from": 0.01,
+      "to": 0.1,
+      "marginCents": 1,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 89,
+        "heldContracts": 9550,
+        "heldCentsPerContract": 0.93
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 574,
+        "heldContracts": 6208,
+        "heldCentsPerContract": 9.24
+       }
+      ]
+     },
+     {
+      "from": 0.1,
+      "to": 0.9,
+      "marginCents": 7,
+      "folds": [
+       {
+        "marginCents": 6,
+        "heldUsd": 23,
+        "heldContracts": 6634,
+        "heldCentsPerContract": 0.35
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 284,
+        "heldContracts": 11445,
+        "heldCentsPerContract": 2.48
+       }
+      ]
+     },
+     {
+      "from": 0.9,
+      "to": 0.99,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 3,
+        "heldUsd": -65,
+        "heldContracts": 3255,
+        "heldCentsPerContract": -2.01
+       },
+       {
+        "marginCents": 4,
+        "heldUsd": -42,
+        "heldContracts": 2973,
+        "heldCentsPerContract": -1.42
+       }
+      ]
+     },
+     {
+      "from": 0.99,
+      "to": 1.000001,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "<20": {
+   "yes": {
+    "trades": [
+     2921,
+     2984
+    ],
+    "calibration": [
+     0.01,
+     0.028978297291021995,
+     0.033774225013846894,
+     0.033774225013846894,
+     0.033774225013846894,
+     0.05880880394847564,
+     0.1834949637033373,
+     0.340372151672152,
+     0.40157094336711935,
+     0.4229157189000046,
+     0.43615960107213936,
+     0.6494338121668622,
+     0.6494338121668622,
+     0.6886198339058267,
+     0.851148737355138,
+     0.9699514911377688,
+     0.9844337289861929,
+     0.9844337289861929,
+     0.9844337289861929,
+     0.9844337289861929
+    ],
+    "bands": [
+     {
+      "from": 0,
+      "to": 0.01,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.01,
+      "to": 0.1,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 4,
+        "heldUsd": -6,
+        "heldContracts": 491,
+        "heldCentsPerContract": -1.3
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.1,
+      "to": 0.9,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": 10,
+        "heldUsd": -269,
+        "heldContracts": 6506,
+        "heldCentsPerContract": -4.14
+       }
+      ]
+     },
+     {
+      "from": 0.9,
+      "to": 0.99,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": -2,
+        "heldContracts": 3772,
+        "heldCentsPerContract": -0.05
+       }
+      ]
+     },
+     {
+      "from": 0.99,
+      "to": 1.000001,
+      "marginCents": 0,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 127,
+        "heldContracts": 1249,
+        "heldCentsPerContract": 10.18
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 61,
+        "heldContracts": 1373,
+        "heldCentsPerContract": 4.41
+       }
+      ]
+     }
+    ]
+   },
+   "no": {
+    "trades": [
+     4081,
+     5564
+    ],
+    "calibration": [
+     0.00390625,
+     0.007337185225508186,
+     0.007337185225508186,
+     0.007337185225508186,
+     0.025951474224300324,
+     0.07713114975042251,
+     0.15823342181108102,
+     0.22244846031360616,
+     0.2868063202903698,
+     0.4379076420908357,
+     0.4379076420908357,
+     0.6291469748891315,
+     0.6291469748891315,
+     0.763869817945941,
+     0.763869817945941,
+     0.9046788842360741,
+     0.9692161702815432,
+     0.980969874560273,
+     0.980969874560273,
+     0.980969874560273
+    ],
+    "bands": [
+     {
+      "from": 0,
+      "to": 0.01,
+      "marginCents": 0,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 1857,
+        "heldContracts": 52987,
+        "heldCentsPerContract": 3.5
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 1260,
+        "heldContracts": 31645,
+        "heldCentsPerContract": 3.98
+       }
+      ]
+     },
+     {
+      "from": 0.01,
+      "to": 0.1,
+      "marginCents": 0,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 1028,
+        "heldContracts": 15013,
+        "heldCentsPerContract": 6.84
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 916,
+        "heldContracts": 19151,
+        "heldCentsPerContract": 4.78
+       }
+      ]
+     },
+     {
+      "from": 0.1,
+      "to": 0.9,
+      "marginCents": 2,
+      "folds": [
+       {
+        "marginCents": 6,
+        "heldUsd": 157,
+        "heldContracts": 18143,
+        "heldCentsPerContract": 0.87
+       },
+       {
+        "marginCents": 7,
+        "heldUsd": 913,
+        "heldContracts": 14052,
+        "heldCentsPerContract": 6.5
+       }
+      ]
+     },
+     {
+      "from": 0.9,
+      "to": 0.99,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 9,
+        "heldUsd": -23,
+        "heldContracts": 1958,
+        "heldCentsPerContract": -1.19
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.99,
+      "to": 1.000001,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "<30": {
+   "yes": {
+    "trades": [
+     2695,
+     2447
+    ],
+    "calibration": [
+     0.008771929824561403,
+     0.01282051282051282,
+     0.02535915487317162,
+     0.02535915487317162,
+     0.03446337743310921,
+     0.08606929657628379,
+     0.10127399983341032,
+     0.23642873598920483,
+     0.2653786088808635,
+     0.5516647687971815,
+     0.5516647687971815,
+     0.5516647687971815,
+     0.6376643686188018,
+     0.6939465667545562,
+     0.7368588250691329,
+     0.9299308635100897,
+     0.9299308635100897,
+     0.9299308635100897,
+     0.9666666666666667,
+     0.9772727272727273
+    ],
+    "bands": [
+     {
+      "from": 0,
+      "to": 0.01,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.01,
+      "to": 0.1,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": 6,
+        "heldUsd": -80,
+        "heldContracts": 1440,
+        "heldCentsPerContract": -5.53
+       }
+      ]
+     },
+     {
+      "from": 0.1,
+      "to": 0.9,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.9,
+      "to": 0.99,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": -385,
+        "heldContracts": 2058,
+        "heldCentsPerContract": -18.72
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.99,
+      "to": 1.000001,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": -142,
+        "heldContracts": 1415,
+        "heldCentsPerContract": -10.04
+       }
+      ]
+     }
+    ]
+   },
+   "no": {
+    "trades": [
+     3762,
+     4472
+    ],
+    "calibration": [
+     0.006578947368421052,
+     0.01020408163265306,
+     0.010451415073004422,
+     0.037600241696328814,
+     0.05834794866586525,
+     0.11452006449241646,
+     0.11452006449241646,
+     0.2510330394765866,
+     0.31672190991196203,
+     0.4528594323550826,
+     0.5762483528206664,
+     0.5762483528206664,
+     0.5762483528206664,
+     0.5931237957948937,
+     0.8197529381879314,
+     0.8517161496508858,
+     0.8835400891392801,
+     0.9328739886211355,
+     0.9821428571428571,
+     0.9827586206896551
+    ],
+    "bands": [
+     {
+      "from": 0,
+      "to": 0.01,
+      "marginCents": 0,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 865,
+        "heldContracts": 17519,
+        "heldCentsPerContract": 4.93
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 738,
+        "heldContracts": 12939,
+        "heldCentsPerContract": 5.7
+       }
+      ]
+     },
+     {
+      "from": 0.01,
+      "to": 0.1,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": -658,
+        "heldContracts": 21414,
+        "heldCentsPerContract": -3.07
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 965,
+        "heldContracts": 7343,
+        "heldCentsPerContract": 13.14
+       }
+      ]
+     },
+     {
+      "from": 0.1,
+      "to": 0.9,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 3,
+        "heldUsd": 446,
+        "heldContracts": 15016,
+        "heldCentsPerContract": 2.97
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.9,
+      "to": 0.99,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": -104,
+        "heldContracts": 4656,
+        "heldCentsPerContract": -2.24
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.99,
+      "to": 1.000001,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "<45": {
+   "yes": {
+    "trades": [
+     3978,
+     3326
+    ],
+    "calibration": [
+     0.01,
+     0.03605639777623971,
+     0.06477895171099207,
+     0.06477895171099207,
+     0.06477895171099207,
+     0.08091643306207986,
+     0.10605225845828586,
+     0.1704833126272295,
+     0.2495418624411885,
+     0.332177881900313,
+     0.43879518680902385,
+     0.4988158963933859,
+     0.6575018581208638,
+     0.7192516773436393,
+     0.7321894646438873,
+     0.8003345447326563,
+     0.8003345447326563,
+     0.8003345447326563,
+     0.9705882352941176,
+     0.9705882352941176
+    ],
+    "bands": [
+     {
+      "from": 0,
+      "to": 0.01,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.01,
+      "to": 0.1,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": 2,
+        "heldUsd": -31,
+        "heldContracts": 5392,
+        "heldCentsPerContract": -0.58
+       }
+      ]
+     },
+     {
+      "from": 0.1,
+      "to": 0.9,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.9,
+      "to": 0.99,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.99,
+      "to": 1.000001,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 9,
+        "heldUsd": 3,
+        "heldContracts": 14,
+        "heldCentsPerContract": 20
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": -444,
+        "heldContracts": 1734,
+        "heldCentsPerContract": -25.63
+       }
+      ]
+     }
+    ]
+   },
+   "no": {
+    "trades": [
+     5354,
+     6554
+    ],
+    "calibration": [
+     0.00819672131147541,
+     0.019814911136656094,
+     0.06424834761095406,
+     0.06424834761095406,
+     0.06424834761095406,
+     0.09196399391177966,
+     0.09196399391177966,
+     0.18265871341873013,
+     0.2356523319047183,
+     0.3428196698901921,
+     0.474827606485495,
+     0.5466634192254024,
+     0.6202897671535832,
+     0.7694887357292868,
+     0.7705021264571442,
+     0.8691625312427982,
+     0.8691625312427982,
+     0.9678817177899849,
+     0.9883720930232558,
+     0.9883720930232558
+    ],
+    "bands": [
+     {
+      "from": 0,
+      "to": 0.01,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 89,
+        "heldContracts": 8701,
+        "heldCentsPerContract": 1.02
+       }
+      ]
+     },
+     {
+      "from": 0.01,
+      "to": 0.1,
+      "marginCents": 0,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 216,
+        "heldContracts": 7904,
+        "heldCentsPerContract": 2.74
+       },
+       {
+        "marginCents": 4,
+        "heldUsd": 452,
+        "heldContracts": 5194,
+        "heldCentsPerContract": 8.71
+       }
+      ]
+     },
+     {
+      "from": 0.1,
+      "to": 0.9,
+      "marginCents": 0,
+      "folds": [
+       {
+        "marginCents": 3,
+        "heldUsd": 614,
+        "heldContracts": 25913,
+        "heldCentsPerContract": 2.37
+       },
+       {
+        "marginCents": 5,
+        "heldUsd": 2502,
+        "heldContracts": 30481,
+        "heldCentsPerContract": 8.21
+       }
+      ]
+     },
+     {
+      "from": 0.9,
+      "to": 0.99,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 4,
+        "heldUsd": -322,
+        "heldContracts": 8511,
+        "heldCentsPerContract": -3.79
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.99,
+      "to": 1.000001,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     }
+    ]
+   }
+  },
+  "<61": {
+   "yes": {
+    "trades": [
+     4908,
+     4953
+    ],
+    "calibration": [
+     0.007462686567164179,
+     0.1386103628189111,
+     0.1386103628189111,
+     0.1386103628189111,
+     0.1386103628189111,
+     0.1386103628189111,
+     0.1867869570239081,
+     0.1867869570239081,
+     0.23727516233230064,
+     0.3032038419194243,
+     0.3647100058617937,
+     0.451650921880104,
+     0.451650921880104,
+     0.6532531006304669,
+     0.6532531006304669,
+     0.6845942989910664,
+     0.6845942989910664,
+     0.7201924644140082,
+     0.9720649040755943,
+     0.9827586206896551
+    ],
+    "bands": [
+     {
+      "from": 0,
+      "to": 0.01,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 62,
+        "heldContracts": 5425,
+        "heldCentsPerContract": 1.14
+       }
+      ]
+     },
+     {
+      "from": 0.01,
+      "to": 0.1,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": 9,
+        "heldUsd": -154,
+        "heldContracts": 8382,
+        "heldCentsPerContract": -1.83
+       }
+      ]
+     },
+     {
+      "from": 0.1,
+      "to": 0.9,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": 4,
+        "heldUsd": -1229,
+        "heldContracts": 17134,
+        "heldCentsPerContract": -7.17
+       }
+      ]
+     },
+     {
+      "from": 0.9,
+      "to": 0.99,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.99,
+      "to": 1.000001,
+      "marginCents": 2,
+      "folds": [
+       {
+        "marginCents": 2,
+        "heldUsd": 18,
+        "heldContracts": 447,
+        "heldCentsPerContract": 4.03
+       },
+       {
+        "marginCents": 0,
+        "heldUsd": 18,
+        "heldContracts": 529,
+        "heldCentsPerContract": 3.32
+       }
+      ]
+     }
+    ]
+   },
+   "no": {
+    "trades": [
+     6306,
+     6935
+    ],
+    "calibration": [
+     0.020833333333333332,
+     0.08606167317026743,
+     0.12586160563732332,
+     0.12586160563732332,
+     0.12586160563732332,
+     0.1319643665802898,
+     0.2050483858463856,
+     0.2686906516348512,
+     0.29536403849133436,
+     0.4762611040202037,
+     0.5882813853275516,
+     0.5882813853275516,
+     0.5882813853275516,
+     0.7472652836269735,
+     0.7959232459522498,
+     0.8631493318118885,
+     0.9419658501540987,
+     0.9419658501540987,
+     0.9733339245155056,
+     0.9733339245155056
+    ],
+    "bands": [
+     {
+      "from": 0,
+      "to": 0.01,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": 7,
+        "heldUsd": -392,
+        "heldContracts": 779,
+        "heldCentsPerContract": -50.33
+       }
+      ]
+     },
+     {
+      "from": 0.01,
+      "to": 0.1,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": 2,
+        "heldContracts": 4611,
+        "heldCentsPerContract": 0.04
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.1,
+      "to": 0.9,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 4,
+        "heldUsd": -1379,
+        "heldContracts": 15919,
+        "heldCentsPerContract": -8.67
+       },
+       {
+        "marginCents": 6,
+        "heldUsd": -510,
+        "heldContracts": 30984,
+        "heldCentsPerContract": -1.65
+       }
+      ]
+     },
+     {
+      "from": 0.9,
+      "to": 0.99,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": 0,
+        "heldUsd": -182,
+        "heldContracts": 8187,
+        "heldCentsPerContract": -2.22
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     },
+     {
+      "from": 0.99,
+      "to": 1.000001,
+      "marginCents": null,
+      "folds": [
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       },
+       {
+        "marginCents": null,
+        "heldUsd": 0,
+        "heldContracts": 0,
+        "heldCentsPerContract": null
+       }
+      ]
+     }
+    ]
+   }
+  }
+ }
+}
