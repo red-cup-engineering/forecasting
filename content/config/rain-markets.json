@@ -170,11 +170,12 @@
     },
     "HOU": {
       "name": "Houston",
-      "station": "KIAH",
+      "station": "KHOU",
       "zone": "America/Chicago",
-      "cli": "CLIIAH",
+      "cli": "CLIHOU",
       "region": "south-central",
-      "validated": true
+      "validated": false,
+      "note": "Kalshi settles KXRAIN-HOU on CLIHOU (Hobby), not CLIIAH (Bush): 2026-10-18 measurement, KXRAIN-26OCT14-HOU resolved no with 0.05+ in on the IAH gauge. The fit predates the correction."
     },
     "LAX": {
       "name": "Los Angeles",
@@ -362,6 +363,38 @@
       "region": "south-central",
       "validated": true,
       "alias": "CLL"
+    },
+    "DET": {
+      "name": "Detroit",
+      "station": "KDTW",
+      "zone": "America/Detroit",
+      "cli": "CLIDTW",
+      "region": "midwest",
+      "validated": false
+    },
+    "IND": {
+      "name": "Indianapolis",
+      "station": "KIND",
+      "zone": "America/Indiana/Indianapolis",
+      "cli": "CLIIND",
+      "region": "midwest",
+      "validated": false
+    },
+    "STL": {
+      "name": "St. Louis",
+      "station": "KSTL",
+      "zone": "America/Chicago",
+      "cli": "CLISTL",
+      "region": "midwest",
+      "validated": false
+    },
+    "TPA": {
+      "name": "Tampa",
+      "station": "KTPA",
+      "zone": "America/New_York",
+      "cli": "CLITPA",
+      "region": "southeast",
+      "validated": false
     }
   },
   "sides": {
@@ -401,7 +434,7 @@
       [
         863,
         0.012,
-        0.0
+        0
       ],
       [
         940,
@@ -451,7 +484,7 @@
       [
         187,
         0.993,
-        1.0
+        1
       ]
     ],
     "binsColumns": [
