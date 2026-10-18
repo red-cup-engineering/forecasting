@@ -5,7 +5,7 @@ is to be wrong, and what is on offer. The measurement and the strategy live in k
 `scripts/backtest-daily-determination.mjs`, `scripts/analyze-books.mjs`, `content/reports/2026-10-18-settleable-in-advance.md`); this record holds what
 forecasting owns: the models, and the scripts that fetch the data they are derived from.
 
-## Models (forecasting 0.6.9)
+## Models (forecasting 0.6.10)
 
 - `src/weather-index-move-tail.mjs`: how far Kalshi's city temperature index moves in `h` minutes, as a probability with a confidence bound (an empirical
   survival function below a threshold, a generalized Pareto tail above it, a moving-block bootstrap for the bound; volatility regimes; every parameter with its
