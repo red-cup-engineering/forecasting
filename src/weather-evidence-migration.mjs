@@ -26,6 +26,14 @@
  *   touches the disk but packs its nodes exactly as the file backend does (BGZF packs, index lines,
  *   ref files), removes nothing, and reports the bytes the real run would free. Apply requires the
  *   weather cycle lock, so no cycle runs while evidence is moved. Pack merging is `gc`.
+ *
+ * REQUIREMENT (measured 2026-10-18, forecasting 0.6.9): this migration's `--apply` does not run on Cold Red Gate (1.6 GB RAM). Its
+ * working set is per record, not per file count: a derived packet is up to 70 MB of JSON (60 MB of science), and converting one holds
+ * the record, its hoisted copy, the stored tree, the loader's copy and the digests' strings at once. 14 files OOM at a 256 MB heap and
+ * pass at 1 GB (resident 1.1-1.4 GB); the dry run's backend no longer grows with the evidence, but this per-record peak remains. The
+ * hoist (weather-run-hoist.mjs), the digests (jsonDigest) and the verification must stream, with a declared memory bound that a test
+ * holds (a derived packet of 70 MB converted inside a 256 MB heap). Until then `--apply` runs on a host with the RAM, against a copy
+ * of the weather root, and the result is carried back by the owners of that store.
  */
 import {createReadStream} from 'node:fs';
 import {createInterface} from 'node:readline';
