@@ -3,19 +3,17 @@ import {ecmwfStationDistributions} from './weather-ecmwf-ensemble.mjs';
 import {relationalTemperaturePanel,RELATIONAL_REGIONS} from './weather-relational-temperature.mjs';
 import {INDEX_CITIES,indexDistributions,canonicalIndexPoints,stationTemperatureDistribution} from './weather-index.mjs';
 /** Prequential station verification and regularized local postprocessing, independent of markets. */
-import {readFile,writeFile,mkdir,rename,rm} from 'node:fs/promises';
 import {join} from 'node:path';
 import {createHash} from 'node:crypto';
 import {weatherReadPage} from './weather-read-page.mjs';
 import {readWeatherSourceRecord} from './weather-source-record.mjs';
-import {openLedger,readLedger,findRevision,forgetLedgerCache} from './weather-ledger.mjs';
+import {openTree,readTree,saveTree,importLegacyFile} from './weather-state-tree.mjs';
 import {makeTemperaturePool,postprocessTemperature,temperatureDiagnostics,temperatureDistributionCrps} from './weather-ensemble.mjs';
 const hash=x=>createHash('sha256').update(JSON.stringify(x)).digest('hex');
 const key=r=>`${r.station}/${r.model}/${r.horizon}`;
 const cohort=h=>h<=3?'0-3h':h<=6?'3-6h':h<=12?'6-12h':h<=24?'12-24h':'24-48h';
 /** Backwards-compatible single-Student-t scoring, using the same quadrature as ensembles. */
 export function temperatureCrps(meanF,scaleF,observedF){return temperatureDistributionCrps({meanF,scaleF,nu:5},observedF);}
-const read=async(path,fallback)=>{try{return JSON.parse(await readFile(path,'utf8'));}catch(e){if(e.code==='ENOENT')return fallback;throw e;}};
 export function fit(history){
  const groups={};for(const day of Object.values(history)){if(day.verification==='routine-report-bin')continue;(groups[day.key]??=[]).push(day);}
  const out={};
@@ -79,49 +77,38 @@ export function stationPointForecasts(evidence,{now=Date.now(),parameters={},lea
  return out;
 }
 /**
- * The station-science state lives in a revision ledger (weather-ledger.mjs) in `root`: the rows
- * pending/history/comparisons plus the scalars missingOutcomes and at. `parameters` are not
- * stored: they are fit(history) and are attached whenever a state is loaded.
+ * The station-science state is one content tree (weather-state-tree.mjs), ref "station-science/head" in the
+ * weather root's store: the rows pending/history/comparisons plus the scalars missingOutcomes and at.
+ * `parameters` are not stored: they are fit(history), attached whenever a state is loaded. The tree's root
+ * address is the state's revision. A pre-tree station-science/state.json is imported once, verified, removed.
  */
+export const SCIENCE_REF='station-science/head';
 const EMPTY_SCIENCE={pending:{},history:{},comparisons:{},missingOutcomes:0};
 const withParameters=state=>{state.parameters=fit(state.history??{});return state;};
-/** A pre-ledger state.json is imported once, verified by reading the ledger back, then removed. */
-async function importLegacyState(root,led){
- const file=join(root,'state.json'),legacy=await read(file,null);
- if(legacy===null)return false;
- const {parameters:_parameters,...stored}=legacy,snapshot={...EMPTY_SCIENCE,...stored};
- await led.commit({snapshot,at:legacy.at??new Date().toISOString()});
- forgetLedgerCache(root);
- const {state}=await readLedger(root);
- if(hash(state)!==hash(snapshot))throw new Error('station-science import does not reproduce state.json; state.json kept');
- await rm(file,{force:true});
- return true;
+/** Rows sorted by valid time, so a cycle's additions and removals touch neighbouring chunks. */
+const clustered=state=>({pending:Object.fromEntries(Object.entries(state.pending).sort(([a,x],[b,y])=>(x.validTime+a).localeCompare(y.validTime+b))),
+ history:state.history,comparisons:state.comparisons,missingOutcomes:state.missingOutcomes,at:state.at});
+const stripParameters=({parameters:_parameters,...stored})=>({...EMPTY_SCIENCE,...stored});
+async function openScience(store,root){
+ const open=await openTree(store,SCIENCE_REF);
+ if(open)return {...open,state:{...EMPTY_SCIENCE,...open.value}};
+ if(await importLegacyFile({store,ref:SCIENCE_REF,path:join(root,'state.json'),wrap:stripParameters}))return openScience(store,root);
+ return {address:null,state:structuredClone(EMPTY_SCIENCE)};
 }
-async function openScience(root){
- const led=await openLedger(root);
- if(!led.head&&await importLegacyState(root,led))return openLedger(root);
- for(const [k,v] of Object.entries(EMPTY_SCIENCE))led.state[k]??=structuredClone(v);
- return led;
-}
-/** Head state (with parameters), or a legacy state.json before its first import. Read-only; do not mutate. */
-export async function readScienceState(root){
- const {head,state}=await readLedger(root);
- if(head)return {state:withParameters({...EMPTY_SCIENCE,...state}),revision:head.revision,present:true};
+/** Head state (with parameters) and its revision; a pre-tree state.json is read as it is. Do not mutate. */
+export async function readScienceState(store,root){
+ const head=await readTree(store,SCIENCE_REF);
+ if(head)return {state:withParameters({...EMPTY_SCIENCE,...head.value}),revision:head.address,present:true};
  const legacy=await readWeatherSourceRecord({root,file:'state.json',emptyRecord:{}});
- return {state:withParameters({...EMPTY_SCIENCE,...legacy.record}),revision:legacy.source.revision,present:legacy.source.present};
+ return {state:withParameters(stripParameters(legacy.record)),revision:legacy.source.revision,present:legacy.source.present};
 }
-/** The state a past revision named, with parameters; null when that revision is no longer retained. */
-export async function scienceStateAt(root,revision){
- const found=await findRevision(root,revision);
- return found?{state:withParameters({...EMPTY_SCIENCE,...found.state}),entry:found.entry}:null;
+/** The state a revision (root address) named, with parameters. */
+export async function scienceStateAt(store,revision){
+ return {state:withParameters({...EMPTY_SCIENCE,...await store.get(revision)})};
 }
 /** Caller holds the station-science lock. Scores known forecasts BEFORE fitting or recording future forecasts. */
-export async function updateStationScience(evidence,{root,now=Date.now(),sourceEvidenceId}={}){
- await mkdir(root,{recursive:true,mode:0o700});
- const led=await openScience(root),state=led.state;
- // What this revision changes, so the ledger stores the changes and not the state.
- const addedPending={},removedPending=[],dirtyHistory=new Set(),dirtyComparisons=new Set(),removedHistory=[],removedComparisons=[];
- const missingBefore=state.missingOutcomes;
+export async function updateStationScience(evidence,{root,store,now=Date.now(),sourceEvidenceId}={}){
+ const {state}=await openScience(store,root);
  const traces=new Map();
  for(const e of Object.values(evidence.observations??{}))for(const r of e.readings??[]){if(!traces.has(e.station))traces.set(e.station,new Map());traces.get(e.station).set(r.at,{...r,source:e.source});}
  for(const [city,packet] of Object.entries(evidence.indices??{})){
@@ -139,40 +126,37 @@ export async function updateStationScience(evidence,{root,now=Date.now(),sourceE
  for(const [id,r] of Object.entries(state.pending)){
   const valid=Date.parse(r.validTime);if(valid+(r.verification==='routine-report-bin'?0:r.verification==='kalshi-index'?5*60000:15*60000)>now)continue;
   const obs=r.verification==='routine-report-bin'?routines.get(r.station+'/'+valid):r.verification==='kalshi-index'?(readings.get(r.station)??[]).filter(o=>Date.parse(o.at)<=valid&&Date.parse(o.at)>=valid-60*60000&&Date.parse(o.at)>Date.parse(r.availableAt)).sort((a,b)=>b.at.localeCompare(a.at))[0]:(readings.get(r.station)??[]).filter(o=>Math.abs(Date.parse(o.at)-valid)<=15*60000&&Date.parse(o.at)<=now&&Date.parse(o.at)>Date.parse(r.availableAt)).sort((a,b)=>Math.abs(Date.parse(a.at)-valid)-Math.abs(Date.parse(b.at)-valid)||b.at.localeCompare(a.at))[0];
-  if(!obs||r.verification==='routine-report-bin'&&(Date.parse(obs.at)<=Date.parse(r.availableAt)||Date.parse(obs.availableAt)<Date.parse(obs.at))){if(now-valid>72*3600000){delete state.pending[id];removedPending.push(id);state.missingOutcomes++;}continue;}
+  if(!obs||r.verification==='routine-report-bin'&&(Date.parse(obs.at)<=Date.parse(r.availableAt)||Date.parse(obs.availableAt)<Date.parse(obs.at))){if(now-valid>72*3600000){delete state.pending[id];state.missingOutcomes++;}continue;}
   const error=obs.temperatureF-r.meanF,k=key(r),dk=k+'/'+r.date;
-  dirtyHistory.add(dk);const d=state.history[dk]??={key:k,station:r.station,model:r.model,horizon:r.horizon,date:r.date,truth:r.truth??'NWS station observations',verification:r.verification,discrete:Boolean(r.empirical||r.mixture?.components?.some(c=>c.empirical)),n:0,errorSum:0,error2Sum:0,z2Sum:0,absSum:0,crpsSum:0,covered90:0};
+  const d=state.history[dk]??={key:k,station:r.station,model:r.model,horizon:r.horizon,date:r.date,truth:r.truth??'NWS station observations',verification:r.verification,discrete:Boolean(r.empirical||r.mixture?.components?.some(c=>c.empirical)),n:0,errorSum:0,error2Sum:0,z2Sum:0,absSum:0,crpsSum:0,covered90:0};
   const diagnostics=temperatureDiagnostics(r,obs.temperatureF,{tieUniform:parseInt(hash({id,pitSeed:'pre-outcome-pit-v1'}).slice(0,8),16)/4294967296}),crps=diagnostics.crpsF;d.n++;d.errorSum+=error;d.error2Sum+=error*error;d.z2Sum+=(error/r.scaleF)**2;d.absSum+=Math.abs(error);d.crpsSum+=crps;d.covered90+=diagnostics.covered90?1:0;
   d.diagnosticSamples=(d.diagnosticSamples??0)+1;d.pitSum=(d.pitSum??0)+diagnostics.pit;d.pit2Sum=(d.pit2Sum??0)+diagnostics.pit**2;d.pitBins??=Array(10).fill(0);d.pitBins[Math.min(9,Math.floor(diagnostics.pit*10))]++;
   const comparisonComposition=r.mixture?.kind==='empirical-generated-learner-pool-v1'?'frozen-six-learner-past-only-selector-v1':r.composition;
   for(const component of new Map([...(r.mixture?.components??[]),...(r.comparators??[])].map(c=>[c.model,c])).values()){
    const pairKey=hash({station:r.station,pool:r.model,component:component.model,horizon:r.horizon,composition:comparisonComposition,configurationVersion:r.details?.configVersion??null,truth:r.truth??'NWS station observations'}),dayKey=pairKey+'/'+r.date;
-   dirtyComparisons.add(dayKey);const paired=state.comparisons[dayKey]??={key:pairKey,station:r.station,pool:r.model,component:component.model,family:component.family,horizon:r.horizon,composition:comparisonComposition,configurationVersion:r.details?.configVersion??null,truth:r.truth??'NWS station observations',date:r.date,n:0,gainSum:0};
+   const paired=state.comparisons[dayKey]??={key:pairKey,station:r.station,pool:r.model,component:component.model,family:component.family,horizon:r.horizon,composition:comparisonComposition,configurationVersion:r.details?.configVersion??null,truth:r.truth??'NWS station observations',date:r.date,n:0,gainSum:0};
    paired.scoreAvailableAt=new Date(now).toISOString();paired.sourceEvidenceId=sourceEvidenceId;paired.n++;paired.gainSum+=temperatureDistributionCrps({...component,weight:1},obs.temperatureF)-crps;
   }
-  outcomes.push({id,forecast:r,observation:obs,errorF:error,crpsF:crps,sourceEvidenceId});delete state.pending[id];removedPending.push(id);scored++;
+  outcomes.push({id,forecast:r,observation:obs,errorF:error,crpsF:crps,sourceEvidenceId});delete state.pending[id];scored++;
  }
- const cutoff=new Date(now-90*86400000).toISOString().slice(0,10);for(const [k,d] of Object.entries(state.history))if(d.date<cutoff){delete state.history[k];removedHistory.push(k);}
- for(const [k,d] of Object.entries(state.comparisons))if(d.date<cutoff){delete state.comparisons[k];removedComparisons.push(k);}
+ const cutoff=new Date(now-90*86400000).toISOString().slice(0,10);for(const [k,d] of Object.entries(state.history))if(d.date<cutoff)delete state.history[k];
+ for(const [k,d] of Object.entries(state.comparisons))if(d.date<cutoff)delete state.comparisons[k];
  const parameters=fit(state.history);
  state.at=new Date(now).toISOString();
  const forecasts=stationPointForecasts(evidence,{now,parameters,learningState:state});
- for(const r of forecasts){const id=hash({station:r.station,model:r.model,horizon:r.horizon,validTime:r.validTime});if(state.pending[id])continue;state.pending[id]=addedPending[id]={...r,sourceEvidenceId};forecasted++;}
+ for(const r of forecasts){const id=hash({station:r.station,model:r.model,horizon:r.horizon,validTime:r.validTime});if(state.pending[id])continue;state.pending[id]={...r,sourceEvidenceId};forecasted++;}
  state.at=new Date(now).toISOString();
- const present=(rows,keys)=>Object.fromEntries([...keys].filter(k=>rows[k]!==undefined).map(k=>[k,rows[k]]));
- const committed=await led.commit({applied:true,at:state.at,outcomes,
-  set:{pending:addedPending,history:present(state.history,dirtyHistory),comparisons:present(state.comparisons,dirtyComparisons)},
-  del:{pending:removedPending.filter(id=>!(id in addedPending)),history:removedHistory,comparisons:removedComparisons},
-  put:{at:state.at,...(state.missingOutcomes!==missingBefore?{missingOutcomes:state.missingOutcomes}:{})}});
- return {...stationScienceReport({...state,parameters}),scored,forecasted,forecasts,outcomes,revision:committed.revision,ledger:{bytesWritten:committed.bytesWritten,rolledOver:committed.rolledOver},
-  outcomesRef:committed.outcomes};
+ const revision=await saveTree(store,SCIENCE_REF,clustered(state));
+ const outcomesRef=outcomes.length?{address:await store.put(outcomes),count:outcomes.length}:null;
+ await store.flush();
+ return {...stationScienceReport({...state,parameters}),scored,forecasted,forecasts,outcomes,revision,outcomesRef};
 }
-export async function readStationScience({root,station}={}){return stationScienceReport((await readScienceState(root)).state,{station});}
+export async function readStationScience({root,store,station}={}){return stationScienceReport((await readScienceState(store,root)).state,{station});}
 
 /** Native-sized view of the same scientific record; full library read remains above. */
-export async function readStationSciencePage({root,station,field='metrics',offset=0,limit=100,sourceRevision}={}){
+export async function readStationSciencePage({root,store,station,field='metrics',offset=0,limit=100,sourceRevision}={}){
  if(station!==undefined&&(typeof station!=='string'||!/^([A-Z0-9]{4}|index:(miami|nyc|chicago|la-coastal))$/.test(station)))throw new TypeError('one ICAO station or existing city-index key is required');
- const {state,revision,present}=await readScienceState(root);
+ const {state,revision,present}=await readScienceState(store,root);
  if(sourceRevision!==undefined&&sourceRevision!==revision)throw new Error('weather source revision changed; restart paging from offset zero');
  const report=stationScienceReport(state,{station}),source={file:'station-science/state.json',present,revision,at:state.at??null,...(station===undefined?{}:{station})};
  return weatherReadPage(report,{source,field,allowedFields:['metrics','comparisons','parameters'],offset,limit,sourceRevision,

@@ -7,6 +7,7 @@ import {evidenceStore,readEvidenceRecord,DERIVED_KIND} from '../src/weather-evid
 const args=process.argv.slice(2),options={};
 for(let i=0;i<args.length;i+=2){if(!['--archives','--root','--universe','--output'].includes(args[i])||!args[i+1])throw new Error('usage: (--archives EVIDENCE_DIRECTORY | --root WEATHER_STATE_DIR) --universe LATEST_JSON --output NEW_REPLAY_DIRECTORY');options[args[i].slice(2)]=resolve(args[i+1]);}
 if(!options.archives===!options.root||!options.universe||!options.output)throw new Error('exactly one of archives or root, and universe and output required');
+const outputStore=evidenceStore(options.output);
 // Refuse existing outputs, especially live state. Replay is an isolated retrospective experiment.
 await mkdir(options.output,{recursive:false,mode:0o700});
 async function collect(iterator){const out=[];for await(const x of iterator)out.push(x);return out;}
@@ -22,10 +23,10 @@ for(const {name,mtime} of files){
  const e=options.root?(await readEvidenceRecord({root:options.root,evidenceId:name.slice(0,64)})).record:JSON.parse(gunzipSync(await readFile(join(options.archives,name))));
  if(e.science||e.kind===DERIVED_KIND||![e.local,e.guidance,e.hourlyGuidance,e.lamp,e.indices,e.observations].some(v=>v&&typeof v==='object'&&!Array.isArray(v))||Date.parse(e.at)>mtime){skipped++;continue;}
  e.stations??=[...bindings.values()].filter(r=>e.local?.[r.station]||e.guidance?.stations?.[r.station]);
- const result=await updateStationScience(e,{root:options.output,now:mtime,sourceEvidenceId:name.slice(0,64)});
+ const result=await updateStationScience(e,{root:options.output,store:outputStore,now:mtime,sourceEvidenceId:name.slice(0,64)});
  packets++;scored+=result.scored;forecasted+=result.forecasted;outcomes.push(...result.outcomes);
 }
-const report={evaluation:'retrospective replay of immutable archived forecasts; filesystem write time conservatively defines availability; latest contracts supply only station time zones; does not qualify trading or seed production calibration',packets,skipped,scored,forecasted,...await readStationScience({root:options.output})};
+const report={evaluation:'retrospective replay of immutable archived forecasts; filesystem write time conservatively defines availability; latest contracts supply only station time zones; does not qualify trading or seed production calibration',packets,skipped,scored,forecasted,...await readStationScience({root:options.output,store:outputStore})};
 await writeFile(join(options.output,'outcomes.jsonl'),outcomes.map(r=>JSON.stringify(r)).join('\n')+'\n',{mode:0o600});
 await writeFile(join(options.output,'report.json'),JSON.stringify(report,null,2)+'\n',{mode:0o600});
 console.log(JSON.stringify(report));

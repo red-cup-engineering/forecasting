@@ -12,8 +12,9 @@ import {planWeatherReasoningCadence,temperatureReasoningTimeZones} from './weath
 import { binarySettlement, marketSettlementTiming } from '@red-cup-engineering/kalshi-services-section/market-facts';
 import {randomUUID,createHash} from 'node:crypto';
 import {updateStationScience,readStationScience,readStationSciencePage,stationPointForecasts,stationScienceReport,readScienceState,scienceStateAt} from './station-weather-science.mjs';
-import {loadWeatherEvidence,sealDerivedRecord,putEvidence,readEvidenceRecord} from './weather-evidence-record.mjs';
-import {openLedger,readLedger,forgetLedgerCache,niOf} from './weather-ledger.mjs';
+import {loadWeatherEvidence,sealDerivedRecord,putEvidence,readEvidenceRecord,evidenceStore} from './weather-evidence-record.mjs';
+import {openTree,readTree,saveTree,releaseTree,importLegacyFile} from './weather-state-tree.mjs';
+import {contentTreeLink,isContentTreeLink} from '@red-cup-engineering/computer-file-engineering-services-section/content-tree-store';
 import {admitWeatherPageWire,weatherReadPage,weatherStatusInventory} from './weather-read-page.mjs';
 import {readWeatherSourceRecord} from './weather-source-record.mjs';
 import { readFile, writeFile, mkdir, rename, readdir, appendFile, rm, stat, link } from 'node:fs/promises';
@@ -66,6 +67,8 @@ async function locked(root,fn){
 
 /** Hold the single-flight weather cycle lock around maintenance that must not overlap a cycle. */
 export const withWeatherCycleLock=(root,fn)=>locked(root,fn);
+/** Reclaim trees no ref or link reaches (old latest/pending/grades/state roots). Holds the cycle lock; cost grows with what is kept. */
+export const weatherStoreGc=({root=weatherRoot(),graceMs=6*3600000}={})=>locked(root,()=>evidenceStore(root).gc({graceMs}));
 
 export async function weatherCashBudget({client=createKalshiClient(),exchangeIndex=0}={}) {
   if(!Number.isInteger(exchangeIndex)||exchangeIndex<0)throw new TypeError('weather exchange index required');
@@ -91,15 +94,15 @@ async function archivePacket(path,evidence){
 }
 async function archiveWeatherEvidence(evidence,root) {
   await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
-  const sourceEvidenceId=await putEvidence(root,evidence);
+  const store=evidenceStore(root),{id:sourceEvidenceId,address:sourceAddress}=await putEvidence(root,evidence);
   evidence.dailyExtremes=deriveDailyTemperatureExtremes(evidence,{now:Date.now()});
-  try{evidence.science=await locked(join(root,'station-science'),()=>updateStationScience(evidence,{root:join(root,'station-science'),now:Date.now(),sourceEvidenceId}));}
-  catch(e){if(e.code!=='WEATHER_CYCLE_RUNNING')throw e;const {state,revision}=await readScienceState(join(root,'station-science')),report=stationScienceReport(state);evidence.science={...report,revision,status:'another station-science update is running',forecasts:stationPointForecasts(evidence,{parameters:report.parameters}),outcomes:[]};}
+  try{evidence.science=await locked(join(root,'station-science'),()=>updateStationScience(evidence,{root:join(root,'station-science'),store,now:Date.now(),sourceEvidenceId}));}
+  catch(e){if(e.code!=='WEATHER_CYCLE_RUNNING')throw e;const {state,revision}=await readScienceState(store,join(root,'station-science')),report=stationScienceReport(state);evidence.science={...report,revision,status:'another station-science update is running',forecasts:stationPointForecasts(evidence,{parameters:report.parameters}),outcomes:[]};}
   evidence.sourceEvidenceId=sourceEvidenceId;
   // The in-memory evidence keeps the whole report for this cycle's own decisions; only what is new is stored,
   // under the names of its inputs (see weather-evidence-record.mjs).
-  const record=sealDerivedRecord({sourceEvidenceId,at:evidence.at,dailyExtremes:evidence.dailyExtremes,science:evidence.science});
-  return putEvidence(root,record);
+  const record=sealDerivedRecord({sourceEvidenceId,sourceAddress,at:evidence.at,dailyExtremes:evidence.dailyExtremes,science:evidence.science});
+  return (await putEvidence(root,record)).id;
 }
 /** Independent, empirical metrology experiment; raw archive retained by content address. */
 export async function weatherRelationalScience({region='nyc',root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
@@ -128,8 +131,8 @@ export async function weatherEcmwfEvidence({stations,validCount=1,root=weatherRo
  const {indices,fields,stationMetadata,...summary}=packet;
  return {evidenceId,...summary,fieldCount:fields.length,indexCount:indices.length,stationMetadata:stationMetadata.map(({source,...r})=>({...r,metadataSource:source.url})),science:{at:evidence.science.at,status:evidence.science.status,forecasted:evidence.science.forecasted,scored:evidence.science.scored,forecasts:evidence.science.forecasts},orderEffect:false};
 }
-export function weatherStationSkill({root=weatherRoot(),station}={}){return readStationScience({root:join(root,'station-science'),station});}
-export function weatherStationSkillPage({root=weatherRoot(),...request}={}){return readStationSciencePage({...request,root:join(root,'station-science')});}
+export function weatherStationSkill({root=weatherRoot(),station}={}){return readStationScience({root:join(root,'station-science'),store:evidenceStore(root),station});}
+export function weatherStationSkillPage({root=weatherRoot(),...request}={}){return readStationSciencePage({...request,root:join(root,'station-science'),store:evidenceStore(root)});}
 export async function weatherStationEvidence({stations,root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
   const evidence=await collectStationWeatherEvidence(stations,{cacheDir:join(root,'nbm'),now,fetchImpl});
   const evidenceId=await archiveWeatherEvidence(evidence,root);
@@ -221,7 +224,7 @@ export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.no
  const context=await hourlyProjectionContext(root),stationEvidenceId=context.stationEvidenceId;
  const packet={kind:'kalshi-weather-index-source',at:new Date().toISOString(),indices:fresh.cities,errors:fresh.errors,stationEvidenceId};
  await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
- const evidenceId=await putEvidence(root,packet);
+ const {id:evidenceId}=await putEvidence(root,packet);
  // Archive the new source before projection, but leave the previously
  // qualified pointer readable until the replacement has been fully prepared.
  // An intermediate surface:null used to erase valid hourly forecasts during
@@ -323,30 +326,33 @@ export function boundedWeatherStatus(snapshot, maxGradeMembers = 128) {
 }
 
 const NO_CYCLE={status:'no weather cycle recorded',orderEffect:false};
+const LATEST_REF='weather/latest',GRADES_REF='weather/grades',PENDING_REF='weather/pending';
 /**
- * latest.json stores the cycle once and refers to what is stored elsewhere: its grades are
- * grades.json (`gradesSource`), its science report is the station-science ledger at
- * `science.revision`. readLatest joins them back so a reader sees the record it always saw.
- * With a joined grades file the source revision names both files; `science` re-derives the full report.
+ * The latest cycle is a tree under ref "weather/latest" in the weather root's content tree store (a
+ * pre-tree latest.json is read as it is until the first cycle replaces it). Its grades and its
+ * station-science state are links to their own trees, not copies. readLatest joins them back so a
+ * reader sees the record it always saw; the source revision is the latest tree's root address, which
+ * names its grades and science by link. `science` re-derives the full report from the linked state.
  */
 export async function readLatest({root=weatherRoot(),emptyRecord=NO_CYCLE,sourceRevision,science=false}={}){
-  const {record,source}=await readWeatherSourceRecord({root,file:'latest.json',emptyRecord});
-  let revision=source.revision;
-  if(record.gradesSource==='grades.json'){
-    let bytes;try{bytes=await readFile(join(root,'grades.json'));}catch(error){if(error.code!=='ENOENT')throw error;bytes=Buffer.from('{}');}
-    record.grades=JSON.parse(bytes.toString('utf8'));delete record.gradesSource;
-    revision=niOf(Buffer.from(source.revision+'\n'+niOf(bytes)));
+  const store=evidenceStore(root),head=await readTree(store,LATEST_REF);
+  let record,source;
+  if(head){
+    record=head.value;
+    if(record.at!==undefined&&record.at!==null&&(typeof record.at!=='string'||record.at.length>128))throw new TypeError('weather source at must be a bounded string or absent');
+    source={file:'weather/latest',present:true,revision:head.address,at:record.at??null};
+  }else({record,source}=await readWeatherSourceRecord({root,file:'latest.json',emptyRecord}));
+  if(isContentTreeLink(record.grades))record.grades=await store.get(record.grades['/']);
+  if(sourceRevision!==undefined&&sourceRevision!==source.revision)throw new Error('weather source revision changed; restart paging from offset zero');
+  if(science&&isContentTreeLink(record.science?.revision)){
+    const {state}=await scienceStateAt(store,record.science.revision['/']);
+    const {revision,...slim}=record.science;
+    record.science={...stationScienceReport(state),...slim,revision:revision['/']};
   }
-  if(sourceRevision!==undefined&&sourceRevision!==revision)throw new Error('weather source revision changed; restart paging from offset zero');
-  if(science&&record.science?.revision){
-    const sciRoot=join(root,'station-science'),head=await readLedger(sciRoot);
-    const state=head.head?.revision===record.science.revision?{state:(await readScienceState(sciRoot)).state}:await scienceStateAt(sciRoot,record.science.revision);
-    if(state){const {revision:_r,...slim}=record.science;record.science={...stationScienceReport(state.state),...slim,revision:record.science.revision};}
-  }
-  return {record,source:{...source,revision}};
+  return {record,source};
 }
-/** The part of a cycle's science report that latest.json keeps; the rest is the ledger revision. */
-const slimScience=science=>science?Object.fromEntries(['at','status','scored','forecasted','pending','missingOutcomes','revision'].filter(k=>science[k]!==undefined).map(k=>[k,science[k]])):science;
+/** What latest keeps of a cycle's science report: the scalars, and a link to the state the rest comes from. */
+const slimScience=science=>science?Object.fromEntries(['at','status','scored','forecasted','pending','missingOutcomes','revision'].filter(k=>science[k]!==undefined).map(k=>[k,k==='revision'?contentTreeLink(science[k]):science[k]])):science;
 export async function weatherStatus({root=weatherRoot(),maxGradeMembers=128,science=true}={}) {
   const {record:result}=await readLatest({root,science});
   let running=null;const lock=await read(join(root,'cycle.lock'),null);
@@ -431,32 +437,27 @@ async function gradeHistory(root){
   return accumulator.report();
 }
 /**
- * The desk's pending forecasts are a ledger (weather-ledger.mjs) in <root>/pending: {rows:{id:forecast}}.
- * A cycle commits only the forecasts it adds, scoring only the ones it settles. A pre-ledger
- * pending.json is imported once, verified by reading the ledger back, then removed.
+ * The desk's pending forecasts are one tree, ref "weather/pending": {rows:{id:forecast}} (weather-state-tree.mjs).
+ * A cycle writes the chunks its additions and settlements touch. A pre-tree pending.json is imported
+ * once, verified by reading the tree back, then removed.
  */
 async function openPending(root){
-  const dir=join(root,'pending'),led=await openLedger(dir);
-  if(!led.head){
-    const legacy=await read(join(root,'pending.json'),null);
-    if(legacy!==null){
-      await led.commit({snapshot:{rows:legacy}});forgetLedgerCache(dir);
-      if(digest((await readLedger(dir)).state.rows)!==digest(legacy))throw new Error('pending import does not reproduce pending.json; pending.json kept');
-      await rm(join(root,'pending.json'),{force:true});
-      return openPending(root);
-    }
-  }
-  led.state.rows??={};
-  return led;
+  const store=evidenceStore(root);
+  let open=await openTree(store,PENDING_REF);
+  if(!open&&await importLegacyFile({store,ref:PENDING_REF,path:join(root,'pending.json'),wrap:rows=>({rows})}))open=await openTree(store,PENDING_REF);
+  const value=open?.value??{rows:{}};
+  return {store,address:open?.address??null,value,rows:value.rows};
 }
-/** Rewrite a file only when its content changed; returns whether it was written. */
-async function atomicIfChanged(path,value){
-  const text=JSON.stringify(value)+'\n';
-  try{if(await readFile(path,'utf8')===text)return false;}catch(e){if(e.code!=='ENOENT')throw e;}
-  const tmp=`${path}.${process.pid}.tmp`;await writeFile(tmp,text,{mode:0o600});await rename(tmp,path);return true;
+const savePending=(pending,changed)=>changed||pending.address===null?saveTree(pending.store,PENDING_REF,pending.value):releaseTree(pending.store,PENDING_REF,pending.address,pending.value);
+/** The grades tree (ref "weather/grades"); a pre-tree grades.json is imported once. */
+async function readGrades(root){
+  const store=evidenceStore(root);
+  let head=await readTree(store,GRADES_REF);
+  if(!head&&await importLegacyFile({store,ref:GRADES_REF,path:join(root,'grades.json')}))head=await readTree(store,GRADES_REF);
+  return head?.value??{};
 }
 async function scorePending(root,client,now) {
-  const pendingLedger=await openPending(root),pending=pendingLedger.state.rows,settled=[],removed=[];const errors=[];
+  const pendingTree=await openPending(root),pending=pendingTree.rows,settled=[];let removed=0;const errors=[];
   // Query each market once. Rain can settle before close; do not wait for the nominal close time.
   const tickers=[...new Set(Object.values(pending).map(r=>r.ticker))],markets=new Map();
   if(client.getMarkets){
@@ -472,7 +473,7 @@ async function scorePending(root,client,now) {
     const rulesHash=digest({primary:m.rules_primary,secondary:m.rules_secondary});
     if(!r.rulesHash||r.rulesHash!==rulesHash){errors.push({id,ticker:r.ticker,error:'settlement rules do not match the issued forecast'});continue;}
     if(!Number.isFinite(Date.parse(r.at))||Date.parse(r.at)>=Date.parse(settlement.settledAt)){errors.push({id,ticker:r.ticker,error:'forecast was not issued before definitive settlement'});continue;}
-    settled.push({...r,id,outcome:settlement.outcome,scoredAt:new Date(now).toISOString(),venueResult:settlement.result,settledAt:settlement.settledAt,settlement,settlementEvidenceVersion:1});delete pending[id];removed.push(id);
+    settled.push({...r,id,outcome:settlement.outcome,scoredAt:new Date(now).toISOString(),venueResult:settlement.result,settledAt:settlement.settledAt,settlement,settlementEvidenceVersion:1});delete pending[id];removed++;
   }
 
   // A per-record immutable score file makes recovery after interruption idempotent.
@@ -481,9 +482,9 @@ async function scorePending(root,client,now) {
   for(const r of settled){try{await writeFile(join(root,'scores',`${r.id}.json`),JSON.stringify(r)+'\n',{flag:'wx',mode:0o600});}catch(e){if(e.code!=='EEXIST')throw e;}}
   // resolved.jsonl is the record; a score file only makes the append idempotent, so it goes once appended.
   for(const file of await readdir(join(root,'scores'))){const r=await read(join(root,'scores',file));if(!known.has(r.id)){await appendFile(join(root,'resolved.jsonl'),JSON.stringify(r)+'\n',{mode:0o600});known.add(r.id);}await rm(join(root,'scores',file),{force:true});}
-  if(removed.length)await pendingLedger.commit({applied:true,del:{rows:removed}});else pendingLedger.release();
-  const grades=await gradeHistory(root);await atomicIfChanged(join(root,'grades.json'),grades);
-  return {settled:settled.length,pending:Object.keys(pending).length,errors,grades};
+  await savePending(pendingTree,removed>0);
+  const grades=await gradeHistory(root),gradesAddress=await saveTree(pendingTree.store,GRADES_REF,grades);
+  return {settled:settled.length,pending:Object.keys(pending).length,errors,grades,gradesAddress};
 }
 export async function scoreWeather({root=weatherRoot(),client=weatherClient(),now=Date.now()}={}) {
   return locked(root,()=>scorePending(root,client,now));
@@ -633,7 +634,7 @@ async function removeDeadTemporaries(root){
 export async function runWeatherCycle({root=weatherRoot(),client=weatherClient(),now=Date.now(),fetchImpl=fetch,capitalUsd=0,encumberedUsd=0,cadence=null}={}) {
   return locked(root,async()=>{
     await removeDeadTemporaries(root);
-    const grades=await read(join(root,'grades.json'),{});
+    const grades=await readGrades(root);
     const universe=await discoverWeather(client);
     const indexEvidence=await readWeatherIndexSources({root});
     const evidence=await collectWeatherEvidence(universe.markets,{cacheDir:join(root,'nbm'),now:Date.now(),fetchImpl,indexEvidence});
@@ -648,7 +649,7 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
     const decisionNow=Date.now();
     const contracts=universe.markets.map(c=>{const fresh=freshQuotes.get(c.ticker);if(!fresh)return c;const changed=digest({primary:c.rules_primary,secondary:c.rules_secondary})!==digest({primary:fresh.rules_primary,secondary:fresh.rules_secondary});return {...c,...fresh,...(changed?{ruleKey:weatherRuleKey(fresh,c.seriesTicker,c.source,c.stationRule),binding:null,blocker:'rules changed during collection; rebind next cycle'}:{})};}).map(c=>weatherIndexContractScope({...c,rulesHash:digest({primary:c.rules_primary,secondary:c.rules_secondary})},evidence,decisionNow));
     for(const c of contracts)if(c.binding?.kind==='index-at'&&evidence.indices?.[c.binding.city]?.blocker)c.blocker=evidence.indices[c.binding.city].blocker;
-    const ex=await experiments(root,contracts,decisionNow),pendingLedger=await openPending(root),pending=pendingLedger.state.rows,addedPending={},rows=[],opportunities=[];
+    const ex=await experiments(root,contracts,decisionNow),pendingTree=await openPending(root),pending=pendingTree.rows,addedPending={},rows=[],opportunities=[];
     await mapLimit(contracts,3,async c=>{
       const s=stage(c,decisionNow),models=weatherEstimates(c,evidence,decisionNow);
       models.push(...(ex.get(c.ticker)?.values()??[]));
@@ -669,7 +670,7 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
     });
     const at=new Date().toISOString();
     await atomic(join(root,'surface.json'),forecastSurface(rows,contracts,at));
-    await pendingLedger.commit({applied:true,set:{rows:addedPending}});
+    await savePending(pendingTree,Object.keys(addedPending).length>0);
     const scoring=await scorePending(root,client,Date.now());
     const families={};for(const c of contracts){families[c.family]??={markets:0,modelled:0,volume24h:0};families[c.family].markets++;families[c.family].volume24h+=Number(c.volume_24h_fp??0);if(rows.find(r=>r.ticker===c.ticker)?.models.length)families[c.family].modelled++;}
     const research=Object.entries(families).filter(([_,v])=>v.modelled<v.markets).sort((a,b)=>b[1].volume24h-a[1].volume24h).map(([family,v])=>({family,...v,nextEffect:family==='hourly-temperature'?'bind official station/time and score short-horizon observation-conditioned forecasts':family==='precipitation'?'bind interval totals; validate probabilistic accumulation forecasts':family==='tropical'?'bind NHC event definitions and calibrate track/intensity ensembles':family==='snow'?'bind reporting station and validate snow accumulation ensembles':'bind settlement transformation and submit versioned forecasts'}));
@@ -677,7 +678,8 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
     const regionalTransitions=(evidence.relational?.regions??[]).filter(r=>r.regionalTransition).map(r=>({region:r.region,...r.regionalTransition}));
     const result={science,regionalTransitions,...(cadence?{cadence}:{}),at,collectionStartedAt:new Date(now).toISOString(),complete:universe.complete,series:universe.series,marketCount:contracts.length,modelled:rows.filter(r=>r.models.length).length,families,errors:[...universe.errors,...evidence.errors],scoring:{settled:scoring.settled,pending:scoring.pending,errors:scoring.errors},grades:scoring.grades,forecasts:rows,contracts,opportunities,research,allocation:allocateWeather(opportunities.filter(o=>Date.parse(o.quoteExpiresAt)>Date.now()),{capitalUsd,encumberedUsd}),orderEffect:false};
     const {grades:_grades,science:fullScience,...kept}=result;
-    await atomic(join(root,'latest.json'),{science:slimScience(fullScience),gradesSource:'grades.json',...kept});
+    await saveTree(evidenceStore(root),LATEST_REF,{science:slimScience(fullScience),grades:contentTreeLink(scoring.gradesAddress),...kept});
+    await rm(join(root,'latest.json'),{force:true});
     return result;
   });
 }

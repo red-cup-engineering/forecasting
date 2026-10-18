@@ -71,12 +71,12 @@ test('the hourly projection reads its station evidence through the derived recor
  const root=mkdtempSync(join(tmpdir(),'kalshi-index-derived-'));
  t.after(()=>rmSync(root,{recursive:true,force:true}));
  const source={at:'2026-10-10T12:00:00.000Z',stations:[],local:{},observations:{},errors:[],indices:{}};
- const sourceEvidenceId=await putEvidence(root,source);
+ const {id:sourceEvidenceId,address:sourceAddress}=await putEvidence(root,source);
  const row={station:'index:nyc',model:'kalshi-index-family-pool-v1/paired-family-fixed-share-v2',validTime:'2026-10-10T13:00:00.000Z'};
  const other={station:'index:nyc',model:'kalshi-index-family-pool-v1',validTime:'2026-10-10T13:00:00.000Z'};
- const record=sealDerivedRecord({sourceEvidenceId,at:source.at,dailyExtremes:{forecasts:[],gaps:[]},
+ const record=sealDerivedRecord({sourceEvidenceId,sourceAddress,at:source.at,dailyExtremes:{forecasts:[],gaps:[]},
   science:{at:source.at,scored:0,forecasted:2,parameters:{'index:nyc/m/0-3h':{ready:true},'KNYC/m/0-3h':{ready:true}},forecasts:[row,other]}});
- const stationEvidenceId=await putEvidence(root,record);
+ const {id:stationEvidenceId}=await putEvidence(root,record);
  assert.deepEqual(Object.keys(record.science.parameters),['index:nyc/m/0-3h']);
  assert.deepEqual(record.science.forecasts,[row]);
  writeFileSync(join(root,'latest.json'),JSON.stringify({at:source.at,forecasts:[{evidenceId:stationEvidenceId}]}));
