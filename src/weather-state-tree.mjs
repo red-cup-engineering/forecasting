@@ -18,7 +18,7 @@
  *   digest, name it, and only then remove the file.
  */
 import {createHash} from 'node:crypto';
-import {rm} from 'node:fs/promises';
+import {removeFile} from '@red-cup-engineering/computer-file-engineering-services-section/remove-file';
 import {readFileText} from '@red-cup-engineering/computer-file-engineering-services-section/read-file';
 
 export const jsonDigest=value=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
@@ -55,7 +55,7 @@ export async function importLegacyFile({store,ref,path,wrap=value=>value}){
   const address=await store.put(value);
   if(jsonDigest(await store.get(address))!==jsonDigest(value))throw new Error(`${path} was not reproduced by its tree; file kept`);
   await store.setRef(ref,address);
-  await rm(path,{force:true});
+  await removeFile({path});
   return address;
 }
 /** Give a value back unchanged (nothing to save) so the next open in this process replays nothing. */

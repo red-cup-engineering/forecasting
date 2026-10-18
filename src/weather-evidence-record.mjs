@@ -1,6 +1,6 @@
 /**
  * Weather evidence records: each input is stored once, derivations are stored as what is new
- * plus links to what they were derived from.
+ * plus references to what they were derived from.
  *
  * CONTRACT
  *
@@ -8,25 +8,35 @@
  * RFC 6920 form of the same digest is `ni:///sha-256;<base64url>` (niOfHex / hexOfNi).
  *
  * Storage. Every record is a tree in the weather root's content tree store
- * (computer-file-engineering-services-section/content-tree-store, at `<root>/content-tree`),
- * named by ref `evidence/<evidenceId>`. `get` returns the record exactly as JSON, so
- * sha-256 of JSON.stringify of it is the evidenceId; putEvidence and readEvidenceRecord verify
- * that on every write and read. Successive records share their repeated subtrees. A link
- * {"/": address} inside a record names another tree in the same store; the store refuses to
- * put a link to a tree it does not hold, gc keeps what links reach and fsck follows them, so
- * retention is reachability from refs. Records written before the store are
- * `evidence/<evidenceId>.json.gz` files; readers try the ref, then the file, then the alias.
- * An alias is ref `alias/<old evidenceId>` naming the record that replaced it.
+ * (computer-file-engineering-services-section/content-tree-store, at `<root>/content-tree`).
+ * `get` returns the record exactly as JSON, so sha-256 of JSON.stringify of it is the evidenceId;
+ * putEvidence and readEvidenceRecord verify that on every write and read. Successive records share
+ * their repeated subtrees. Two kinds of reference, by what readers need for how long:
+ *   - STRONG: ref `evidence/<evidenceId>` for a derived record, and a link {"/": address} inside a
+ *     record. The store refuses to put a link to a tree it does not hold; gc keeps what refs and links
+ *     reach and fsck follows them. A derived record strongly keeps the station-science state it was
+ *     derived from, its outcomes and (migrated) its historical science, forever.
+ *   - WEAK: a plain ni string (a tree's root address) that gc does not follow. A derived record's
+ *     `inputs` is weak, and a raw source or index-source record is named only by ref
+ *     `sources/<UTC date of its at>/<evidenceId>`. `expireSources` deletes the refs of days older than
+ *     the retention window (default 14 days, `KALSHI_WEATHER_SOURCE_RETENTION_DAYS`, or the
+ *     `sourceRetentionDays` option of runWeatherCycle); the next gc reclaims what only they reached. A
+ *     derived record whose source has aged out still serves its stored science, parameters and states, but
+ *     loadWeatherEvidence of its inputs fails with code WEATHER_SOURCE_AGED_OUT.
+ *   Records written before the store are `evidence/<evidenceId>.json.gz` files; readers try the strong
+ *   ref, the dated source refs, the file, then the alias. An alias is ref `alias/<old evidenceId>` naming
+ *   the record that replaced it.
  *
  * Source record (no `kind`, or `kalshi-weather-index-source`): the inputs of one collection:
  *   at, stations, guidance, hourlyGuidance, quantiles, lamp, settlement, local, observations,
  *   relational, ecmwfEnsemble, errors, indices. Stored once, before any derivation.
  *
- * Derived record (kind "kalshi-weather-derived", version 2): what one cycle derived from one
- *   source record and one station-science state. It holds NO copy of either.
+ * Derived record (kind "kalshi-weather-derived", version 3; version 2 read as before, with a strong
+ *   `inputs` link and unhoisted forecasts): what one cycle derived from one source record and one
+ *   station-science state. It holds NO copy of either.
  *     kind, version
  *     at               the source's at
- *     inputs           link to the source record's tree
+ *     inputs           weak ni address of the source record's tree
  *     sourceEvidenceId hex evidenceId of that source (checked against the tree when loaded)
  *     scienceState     link to the station-science state tree this was derived from, or null
  *     dailyExtremes    new in this record: the hourly-to-daily extremes
@@ -34,11 +44,13 @@
  *                       parameters  the fitted postprocessing parameters a decision reads:
  *                                   keys "index:..." and ".../lamp-hourly-v2.7-v1/...",
  *                       forecasts   the index forecasts a decision reads: station "index:...",
- *                                   model ending "/paired-family-fixed-share-v2",
+ *                                   model ending "/paired-family-fixed-share-v2", run-hoisted
+ *                                   (weather-run-hoist.mjs) against science.at when
+ *                                   forecastsHoisted is true,
  *                       outcomes    link to the tree of this cycle's scored forecast/observation
  *                                   pairs, or null; outcomesCount}
- *     historicalScience (migrated records only) link to the tree of the whole `science` object
- *                       the legacy packet held; consecutive packets share most of its subtrees
+ *     historicalScience (migrated records only) link to the tree of the whole `science` object the
+ *                       legacy packet held, run-hoisted against science.at when historicalHoisted
  *     supersedes       (migrated records only) hex id of the full packet this one replaced
  *   Recomputable, so not stored in a new record: science.metrics, comparisons, pending,
  *   missingOutcomes, truth, scoring = stationScienceReport(scienceState); all parameters =
@@ -59,6 +71,8 @@
  *     re-derived from scienceState; for a migrated record it is the historicalScience tree.
  */
 import {readFileBytes} from '@red-cup-engineering/computer-file-engineering-services-section/read-file';
+import {walkPosixPaths} from '@red-cup-engineering/path-walking-service';
+import {hoistRun,unhoistRun} from './weather-run-hoist.mjs';
 import {gunzipSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 import {join} from 'node:path';
@@ -90,35 +104,58 @@ export function evidenceStore(root){
   return stores.get(root);
 }
 
+export const DEFAULT_SOURCE_RETENTION_DAYS=14;
+/** Days a raw source record is kept: KALSHI_WEATHER_SOURCE_RETENTION_DAYS, else 14. */
+export function sourceRetentionDays(env=process.env){
+  const raw=env.KALSHI_WEATHER_SOURCE_RETENTION_DAYS;
+  if(raw===undefined||raw==='')return DEFAULT_SOURCE_RETENTION_DAYS;
+  const days=Number(raw);
+  if(!Number.isInteger(days)||days<1||days>3650)throw new RangeError('KALSHI_WEATHER_SOURCE_RETENTION_DAYS must be a whole number of days from 1 to 3650');
+  return days;
+}
+const DAY=86400000;
+const dateOf=ms=>new Date(ms).toISOString().slice(0,10);
+const recordDate=at=>/^\d{4}-\d{2}-\d{2}/u.test(at??'')?at.slice(0,10):dateOf(Date.now());
+export const sourceRefName=(date,id)=>`sources/${date}/${id}`;
+
+/** Register a store for a root key (the migration's dry run uses a store that never touches the disk). */
+export function useEvidenceStore(root,store){stores.set(root,store);}
+
 /** The derived record one cycle stores. `science` is the report updateStationScience returned. */
-export function sealDerivedRecord({sourceEvidenceId,sourceAddress,at,dailyExtremes,science,historicalScience,supersedes}){
+export function sealDerivedRecord({sourceEvidenceId,sourceAddress,at,dailyExtremes,science,historicalScience,historicalHoisted=false,supersedes}){
+  hexOfNi(sourceAddress);
+  const used=(science?.forecasts??[]).filter(isUsedForecast);
+  const run=science?.at?hoistRun(used,science.at):{value:used,hoisted:false};
   return {
-    kind:DERIVED_KIND,version:2,at,
-    inputs:contentTreeLink(sourceAddress),sourceEvidenceId,
+    kind:DERIVED_KIND,version:3,at,
+    inputs:sourceAddress,sourceEvidenceId,
     scienceState:science?.revision?contentTreeLink(science.revision):null,
     dailyExtremes,
     science:{
       at:science?.at??null,scored:science?.scored,forecasted:science?.forecasted,
       ...(science?.status?{status:science.status}:{}),
       parameters:Object.fromEntries(Object.entries(science?.parameters??{}).filter(([key])=>isUsedParameterKey(key))),
-      forecasts:(science?.forecasts??[]).filter(isUsedForecast),
+      forecasts:run.value,forecastsHoisted:run.hoisted,
       outcomes:science?.outcomesRef?contentTreeLink(science.outcomesRef.address):null,
       outcomesCount:science?.outcomesRef?.count??0,
     },
-    ...(historicalScience?{historicalScience:contentTreeLink(historicalScience)}:{}),
+    ...(historicalScience?{historicalScience:contentTreeLink(historicalScience),historicalHoisted}:{}),
     ...(supersedes?{supersedes}:{}),
   };
 }
 
-/** Store one record as a tree under its evidenceId. Resolves {id, address}; idempotent. */
-export async function putEvidence(root,record){
-  const id=jsonDigest(record),store=evidenceStore(root),ref='evidence/'+id;
+/**
+ * Store one record as a tree under its evidenceId. Resolves {id, address}; idempotent. A raw source
+ * ({source:true}) is named only by its dated, weak-retention ref; every other record by evidence/<id>.
+ */
+export async function putEvidence(root,record,{source=false}={}){
+  const id=jsonDigest(record),store=evidenceStore(root),ref=source?sourceRefName(recordDate(record.at),id):'evidence/'+id;
   const have=await store.getRef(ref);
-  if(have)return {id,address:have};
+  if(have)return {id,address:have,ref};
   const address=await store.put(record);
   if(jsonDigest(await store.get(address))!==id)throw new Error('content tree did not reproduce the evidence record exactly');
   await store.setRef(ref,address);
-  return {id,address};
+  return {id,address,ref};
 }
 /** Name `address` (a stored record) as the successor of the legacy id `from`. */
 export async function putEvidenceAlias(root,{from,address}){
@@ -126,8 +163,16 @@ export async function putEvidenceAlias(root,{from,address}){
   await evidenceStore(root).setRef('alias/'+from,address);
 }
 
-async function readStored(root,id){
-  const store=evidenceStore(root),address=await store.getRef('evidence/'+id);
+/** Address of a raw source by its dated ref: the date it came with, else the retention window back from today. */
+async function sourceAddress(root,id,dateHint){
+  const store=evidenceStore(root);
+  if(dateHint)return store.getRef(sourceRefName(dateHint,id));
+  const days=sourceRetentionDays()+2,today=Date.now();
+  for(let back=0;back<=days;back++){const address=await store.getRef(sourceRefName(dateOf(today-back*DAY),id));if(address)return address;}
+  return null;
+}
+async function readStored(root,id,dateHint){
+  const store=evidenceStore(root),address=await store.getRef('evidence/'+id)??await sourceAddress(root,id,dateHint);
   if(!address)return null;
   const record=await store.get(address);
   if(jsonDigest(record)!==id)throw new TypeError('weather archive source hash mismatch');
@@ -142,10 +187,10 @@ async function readFileRecord(root,id){
   return {record:JSON.parse(decoded.toString('utf8')),address:null};
 }
 
-/** One verified read of a record by evidenceId: tree ref, else archive file, else alias. */
-export async function readEvidenceRecord({root,evidenceId}){
+/** One verified read of a record by evidenceId: strong ref, dated source ref, archive file, else alias. */
+export async function readEvidenceRecord({root,evidenceId,dateHint}){
   if(!ID.test(evidenceId??''))throw new TypeError('content-addressed evidenceId required');
-  const found=await readStored(root,evidenceId)??await readFileRecord(root,evidenceId);
+  const found=await readStored(root,evidenceId,dateHint)??await readFileRecord(root,evidenceId);
   if(found)return {...found,id:evidenceId,requested:evidenceId};
   const store=evidenceStore(root),address=await store.getRef('alias/'+evidenceId);
   if(!address)throw Object.assign(new Error(`weather evidence ${evidenceId} is not stored`),{code:'ENOENT'});
@@ -154,30 +199,57 @@ export async function readEvidenceRecord({root,evidenceId}){
   return {record,address,id:jsonDigest(record),requested:evidenceId};
 }
 
-async function fullScience(root,record,source){
-  const store=evidenceStore(root),stored=record.science;
-  if(record.historicalScience)return store.get(record.historicalScience['/']);
-  const past=record.scienceState?await scienceStateAt(store,record.scienceState['/']):null;
-  const outcomes=stored.outcomes?await store.get(stored.outcomes['/']):[];
-  if(!past)return {at:stored.at,scored:stored.scored,forecasted:stored.forecasted,...(stored.status?{status:stored.status}:{}),parameters:stored.parameters,forecasts:stored.forecasts,outcomes};
-  const report=stationScienceReport(past.state);
-  const forecasts=stored.status?stored.forecasts
-    :stationPointForecasts({...source,dailyExtremes:record.dailyExtremes},{now:Date.parse(past.state.at),parameters:past.state.parameters,learningState:past.state});
-  return {...report,scored:stored.scored,forecasted:stored.forecasted,...(stored.status?{status:stored.status}:{}),forecasts,outcomes};
+async function listFiles(dir){
+  try{return (await walkPosixPaths({root:dir,digest:false})).files;}
+  catch(e){if(e.code==='ENOENT'||e.code==='ENOTDIR')return [];throw e;}
+}
+/**
+ * Delete the dated source refs of ONE day older than the retention window (the oldest first), so a
+ * cycle's expiry work is one day's refs. Resolves {date, removed}; date is null when nothing is due.
+ * Their trees are reclaimed by the next gc; derived records keep what they link.
+ */
+export async function expireSources({root,now=Date.now(),retentionDays=sourceRetentionDays(),lookbackDays=60}={}){
+  const store=evidenceStore(root),cutoff=now-retentionDays*DAY;
+  for(let back=lookbackDays;back>=1;back--){
+    const date=dateOf(cutoff-back*DAY),files=await listFiles(join(root,'content-tree','refs','sources',date));
+    if(!files.length)continue;
+    for(const file of files)await store.deleteRef(sourceRefName(date,file.path));
+    return {date,removed:files.length};
+  }
+  return {date:null,removed:0};
 }
 
-export async function loadWeatherEvidence({root,evidenceId,detail='used'}={}){
-  const {record}=await readEvidenceRecord({root,evidenceId});
+async function fullScience(root,record,source){
+  const store=evidenceStore(root),stored=record.science,stamp=stored.at;
+  const forecasts=record.version>=3&&stored.forecastsHoisted?unhoistRun(stored.forecasts,stamp):stored.forecasts;
+  if(record.historicalScience){
+    const tree=await store.get(record.historicalScience['/']);
+    return record.historicalHoisted?unhoistRun(tree,stamp):tree;
+  }
+  const past=record.scienceState?await scienceStateAt(store,record.scienceState['/']):null;
+  const outcomes=stored.outcomes?await store.get(stored.outcomes['/']):[];
+  if(!past)return {at:stored.at,scored:stored.scored,forecasted:stored.forecasted,...(stored.status?{status:stored.status}:{}),parameters:stored.parameters,forecasts,outcomes};
+  const report=stationScienceReport(past.state);
+  const all=stored.status?forecasts
+    :stationPointForecasts({...source,dailyExtremes:record.dailyExtremes},{now:Date.parse(past.state.at),parameters:past.state.parameters,learningState:past.state});
+  return {...report,scored:stored.scored,forecasted:stored.forecasted,...(stored.status?{status:stored.status}:{}),forecasts:all,outcomes};
+}
+
+export async function loadWeatherEvidence({root,evidenceId,detail='used',dateHint}={}){
+  const {record}=await readEvidenceRecord({root,evidenceId,dateHint});
   if(record?.kind!==DERIVED_KIND)return record;
-  if(record.version!==2)throw new TypeError('unknown weather derived record version');
-  const source=await evidenceStore(root).get(record.inputs['/']);
-  if(jsonDigest(source)!==record.sourceEvidenceId)throw new TypeError('derived weather record does not name the source it links');
+  if(record.version!==2&&record.version!==3)throw new TypeError('unknown weather derived record version');
+  const store=evidenceStore(root),address=typeof record.inputs==='string'?record.inputs:record.inputs['/'];
+  if(!await store.has(address))throw Object.assign(new Error(`the source ${record.sourceEvidenceId} of weather evidence ${evidenceId} has aged out`),{code:'WEATHER_SOURCE_AGED_OUT'});
+  const source=await store.get(address);
+  if(jsonDigest(source)!==record.sourceEvidenceId)throw new TypeError('derived weather record does not name the source it references');
+  const hoisted=record.version>=3&&record.science.forecastsHoisted;
   const science=detail==='full'?await fullScience(root,record,source):{
     at:record.science.at,
     ...(record.science.scored===undefined?{}:{scored:record.science.scored}),
     ...(record.science.forecasted===undefined?{}:{forecasted:record.science.forecasted}),
     ...(record.science.status?{status:record.science.status}:{}),
-    parameters:record.science.parameters,forecasts:record.science.forecasts,
+    parameters:record.science.parameters,forecasts:hoisted?unhoistRun(record.science.forecasts,record.science.at):record.science.forecasts,
   };
   return {...source,dailyExtremes:record.dailyExtremes,science,sourceEvidenceId:record.sourceEvidenceId};
 }
