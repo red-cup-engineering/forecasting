@@ -7,6 +7,7 @@ import { createInterface } from 'node:readline';
 import { join } from 'node:path';
 import { comboStateDir } from '../src/combo-pricer.mjs';
 import { windowOf, spotMarginal, correlationFromReturns, jointFair, barMean, WINDOW_MIN } from '../src/crypto-joint.mjs';
+import { jsonlLines } from '../src/jsonl-file.mjs';
 
 const arg = (k, d) => { const i = process.argv.indexOf(`--${k}`); return i > 0 ? process.argv[i + 1] : d; };
 const D = arg('state', comboStateDir());
@@ -15,8 +16,7 @@ const SAMPLES = +arg('samples', 8000);
 const is15M = (t) => /^KX[A-Z0-9]+15M-/u.test(t);
 
 async function lines(file, filter, fn) {
-  const rl = createInterface({ input: createReadStream(join(D, file)), crlfDelay: Infinity });
-  for await (const line of rl) { if (filter(line)) { try { fn(JSON.parse(line)); } catch { /* skip */ } } }
+  for await (const line of jsonlLines(join(D, file))) { if (filter(line)) { try { fn(JSON.parse(line)); } catch { /* skip */ } } } // sealed and plain parts (src/jsonl-file.mjs)
 }
 
 // ------------------------------------------------------------------ load tape

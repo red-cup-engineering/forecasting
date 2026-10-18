@@ -17,16 +17,22 @@
  * their 1-minute quote candles fetched over [window start - 30 min, window end] with the batch candlestick
  * endpoint; a non-score leg (prop) gets its own market's candles. Candles become `ev` book snapshots.
  *
- * Everything fetched is appended to <out>/cache/ as it arrives; a rerun resumes from there. Pacing and 429
+ * Tape windows and candles go to the shared market-data cache (--cache <dir>, default MARKET_DATA_CACHE_DIR or the
+ * settlement's market-data-cache; src/market-data-cache.mjs): fetched once, kept once, whatever run or window needs them.
+ * The small tables (combos, markets, events) are appended to <out>/cache/ as they arrive and sealed (gzip) when the run
+ * ends; the state files the measures read (trades, rfqs, results, legs .jsonl) are written sealed too (.jsonl.gz, read
+ * by src/jsonl-file.mjs). A rerun resumes from what is cached. Pacing and 429
  * backoff are the house client's (createKalshiClient, unsigned); a 429 that outlasts its 5 backoffs stops the
  * run with the caches saved (exit 3).
  */
-import { existsSync, mkdirSync, readFileSync, readdirSync, writeFileSync, appendFileSync, renameSync, openSync, writeSync, closeSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, appendFileSync, openSync, writeSync, closeSync, rmSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
 import { isComboTicker, legMeta, mulberry32 } from '../src/combo-pricer.mjs';
 import { SPORTS } from '../src/sport-feeds.mjs';
+import { jsonlRowsSync, sealJsonl } from '../src/jsonl-file.mjs';
+import { createMarketDataCache, marketDataCacheDir } from '../src/market-data-cache.mjs';
 
 // ---------------------------------------------------------------- pure parts
 
@@ -121,7 +127,7 @@ export function snapshotLines(rows, opts) {
 /** An append-only JSONL cache keyed by `keyOf(row)`; tolerates a torn last line; later rows win. */
 export function openCache(file, keyOf) {
   const map = new Map();
-  if (existsSync(file)) for (const l of readFileSync(file, 'utf8').split('\n')) { if (!l) continue; try { const r = JSON.parse(l); map.set(keyOf(r), r); } catch { /* torn line */ } }
+  for (const r of jsonlRowsSync(file)) map.set(keyOf(r), r); // the sealed part, then the plain; a torn last line is skipped
   return { map, has: (k) => map.has(k), get: (k) => map.get(k), add(row) { map.set(keyOf(row), row); appendFileSync(file, `${JSON.stringify(row)}\n`); } };
 }
 
@@ -137,7 +143,7 @@ export function candleRows(payload, eventOf) {
 
 export function parseArgs(argv) {
   const a = (name, d) => { const i = argv.indexOf(`--${name}`); return i >= 0 ? argv[i + 1] : d; };
-  return { from: a('from'), to: a('to', a('from')), out: a('out'), windows: Number(a('windows', 24)), windowMinutes: Number(a('window-minutes', 5)), seed: Number(a('seed', 1)), sportsOnly: argv.includes('--sports-only'), crypto15m: argv.includes('--crypto15m') };
+  return { from: a('from'), to: a('to', a('from')), out: a('out'), cache: a('cache', null), windows: Number(a('windows', 24)), windowMinutes: Number(a('window-minutes', 5)), seed: Number(a('seed', 1)), sportsOnly: argv.includes('--sports-only'), crypto15m: argv.includes('--crypto15m') };
 }
 
 // ---------------------------------------------------------------- the run
@@ -147,7 +153,8 @@ class StopRun extends Error {}
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   if (!args.from || !args.out) { console.error('usage: combo-backfill.mjs --from YYYY-MM-DD [--to YYYY-MM-DD] --out DIR [--windows 24] [--window-minutes 5] [--sports-only]'); process.exit(2); }
-  const out = args.out; const cdir = join(out, 'cache'); mkdirSync(join(cdir, 'tape'), { recursive: true }); mkdirSync(join(cdir, 'candles'), { recursive: true });
+  const out = args.out; const cdir = join(out, 'cache'); mkdirSync(cdir, { recursive: true });
+  const cache = createMarketDataCache({ dir: args.cache ?? marketDataCacheDir() });
   const client = createKalshiClient({ credentials: null, minIntervalMs: 250, retries429: 5 });
   const t0 = Date.now(); const counts = { requests: 0, byKind: {} };
   const log = (...m) => console.error(`[${((Date.now() - t0) / 1000).toFixed(0)}s req=${counts.requests}]`, ...m);
@@ -171,10 +178,10 @@ async function main() {
   try {
     // ---- 1. tape windows
     const windows = dateRange(args.from, args.to).flatMap((date) => sampleWindows({ date, windows: args.windows, windowMinutes: args.windowMinutes, seed: args.seed, ...(args.crypto15m ? { peak: 1, startHour: 0 } : {}) }));
-    const windowFile = (w) => join(cdir, 'tape', `${w.minTs}.json`);
     const tape = new Map();
     for (const [wi, w] of windows.entries()) {
-      if (existsSync(windowFile(w))) { tape.set(w.minTs, JSON.parse(readFileSync(windowFile(w), 'utf8'))); continue; }
+      const held = await cache.tape.get(w.minTs, w.maxTs);
+      if (held) { tape.set(w.minTs, held); continue; }
       const seen = new Set(); const trades = []; let all = 0; let cursor;
       do {
         const p = await get('tape', '/markets/trades', { min_ts: w.minTs, max_ts: w.maxTs, limit: 1000, cursor });
@@ -182,7 +189,7 @@ async function main() {
         cursor = p?.cursor || undefined;
       } while (cursor);
       const rec = { ...w, tapeTrades: all, trades };
-      writeFileSync(`${windowFile(w)}.tmp`, JSON.stringify(rec)); renameSync(`${windowFile(w)}.tmp`, windowFile(w));
+      await cache.tape.put(w.minTs, w.maxTs, rec);
       tape.set(w.minTs, rec); log(`window ${wi + 1}/${windows.length} ${new Date(w.minTs * 1000).toISOString()} tape=${all} combo=${trades.length}`);
     }
 
@@ -242,21 +249,25 @@ async function main() {
       return [...need].filter((m) => marketEvent.has(m));
     };
     const span = Math.ceil(args.windowMinutes + 31); const chunk = Math.max(1, Math.min(100, Math.floor(9000 / span)));
+    const uniq = new Map(); // ticker@ts -> row, over every window (the windows overlap by up to 30 minutes)
     for (const [wi, w] of windows.entries()) {
-      const file = join(cdir, 'candles', `${w.minTs}.json`);
-      if (existsSync(file)) continue;
-      const want = marketsOfWindow(w); const rows = [];
-      for (let i = 0; i < want.length; i += chunk) {
-        const p = await get('candles', '/markets/candlesticks', { market_tickers: want.slice(i, i + chunk).join(','), start_ts: w.minTs - 1800, end_ts: w.maxTs, period_interval: 1 });
-        rows.push(...candleRows(p ?? {}, (t) => marketEvent.get(t)));
+      const want = marketsOfWindow(w), from = w.minTs - 1800, to = w.maxTs;
+      const need = await cache.candles.missing(want, from, to);
+      for (let i = 0; i < need.length; i += chunk) {
+        const batchTickers = need.slice(i, i + chunk);
+        const p = await get('candles', '/markets/candlesticks', { market_tickers: batchTickers.join(','), start_ts: from, end_ts: to, period_interval: 1 });
+        await cache.candles.add(batchTickers, from, to, candleRows(p ?? {}, () => 'x'));
       }
-      writeFileSync(`${file}.tmp`, JSON.stringify(rows)); renameSync(`${file}.tmp`, file);
-      log(`candles ${wi + 1}/${windows.length}: ${want.length} markets, ${rows.length} rows`);
+      if (need.length) await cache.flush();
+      for (const r of await cache.candles.rows(want, from, to)) { const event = marketEvent.get(r.ticker); if (event) uniq.set(`${r.ticker}@${r.ts}`, { event, ...r }); }
+      log(`candles ${wi + 1}/${windows.length}: ${want.length} markets, ${need.length} fetched`);
     }
 
     // ---- 7. write the state dir
     const trades = [...tape.values()].flatMap((w) => w.trades).filter((t) => kept.has(t.ticker)).sort((a, b) => (a.created_time < b.created_time ? -1 : 1));
     const nd = (rows) => (rows.length ? `${rows.map((r) => JSON.stringify(r)).join('\n')}\n` : '');
+    // The state files are written sealed: a rerun replaces them, so any plain or sealed leftovers go first.
+    for (const name of ['trades', 'rfqs', 'results', 'legs']) for (const suffix of ['.jsonl', '.jsonl.gz']) rmSync(join(out, name + suffix), { force: true });
     writeFileSync(join(out, 'trades.jsonl'), nd(trades));
     writeFileSync(join(out, 'rfqs.jsonl'), nd([...kept].map((t) => ({ k: 'rfq', ticker: t, legs: combos.get(t).legs.map(([m, s]) => [m, s]) }))));
     const res = new Map();
@@ -264,12 +275,12 @@ async function main() {
     for (const r of markets.map.values()) if (r.r === 'yes' || r.r === 'no') res.set(r.t, r.r);
     for (const t of kept) { const r = combos.get(t).r; if (r === 'yes' || r === 'no') res.set(t, r); }
     writeFileSync(join(out, 'results.jsonl'), nd([...res].map(([ticker, result]) => ({ k: 'res', ticker, result }))));
-    const candleRowsAll = readdirSync(join(cdir, 'candles')).filter((f) => f.endsWith('.json')).flatMap((f) => JSON.parse(readFileSync(join(cdir, 'candles', f), 'utf8')));
-    const uniq = new Map(); for (const r of candleRowsAll) uniq.set(`${r.ticker}@${r.ts}`, r);
     const snaps = snapshotLines([...uniq.values()]);
     const fd = openSync(join(out, 'legs.jsonl'), 'w');
     for (let i = 0; i < snaps.length; i += 5000) writeSync(fd, `${snaps.slice(i, i + 5000).join('\n')}\n`);
     closeSync(fd);
+    for (const name of ['trades', 'rfqs', 'results', 'legs']) sealJsonl(join(out, `${name}.jsonl`));
+    for (const name of ['combos', 'markets', 'events']) sealJsonl(join(cdir, `${name}.jsonl`));
 
     const gamesOf = (t) => { const g = new Map(); for (const [m, , e] of combos.get(t).legs) { const k = legMeta(m, e).game; g.set(k, (g.get(k) ?? 0) + 1); } return g; };
     const cluster = (t) => [...gamesOf(t).values()].some((n) => n > 1);

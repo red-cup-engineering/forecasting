@@ -26,6 +26,7 @@ import { join } from 'node:path';
 import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
 import { correlationFromReturns } from '../src/crypto-joint.mjs';
 import { ASSETS, cryptoRfq, sampled, decide, nextPollAt, comboOutcome, score } from '../src/crypto-combo-shadow-core.mjs';
+import { jsonlRowsSync } from '../src/jsonl-file.mjs';
 
 const dir = process.env.CRYPTO_SHADOW_DIR ?? join(process.env.HOME ?? homedir(), '.local', 'state', '561-group', 'settlements', 'forecasting-service', 'crypto-shadow');
 const file = (n) => join(dir, n);
@@ -34,7 +35,7 @@ const opt = (name, def) => { const i = args.indexOf(`--${name}`); return i >= 0 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 const log = (...a) => console.error(new Date().toISOString(), ...a);
 const append = (name, rows) => { if (rows.length) appendFileSync(file(name), rows.map((r) => JSON.stringify(r)).join('\n') + '\n'); };
-const readRows = (name) => (existsSync(file(name)) ? readFileSync(file(name), 'utf8').split('\n').filter(Boolean).flatMap((l) => { try { return [JSON.parse(l)]; } catch { return []; } }) : []);
+const readRows = (name) => jsonlRowsSync(file(name)); // sealed and plain parts (src/jsonl-file.mjs)
 
 // ------------------------------------------------------------------ pacing + 429 policy
 const raw = createKalshiClient({ minIntervalMs: 300, retries429: 0 });

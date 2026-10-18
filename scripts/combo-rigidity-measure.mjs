@@ -20,6 +20,7 @@ import { join } from 'node:path';
 import { comboStateDir, legMeta } from '../src/combo-pricer.mjs';
 import { parlayInterval, scoreRegion } from '../src/combo-rigidity.mjs';
 import { KALSHI_THETA, unitFee } from '../src/coherence.mjs';
+import { jsonlRows } from '../src/jsonl-file.mjs';
 
 const arg = (name, dflt) => { const i = process.argv.indexOf(`--${name}`); return i > 0 ? process.argv[i + 1] : dflt; };
 const dir = arg('state', comboStateDir());
@@ -28,7 +29,7 @@ const out = arg('out', null);
 const rowsOut = arg('rows', null); // JSONL of every priced print, so a report can be re-tallied without a replay
 const limit = Number(arg('limit', Infinity));
 
-const lines = async function* (file) { for await (const l of createInterface({ input: createReadStream(join(dir, file)), crlfDelay: Infinity })) if (l) yield JSON.parse(l); };
+const lines = (file) => jsonlRows(join(dir, file)); // sealed (.jsonl.gz) and plain parts, one stream (src/jsonl-file.mjs)
 
 const trades = [];
 for await (const t of lines('trades.jsonl')) trades.push({ ticker: t.ticker, at: Date.parse(t.created_time), price: Number(t.yes_price_dollars), count: Number(t.count_fp), taker: t.taker_outcome_side });

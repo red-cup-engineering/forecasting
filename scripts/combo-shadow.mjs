@@ -21,6 +21,7 @@ import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
 import { comboStateDir, isComboTicker, legMeta, rfqSize, correlationModel, priceCombo, tetrachoric, wilson, pairClass } from '../src/combo-pricer.mjs';
+import { jsonlLines } from '../src/jsonl-file.mjs';
 
 const dir = comboStateDir();
 const file = (name) => join(dir, name);
@@ -33,9 +34,7 @@ const log = (...a) => console.error(new Date().toISOString(), ...a);
 const append = (name, rows) => { if (rows.length) appendFileSync(file(name), rows.map((r) => JSON.stringify(r)).join('\n') + '\n'); };
 
 async function readJsonl(name, onRow) {
-  if (!existsSync(file(name))) return;
-  const rl = createInterface({ input: createReadStream(file(name)), crlfDelay: Infinity });
-  for await (const line of rl) { if (line) { try { onRow(JSON.parse(line)); } catch { /* torn line */ } } }
+  for await (const line of jsonlLines(file(name))) { try { onRow(JSON.parse(line)); } catch { /* torn line */ } } // sealed and plain parts (src/jsonl-file.mjs)
 }
 
 const raw = createKalshiClient();
