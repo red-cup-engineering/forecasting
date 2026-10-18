@@ -13,6 +13,7 @@ import { createInterface } from 'node:readline';
 import { join } from 'node:path';
 import { comboStateDir, legMeta } from '../src/combo-pricer.mjs';
 import { brierProjection, scoreCells, scoreRegion } from '../src/combo-rigidity.mjs';
+import { jsonlRows } from '../src/jsonl-file.mjs';
 
 const arg = (name, dflt) => { const i = process.argv.indexOf(`--${name}`); return i > 0 ? process.argv[i + 1] : dflt; };
 const dir = arg('state', comboStateDir());
@@ -20,7 +21,7 @@ const maxAge = Number(arg('max-age', 900)) * 1000;
 const limitSlices = Number(arg('limit-slices', Infinity));
 const out = arg('out', null);
 const NO_DRAW = new Set(['NBA', 'WNBA', 'NCAAB', 'MLB', 'NHL']);
-const lines = async function* (file) { for await (const l of createInterface({ input: createReadStream(join(dir, file)), crlfDelay: Infinity })) if (l) yield JSON.parse(l); };
+const lines = (file) => jsonlRows(join(dir, file)); // sealed (.jsonl.gz) and plain parts, one stream (src/jsonl-file.mjs)
 
 const result = new Map();
 for await (const r of lines('results.jsonl')) if (r.k === 'res' && (r.result === 'yes' || r.result === 'no')) result.set(r.ticker, r.result === 'yes' ? 1 : 0);
