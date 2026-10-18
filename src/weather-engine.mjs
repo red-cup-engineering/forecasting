@@ -12,8 +12,10 @@ import {planWeatherReasoningCadence,temperatureReasoningTimeZones} from './weath
 import { binarySettlement, marketSettlementTiming } from '@red-cup-engineering/kalshi-services-section/market-facts';
 import {randomUUID,createHash} from 'node:crypto';
 import {updateStationScience,readStationScience,readStationSciencePage,stationPointForecasts,stationScienceReport,readScienceState,scienceStateAt} from './station-weather-science.mjs';
-import {loadWeatherEvidence,sealDerivedRecord,putEvidence,readEvidenceRecord,evidenceStore} from './weather-evidence-record.mjs';
+import {loadWeatherEvidence,sealDerivedRecord,putEvidence,readEvidenceRecord,evidenceStore,expireSources,sourceRetentionDays} from './weather-evidence-record.mjs';
 import {openTree,readTree,saveTree,releaseTree,importLegacyFile} from './weather-state-tree.mjs';
+import {removeFile} from '@red-cup-engineering/computer-file-engineering-services-section/remove-file';
+import {walkPosixPaths} from '@red-cup-engineering/path-walking-service';
 import {contentTreeLink,isContentTreeLink} from '@red-cup-engineering/computer-file-engineering-services-section/content-tree-store';
 import {admitWeatherPageWire,weatherReadPage,weatherStatusInventory} from './weather-read-page.mjs';
 import {readWeatherSourceRecord} from './weather-source-record.mjs';
@@ -68,6 +70,24 @@ async function locked(root,fn){
 /** Hold the single-flight weather cycle lock around maintenance that must not overlap a cycle. */
 export const withWeatherCycleLock=(root,fn)=>locked(root,fn);
 /** Reclaim trees no ref or link reaches (old latest/pending/grades/state roots). Holds the cycle lock; cost grows with what is kept. */
+const GC_REF='weather/gc';
+/**
+ * The cycle's store upkeep, under the cycle lock and with a budget: it drops the dated source refs of ONE
+ * day older than the retention window, and only after such a drop, and at most once per `gcIntervalMs`,
+ * runs gc. Raw sources age out; derived records, states, outcomes and grades are kept (see
+ * weather-evidence-record.mjs). Failure is reported, never thrown: a cycle does not fail on housekeeping.
+ */
+export async function maintainStore({root=weatherRoot(),now=Date.now(),retentionDays=sourceRetentionDays(),gcIntervalMs=20*3600000,graceMs=6*3600000}={}){
+  try{
+    const store=evidenceStore(root),expired=await expireSources({root,now,retentionDays});
+    let gc=null;
+    if(expired.removed>0){
+      const last=await readTree(store,GC_REF);
+      if(!last||now-Date.parse(last.value.at)>=gcIntervalMs){gc=await store.gc({graceMs});await saveTree(store,GC_REF,{at:new Date(now).toISOString()});}
+    }
+    return {expired,gc};
+  }catch(error){return {error:error.message};}
+}
 export const weatherStoreGc=({root=weatherRoot(),graceMs=6*3600000}={})=>locked(root,()=>evidenceStore(root).gc({graceMs}));
 
 export async function weatherCashBudget({client=createKalshiClient(),exchangeIndex=0}={}) {
@@ -94,7 +114,7 @@ async function archivePacket(path,evidence){
 }
 async function archiveWeatherEvidence(evidence,root) {
   await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
-  const store=evidenceStore(root),{id:sourceEvidenceId,address:sourceAddress}=await putEvidence(root,evidence);
+  const store=evidenceStore(root),{id:sourceEvidenceId,address:sourceAddress}=await putEvidence(root,evidence,{source:true});
   evidence.dailyExtremes=deriveDailyTemperatureExtremes(evidence,{now:Date.now()});
   try{evidence.science=await locked(join(root,'station-science'),()=>updateStationScience(evidence,{root:join(root,'station-science'),store,now:Date.now(),sourceEvidenceId}));}
   catch(e){if(e.code!=='WEATHER_CYCLE_RUNNING')throw e;const {state,revision}=await readScienceState(store,join(root,'station-science')),report=stationScienceReport(state);evidence.science={...report,revision,status:'another station-science update is running',forecasts:stationPointForecasts(evidence,{parameters:report.parameters}),outcomes:[]};}
@@ -224,7 +244,7 @@ export async function publishWeatherIndexSources({root=weatherRoot(),now=Date.no
  const context=await hourlyProjectionContext(root),stationEvidenceId=context.stationEvidenceId;
  const packet={kind:'kalshi-weather-index-source',at:new Date().toISOString(),indices:fresh.cities,errors:fresh.errors,stationEvidenceId};
  await mkdir(join(root,'evidence'),{recursive:true,mode:0o700});
- const {id:evidenceId}=await putEvidence(root,packet);
+ const {id:evidenceId}=await putEvidence(root,packet,{source:true});
  // Archive the new source before projection, but leave the previously
  // qualified pointer readable until the replacement has been fully prepared.
  // An intermediate surface:null used to erase valid hourly forecasts during
@@ -481,7 +501,7 @@ async function scorePending(root,client,now) {
   const known=new Set();for await(const r of resolvedRows(root))known.add(r.id);
   for(const r of settled){try{await writeFile(join(root,'scores',`${r.id}.json`),JSON.stringify(r)+'\n',{flag:'wx',mode:0o600});}catch(e){if(e.code!=='EEXIST')throw e;}}
   // resolved.jsonl is the record; a score file only makes the append idempotent, so it goes once appended.
-  for(const file of await readdir(join(root,'scores'))){const r=await read(join(root,'scores',file));if(!known.has(r.id)){await appendFile(join(root,'resolved.jsonl'),JSON.stringify(r)+'\n',{mode:0o600});known.add(r.id);}await rm(join(root,'scores',file),{force:true});}
+  for(const {path:file} of (await walkPosixPaths({root:join(root,'scores'),digest:false})).files){const r=await read(join(root,'scores',file));if(!known.has(r.id)){await appendFile(join(root,'resolved.jsonl'),JSON.stringify(r)+'\n',{mode:0o600});known.add(r.id);}await removeFile({path:join(root,'scores',file)});}
   await savePending(pendingTree,removed>0);
   const grades=await gradeHistory(root),gradesAddress=await saveTree(pendingTree.store,GRADES_REF,grades);
   return {settled:settled.length,pending:Object.keys(pending).length,errors,grades,gradesAddress};
@@ -631,7 +651,7 @@ async function removeDeadTemporaries(root){
  * scoring: an overrun then costs scoring time, never the desk's surface. Scoring resumes next cycle (score files
  * make it idempotent).
  */
-export async function runWeatherCycle({root=weatherRoot(),client=weatherClient(),now=Date.now(),fetchImpl=fetch,capitalUsd=0,encumberedUsd=0,cadence=null}={}) {
+export async function runWeatherCycle({root=weatherRoot(),client=weatherClient(),now=Date.now(),fetchImpl=fetch,capitalUsd=0,encumberedUsd=0,cadence=null,sourceRetentionDays:retentionDays=sourceRetentionDays()}={}) {
   return locked(root,async()=>{
     await removeDeadTemporaries(root);
     const grades=await readGrades(root);
@@ -679,7 +699,8 @@ export async function runWeatherCycle({root=weatherRoot(),client=weatherClient()
     const result={science,regionalTransitions,...(cadence?{cadence}:{}),at,collectionStartedAt:new Date(now).toISOString(),complete:universe.complete,series:universe.series,marketCount:contracts.length,modelled:rows.filter(r=>r.models.length).length,families,errors:[...universe.errors,...evidence.errors],scoring:{settled:scoring.settled,pending:scoring.pending,errors:scoring.errors},grades:scoring.grades,forecasts:rows,contracts,opportunities,research,allocation:allocateWeather(opportunities.filter(o=>Date.parse(o.quoteExpiresAt)>Date.now()),{capitalUsd,encumberedUsd}),orderEffect:false};
     const {grades:_grades,science:fullScience,...kept}=result;
     await saveTree(evidenceStore(root),LATEST_REF,{science:slimScience(fullScience),grades:contentTreeLink(scoring.gradesAddress),...kept});
-    await rm(join(root,'latest.json'),{force:true});
+    await removeFile({path:join(root,'latest.json')});
+    result.maintenance=await maintainStore({root,now:Date.now(),retentionDays});
     return result;
   });
 }

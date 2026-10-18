@@ -8,9 +8,10 @@ import {gzipSync} from 'node:zlib';
 import {makeNiUri} from '@red-cup-engineering/uri-services-section/ni-uri';
 import {openTree,readTree,saveTree,releaseTree,importLegacyFile,jsonDigest} from '../src/weather-state-tree.mjs';
 import {updateStationScience,readStationScience,readStationSciencePage,readScienceState,scienceStateAt,stationScienceReport} from '../src/station-weather-science.mjs';
-import {sealDerivedRecord,putEvidence,putEvidenceAlias,readEvidenceRecord,loadWeatherEvidence,evidenceStore,niOfHex,hexOfNi,DERIVED_KIND,isUsedForecast} from '../src/weather-evidence-record.mjs';
+import {sealDerivedRecord,putEvidence,putEvidenceAlias,readEvidenceRecord,loadWeatherEvidence,evidenceStore,expireSources,sourceRetentionDays,sourceRefName,niOfHex,hexOfNi,DERIVED_KIND,isUsedForecast} from '../src/weather-evidence-record.mjs';
+import {hoistRun,unhoistRun} from '../src/weather-run-hoist.mjs';
 import {migrateWeatherEvidence} from '../src/weather-evidence-migration.mjs';
-import {weatherEvidence,weatherStatus,weatherStatusPage,readLatest,scoreWeather,weatherStationSkillPage,weatherStoreGc} from '@red-cup-engineering/forecasting/weather-engine';
+import {weatherEvidence,weatherStatus,weatherStatusPage,readLatest,scoreWeather,weatherStationSkillPage,weatherStoreGc,maintainStore} from '@red-cup-engineering/forecasting/weather-engine';
 
 const sha=text=>createHash('sha256').update(text).digest('hex');
 const json=value=>JSON.parse(JSON.stringify(value));
@@ -106,13 +107,14 @@ test('station science: a pre-tree state.json is imported, verified against its t
 test('derived record: ids are sha-256 of the record JSON, inputs are links, nothing is copied',async t=>{
   const dir=await scratch(t),root=join(dir,'weather'),sciRoot=join(root,'station-science');
   const src=source(T0);
-  const {id:sourceId,address:sourceAddress}=await putEvidence(root,src);
+  const {id:sourceId,address:sourceAddress}=await putEvidence(root,src,{source:true});
   assert.equal(sourceId,sha(JSON.stringify(src)));
   const result=await science(sciRoot,T0,{...src},sourceId);
   const dailyExtremes={forecasts:[{station:'KNYC',kind:'high',meanF:70}],gaps:[]};
   const record=sealDerivedRecord({sourceEvidenceId:sourceId,sourceAddress,at:src.at,dailyExtremes,science:result});
   assert.equal(record.kind,DERIVED_KIND);
-  assert.deepEqual(record.inputs,{'/':sourceAddress});
+  assert.equal(record.inputs,sourceAddress,'the source is a weak reference: a plain address, not a link');
+  assert.equal(record.version,3);
   assert.equal(record.sourceEvidenceId,sourceId);
   assert.deepEqual(record.scienceState,{'/':result.revision});
   for(const copied of ['local','observations','indices','stations','guidance','lamp'])assert.equal(record[copied],undefined);
@@ -126,14 +128,16 @@ test('derived record: ids are sha-256 of the record JSON, inputs are links, noth
   assert.equal((await putEvidence(root,record)).id,id,'idempotent');
   await assert.rejects(()=>readEvidenceRecord({root,evidenceId:'e'.repeat(64)}),{code:'ENOENT'});
   // The store refuses a link to a tree it does not hold.
-  await assert.rejects(()=>putEvidence(root,{...record,inputs:{'/':niOfHex('f'.repeat(64))}}),/not hold|missing|unknown/i);
+  await assert.rejects(()=>putEvidence(root,{...record,scienceState:{'/':niOfHex('f'.repeat(64))}}),/not hold|missing|unknown/i);
+  // ...but accepts a weak reference to a tree it does not hold.
+  await putEvidence(root,{...record,inputs:niOfHex('f'.repeat(64))});
 });
 
 test('loader: gives every reader the fields it used to read; full detail re-derives the rest from the state tree',async t=>{
   const dir=await scratch(t),root=join(dir,'weather'),sciRoot=join(root,'station-science');
-  await science(sciRoot,T0,source(T0),(await putEvidence(root,source(T0))).id);
+  await science(sciRoot,T0,source(T0),(await putEvidence(root,source(T0),{source:true})).id);
   const later=source(T0+3*HOUR,{readings:readingsFor(T0+HOUR,T0+3*HOUR)});
-  const {id:sourceId2,address:sourceAddress2}=await putEvidence(root,later);
+  const {id:sourceId2,address:sourceAddress2}=await putEvidence(root,later,{source:true});
   const evidence={...later};
   evidence.dailyExtremes={forecasts:[{station:'KNYC',kind:'high',meanF:70}],gaps:[]};
   evidence.science=await science(sciRoot,T0+3*HOUR,evidence,sourceId2);
@@ -339,4 +343,63 @@ test('weatherStoreGc keeps what refs and links reach',async t=>{
   const result=await weatherStoreGc({root,graceMs:0});
   assert.equal(typeof result.kept,'number');
   assert.equal((await readEvidenceRecord({root,evidenceId:id})).record.at,'t');
+});
+
+test('run hoisting: a run\'s shared stamp and lead hours are stored once, losslessly, and unchanged rows repeat byte for byte',()=>{
+  const valid='2026-10-10T15:00:00.000Z';
+  const row=(stamp,model,mean)=>({station:'index:nyc',model,validTime:valid,meanF:mean,leadHours:(Date.parse(valid)-Date.parse(stamp))/3600000,availableAt:stamp,
+    learning:{fitAvailableAt:stamp,outcomeReceiptBoundAt:stamp,matchedDates:7},comparators:[{validTime:valid,leadHours:(Date.parse(valid)-Date.parse(stamp))/3600000,availableAt:stamp}],
+    relational:{availableAt:'2026-10-10T11:58:00.000Z'}});
+  const a='2026-10-10T12:00:00.123Z',b='2026-10-10T12:15:00.456Z';
+  const A=hoistRun([row(a,'m',60),row(a,'n',61)],a),B=hoistRun([row(b,'m',60),row(b,'n',61.5)],b);
+  assert.equal(A.hoisted,true);
+  assert.equal(JSON.stringify(A.value[0]),JSON.stringify(B.value[0]),'an unchanged row is identical across runs');
+  assert.notEqual(JSON.stringify(A.value[1]),JSON.stringify(B.value[1]));
+  assert.equal(A.value[0].relational.availableAt,'2026-10-10T11:58:00.000Z','a row\'s own receipt time is kept');
+  assert.equal(A.value[0].leadHours,null);
+  assert.equal(JSON.stringify(unhoistRun(A.value,a)),JSON.stringify([row(a,'m',60),row(a,'n',61)]));
+  assert.equal(hoistRun([{note:'@run'}],a).hoisted,false);
+  assert.equal(hoistRun([{validTime:a,leadHours:null}],a).hoisted,false);
+  const odd={validTime:valid,leadHours:9};
+  assert.deepEqual(unhoistRun(hoistRun([odd],a).value,a),[odd]);
+});
+
+test('retention: raw sources get dated weak refs and age out a day per call; derived records keep what they link',async t=>{
+  const dir=await scratch(t),root=join(dir,'weather'),sciRoot=join(root,'station-science');
+  const day=86400000,now=Date.parse('2026-10-20T12:00:00Z');
+  const oldSource=source(now-18*day),recentSource=source(now-2*day);
+  const old=await putEvidence(root,oldSource,{source:true}),recent=await putEvidence(root,recentSource,{source:true});
+  assert.equal(old.ref,sourceRefName('2026-10-02',old.id));
+  assert.equal(await evidenceStore(root).getRef('evidence/'+old.id),undefined,'a source has no strong ref');
+  await science(sciRoot,now-18*day-3*3600000,source(now-18*day-3*3600000),old.id);
+  const scored=source(now-18*day,{readings:readingsFor(now-18*day-2*3600000,now-18*day)});
+  const result=await science(sciRoot,now-18*day,{...scored},old.id);
+  assert.ok(result.scored>0);
+  const derived=await putEvidence(root,sealDerivedRecord({sourceEvidenceId:old.id,sourceAddress:old.address,at:oldSource.at,dailyExtremes:{forecasts:[],gaps:[]},science:result}));
+  assert.equal((await loadWeatherEvidence({root,evidenceId:derived.id})).sourceEvidenceId,old.id);
+  assert.equal((await readEvidenceRecord({root,evidenceId:recent.id,dateHint:'2026-10-18'})).record.at,recentSource.at);
+  assert.equal(sourceRetentionDays({}),14);assert.equal(sourceRetentionDays({KALSHI_WEATHER_SOURCE_RETENTION_DAYS:'3'}),3);
+  assert.throws(()=>sourceRetentionDays({KALSHI_WEATHER_SOURCE_RETENTION_DAYS:'0'}),RangeError);
+  assert.deepEqual(await expireSources({root,now,retentionDays:14}),{date:'2026-10-02',removed:1});
+  assert.deepEqual(await expireSources({root,now,retentionDays:14}),{date:null,removed:0});
+  assert.equal((await readEvidenceRecord({root,evidenceId:recent.id})).record.at,recentSource.at);
+  await evidenceStore(root).gc({graceMs:0});
+  await assert.rejects(()=>loadWeatherEvidence({root,evidenceId:derived.id}),{code:'WEATHER_SOURCE_AGED_OUT'});
+  const store=evidenceStore(root),record=(await readEvidenceRecord({root,evidenceId:derived.id})).record;
+  assert.ok((await scienceStateAt(store,record.scienceState['/'])).state);
+  assert.deepEqual(await store.get(record.science.outcomes['/']),json(result.outcomes));
+  const check=await store.fsck();
+  assert.deepEqual([check.damaged,check.missing],[[],[]]);
+});
+
+test('maintainStore: expires one day, runs gc only after an expiry and at most once per interval',async t=>{
+  const dir=await scratch(t),root=join(dir,'weather');
+  const day=86400000,now=Date.parse('2026-10-20T12:00:00Z');
+  await putEvidence(root,source(now-20*day),{source:true});await putEvidence(root,source(now-19*day),{source:true});
+  const first=await maintainStore({root,now,retentionDays:14});
+  assert.equal(first.expired.removed,1);assert.ok(first.gc,'gc ran after an expiry');
+  const second=await maintainStore({root,now:now+1000,retentionDays:14});
+  assert.equal(second.expired.removed,1);assert.equal(second.gc,null,'but not again within the interval');
+  const third=await maintainStore({root,now:now+2000,retentionDays:14});
+  assert.deepEqual(third,{expired:{date:null,removed:0},gc:null},'nothing due, nothing done');
 });
