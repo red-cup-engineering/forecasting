@@ -26,10 +26,18 @@
  *   touches the disk but packs its nodes exactly as the file backend does (BGZF packs, index lines,
  *   ref files), removes nothing, and reports the bytes the real run would free. Apply requires the
  *   weather cycle lock, so no cycle runs while evidence is moved. Pack merging is `gc`.
+ *
+ * REQUIREMENT (measured 2026-10-18, forecasting 0.6.9): this migration's `--apply` does not run on Cold Red Gate (1.6 GB RAM). Its
+ * working set is per record, not per file count: a derived packet is up to 70 MB of JSON (60 MB of science), and converting one holds
+ * the record, its hoisted copy, the stored tree, the loader's copy and the digests' strings at once. 14 files OOM at a 256 MB heap and
+ * pass at 1 GB (resident 1.1-1.4 GB); the dry run's backend no longer grows with the evidence, but this per-record peak remains. The
+ * hoist (weather-run-hoist.mjs), the digests (jsonDigest) and the verification must stream, with a declared memory bound that a test
+ * holds (a derived packet of 70 MB converted inside a 256 MB heap). Until then `--apply` runs on a host with the RAM, against a copy
+ * of the weather root, and the result is carried back by the owners of that store.
  */
 import {createReadStream} from 'node:fs';
 import {createInterface} from 'node:readline';
-import {gunzipSync} from 'node:zlib';
+import {gunzipSync,inflateRawSync} from 'node:zlib';
 import {createHash} from 'node:crypto';
 import {join} from 'node:path';
 import {randomUUID} from 'node:crypto';
@@ -55,28 +63,46 @@ async function listFiles(dir){
 const treeBytes=async dir=>(await listFiles(dir)).reduce((n,f)=>n+f.bytes,0);
 
 /**
- * A content tree backend that stays in memory and counts what the file backend would write: nodes
- * packed by the same BGZF packer into one pack per flush plus an index line per node, and a ref file
- * (address and newline) per ref. Only what a dry run needs of a backend.
+ * A content tree backend that stays in memory and counts what the file backend would write: nodes packed by the same
+ * BGZF packer into one pack per flush plus an index line per node, and a ref file (address and newline) per ref. Only what a
+ * dry run needs of a backend.
+ *
+ * What is kept is what the real run would write: the PACKED nodes (compressed, the number the dry run reports) and where each
+ * lies in its pack, not the nodes' bytes. A node is unpacked from its block when it is read (a few blocks are cached), so a dry
+ * run's memory is the size of the result, not of the evidence it converts: the first version kept every node's bytes and held
+ * 2.86 GB for 150 of 1,691 files.
  */
 function measuringBackend(){
-  const nodes=new Map(),pending=new Map(),refs=new Map();
+  const packs=[],index=new Map(),pending=new Map(),refs=new Map(),cache=new Map();
   let packed=0;
+  const BLOCKS=48,HEADER=18,FOOTER=8;
+  const block=(pack,offset)=>{
+    const key=pack+':'+offset,held=cache.get(key);
+    if(held){cache.delete(key);cache.set(key,held);return held;}
+    const bytes=packs[pack],size=bytes.readUInt16LE(offset+16)+1,data=inflateRawSync(bytes.subarray(offset+HEADER,offset+size-FOOTER));
+    cache.set(key,data);if(cache.size>BLOCKS)cache.delete(cache.keys().next().value);
+    return data;
+  };
   return {
     packedBytes:()=>packed+[...refs.values()].reduce((n,a)=>n+a.length+1,0),
-    has:async hex=>nodes.has(hex)||pending.has(hex),
-    read:async hex=>nodes.get(hex)??pending.get(hex),
+    has:async hex=>index.has(hex)||pending.has(hex),
+    read:async hex=>{
+      if(pending.has(hex))return pending.get(hex);
+      const place=index.get(hex);
+      return place?Buffer.from(block(place.pack,place.offset).subarray(place.at,place.at+place.length)):undefined;
+    },
     write:async(hex,bytes)=>{pending.set(hex,bytes);},
     async flush(){
       if(!pending.size)return;
       const entries=[...pending],{bytes,places}=bgzfPack(entries.map(([,b])=>b));
       packed+=bytes.length+entries.map(([hex],i)=>`${hex} ${places[i].offset} ${places[i].at} ${places[i].length}\n`).join('').length;
-      for(const [hex,b] of entries)nodes.set(hex,b);
+      packs.push(bytes);
+      entries.forEach(([hex],i)=>{if(!index.has(hex))index.set(hex,{pack:packs.length-1,offset:places[i].offset,at:places[i].at,length:places[i].length});});
       pending.clear();
     },
-    async *list(){yield* new Set([...nodes.keys(),...pending.keys()]);},
-    async repack(){return {kept:nodes.size,removed:0};},
-    async check(){return {nodes:nodes.size,damaged:[]};},
+    async *list(){yield* new Set([...index.keys(),...pending.keys()]);},
+    async repack(){return {kept:index.size,removed:0};},
+    async check(){return {nodes:index.size,damaged:[]};},
     readRef:async name=>refs.get(name),
     writeRef:async(name,address)=>{refs.set(name,address);},
     removeRef:async name=>{refs.delete(name);},
