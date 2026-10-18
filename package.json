@@ -1,6 +1,6 @@
 {
   "name": "@red-cup-engineering/forecasting",
-  "version": "0.6.8",
+  "version": "0.6.9",
   "type": "module",
   "repository": {
     "type": "git",
@@ -55,6 +55,7 @@
     "./coops-water-level": "./src/coops-water-level.mjs",
     "./weather-engine": "./src/weather-engine.mjs",
     "./weather-learning": "./src/weather-learning.mjs",
+    "./weather-grade-state": "./src/weather-grade-state.mjs",
     "./weather-participation": "./src/weather-participation.mjs",
     "./weather-markets.json": "./content/config/weather-markets.json",
     "./sport-feeds": "./src/sport-feeds.mjs",

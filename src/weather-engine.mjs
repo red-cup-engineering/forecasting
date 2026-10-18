@@ -14,6 +14,7 @@ import {randomUUID,createHash} from 'node:crypto';
 import {updateStationScience,readStationScience,readStationSciencePage,stationPointForecasts,stationScienceReport,readScienceState,scienceStateAt} from './station-weather-science.mjs';
 import {loadWeatherEvidence,sealDerivedRecord,putEvidence,readEvidenceRecord,evidenceStore,expireSources,sourceRetentionDays} from './weather-evidence-record.mjs';
 import {openTree,readTree,saveTree,releaseTree,importLegacyFile} from './weather-state-tree.mjs';
+import {gradeHistory as gradeResolved} from './weather-grade-state.mjs';
 import {removeFile} from '@red-cup-engineering/computer-file-engineering-services-section/remove-file';
 import {walkPosixPaths} from '@red-cup-engineering/path-walking-service';
 import {contentTreeLink,isContentTreeLink} from '@red-cup-engineering/computer-file-engineering-services-section/content-tree-store';
@@ -28,7 +29,7 @@ import { gzipSync } from 'node:zlib';
 import { createKalshiClient } from '@red-cup-engineering/kalshi-services-section/client';
 import { digest, discoverWeather, weatherRuleKey, weatherContract, mapLimit } from './weather-universe.mjs';
 import { collectWeatherEvidence, collectStationWeatherEvidence, weatherEstimates, forecastCell } from './weather-evidence.mjs';
-import { createModelGradeAccumulator, probabilityBand, allocateWeather } from '@red-cup-engineering/forecasting/weather-learning';
+import { probabilityBand, allocateWeather } from '@red-cup-engineering/forecasting/weather-learning';
 import { fuseForecast } from '@red-cup-engineering/forecasting/forecast-surface';
 import { orderFee } from '@red-cup-engineering/forecasting/fees';
 import {sourceReport} from './weather-settlement-source.mjs';
@@ -446,16 +447,7 @@ async function* resolvedRows(root){
   try{const lines=createInterface({input:createReadStream(join(root,'resolved.jsonl')),crlfDelay:Infinity});for await(const line of lines)if(line)yield JSON.parse(line);}
   catch(e){if(e.code!=='ENOENT')throw e;}
 }
-/** A resolved row grades a model only when its settlement evidence is verified and it was issued before settlement. */
-const gradable=r=>r.settlementEvidenceVersion===1&&Date.parse(r.at)<Date.parse(r.settlement?.settledAt);
-async function gradeHistory(root){
-  // Keep only the earliest timestamp per contract/horizon/model; never retain full history objects.
-  const first=new Map(),key=(r,m)=>`${r.ticker}/${r.stage}/${r.ruleKey}/${m.id}`;
-  for await(const r of resolvedRows(root))if(gradable(r))for(const m of r.models){const k=key(r,m),at=first.get(k);if(at===undefined||r.at.localeCompare(at)<0)first.set(k,r.at);}
-  const accumulator=createModelGradeAccumulator();
-  for await(const r of resolvedRows(root))if(gradable(r))for(const m of r.models){const k=key(r,m);if(first.get(k)!==r.at)continue;first.delete(k);accumulator.add({...r,models:[m]});}
-  return accumulator.report();
-}
+const gradeHistory=root=>gradeResolved({path:join(root,'resolved.jsonl')});
 /**
  * The desk's pending forecasts are one tree, ref "weather/pending": {rows:{id:forecast}} (weather-state-tree.mjs).
  * A cycle writes the chunks its additions and settlements touch. A pre-tree pending.json is imported
