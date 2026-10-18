@@ -41,7 +41,7 @@ export function jsonlRowsSync(file) {
 const sha = (buffer) => createHash('sha256').update(buffer).digest('hex');
 /** Seal the plain part of a JSONL file. Resolves {before, after} bytes, or null when there was nothing to seal. */
 export function sealJsonl(file, { minAgeMs = 0, now = Date.now() } = {}) {
-  if (!existsSync(file) || now - statSync(file).mtimeMs < minAgeMs) return null;
+  if (!existsSync(file) || (minAgeMs > 0 && now - statSync(file).mtimeMs < minAgeMs)) return null;
   const plain = readFileSync(file);
   if (!plain.length) { unlinkSync(file); return null; }
   // A torn last line stays out of the seal: it is kept in the plain file, where the writer may yet finish it.
