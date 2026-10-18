@@ -75,7 +75,7 @@
   },
   "scripts": {
     "check": "node --check src/forecasting.mjs && node --check src/evidence-fusion.mjs && node --check scripts/ingest-forecasting-question.mjs && node --check scripts/fuse-forecast.mjs && node --check scripts/record-forecast.mjs && node --check scripts/score-forecast.mjs && node --check scripts/derive-calibration-record.mjs && node --check scripts/resolve-set-of-forecast-questions.mjs && node --check apps/forecasting-cli.mjs && node --check apps/forecast-weather-markets-cli.mjs && node --check apps/forecasting-daily-cycle.mjs && node --check src/station-observations.mjs && node --check src/coops-water-level.mjs && node --check test/coops-water-level.test.mjs && node --check test/station-observations.test.mjs && node --check src/weather-state-tree.mjs && node --check src/weather-run-hoist.mjs && node --check src/weather-evidence-record.mjs && node --check src/weather-evidence-migration.mjs && node --check apps/migrate-weather-evidence.mjs && node --check test/weather-evidence-record.test.mjs",
-    "test": "node --test test/*.test.mjs"
+    "test": "node --test --test-global-setup=node_modules/@red-cup-engineering/computer-file-engineering-services-section/src/test-scratch.mjs test/*.test.mjs"
   },
   "dependencies": {
     "@red-cup-engineering/uri-services-section": "0.1.1",
@@ -92,7 +92,7 @@
     "@red-cup-engineering/position-sizing-service": "0.5.0",
     "@red-cup-engineering/http-services-section": "0.6.2",
     "@red-cup-engineering/kalshi-services-section": "^0.1.32",
-    "@red-cup-engineering/computer-file-engineering-services-section": "0.6.3",
+    "@red-cup-engineering/computer-file-engineering-services-section": "0.6.4",
     "@red-cup-engineering/path-walking-service": "0.5.2"
   },
   "engines": {
