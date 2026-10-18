@@ -1,6 +1,6 @@
 {
   "name": "@red-cup-engineering/forecasting",
-  "version": "0.6.5",
+  "version": "0.6.6",
   "type": "module",
   "repository": {
     "type": "git",
@@ -78,16 +78,16 @@
     "@red-cup-engineering/json-services-section": "0.4.0",
     "@red-cup-engineering/semiotic-eavt-services-section": "0.1.5",
     "@red-cup-engineering/computer-text-content-engineering-services-section": "0.1.0",
-    "@red-cup-engineering/signcell": "0.2.0",
+    "@red-cup-engineering/signcell": "0.4.2",
     "@red-cup-engineering/signchain": "0.1.0",
     "@red-cup-engineering/computer-data-engineering-services-section": "0.2.0",
     "@red-cup-engineering/signgraph": "0.1.0",
     "@red-cup-engineering/javascript-file-services-section": "0.1.1",
     "@red-cup-engineering/javascript-node-services-section": "0.3.2",
     "@red-cup-engineering/mandate-portfolio-allocation-service": "0.2.2",
-    "@red-cup-engineering/position-sizing-service": "0.3.3",
+    "@red-cup-engineering/position-sizing-service": "0.5.0",
     "@red-cup-engineering/http-services-section": "0.6.2",
-    "@red-cup-engineering/kalshi-services-section": "0.1.3",
+    "@red-cup-engineering/kalshi-services-section": "^0.1.32",
     "@red-cup-engineering/computer-file-engineering-services-section": "0.6.0"
   },
   "engines": {
