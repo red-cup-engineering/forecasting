@@ -16,6 +16,7 @@ import {loadWeatherEvidence,sealDerivedRecord,putEvidence,indexDerived,ageDerive
 import {openTree,readTree,saveTree,releaseTree,importLegacyFile} from './weather-state-tree.mjs';
 import {gradeHistory as gradeResolved} from './weather-grade-state.mjs';
 import {upkeep,storeBytes,readRetentionPolicy} from './weather-retention.mjs';
+import {archiveAged} from './weather-archive.mjs';
 import {removeFile} from '@red-cup-engineering/computer-file-engineering-services-section/remove-file';
 import {walkPosixPaths} from '@red-cup-engineering/path-walking-service';
 import {contentTreeLink,isContentTreeLink} from '@red-cup-engineering/computer-file-engineering-services-section/content-tree-store';
@@ -86,6 +87,7 @@ export async function maintainStore({root=weatherRoot(),now=Date.now(),retention
     const done=await upkeep({policy,state:last?.value??null,now,retentionDays,bytesOf:()=>storeBytes(root),
       expire:days=>expireSources({root,now,retentionDays:days}),
       age:()=>ageDerived({root,now,workingWindowDays:policy.derivedWorkingWindowDays,limit:policy.derivedAgingPerCycle}),
+      archive:()=>archiveAged({root,now,archiveWindowDays:policy.derivedArchiveWindowDays,days:policy.archiveDaysPerCycle}),
       gc:()=>store.gc({graceMs:policy.graceMs,majorEveryMs:policy.majorEveryMs,now})});
     if(done.gcRan||!last)await saveTree(store,GC_REF,done.state);
     else await saveTree(store,GC_REF,{...last.value,growthBytesPerDay:done.state.growthBytesPerDay});

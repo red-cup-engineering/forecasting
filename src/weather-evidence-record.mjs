@@ -195,6 +195,7 @@ export async function readEvidenceRecord({root,evidenceId,dateHint}){
   const store=evidenceStore(root),address=await store.getRef('alias/'+evidenceId);
   if(!address)throw Object.assign(new Error(`weather evidence ${evidenceId} is not stored`),{code:'ENOENT'});
   const record=await store.get(address);
+  if(record?.kind===ARCHIVED_KIND&&record.evidenceId===evidenceId)throw Object.assign(new Error(`weather evidence ${evidenceId} is archived in ${record.archive} (day ${record.day}, sha256 ${record.sha256}); restore it with restoreArchive or apps/weather-archive.mjs --restore ${record.day}`),{code:'WEATHER_EVIDENCE_ARCHIVED',day:record.day,archive:record.archive,sha256:record.sha256});
   if(record?.supersedes!==evidenceId)throw new TypeError('weather evidence alias does not name its predecessor');
   return {record,address,id:jsonDigest(record),requested:evidenceId};
 }
@@ -236,6 +237,24 @@ async function buildDerivedIndex(root){
   }
   return index;
 }
+/** The kind of the stub that replaces an archived record's alias (weather-archive.mjs): it names where the record is. */
+export const ARCHIVED_KIND='kalshi-weather-archived';
+/**
+ * The aged records not yet archived by id, with the time of each ('weather/aged-index', id -> at), kept by ageDerived so
+ * archiving never reads a record to learn its age. A store without one builds it once from its aliases.
+ */
+export const AGED_INDEX_REF='weather/aged-index';
+export async function readAgedIndex(root){
+  const store=evidenceStore(root),held=await readTree(store,AGED_INDEX_REF);
+  if(held)return {...held.value};
+  const index={};
+  for await(const name of store.refs('alias/')){
+    const record=await store.get(await store.getRef(name));
+    if(record?.kind===DERIVED_KIND&&record.scienceStateAged&&record.at)index[name.slice('alias/'.length)]=record.at;
+  }
+  await saveTree(store,AGED_INDEX_REF,index);
+  return index;
+}
 /**
  * A derived record in its aged form: the same record, its link to the station-science state it was derived from now a bare
  * address (a weak reference, as `inputs` is), so the state revision it alone kept can be reclaimed. What readers use of it (detail
@@ -251,7 +270,7 @@ export function ageDerivedRecord(record,id){
  * aged form under alias/<id> and its strong ref evidence/<id> removed, so the old id still resolves. Resolves {aged}.
  */
 export async function ageDerived({root,now=Date.now(),workingWindowDays,limit=200}={}){
-  const store=evidenceStore(root),held=await readTree(store,DERIVED_INDEX_REF),index={...(held?.value??await buildDerivedIndex(root))},cutoff=now-workingWindowDays*DAY;
+  const store=evidenceStore(root),agedIndex=await readAgedIndex(root),held=await readTree(store,DERIVED_INDEX_REF),index={...(held?.value??await buildDerivedIndex(root))},cutoff=now-workingWindowDays*DAY;
   const due=Object.entries(index).filter(([,at])=>Date.parse(at)<cutoff).sort((a,b)=>a[1].localeCompare(b[1])).slice(0,limit);
   let aged=0;
   for(const [id] of due){
@@ -262,9 +281,10 @@ export async function ageDerived({root,now=Date.now(),workingWindowDays,limit=20
     const slim=ageDerivedRecord(record,id),slimAddress=await store.put(slim);
     if(jsonDigest(await store.get(slimAddress))!==jsonDigest(slim))throw new Error('content tree did not reproduce the aged record exactly');
     await store.setRef('alias/'+id,slimAddress);await store.deleteRef('evidence/'+id);
-    delete index[id];aged++;
+    agedIndex[id]=record.at;delete index[id];aged++;
   }
   if(due.length||!held)await saveTree(store,DERIVED_INDEX_REF,index);
+  if(aged)await saveTree(store,AGED_INDEX_REF,agedIndex);
   return {aged};
 }
 

@@ -23,7 +23,7 @@
  *   scores/<id>.json files whose exact text is already a line of resolved.jsonl are removed
  *   (resolved.jsonl is the record; the score file only made the append idempotent).
  *   Dry run (default) performs the same conversion and verification into a store that never
- *   touches the disk but packs its nodes exactly as the file backend does (BGZF packs, index lines,
+ *   touches the disk but packs its nodes exactly as the file backend does (BGZF packs, binary indexes,
  *   ref files), removes nothing, and reports the bytes the real run would free. Apply requires the
  *   weather cycle lock, so no cycle runs while evidence is moved. Pack merging is `gc`.
  *
@@ -60,11 +60,13 @@ async function listFiles(dir){
   try{return (await walkPosixPaths({root:dir,digest:false})).files;}
   catch(e){if(e.code==='ENOENT'||e.code==='ENOTDIR')return [];throw e;}
 }
+/** The file section's binary pack index (content-tree-store 0.6.5): a header, then a digest and three integers a node. */
+const INDEX_HEADER_BYTES=12,INDEX_ENTRY_BYTES=44;
 const treeBytes=async dir=>(await listFiles(dir)).reduce((n,f)=>n+f.bytes,0);
 
 /**
  * A content tree backend that stays in memory and counts what the file backend would write: nodes packed by the same
- * BGZF packer into one pack per flush plus an index line per node, and a ref file (address and newline) per ref. Only what a
+ * BGZF packer into one pack per flush plus a binary index entry per node, and a ref file (address and newline) per ref. Only what a
  * dry run needs of a backend.
  *
  * What is kept is what the real run would write: the PACKED nodes (compressed, the number the dry run reports) and where each
@@ -95,7 +97,7 @@ function measuringBackend(){
     async flush(){
       if(!pending.size)return;
       const entries=[...pending],{bytes,places}=bgzfPack(entries.map(([,b])=>b));
-      packed+=bytes.length+entries.map(([hex],i)=>`${hex} ${places[i].offset} ${places[i].at} ${places[i].length}\n`).join('').length;
+      packed+=bytes.length+INDEX_HEADER_BYTES+INDEX_ENTRY_BYTES*entries.length;
       packs.push(bytes);
       entries.forEach(([hex],i)=>{if(!index.has(hex))index.set(hex,{pack:packs.length-1,offset:places[i].offset,at:places[i].at,length:places[i].length});});
       pending.clear();

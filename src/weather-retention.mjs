@@ -27,8 +27,9 @@ export function readRetentionPolicy(policy=policyFile){
   const checked={
     sourceRetentionMaxDays:whole('sourceRetentionMaxDays',1,3650),sourceRetentionMinDays:whole('sourceRetentionMinDays',1,3650),
     storeBudgetBytes:whole('storeBudgetBytes',1,2**50),gcAfterGrowthBytes:whole('gcAfterGrowthBytes',1,2**50),
-    expiryDaysPerCycle:whole('expiryDaysPerCycle',1,60),derivedWorkingWindowDays:whole('derivedWorkingWindowDays',1,3650),derivedAgingPerCycle:whole('derivedAgingPerCycle',1,100000),majorEveryMs:whole('majorEveryMs',1,2**40),graceMs:whole('graceMs',0,2**40),
+    expiryDaysPerCycle:whole('expiryDaysPerCycle',1,60),derivedWorkingWindowDays:whole('derivedWorkingWindowDays',1,3650),derivedAgingPerCycle:whole('derivedAgingPerCycle',1,100000),derivedArchiveWindowDays:whole('derivedArchiveWindowDays',1,3650),archiveDaysPerCycle:whole('archiveDaysPerCycle',1,60),majorEveryMs:whole('majorEveryMs',1,2**40),graceMs:whole('graceMs',0,2**40),
   };
+  if(checked.derivedArchiveWindowDays<checked.derivedWorkingWindowDays)throw new RangeError('weather retention: the archive window is shorter than the working window');
   if(checked.sourceRetentionMinDays>checked.sourceRetentionMaxDays)throw new RangeError('weather retention: the minimum window exceeds the maximum');
   for(const k of Object.keys(checked))if(typeof policy[`${k}Basis`]!=='string'||!policy[`${k}Basis`])throw new TypeError(`weather retention: ${k} states its basis`);
   return Object.freeze(checked);
@@ -57,7 +58,7 @@ export function retentionWindow({policy,growthBytesPerDay}){
  * drops the dated source refs of one day older than `days` and resolves {date, removed}; `gc()` reclaims and resolves its
  * report; `bytesOf()` is the store's size. Resolves {window, growthBytesPerDay, expired, gc, state} where `state` is the new state to keep.
  */
-export async function upkeep({policy,state,now,bytesOf,expire,gc,age=async()=>({aged:0}),retentionDays}){
+export async function upkeep({policy,state,now,bytesOf,expire,gc,age=async()=>({aged:0}),archive=async()=>({archived:0}),retentionDays}){
   const bytesNow=await bytesOf();
   let growth=state?.growthBytesPerDay??null;
   if(state&&Number.isFinite(state.bytesAfter)){
@@ -75,11 +76,13 @@ export async function upkeep({policy,state,now,bytesOf,expire,gc,age=async()=>({
     expired.date=one.date;expired.removed+=one.removed;dates.push(one.date);
   }
   const {aged}=await age();
+  const archiveReport=await archive();
+  const archived=archiveReport.archived??0;
   const grown=state&&Number.isFinite(state.bytesAfter)?bytesNow-state.bytesAfter:0;
   let report=null,bytesAfter=state?.bytesAfter??null,at=state?.at??new Date(now).toISOString();
-  if(expired.removed>0||aged>0||grown>=policy.gcAfterGrowthBytes||!state){
+  if(expired.removed>0||aged>0||archived>0||grown>=policy.gcAfterGrowthBytes||!state){
     report=await gc();
     bytesAfter=await bytesOf();at=new Date(now).toISOString();
   }
-  return {window,growthBytesPerDay:growth,aged,expired:{...expired,...(dates.length>1?{dates}:{})},gc:report,state:{at,bytesAfter,growthBytesPerDay:growth},gcRan:report!==null};
+  return {window,growthBytesPerDay:growth,aged,archive:archiveReport,expired:{...expired,...(dates.length>1?{dates}:{})},gc:report,state:{at,bytesAfter,growthBytesPerDay:growth},gcRan:report!==null};
 }
