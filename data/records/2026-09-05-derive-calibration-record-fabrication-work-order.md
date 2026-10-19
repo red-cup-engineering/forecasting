@@ -2,18 +2,24 @@
 ## Requirements
 - `per-reference-class-calibration`: The operation groups scored forecast rows by `referenceClass` and, for each class with at least one resolved (house-kind) row, derives `resolvedForecastCount` (the house-kind row count), `brierScore` (mean house-kind Brier), `calibrationBins` (a deciles-by-default calibration curve over the house-kind probability/outcome pairs), and `calibrationGateMet`.
 - `market-edge-when-available`: When market-kind scored rows exist for a class (the venue's implied probability, itself recorded and scored as a forecast), the operation derives `marketImpliedBrierScore` (mean market-kind Brier) and `edgeVsMarket` (`marketImpliedBrierScore - brierScore`; positive means the house forecast beat the market).
-- `threshold-field`: The operation carries the resolved-forecast threshold it gates on as an explicit `minResolvedForecasts` field on every non-refused record (default 30).
+- `threshold-field`: The operation carries the resolved-forecast threshold it gates on as an explicit `minResolvedForecasts` field on every non-refused record (default {{min-resolved-forecasts}}).
 - `known-reference-classes`: The operation accepts an optional `referenceClasses` list so a class with only open (unresolved) questions so far is still reported, as a refusal, rather than silently omitted.
 ## Prohibitions
-- `zero-resolved-refusal`: The operation must return a `Reject` datum, never a calibration record, for any reference class whose resolved (house-kind) scored-forecast count is zero.
-- `never-estimate-missing-market`: The operation must never estimate `marketImpliedBrierScore` or `edgeVsMarket` when no market-kind scored rows exist for a class; both must be reported `null`.
-- `no-network-no-wall-clock`: The operation performs no I/O and reads no wall clock; `derivedAt` is an explicit caller-supplied input, so the operation is deterministic and fixture-free.
+- `zero-resolved-refusal`: The operation must return a `Reject` datum, never a calibration record, for any reference class whose resolved (house-kind) scored-forecast count is zero. [claims: no-resolved-rows-no-score]
+- `never-estimate-missing-market`: The operation must never estimate `marketImpliedBrierScore` or `edgeVsMarket` when no market-kind scored rows exist for a class; both must be reported `null`. [claims: absent-rows-have-no-score]
+- `no-network-no-wall-clock`: The operation performs no I/O and reads no wall clock; `derivedAt` is an explicit caller-supplied input, so the operation is deterministic and fixture-free. [claims: falsifier-is-reproducible]
 ## Laws
 - `calibration-gated-stakes` | Three ways to turn capital into capital (561-group finance note) | 2026-09-04 | content/text/documents/articles/notes/2026/09/04/2026-09-04-note-on-three-ways-to-turn-capital-into-capital.md (561-group-finance-operations-services-section) | Applies to minResolvedForecasts and the zero-resolved refusal. | A stake exists only when the org's calibration on the forecast's reference class is scored on at least thirty resolved forecasts; no calibration record, no stake, and the calibration record is itself the falsifier.
 ## Standards
 - `brier-proper-scoring-rule` | Monthly Weather Review (American Meteorological Society) | Brier 1950, vol. 78 no. 1 | https://doi.org/10.1175/1520-0493(1950)078%3C0001:VOFEIT%3E2.0.CO;2 | Applies to the brierScore field every scored forecast row already carries and this operation aggregates. | The Brier score is a strictly proper scoring rule for probabilistic forecasts of a binary outcome; a forecaster minimizes expected penalty only by stating true belief.
 ## Open questions
 none
+## Claims
+- `min-resolved-forecasts` | derived | parameter | Thirty is the least number of independent resolved forecasts for which a calibration's normal approximation is usable | 30 forecasts | citation:central limit theorem rule of thumb for a t statistic (n >= 30) | Cited minimum applied to the count of resolved forecasts behind a calibration record
+- `forecasting-published` | measured | dependency | @red-cup-engineering/forecasting@0.3.0 is published on the Group registry | none | data/records/2026-10-19-work-order-evidence/npm-view-forecasting-0.3.0.json | sha256:08b90f5a5969692deeb5b112e318da696c4a98f18e21208da9180f5e3dda0150 | npm view of the exact version returned its name, version and integrity (2026-10-19)
+- `no-resolved-rows-no-score` | derived | world | A calibration is scored on resolved forecasts, so a class with none has nothing to score | none | constraint:calibration-gated-stakes | The law gives no stake without a calibration scored on resolved forecasts
+- `absent-rows-have-no-score` | derived | world | A Brier score is defined only over the scored rows that exist, and a proper rule rewards no guess in their place | none | requirement:market-edge-when-available; constraint:brier-proper-scoring-rule | With no market-kind rows the mean has no terms, and a proper scoring rule is minimized only by stating belief, never by supplying a value
+- `falsifier-is-reproducible` | derived | world | The calibration record is the falsifier, so the same rows must derive the same record | none | constraint:calibration-gated-stakes | The law names the record as the falsifier of a stake, which only a reproducible derivation can serve
 ## Package
 ```json
 {"packageName":"@red-cup-engineering/scratch-derive-calibration-record-20260905-service","packageVersion":"0.1.0","license":"UNLICENSED","dependencies":{"@red-cup-engineering/forecasting":"0.3.0"},"devDependencies":{}}
