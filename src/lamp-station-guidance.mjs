@@ -1,5 +1,6 @@
 /** NOAA's observation-updated, station-based LAMP v2.7 guidance, including HRRR/GFS input. */
 import {mkdir,readFile,writeFile,readdir,unlink,rename} from 'node:fs/promises';
+import {randomUUID} from 'node:crypto';
 import {join} from 'node:path';
 const BASE='https://nomads.ncep.noaa.gov/pub/data/nccf/com/lmp/prod';
 const header=/^\s*([A-Z0-9]{4})\s+GFS LAMP GUIDANCE\s+(\d{2})\/(\d{2})\/(\d{4})\s+(\d{2})(\d{2}) UTC/;
@@ -39,7 +40,7 @@ export async function latestLampGuidance({stations,cacheDir,now=Date.now(),fetch
   const extendedSource=source.replace('lavtxt.ascii','lavtxt_ext.ascii');let extendedAvailable=false;
   try{const ext=await fetchImpl(extendedSource,{signal:AbortSignal.timeout(20000)});if(ext.ok){const extra=parseLampBulletin(await ext.text(),stations,{extended:true});for(const [s,b] of Object.entries(extra))if(parsed[s]&&parsed[s].runtime===b.runtime&&b.rows.length===13){parsed[s].rows.push(...b.rows);extendedAvailable=true;}}}catch{}
   const record={runtime,source,extendedSource,extendedAvailable,stations:{...prior?.stations,...parsed},missingStations:[...new Set([...(prior?.missingStations??[]),...stations.filter(s=>!parsed[s])])].filter(s=>!parsed[s]&&!prior?.stations?.[s])};
-  const tmp=file+'.'+process.pid+'.tmp';await writeFile(tmp,JSON.stringify(record));await rename(tmp,file);
+  const tmp=file+'.'+process.pid+'.'+randomUUID()+'.tmp';await writeFile(tmp,JSON.stringify(record));await rename(tmp,file);
   const files=(await readdir(cacheDir)).filter(n=>n.startsWith('lamp-')&&n.endsWith('.json')).sort();for(const stale of files.slice(0,Math.max(0,files.length-6)))await unlink(join(cacheDir,stale)).catch(()=>{});
   return {...record,missingStations:stations.filter(s=>!record.stations[s])};
  }
