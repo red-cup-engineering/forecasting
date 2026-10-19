@@ -12,9 +12,10 @@ import {planWeatherReasoningCadence,temperatureReasoningTimeZones} from './weath
 import { binarySettlement, marketSettlementTiming } from '@red-cup-engineering/kalshi-services-section/market-facts';
 import {randomUUID,createHash} from 'node:crypto';
 import {updateStationScience,readStationScience,readStationSciencePage,stationPointForecasts,stationScienceReport,readScienceState,scienceStateAt} from './station-weather-science.mjs';
-import {loadWeatherEvidence,sealDerivedRecord,putEvidence,readEvidenceRecord,evidenceStore,expireSources,sourceRetentionDays} from './weather-evidence-record.mjs';
+import {loadWeatherEvidence,sealDerivedRecord,putEvidence,indexDerived,ageDerived,readEvidenceRecord,evidenceStore,expireSources,sourceRetentionDays} from './weather-evidence-record.mjs';
 import {openTree,readTree,saveTree,releaseTree,importLegacyFile} from './weather-state-tree.mjs';
 import {gradeHistory as gradeResolved} from './weather-grade-state.mjs';
+import {upkeep,storeBytes,readRetentionPolicy} from './weather-retention.mjs';
 import {removeFile} from '@red-cup-engineering/computer-file-engineering-services-section/remove-file';
 import {walkPosixPaths} from '@red-cup-engineering/path-walking-service';
 import {contentTreeLink,isContentTreeLink} from '@red-cup-engineering/computer-file-engineering-services-section/content-tree-store';
@@ -73,20 +74,23 @@ export const withWeatherCycleLock=(root,fn)=>locked(root,fn);
 /** Reclaim trees no ref or link reaches (old latest/pending/grades/state roots). Holds the cycle lock; cost grows with what is kept. */
 const GC_REF='weather/gc';
 /**
- * The cycle's store upkeep, under the cycle lock and with a budget: it drops the dated source refs of ONE
- * day older than the retention window, and only after such a drop, and at most once per `gcIntervalMs`,
- * runs gc. Raw sources age out; derived records, states, outcomes and grades are kept (see
- * weather-evidence-record.mjs). Failure is reported, never thrown: a cycle does not fail on housekeeping.
+ * The cycle's store upkeep, under the cycle lock, as a consequence of the cycle (weather-retention.mjs): raw sources older
+ * than the retention window expire (a window the measured growth keeps the store within its budget with), and what no ref
+ * reaches is reclaimed after an expiry and whenever the store has grown by the policy's amount. Derived records, states,
+ * outcomes and grades are kept (weather-evidence-record.mjs). `retentionDays` overrides the derived window. Failure is
+ * reported, never thrown: a cycle does not fail on housekeeping.
  */
-export async function maintainStore({root=weatherRoot(),now=Date.now(),retentionDays=sourceRetentionDays(),gcIntervalMs=20*3600000,graceMs=6*3600000}={}){
+export async function maintainStore({root=weatherRoot(),now=Date.now(),retentionDays,policy=readRetentionPolicy()}={}){
   try{
-    const store=evidenceStore(root),expired=await expireSources({root,now,retentionDays});
-    let gc=null;
-    if(expired.removed>0){
-      const last=await readTree(store,GC_REF);
-      if(!last||now-Date.parse(last.value.at)>=gcIntervalMs){gc=await store.gc({graceMs});await saveTree(store,GC_REF,{at:new Date(now).toISOString()});}
-    }
-    return {expired,gc};
+    const store=evidenceStore(root),last=await readTree(store,GC_REF);
+    const done=await upkeep({policy,state:last?.value??null,now,retentionDays,bytesOf:()=>storeBytes(root),
+      expire:days=>expireSources({root,now,retentionDays:days}),
+      age:()=>ageDerived({root,now,workingWindowDays:policy.derivedWorkingWindowDays,limit:policy.derivedAgingPerCycle}),
+      gc:()=>store.gc({graceMs:policy.graceMs,majorEveryMs:policy.majorEveryMs,now})});
+    if(done.gcRan||!last)await saveTree(store,GC_REF,done.state);
+    else await saveTree(store,GC_REF,{...last.value,growthBytesPerDay:done.state.growthBytesPerDay});
+    const {gcRan,state,...report}=done;
+    return report;
   }catch(error){return {error:error.message};}
 }
 export const weatherStoreGc=({root=weatherRoot(),graceMs=6*3600000}={})=>locked(root,()=>evidenceStore(root).gc({graceMs}));
@@ -123,7 +127,9 @@ async function archiveWeatherEvidence(evidence,root) {
   // The in-memory evidence keeps the whole report for this cycle's own decisions; only what is new is stored,
   // under the names of its inputs (see weather-evidence-record.mjs).
   const record=sealDerivedRecord({sourceEvidenceId,sourceAddress,at:evidence.at,dailyExtremes:evidence.dailyExtremes,science:evidence.science});
-  return (await putEvidence(root,record)).id;
+  const stored=await putEvidence(root,record);
+  await indexDerived(root,{id:stored.id,at:record.at});
+  return stored.id;
 }
 /** Independent, empirical metrology experiment; raw archive retained by content address. */
 export async function weatherRelationalScience({region='nyc',root=weatherRoot(),now=Date.now(),fetchImpl=fetch}={}) {
@@ -643,7 +649,7 @@ async function removeDeadTemporaries(root){
  * scoring: an overrun then costs scoring time, never the desk's surface. Scoring resumes next cycle (score files
  * make it idempotent).
  */
-export async function runWeatherCycle({root=weatherRoot(),client=weatherClient(),now=Date.now(),fetchImpl=fetch,capitalUsd=0,encumberedUsd=0,cadence=null,sourceRetentionDays:retentionDays=sourceRetentionDays()}={}) {
+export async function runWeatherCycle({root=weatherRoot(),client=weatherClient(),now=Date.now(),fetchImpl=fetch,capitalUsd=0,encumberedUsd=0,cadence=null,sourceRetentionDays:retentionDays=process.env.KALSHI_WEATHER_SOURCE_RETENTION_DAYS?sourceRetentionDays():undefined}={}) {
   return locked(root,async()=>{
     await removeDeadTemporaries(root);
     const grades=await readGrades(root);

@@ -1,0 +1,19 @@
+{
+  "type": "weather-store-measurement",
+  "version": 1,
+  "measuredAt": "2026-10-19",
+  "host": "cold-red-gate",
+  "store": "data/state/weather-state/content-tree, a copy taken 2026-10-19 about 01:55Z, 11.7 hours after the release that began it (2026-10-18T14:39Z)",
+  "method": "Bytes the packs hold after a major gc with the named refs deleted, subtracted from the bytes after a major gc with none deleted (graceMs 0), on a copy; per-day figures scale the window to 24 hours.",
+  "windowHours": 11.7,
+  "reachableMegabytes": 115.9,
+  "garbageReclaimedMegabytes": 65,
+  "uniqueMegabytes": { "sources": 66.4, "derivedAndTransitionalEvidence": 28.8, "statesAndOther": 16.9, "shared": 3.8 },
+  "derivedV3": { "records": 33, "uniqueMegabytes": 14.5, "kilobytesEach": 440, "jsonGzipKilobytesEach": 39, "perDay": 91 },
+  "derivedV3AgedOnceWeak": { "uniqueMegabytes": 8.56, "kilobytesEach": 266, "savedKilobytesEach": 174 },
+  "transitionalStrongRefs": { "records": 71, "uniqueMegabytes": 14.3, "lastAt": "2026-10-18T16:43:05Z", "note": "legacy and index-source records named evidence/ by releases before 2026-10-18T16:50Z; none since" },
+  "packIndexShare": { "nodes": 1254, "indexBytes": 101790, "packBytes": 119619, "note": "for one record's forecast rows; the .idx of a pack is text, about 81 bytes a node, 46% of the bytes on disk" },
+  "perDayMegabytes": { "sources": 141, "derivedV3": 40, "derivedV3Aged": 24, "statesAndOther": 36, "growthBeforeGc": 393 },
+  "retentionWindowDays": { "minimum": 2, "maximum": 14 },
+  "workingFootprintMegabytes": { "derivedWorkingWindowDays": 7, "derived": 280, "sourcesAtMinimumWindow": 282, "states": 17, "total": 579 }
+}

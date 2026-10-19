@@ -78,7 +78,7 @@ import {createHash} from 'node:crypto';
 import {join} from 'node:path';
 import {createContentTreeStore,contentTreeLink} from '@red-cup-engineering/computer-file-engineering-services-section/content-tree-store';
 import {scienceStateAt,stationScienceReport,stationPointForecasts} from './station-weather-science.mjs';
-import {jsonDigest} from './weather-state-tree.mjs';
+import {jsonDigest,readTree,saveTree} from './weather-state-tree.mjs';
 
 export const DERIVED_KIND='kalshi-weather-derived';
 export const isUsedParameterKey=key=>key.startsWith('index:')||key.includes('/lamp-hourly-v2.7-v1/');
@@ -219,14 +219,64 @@ export async function expireSources({root,now=Date.now(),retentionDays=sourceRet
   return {date:null,removed:0};
 }
 
+/**
+ * The derived records a store holds by id, with the time of each: a small tree ('weather/derived-index', id -> at), kept by the
+ * cycle that makes the record, so ageing never reads a record to learn its age. A store without one builds it once from its records.
+ */
+export const DERIVED_INDEX_REF='weather/derived-index';
+export async function indexDerived(root,{id,at}){
+  const store=evidenceStore(root),held=await readTree(store,DERIVED_INDEX_REF);
+  await saveTree(store,DERIVED_INDEX_REF,{...(held?.value??await buildDerivedIndex(root)),[id]:at});
+}
+async function buildDerivedIndex(root){
+  const store=evidenceStore(root),index={};
+  for await(const name of store.refs('evidence/')){
+    const record=await store.get(await store.getRef(name));
+    if(record?.kind===DERIVED_KIND&&record.version===3&&record.scienceState)index[name.slice('evidence/'.length)]=record.at;
+  }
+  return index;
+}
+/**
+ * A derived record in its aged form: the same record, its link to the station-science state it was derived from now a bare
+ * address (a weak reference, as `inputs` is), so the state revision it alone kept can be reclaimed. What readers use of it (detail
+ * 'used') does not need the revision; detail 'full' of an aged record says WEATHER_STATE_AGED_OUT once the revision is gone.
+ */
+export function ageDerivedRecord(record,id){
+  if(record?.kind!==DERIVED_KIND||record.version!==3||!record.scienceState)throw new TypeError('only a v3 derived record with its state link ages');
+  const {scienceState,...rest}=record;
+  return {...rest,scienceState:null,scienceStateAddress:scienceState['/'],scienceStateAged:true,supersedes:id};
+}
+/**
+ * Age the derived records older than the working window, oldest first, at most `limit` (a cycle's share): each is stored in its
+ * aged form under alias/<id> and its strong ref evidence/<id> removed, so the old id still resolves. Resolves {aged}.
+ */
+export async function ageDerived({root,now=Date.now(),workingWindowDays,limit=200}={}){
+  const store=evidenceStore(root),held=await readTree(store,DERIVED_INDEX_REF),index={...(held?.value??await buildDerivedIndex(root))},cutoff=now-workingWindowDays*DAY;
+  const due=Object.entries(index).filter(([,at])=>Date.parse(at)<cutoff).sort((a,b)=>a[1].localeCompare(b[1])).slice(0,limit);
+  let aged=0;
+  for(const [id] of due){
+    const address=await store.getRef('evidence/'+id);
+    if(!address){delete index[id];continue;}
+    const record=await store.get(address);
+    if(record?.kind!==DERIVED_KIND||record.version!==3||!record.scienceState){delete index[id];continue;}
+    const slim=ageDerivedRecord(record,id),slimAddress=await store.put(slim);
+    if(jsonDigest(await store.get(slimAddress))!==jsonDigest(slim))throw new Error('content tree did not reproduce the aged record exactly');
+    await store.setRef('alias/'+id,slimAddress);await store.deleteRef('evidence/'+id);
+    delete index[id];aged++;
+  }
+  if(due.length||!held)await saveTree(store,DERIVED_INDEX_REF,index);
+  return {aged};
+}
+
 async function fullScience(root,record,source){
   const store=evidenceStore(root),stored=record.science,stamp=stored.at;
+  if(record.scienceStateAged&&!await store.has(record.scienceStateAddress))throw Object.assign(new Error('the station-science state this weather record was derived from has aged out (its working window passed)'),{code:'WEATHER_STATE_AGED_OUT'});
   const forecasts=record.version>=3&&stored.forecastsHoisted?unhoistRun(stored.forecasts,stamp):stored.forecasts;
   if(record.historicalScience){
     const tree=await store.get(record.historicalScience['/']);
     return record.historicalHoisted?unhoistRun(tree,stamp):tree;
   }
-  const past=record.scienceState?await scienceStateAt(store,record.scienceState['/']):null;
+  const past=record.scienceState?await scienceStateAt(store,record.scienceState['/']):record.scienceStateAged?await scienceStateAt(store,record.scienceStateAddress):null;
   const outcomes=stored.outcomes?await store.get(stored.outcomes['/']):[];
   if(!past)return {at:stored.at,scored:stored.scored,forecasted:stored.forecasted,...(stored.status?{status:stored.status}:{}),parameters:stored.parameters,forecasts,outcomes};
   const report=stationScienceReport(past.state);

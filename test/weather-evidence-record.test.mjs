@@ -8,9 +8,11 @@ import {gzipSync} from 'node:zlib';
 import {makeNiUri} from '@red-cup-engineering/uri-services-section/ni-uri';
 import {openTree,readTree,saveTree,releaseTree,importLegacyFile,jsonDigest} from '../src/weather-state-tree.mjs';
 import {updateStationScience,readStationScience,readStationSciencePage,readScienceState,scienceStateAt,stationScienceReport} from '../src/station-weather-science.mjs';
-import {sealDerivedRecord,putEvidence,putEvidenceAlias,readEvidenceRecord,loadWeatherEvidence,evidenceStore,expireSources,sourceRetentionDays,sourceRefName,niOfHex,hexOfNi,DERIVED_KIND,isUsedForecast} from '../src/weather-evidence-record.mjs';
+import {sealDerivedRecord,putEvidence,indexDerived,ageDerived,ageDerivedRecord,putEvidenceAlias,readEvidenceRecord,loadWeatherEvidence,evidenceStore,expireSources,sourceRetentionDays,sourceRefName,niOfHex,hexOfNi,DERIVED_KIND,isUsedForecast} from '../src/weather-evidence-record.mjs';
 import {hoistRun,unhoistRun} from '../src/weather-run-hoist.mjs';
 import {migrateWeatherEvidence} from '../src/weather-evidence-migration.mjs';
+import {readRetentionPolicy,retentionWindow,upkeep} from '../src/weather-retention.mjs';
+import policyFile from '../content/config/weather-retention.json' with {type:'json'};
 import {weatherEvidence,weatherStatus,weatherStatusPage,readLatest,scoreWeather,weatherStationSkillPage,weatherStoreGc,maintainStore} from '@red-cup-engineering/forecasting/weather-engine';
 
 const sha=text=>createHash('sha256').update(text).digest('hex');
@@ -390,16 +392,63 @@ test('retention: raw sources get dated weak refs and age out a day per call; der
   assert.deepEqual(await store.get(record.science.outcomes['/']),json(result.outcomes));
   const check=await store.fsck();
   assert.deepEqual([check.damaged,check.missing],[[],[]]);
+
+  // Ageing: past its working window a derived record keeps its readers' fields and drops its hold on the state revision.
+  await indexDerived(root,{id:derived.id,at:oldSource.at});
+  const before=await loadWeatherEvidence({root,evidenceId:derived.id,detail:'used'}).catch(error=>error);
+  assert.equal((await ageDerived({root,now,workingWindowDays:7})).aged,1);
+  assert.equal(await store.getRef('evidence/'+derived.id),undefined,'the strong ref is gone');
+  const aged=(await readEvidenceRecord({root,evidenceId:derived.id})).record;
+  assert.equal(aged.scienceState,null);assert.equal(aged.scienceStateAged,true);assert.equal(aged.supersedes,derived.id);
+  assert.equal(aged.scienceStateAddress,record.scienceState['/'],'the revision is named, weakly');
+  assert.deepEqual(await store.get(aged.science.outcomes['/']),json(result.outcomes),'outcomes stay linked');
+  // the source had aged out above, so detail used reports that; the aged record reports the same thing, not something new
+  assert.equal(before.code,'WEATHER_SOURCE_AGED_OUT');
+  await assert.rejects(()=>loadWeatherEvidence({root,evidenceId:derived.id,detail:'used'}),{code:'WEATHER_SOURCE_AGED_OUT'});
+  assert.equal((await ageDerived({root,now,workingWindowDays:7})).aged,0,'nothing left to age');
+  // a record whose revision is gone says so for detail full
+  const gone=ageDerivedRecord(record,derived.id);gone.scienceStateAddress=niOfHex('0'.repeat(64));
+  await store.setRef('alias/'+'f'.repeat(64),await store.put({...gone,supersedes:'f'.repeat(64)}));
+  await assert.rejects(()=>loadWeatherEvidence({root,evidenceId:'f'.repeat(64),detail:'full'}),(error)=>['WEATHER_STATE_AGED_OUT','WEATHER_SOURCE_AGED_OUT'].includes(error.code));
 });
 
-test('maintainStore: expires one day, runs gc only after an expiry and at most once per interval',async t=>{
+test('maintainStore: each cycle expires what is past the window and reclaims after an expiry, and not otherwise',async t=>{
   const dir=await scratch(t),root=join(dir,'weather');
   const day=86400000,now=Date.parse('2026-10-20T12:00:00Z');
-  await putEvidence(root,source(now-20*day),{source:true});await putEvidence(root,source(now-19*day),{source:true});
+  await putEvidence(root,source(now-20*day),{source:true});await putEvidence(root,source(now-19*day),{source:true});await putEvidence(root,source(now-2*day),{source:true});
   const first=await maintainStore({root,now,retentionDays:14});
-  assert.equal(first.expired.removed,1);assert.ok(first.gc,'gc ran after an expiry');
-  const second=await maintainStore({root,now:now+1000,retentionDays:14});
-  assert.equal(second.expired.removed,1);assert.equal(second.gc,null,'but not again within the interval');
-  const third=await maintainStore({root,now:now+2000,retentionDays:14});
-  assert.deepEqual(third,{expired:{date:null,removed:0},gc:null},'nothing due, nothing done');
+  assert.equal(first.expired.removed,2,'both days past the window go in one cycle (expiryDaysPerCycle)');assert.ok(first.gc,'gc ran after an expiry');
+  const second=await maintainStore({root,now:now+60000,retentionDays:14});
+  assert.deepEqual([second.expired,second.gc],[{date:null,removed:0},null],'nothing due, nothing done, and no timer decides otherwise');
+  // growth alone also brings a gc: the packs gaining policy.gcAfterGrowthBytes since the last one
+  const policy={...readRetentionPolicy(),gcAfterGrowthBytes:1};
+  await putEvidence(root,source(now-1*day),{source:true});
+  const third=await maintainStore({root,now:now+120000,retentionDays:14,policy});
+  assert.ok(third.gc,'the store grew past the policy, so gc ran');
+  assert.ok((await readEvidenceRecord({root,evidenceId:jsonDigest(source(now-2*day))})).record.at,'a source inside the window is kept');
+});
+
+test('retention: the window is the longest the measured growth lets the store stay within its budget, and the policy is typed',()=>{
+  const policy=readRetentionPolicy(),gb=1073741824;
+  assert.equal(retentionWindow({policy,growthBytesPerDay:null}),policy.sourceRetentionMaxDays,'unknown growth: the design\'s window');
+  assert.equal(retentionWindow({policy,growthBytesPerDay:policy.storeBudgetBytes/10}),10);
+  assert.equal(retentionWindow({policy,growthBytesPerDay:1}),policy.sourceRetentionMaxDays,'never longer than the design allows');
+  assert.equal(retentionWindow({policy,growthBytesPerDay:393e6}),Math.max(policy.sourceRetentionMinDays,Math.floor(policy.storeBudgetBytes/393e6)),'the measured 393 MB a day');
+  assert.equal(retentionWindow({policy,growthBytesPerDay:50*gb}),policy.sourceRetentionMinDays,'never shorter than the minimum');
+  assert.throws(()=>readRetentionPolicy({...policyFile,gcAfterGrowthBytes:'64 MiB'}),RangeError);
+  assert.throws(()=>readRetentionPolicy({...policyFile,sourceRetentionMinDays:30}),RangeError);
+  const {graceMsBasis:_,...unfounded}=policyFile;assert.throws(()=>readRetentionPolicy(unfounded),/basis/u);
+});
+
+test('retention: the cycle measures growth from the bytes the packs gained since the last gc finished',async()=>{
+  const policy=readRetentionPolicy(),day=86400000,now=Date.parse('2026-10-20T12:00:00Z'),calls=[];
+  const run=(state,bytes,args={})=>upkeep({policy,state,now,bytesOf:async()=>bytes,expire:async d=>{calls.push(d);return {date:null,removed:0};},gc:async()=>({kept:1,removed:0,major:false}),...args});
+  const first=await run(null,1000);
+  assert.ok(first.gcRan,'the first upkeep reclaims once, to start its record');assert.equal(first.state.bytesAfter,1000);
+  const grown=await run({at:new Date(now-day/2).toISOString(),bytesAfter:0,growthBytesPerDay:null},policy.storeBudgetBytes/3);
+  assert.equal(Math.round(grown.growthBytesPerDay/policy.storeBudgetBytes*100),67,'a third of the budget in half a day is two thirds a day');
+  assert.equal(grown.window,Math.max(policy.sourceRetentionMinDays,1));
+  assert.deepEqual(calls.at(-1),grown.window,'and that window is what expiry is asked for');
+  const quick=await run({at:new Date(now-1000).toISOString(),bytesAfter:0,growthBytesPerDay:5},1e12);
+  assert.equal(quick.growthBytesPerDay,5,'a second is too little time to measure a rate; the earlier estimate stands');
 });

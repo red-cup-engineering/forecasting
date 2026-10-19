@@ -1,0 +1,23 @@
+{
+  "type": "weather-store-retention-policy",
+  "version": 1,
+  "specification": "src/weather-evidence-record.mjs (the evidence design: raw sources age out; derived records, states, outcomes and grades are kept)",
+  "sourceRetentionMaxDays": 14,
+  "sourceRetentionMaxDaysBasis": "The evidence design's law: a raw source record is kept 14 days (weather-evidence-record.mjs DEFAULT_SOURCE_RETENTION_DAYS). The window is never longer than this.",
+  "sourceRetentionMinDays": 2,
+  "sourceRetentionMinDaysBasis": "A derived record's source is read back for the day's rescoring; two days keep the sources of every forecast that can still settle in the cycle's longest horizon (48 h).",
+  "storeBudgetBytes": 1073741824,
+  "storeBudgetBytesBasis": "What the weather content tree may hold on Cold Red Gate: 1 GiB of the 3.8 GB the host had free on 2026-10-18, beside the logs and the other state. The retention window is the longest the measured growth lets the store stay within it (weather-retention.mjs retentionWindow).",
+  "gcAfterGrowthBytes": 67108864,
+  "gcAfterGrowthBytesBasis": "Garbage is reclaimed when the store has grown by this much since the last gc, as well as after any expiry: 64 MiB is about four hours at the measured 393 MB a day (2026-10-18, 167 MB written in 10.2 h), so a gc never reads more than a few hours of new packs. Measured on a copy of the real store with a 128 MB heap: a minor gc takes 11.6 s and 238 MB resident, a major gc 13 s and 245 MB.",
+  "expiryDaysPerCycle": 3,
+  "expiryDaysPerCycleBasis": "A cycle drops the dated source refs of up to this many days older than the window, so a window that shrinks is caught up in a day, not a month.",
+  "derivedWorkingWindowDays": 7,
+  "derivedWorkingWindowDaysBasis": "Measured by reading every caller of loadWeatherEvidence and readEvidenceRecord (2026-10-19): none loads a derived record older than the cycle that made it. The hourly projection and the participation snapshot read the latest cycle's record (at most 15 minutes old); scoring reads the pending forecasts' own rows, not the records; grading, calibration, refits and readiness read resolved.jsonl, the grades tree and the station-science head; only the offline replay (apps/replay-station-weather-science.mjs) and the on-demand weatherEvidence tool name older ids. The longest live lookback is 15 minutes, so a week keeps 672 times that for audit; an aged record still serves detail 'used', and detail 'full' says WEATHER_STATE_AGED_OUT once its revision is reclaimed.",
+  "derivedAgingPerCycle": 200,
+  "derivedAgingPerCycleBasis": "A cycle ages at most this many derived records past the working window, so a window that shrinks is caught up in a day (about 90 cycles' records are made a day) and no cycle reads more than 200 records of 1.7 MB.",
+  "majorEveryMs": 604800000,
+  "majorEveryMsBasis": "The file section's own default (content-tree-store gc): a major gc, the one that reclaims garbage among tenured nodes, once in seven days; every other gc is a minor one that reads only what was written since.",
+  "graceMs": 21600000,
+  "graceMsBasis": "A node younger than six hours is never removed, so a tree put by a writer and not yet named by its ref is safe (a cycle is at most 14 minutes)."
+}
