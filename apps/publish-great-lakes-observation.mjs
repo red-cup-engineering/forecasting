@@ -20,6 +20,15 @@ const HISTORY = resolve(DIRECTORY, "history.jsonl");
 const MAX_HISTORY = 112;
 const SIX_HOURS = 6 * 3600_000;
 const ONE_HOUR = 3600_000;
+const DULUTH_LAKE_SUPERIOR_LWD = Object.freeze({
+  station: "9099064",
+  chartDatum: "Lake Superior Low Water Datum",
+  valueMeters: 183.2,
+  verticalDatumVersion: "IGLD 1985",
+  originalSource: "https://tidesandcurrents.noaa.gov/gldatums.html",
+  measurementClaim: "NOAA source-owned chart-datum reference, not a vessel clearance or depth observation",
+});
+
 
 function sourceState(settled) {
   if (settled.status === "fulfilled") return { state: "received", result: settled.value };
@@ -49,6 +58,10 @@ function summarizeWater(read, at) {
     sourceCoverage: read.coverage ?? { finiteSamples: xs.length, missingSamples: null,
       meaning: "Older source reader has not reported data gaps" },
     sampleCount: xs.length,
+    noaaLakeSuperiorLowWaterDatum: DULUTH_LAKE_SUPERIOR_LWD,
+    waterHeightAboveNoaaLwdMeters: read.datum === "IGLD" && read.station === DULUTH_LAKE_SUPERIOR_LWD.station
+      ? Math.round((latest.heightMeters - DULUTH_LAKE_SUPERIOR_LWD.valueMeters) * 1000) / 1000 : null,
+    waterHeightReferenceQualification: "Same-station Lake Superior source IGLD datum minus separately stated NOAA LWD; not derived water depth or safe navigation clearance",
     latest: {
       heightMeters: latest.heightMeters,
       ...(latest.quality === undefined ? {} : { sourceQualityCode: latest.quality }),
@@ -140,6 +153,7 @@ export async function publishGreatLakesObservation({ now = () => new Date().toIS
       oceanicAndGreatLakesSource: "NOAA CO-OPS station 9099064",
       airStationSource: "NWS/NOAA METAR KDLH",
       verticalDatum: "IGLD",
+      lowWaterReferenceDatum: "IGLD 1985", lowWaterReferenceSource: DULUTH_LAKE_SUPERIOR_LWD.originalSource,
       waterUnit: "metre", temporalReference: "UTC",
       not: ["prediction", "watercraft navigation advice", "CVE service", "trading signal", "independently accepted paid service"],
     },
