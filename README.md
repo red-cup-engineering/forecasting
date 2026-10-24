@@ -68,7 +68,7 @@ permissions or an uncompleted repository migration.
    kept honestly separate from the numeric mean rather than one dressed up
    as the other.
 4. **Record** (`scripts/record-forecast.mjs`) — writes the canonical
-   `ForecastRecord` with `put` of `@red-cup-engineering/semiotic-eavt-engineering-services-section/store`,
+   `ForecastRecord` with `put` of `@red-cup-engineering/semiotic-eavt-services-section/store`,
    landing at this section's own `data/records/forecast-records/`.
 5. **Score** (`scripts/score-forecast.mjs`) — once a question resolves,
    scores the recorded forecast with the Brier score (always) and the log
@@ -145,7 +145,7 @@ ruling:
   estimate as an attributable claim and joins conflicting claims without
   silently resolving their disagreement. Proper scoring remains in
   `src/forecasting.mjs`.
-- `@red-cup-engineering/semiotic-eavt-engineering-services-section` (`./store`) — the sole
+- `@red-cup-engineering/semiotic-eavt-services-section` (`./store`) — the sole
   writer in `scripts/record-forecast.mjs` and `scripts/score-forecast.mjs`
   (`put`); no hand-rolled record/receipt writing.
 - Inference — the old question-only free-first loop has been retired. An
@@ -153,7 +153,7 @@ ruling:
   this forecasting pipeline currently has no admitted inference customer or
   model execution contract. A source note is an attribution claim, not
   independent verification of its contents.
-- `@red-cup-engineering/eavt-engineering-services-section` — no hand-rolled EAVT-shaped rows anywhere in
+- `@red-cup-engineering/eavt-services-section` — no hand-rolled EAVT-shaped rows anywhere in
   `src/` or `scripts/`; none needed.
 - `@red-cup-engineering/image-generation-inference-team` — this package does
   no image generation anywhere; none needed.
