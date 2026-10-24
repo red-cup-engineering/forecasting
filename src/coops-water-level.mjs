@@ -112,22 +112,32 @@ export async function readNoaaCoopsWaterLevel(request, {
     throw new Error("CO-OPS source has no admissible station-matched observed levels");
   }
   const day = calendarDate(admitted.date);
-  const observations = original.data.map(row => {
+  // NOAA may retain a timestamp with an explicitly missing measurement.
+  // Treat the finite observed values as readings, and keep the count of
+  // gaps instead of rejecting an otherwise useful day or inventing zero.
+  // Other malformed values still refuse with a bounded, source-local reason.
+  const observations = [];
+  let missingObservations = 0;
+  for (const row of original.data) {
     const observedAt = observationDate(row?.t, day);
+    if (row.v === "" || row.v === "-") {
+      missingObservations++;
+      continue;
+    }
     if (typeof row.v !== "string" || !/^-?(?:0|[1-9]\d*)(?:\.\d+)?$/u.test(row.v) ||
         !Number.isFinite(Number(row.v))) {
-      throw new TypeError("CO-OPS water level is not a finite decimal metre observation");
+      throw new TypeError(`CO-OPS water level is not a finite decimal metre observation at ${observedAt}: ${JSON.stringify(String(row.v).slice(0, 32))}`);
     }
-    return Object.freeze({
+    observations.push(Object.freeze({
       observedAt, heightMeters: Number(row.v),
       originalValue: row.v,
-      // NOAA's supplied sigma/quality flags remain opaque: the buyer can
-      // interpret them through the source's dated quality documentation.
       ...(row.s === undefined ? {} : { sigma: row.s }),
       ...(row.f === undefined ? {} : { flags: row.f }),
       ...(row.q === undefined ? {} : { quality: row.q }),
-    });
-  });
+    }));
+  }
+  if (observations.length === 0)
+    throw new Error("CO-OPS source has no finite measured water levels; missing observations cannot be inferred");
   for (let i = 1; i < observations.length; i++) {
     if (observations[i].observedAt <= observations[i - 1].observedAt) {
       throw new Error("CO-OPS source timestamps are duplicated or non-monotonic");
@@ -143,6 +153,8 @@ export async function readNoaaCoopsWaterLevel(request, {
     station: admitted.station, date: admitted.date,
     product: "water_level", datum: admitted.datum ?? "MLLW", unit: "metre", timeZone: "GMT",
     measurementState: "source-reported-possibly-preliminary",
+    coverage: { reportedSamples: original.data.length, finiteSamples: observations.length, missingSamples: missingObservations,
+      meaning: "NOAA missing measurement values withheld, never zero-filled or interpolated" },
     observations,
     source: {
       url, identity: makeNiUri(bytes), bytes: bytes.byteLength,
