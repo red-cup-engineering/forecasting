@@ -46,6 +46,8 @@ function summarizeWater(read, at) {
     ageSeconds,
     freshness: ageSeconds >= 0 && ageSeconds <= 3600 ? "recent-observation" : "stale-or-future-observation",
     measurementState: read.measurementState,
+    sourceCoverage: read.coverage ?? { finiteSamples: xs.length, missingSamples: null,
+      meaning: "Older source reader has not reported data gaps" },
     sampleCount: xs.length,
     latest: {
       heightMeters: latest.heightMeters,
