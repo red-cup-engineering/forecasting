@@ -50,6 +50,14 @@ Scientific authority and distinctions are maintained in
 This README controls today's actual package consumers, not semantic proof,
 permissions or an uncompleted repository migration.
 
+## Public Great Lakes environmental observation service
+
+The original Forecasting data producers now support an automatically refreshed, source-qualified **Duluth / western Lake Superior** environmental observation product. Its official sources are NOAA CO-OPS station 9099064 (**IGLD**, metres, UTC, original observation quality and raw NI identity) and NWS METAR **KDLH** (air observations, independent source/issue clocks and raw NI identity). They are *different physical variables*: the publication does not fabricate an interpolated forecast, nautical-safety verdict or weather-index settlement.
+
+**Machine-readable public entrance after received publication:** [latest Great Lakes JSON](https://raw.githubusercontent.com/red-cup-engineering/forecasting/main/data/records/great-lakes-duluth-observations/latest.json); [bounded source-availability history](https://raw.githubusercontent.com/red-cup-engineering/forecasting/main/data/records/great-lakes-duluth-observations/history.jsonl). The source-owned GitHub Actions operation reads current official sources every three hours without purchased input, composes the readings and temporal/vertical references, distinguishes unavailable/stale readings from zero, preserves sample gaps, retains source NI and rights and reports observed source reliability over the last 112 runs. The public raw GitHub URL is an HTTP JSON data entrance but has **no independent API availability guarantee**. Clients must check `generatedAt`, each `observedAt`, `supply`, `sourceCoverage`, `freshness` and source identity before acting; a previous published edition may remain when suppliers are unavailable.
+
+This is a **real free evidence and production capability**, not yet a paid sale. Causeway owns any optional licensed transformation, tariff, catalog, x402 paid response and user-facing entitlement through its **existing** original Market; source-code publication or free public usage cannot be booked as outside payment. Supplier compute and GitHub/network resource costs are separately unmetered, not asserted zero.
+
 ## Pipeline
 
 1. **Ingest** (`scripts/ingest-forecasting-question.mjs`) — validates and

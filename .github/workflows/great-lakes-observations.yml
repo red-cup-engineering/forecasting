@@ -1,0 +1,84 @@
+name: Great Lakes source-owned environmental service
+on:
+  push:
+    branches: [main, feat/receive-real-great-lakes-coops-20261024]
+    paths:
+      - ".github/workflows/great-lakes-observations.yml"
+      - "src/coops-water-level.mjs"
+      - "src/station-observations.mjs"
+      - "apps/publish-great-lakes-observation.mjs"
+      - "package.json"
+  schedule:
+    - cron: "17 */3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: live-great-lakes-source-publication
+  cancel-in-progress: false
+
+jobs:
+  receive-and-publish:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 19
+    steps:
+      - name: Checkout the original forecasting producer, not a copied fetcher
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Install existing immutable house source suppliers
+        run: |
+          set -euo pipefail
+          npm install --omit=dev --ignore-scripts --no-audit --no-fund --fetch-retries=0
+          node --check src/coops-water-level.mjs
+          node --check apps/publish-great-lakes-observation.mjs
+      - name: Read real NOAA CO-OPS and NWS to produce usable public source data
+        run: |
+          set -euo pipefail
+          node apps/publish-great-lakes-observation.mjs
+          node --input-type=module <<'NODE'
+          import {readFileSync} from 'node:fs';
+          const p='data/records/great-lakes-duluth-observations/latest.json';
+          const v=JSON.parse(readFileSync(p,'utf8'));
+          if(v.kind!=='561-group.great-lakes-source-observation/v1' ||
+             v.measurementContract.verticalDatum!=='IGLD' ||
+             (!v.observations.waterLevel && !v.observations.metar))
+            throw new Error('no usable independently sourced Great Lakes product received');
+          if(v.observations.waterLevel?.source?.ni &&
+             v.observations.waterLevel.verticalDatum !== 'IGLD')
+            throw new Error('NOAA Great Lakes datum was wrongly projected as tidal MLLW');
+          console.log(JSON.stringify({
+            product:v.kind,at:v.generatedAt,
+            water:v.supply.waterLevel.state,
+            air:v.supply.metar.state,
+            waterAgeSeconds:v.observations.waterLevel?.ageSeconds??null,
+            waterDatum:v.observations.waterLevel?.verticalDatum??null,
+            sourceHistory:v.observedProviderReliability.windowRuns,
+            userUsefulSource:'data/records/great-lakes-duluth-observations/latest.json',
+          }));
+          NODE
+      - name: Publish original public JSON and source-reliability history
+        if: github.ref == 'refs/heads/main'
+        run: |
+          set -euo pipefail
+          git config user.name '561 Group public environmental source'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- data/records/great-lakes-duluth-observations/latest.json data/records/great-lakes-duluth-observations/history.jsonl
+          if git diff --cached --quiet; then
+            echo "Qualified source data unchanged"
+          else
+            git commit -m 'Update source-qualified Great Lakes environmental observations'
+            git push origin HEAD:main
+          fi
+      - name: Retain actual native observations for receiver inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: great-lakes-noaa-environmental-observation
+          path: data/records/great-lakes-duluth-observations/
+          if-no-files-found: error
+          retention-days: 7

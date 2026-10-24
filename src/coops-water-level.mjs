@@ -16,6 +16,10 @@ import { admitCanonicalJson, JSON_RESOURCE_ENVELOPE } from "@red-cup-engineering
 const COOPS_ORIGIN = "https://api.tidesandcurrents.noaa.gov";
 const COOPS_PATH = "/api/prod/datagetter";
 const MAX_SOURCE_BYTES = 131072;
+// Great Lakes station datum is IGLD; a tidal MLLW interpretation at Duluth
+// changes the physical quantity rather than merely its name.
+const KNOWN_GREAT_LAKES_DATUM = Object.freeze({ "9099064": "IGLD" });
+const OBSERVED_DATUMS = new Set(["MLLW", "IGLD"]);
 const MAX_RESULT_BYTES = 262144;
 const RESPONSE_ENVELOPE = Object.freeze({
   ...JSON_RESOURCE_ENVELOPE,
@@ -30,25 +34,35 @@ function calendarDate(yyyymmdd) {
   return Number.isFinite(stamp) && new Date(stamp).toISOString().startsWith(day) ? day : null;
 }
 
-/** Admission never loads a network resource or consults the ambient clock. */
+/** Admit an explicit physical vertical datum where it matters. Legacy
+ * coastal callers retain MLLW, while a known Great Lakes gauge cannot be
+ * silently interpreted using a tidal datum. No right or observed data is
+ * created by the caller's datum declaration; NOAA remains the source. */
 export function admitNoaaCoopsWaterLevel(request) {
   if (request === null || typeof request !== "object" || Array.isArray(request) ||
-      Object.keys(request).length !== 2 || !Object.hasOwn(request, "station") ||
-      !Object.hasOwn(request, "date") ||
+      Object.keys(request).some(key => !["station", "date", "datum"].includes(key)) ||
+      !Object.hasOwn(request, "station") || !Object.hasOwn(request, "date") ||
       typeof request.station !== "string" || !/^[0-9]{7}$/u.test(request.station) ||
-      calendarDate(request.date) === null) {
-    throw new TypeError("CO-OPS water level requires exactly a 7-digit station and valid UTC YYYYMMDD date");
+      calendarDate(request.date) === null ||
+      (request.datum !== undefined && !OBSERVED_DATUMS.has(request.datum))) {
+    throw new TypeError("CO-OPS water level needs a 7-digit station, UTC YYYYMMDD date, and optional admitted MLLW/IGLD datum");
   }
-  return Object.freeze({ station: request.station, date: request.date });
+  const fixedDatum = KNOWN_GREAT_LAKES_DATUM[request.station];
+  if (fixedDatum && request.datum !== fixedDatum)
+    throw new TypeError(`Great Lakes station ${request.station} requires explicit ${fixedDatum} physical datum`);
+  return Object.freeze({
+    station: request.station, date: request.date,
+    ...(request.datum === undefined ? {} : { datum: request.datum }),
+  });
 }
 
 /** A day and vertical datum are in the SAME fixed unit and time coordinate. */
 export function coopsWaterLevelUrl(request) {
-  const { station, date } = admitNoaaCoopsWaterLevel(request);
+  const { station, date, datum = "MLLW" } = admitNoaaCoopsWaterLevel(request);
   const url = new URL(COOPS_PATH, COOPS_ORIGIN);
   for (const [key, value] of [
     ["begin_date", date], ["end_date", date], ["station", station],
-    ["product", "water_level"], ["datum", "MLLW"], ["time_zone", "gmt"],
+    ["product", "water_level"], ["datum", datum], ["time_zone", "gmt"],
     ["units", "metric"], ["format", "json"], ["application", "561Group"],
   ]) url.searchParams.set(key, value);
   return url.href;
@@ -98,22 +112,32 @@ export async function readNoaaCoopsWaterLevel(request, {
     throw new Error("CO-OPS source has no admissible station-matched observed levels");
   }
   const day = calendarDate(admitted.date);
-  const observations = original.data.map(row => {
+  // NOAA may retain a timestamp with an explicitly missing measurement.
+  // Treat the finite observed values as readings, and keep the count of
+  // gaps instead of rejecting an otherwise useful day or inventing zero.
+  // Other malformed values still refuse with a bounded, source-local reason.
+  const observations = [];
+  let missingObservations = 0;
+  for (const row of original.data) {
     const observedAt = observationDate(row?.t, day);
+    if (row.v === "" || row.v === "-") {
+      missingObservations++;
+      continue;
+    }
     if (typeof row.v !== "string" || !/^-?(?:0|[1-9]\d*)(?:\.\d+)?$/u.test(row.v) ||
         !Number.isFinite(Number(row.v))) {
-      throw new TypeError("CO-OPS water level is not a finite decimal metre observation");
+      throw new TypeError(`CO-OPS water level is not a finite decimal metre observation at ${observedAt}: ${JSON.stringify(String(row.v).slice(0, 32))}`);
     }
-    return Object.freeze({
+    observations.push(Object.freeze({
       observedAt, heightMeters: Number(row.v),
       originalValue: row.v,
-      // NOAA's supplied sigma/quality flags remain opaque: the buyer can
-      // interpret them through the source's dated quality documentation.
       ...(row.s === undefined ? {} : { sigma: row.s }),
       ...(row.f === undefined ? {} : { flags: row.f }),
       ...(row.q === undefined ? {} : { quality: row.q }),
-    });
-  });
+    }));
+  }
+  if (observations.length === 0)
+    throw new Error("CO-OPS source has no finite measured water levels; missing observations cannot be inferred");
   for (let i = 1; i < observations.length; i++) {
     if (observations[i].observedAt <= observations[i - 1].observedAt) {
       throw new Error("CO-OPS source timestamps are duplicated or non-monotonic");
@@ -127,8 +151,10 @@ export async function readNoaaCoopsWaterLevel(request, {
   const delivered = {
     kind: "noaa-coops-water-level-day/v1",
     station: admitted.station, date: admitted.date,
-    product: "water_level", datum: "MLLW", unit: "metre", timeZone: "GMT",
+    product: "water_level", datum: admitted.datum ?? "MLLW", unit: "metre", timeZone: "GMT",
     measurementState: "source-reported-possibly-preliminary",
+    coverage: { reportedSamples: original.data.length, finiteSamples: observations.length, missingSamples: missingObservations,
+      meaning: "NOAA missing measurement values withheld, never zero-filled or interpolated" },
     observations,
     source: {
       url, identity: makeNiUri(bytes), bytes: bytes.byteLength,
