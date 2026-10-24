@@ -1,5 +1,12 @@
 # Weather research and Kalshi on Cold Red Gate
 
+The weather collector receives File 0.8.2 for packed in-memory content-index
+coordinates and streamed legacy index reads. Existing pack formats, addresses,
+state references and archive/restore behavior remain readable. This reduces
+index heap demand without changing forecast or settlement admission. Kalshi
+0.1.58 is the exact existing client supplier. A native received application
+must qualify the complete graph before replacing the scheduled collector.
+
 The existing fast index publisher keeps a qualified pre-measurement forecast during
 the measurement-to-close window, at most five minutes, when the current exact rules,
 certified law and calibration still match and no contract blocker is present.
