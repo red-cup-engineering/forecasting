@@ -1,6 +1,6 @@
 {
   "name": "@red-cup-engineering/forecasting",
-  "version": "0.6.14",
+  "version": "0.6.15",
   "type": "module",
   "repository": {
     "type": "git",
@@ -102,8 +102,8 @@
     "@red-cup-engineering/mandate-portfolio-allocation-service": "0.2.2",
     "@red-cup-engineering/position-sizing-service": "0.5.0",
     "@red-cup-engineering/http-services-section": "0.6.2",
-    "@red-cup-engineering/kalshi-services-section": "^0.1.32",
-    "@red-cup-engineering/computer-file-engineering-services-section": "0.6.5",
+    "@red-cup-engineering/kalshi-services-section": "0.1.58",
+    "@red-cup-engineering/computer-file-engineering-services-section": "0.8.2",
     "@red-cup-engineering/path-walking-service": "0.5.2"
   },
   "engines": {
