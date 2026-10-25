@@ -1,6 +1,6 @@
 {
   "kind": "561-group.great-lakes-source-observation/v1",
-  "generatedAt": "2026-10-25T20:56:38.720Z",
+  "generatedAt": "2026-10-25T23:19:57.946Z",
   "subject": "Duluth, Minnesota / western Lake Superior",
   "measurementContract": {
     "oceanicAndGreatLakesSource": "NOAA CO-OPS station 9099064",
@@ -22,14 +22,14 @@
     "waterLevel": {
       "state": "received",
       "fresh": true,
-      "ni": "ni:///sha-256;ynro0BvanQ11zBSf4wu02V_lYOD9HVVc270vmPzCRcw",
-      "observedAt": "2026-10-25T20:48:00.000Z"
+      "ni": "ni:///sha-256;3nmAHeKwgAo_3B0p7z0PeoV1ePz256E0yAQxjLEWJaI",
+      "observedAt": "2026-10-25T23:12:00.000Z"
     },
     "metar": {
       "state": "received",
       "fresh": true,
-      "ni": "ni:///sha-256;sEyzDShOMnrr0f2yCCCgITA-oEgza4MZvNTj2EdQ-WA",
-      "observedAt": "2026-10-25T19:55:00.000Z"
+      "ni": "ni:///sha-256;3vQmdK3AmSyzWP4KnugHUDTWmQJPdsx-rh5Jv2FGT0E",
+      "observedAt": "2026-10-25T22:55:00.000Z"
     }
   },
   "observations": {
@@ -38,18 +38,18 @@
       "verticalDatum": "IGLD",
       "unit": "metre",
       "timeZone": "GMT",
-      "receivedAt": "2026-10-25T20:56:39.180Z",
-      "observedAt": "2026-10-25T20:48:00.000Z",
-      "ageSeconds": 518.72,
+      "receivedAt": "2026-10-25T23:19:58.438Z",
+      "observedAt": "2026-10-25T23:12:00.000Z",
+      "ageSeconds": 477.946,
       "freshness": "recent-observation",
       "measurementState": "source-reported-possibly-preliminary",
       "sourceCoverage": {
-        "finiteSamples": 209,
+        "finiteSamples": 233,
         "meaning": "NOAA missing measurement values withheld, never zero-filled or interpolated",
         "missingSamples": 0,
-        "reportedSamples": 209
+        "reportedSamples": 233
       },
-      "sampleCount": 209,
+      "sampleCount": 233,
       "noaaLakeSuperiorLowWaterDatum": {
         "station": "9099064",
         "chartDatum": "Lake Superior Low Water Datum",
@@ -58,24 +58,24 @@
         "originalSource": "https://tidesandcurrents.noaa.gov/gldatums.html",
         "measurementClaim": "NOAA source-owned chart-datum reference, not a vessel clearance or depth observation"
       },
-      "waterHeightAboveNoaaLwdMeters": 0.288,
+      "waterHeightAboveNoaaLwdMeters": 0.221,
       "waterHeightReferenceQualification": "Same-station Lake Superior source IGLD datum minus separately stated NOAA LWD; not derived water depth or safe navigation clearance",
       "latest": {
-        "heightMeters": 183.488,
+        "heightMeters": 183.421,
         "sourceQualityCode": "p",
         "sourceFlags": "0,0,0,0",
-        "sourceSigma": "0.002"
+        "sourceSigma": "0.0"
       },
       "sixHourRangeMeters": {
-        "lower": 183.396,
+        "lower": 183.421,
         "upper": 183.514,
         "observations": 61
       },
-      "oneHourChangeMeters": 0.03999999999999204,
+      "oneHourChangeMeters": -0.04099999999999682,
       "source": {
         "url": "https://api.tidesandcurrents.noaa.gov/api/prod/datagetter?begin_date=20261025&end_date=20261025&station=9099064&product=water_level&datum=IGLD&time_zone=gmt&units=metric&format=json&application=561Group",
-        "ni": "ni:///sha-256;ynro0BvanQ11zBSf4wu02V_lYOD9HVVc270vmPzCRcw",
-        "originalBytes": 16089,
+        "ni": "ni:///sha-256;3nmAHeKwgAo_3B0p7z0PeoV1ePz256E0yAQxjLEWJaI",
+        "originalBytes": 17923,
         "provider": "NOAA National Ocean Service, Center for Operational Oceanographic Products and Services",
         "rights": {
           "api": "https://api.tidesandcurrents.noaa.gov/api/prod/",
@@ -92,27 +92,27 @@
     },
     "metar": {
       "station": "KDLH",
-      "observedAt": "2026-10-25T19:55:00.000Z",
-      "ageSeconds": 3698.72,
+      "observedAt": "2026-10-25T22:55:00.000Z",
+      "ageSeconds": 1497.946,
       "freshness": "recent-observation",
       "observation": {
-        "at": "2026-10-25T19:55:00.000Z",
+        "at": "2026-10-25T22:55:00.000Z",
         "precisionF": 0.09,
-        "raw": "KDLH 251955Z 31012KT 10SM FEW110 13/M06 A3038 RMK AO2 SLP299 T01331056 $",
+        "raw": "KDLH 252255Z 30006KT 10SM SCT110 11/M04 A3039 RMK AO2 SLP303 T01061044 $",
         "station": "KDLH",
         "synoptic": [],
-        "temperatureF": 55.94
+        "temperatureF": 51.08
       },
       "source": {
         "url": "https://tgftp.nws.noaa.gov/data/observations/metar/stations/KDLH.TXT",
-        "ni": "ni:///sha-256;sEyzDShOMnrr0f2yCCCgITA-oEgza4MZvNTj2EdQ-WA",
+        "ni": "ni:///sha-256;3vQmdK3AmSyzWP4KnugHUDTWmQJPdsx-rh5Jv2FGT0E",
         "originalBytes": 91,
-        "receivedAt": "2026-10-25T20:56:39.269Z",
-        "issuedAt": "2026-10-25T19:55:00.000Z",
+        "receivedAt": "2026-10-25T23:19:58.424Z",
+        "issuedAt": "2026-10-25T22:55:00.000Z",
         "freshness": {
-          "bulletinAgeSeconds": 3699.269,
+          "bulletinAgeSeconds": 1498.424,
           "maximumAgeSeconds": 7200,
-          "observedAgeSeconds": 3699.269
+          "observedAgeSeconds": 1498.424
         },
         "rights": {
           "authority": "https://www.weather.gov/disclaimer/",
@@ -125,24 +125,24 @@
     }
   },
   "continuity": {
-    "previousEditionAt": "2026-10-25T16:28:39.090Z",
+    "previousEditionAt": "2026-10-25T20:56:38.720Z",
     "waterLevelSourceChanged": true,
     "metarSourceChanged": true
   },
   "observedProviderReliability": {
     "waterLevel": {
-      "observedRuns": 5,
-      "freshAcceptedRuns": 5,
+      "observedRuns": 6,
+      "freshAcceptedRuns": 6,
       "observedFreshFraction": 1,
       "meaning": "Empirical publication-loop reliability for this specific original NOAA source; no provider SLA or forecasting accuracy"
     },
     "metar": {
-      "observedRuns": 5,
-      "freshAcceptedRuns": 5,
+      "observedRuns": 6,
+      "freshAcceptedRuns": 6,
       "observedFreshFraction": 1,
       "meaning": "Empirical publication-loop reliability for this specific original NOAA source; no provider SLA or forecasting accuracy"
     },
-    "windowRuns": 5
+    "windowRuns": 6
   },
   "rights": "Source data attributed to NOAA/NWS; no endorsement, safety certification or exclusivity is asserted.",
   "economics": {
