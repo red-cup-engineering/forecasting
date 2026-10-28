@@ -1,0 +1,69 @@
+name: One-time contained Forecasting branch retirement
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/retire-contained-branches-20261028.yml'
+permissions:
+  contents: write
+  pull-requests: read
+concurrency:
+  group: forecasting-contained-branch-retirement-20261028
+  cancel-in-progress: false
+jobs:
+  receive-and-retire:
+    if: github.repository == 'red-cup-engineering/forecasting' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - name: Confirm complete ancestor, exact lease, empty open-PR inventory and absent-ref readback
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node <<'NODE'
+          const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),cp=require('node:child_process');
+          const repo='red-cup-engineering/forecasting',list=[["codex/receive-packed-content-index-20261024","57ebe8683b3202596f34cc3cd526efd37e8e10d3"],["science/field-calibration-audit-20261021","a265407a1b9d67f2d12cc083f0f647690905d639"]];
+          if(process.env.GITHUB_REPOSITORY!==repo||process.env.GITHUB_REF!=='refs/heads/main'||!process.env.GH_TOKEN)throw Error('wrong repository or missing authenticated write');
+          const api=async resource=>{
+            const r=await fetch('https://api.github.com/'+resource,{headers:{authorization:'Bearer '+process.env.GH_TOKEN,accept:'application/vnd.github+json','x-github-api-version':'2022-11-28'}});
+            if(!r.ok)throw Error('GitHub '+r.status+' at '+resource.split('?')[0]);
+            return r.json();
+          };
+          const dir=fs.mkdtempSync(path.join(process.env.RUNNER_TEMP||os.tmpdir(),'moose-retirement-'));
+          const askpass=path.join(dir,'askpass.sh');
+          fs.writeFileSync(askpass,'#!/bin/sh\ncase "$1" in\n *Username*) printf "x-access-token\\n";;\n *Password*) printf "%s\\n" "$GH_TOKEN";;\nesac\n',{mode:0o700});
+          const env={...process.env,GIT_ASKPASS:askpass,GIT_TERMINAL_PROMPT:'0'};
+          const initialized=cp.spawnSync('git',['init','-q',dir],{encoding:'utf8'});
+          if(initialized.status!==0)throw Error('git initialization refused');
+          const observations=[];let mainSha=null;
+          const report=(branch,state,reason)=>{observations.push({branch,state,reason});console.log(state,branch,reason||'');};
+          (async()=>{
+           try {
+            const current=await api('repos/'+repo+'/branches/main');
+            mainSha=current.commit.sha;
+            for(const [branch,sha] of list){
+             try{
+              if(branch==='main'||branch.startsWith('release/')||!/^[a-f0-9]{40}$/.test(sha))throw Error('manifest boundary');
+              const currentMain=await api('repos/'+repo+'/branches/main');
+              if(currentMain.commit.sha!==mainSha){report(branch,'HELD','default branch advanced during retirement');continue;}
+              const head=await api('repos/'+repo+'/branches/'+encodeURIComponent(branch));
+              if(head.commit.sha!==sha||head.protected!==false){report(branch,'HELD','different head or protected');continue;}
+              const comparison=await api('repos/'+repo+'/compare/'+mainSha+'...'+sha);
+              if(comparison.ahead_by!==0||!['behind','identical'].includes(comparison.status)){report(branch,'HELD','unique commits or unproven containment');continue;}
+              const pulls=await api('repos/'+repo+'/pulls?state=open&head='+encodeURIComponent('red-cup-engineering:'+branch)+'&per_page=100');
+              if(!Array.isArray(pulls)||pulls.length){report(branch,'HELD','open PR or incomplete PR inspection');continue;}
+              const push=cp.spawnSync('git',['push','--porcelain','--force-with-lease=refs/heads/'+branch+':'+sha,'https://github.com/'+repo+'.git',':refs/heads/'+branch],{cwd:dir,env,encoding:'utf8',timeout:45000,maxBuffer:131072});
+              if(push.status!==0){report(branch,'UNCERTAIN','lease did not return success; no replay');continue;}
+              const read=await fetch('https://api.github.com/repos/'+repo+'/git/ref/heads/'+branch,{headers:{authorization:'Bearer '+process.env.GH_TOKEN,accept:'application/vnd.github+json'}});
+              report(branch,read.status===404?'DELETED':'UNCERTAIN','readback HTTP '+read.status);
+             }catch(e){report(branch,'HELD',String(e.message).slice(0,150));}
+            }
+           }finally{
+            const tally={DELETED:0,HELD:0,UNCERTAIN:0};for(const r of observations)tally[r.state]=(tally[r.state]||0)+1;
+            const lines=['# One-time contained-branch retirement','Source default: '+(mainSha||'unobserved'),'Candidates: '+list.length,'Deleted: '+tally.DELETED+' | Held: '+tally.HELD+' | Uncertain: '+tally.UNCERTAIN,'','| Ref | Result | Readback |','|---|---|---|',...observations.map(x=>'| '+x.branch+' | '+x.state+' | '+x.reason+' |')];
+            fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY,lines.join('\n')+'\n');
+            fs.rmSync(dir,{force:true,recursive:true});
+            if(tally.UNCERTAIN)process.exitCode=1;
+           }
+          })().catch(e=>{console.error('Refusal: root evidence unavailable',String(e.message));process.exitCode=1;});
+          NODE
